@@ -1,0 +1,35 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "item",
+            "otherEntityName": "productItem",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "from",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "to",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "price",
+            "fieldType": "BigDecimal"
+        },
+        {
+            "fieldName": "currency",
+            "fieldType": "CurrencyType",
+            "fieldValues": "HKD,CNY,USD,EUR,JPY,KRW,TWD"
+        }
+    ],
+    "changelogDate": "20170727090141",
+    "entityTableName": "price",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "no"
+}

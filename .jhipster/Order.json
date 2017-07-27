@@ -1,0 +1,48 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "item",
+            "otherEntityName": "orderItem",
+            "otherEntityRelationshipName": "order"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "statusHistory",
+            "otherEntityName": "orderStatusHistory",
+            "otherEntityRelationshipName": "order"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "userInfo",
+            "otherEntityName": "userInfo",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "total",
+            "fieldType": "BigDecimal"
+        },
+        {
+            "fieldName": "currency",
+            "fieldType": "CurrencyType",
+            "fieldValues": "HKD,CNY,USD,EUR,JPY,KRW,TWD"
+        },
+        {
+            "fieldName": "remark",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "status",
+            "fieldType": "OrderStatus",
+            "fieldValues": "PENDING,COMFIRMED,COMPLETED,CANCELLED"
+        }
+    ],
+    "changelogDate": "20170727090143",
+    "entityTableName": "order",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "serviceClass"
+}

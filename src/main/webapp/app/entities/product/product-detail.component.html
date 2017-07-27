@@ -1,0 +1,71 @@
+
+<div *ngIf="product">
+    <h2><span jhiTranslate="mallApp.product.detail.title">Product</span> {{product.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="mallApp.product.name">Name</span></dt>
+        <dd>
+            <span>{{product.name}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.product.code">Code</span></dt>
+        <dd>
+            <span>{{product.code}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.product.brand">Brand</span></dt>
+        <dd>
+            <span>{{product.brand}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.product.description">Description</span></dt>
+        <dd>
+            <span>{{product.description}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.product.content">Content</span></dt>
+        <dd>
+            <span>{{product.content}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.product.remark">Remark</span></dt>
+        <dd>
+            <span>{{product.remark}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.product.status">Status</span></dt>
+        <dd>
+            <span jhiTranslate="{{'mallApp.ProductStatus.' + product.status}}">{{product.status}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.product.createdBy">Created By</span></dt>
+        <dd>
+            <span>{{product.createdBy}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.product.createdDate">Created Date</span></dt>
+        <dd>
+            <span>{{product.createdDate | date:'medium'}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.product.lastModifiedBy">Last Modified By</span></dt>
+        <dd>
+            <span>{{product.lastModifiedBy}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.product.lastModifiedDate">Last Modified Date</span></dt>
+        <dd>
+            <span>{{product.lastModifiedDate | date:'medium'}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.product.userInfo">User Info</span></dt>
+        <dd>
+            <div *ngIf="product.userInfo">
+                <a [routerLink]="['/user-info', product.userInfo?.id]">{{product.userInfo?.id}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'product/'+ product.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

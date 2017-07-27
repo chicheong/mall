@@ -1,0 +1,27 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "order",
+            "otherEntityName": "order",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "effectiveDate",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "status",
+            "fieldType": "OrderStatus",
+            "fieldValues": "PENDING,COMFIRMED,COMPLETED,CANCELLED"
+        }
+    ],
+    "changelogDate": "20170727090145",
+    "entityTableName": "order_status_history",
+    "dto": "no",
+    "pagination": "infinite-scroll",
+    "service": "no"
+}

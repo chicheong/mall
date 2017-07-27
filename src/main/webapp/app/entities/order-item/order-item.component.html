@@ -1,0 +1,93 @@
+<div>
+    <h2>
+        <span jhiTranslate="mallApp.orderItem.home.title">Order Items</span>
+        <button class="btn btn-primary float-right jh-create-entity create-order-item" [routerLink]="['/', { outlets: { popup: ['order-item-new'] } }]">
+            <span class="fa fa-plus"></span>
+            <span class="hidden-sm-down"  jhiTranslate="mallApp.orderItem.home.createLabel">
+            Create new Order Item
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <div class="row">
+        <div class="col-sm-12">
+            <form name="searchForm" class="form-inline">
+                <div class="input-group w-100 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'mallApp.orderItem.home.search' | translate }}">
+                    <button class="input-group-addon btn btn-info" (click)="search(currentSearch)">
+                        <span class="fa fa-search"></span>
+                    </button>
+                    <button class="input-group-addon btn btn-danger" (click)="clear()" *ngIf="currentSearch">
+                        <span class="fa fa-trash-o"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive" *ngIf="orderItems">
+        <table class="table table-striped">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="quantity"><span jhiTranslate="mallApp.orderItem.quantity">Quantity</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="price"><span jhiTranslate="mallApp.orderItem.price">Price</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="currency"><span jhiTranslate="mallApp.orderItem.currency">Currency</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="productItem.id"><span jhiTranslate="mallApp.orderItem.productItem">Product Item</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="order.id"><span jhiTranslate="mallApp.orderItem.order">Order</span> <span class="fa fa-sort"></span></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr *ngFor="let orderItem of orderItems ;trackBy: trackId">
+                <td><a [routerLink]="['../order-item', orderItem.id ]">{{orderItem.id}}</a></td>
+                <td>{{orderItem.quantity}}</td>
+                <td>{{orderItem.price}}</td>
+                <td jhiTranslate="{{'mallApp.CurrencyType.' + orderItem.currency}}">{{orderItem.currency}}</td>
+                <td>
+                    <div *ngIf="orderItem.productItem">
+                        <a [routerLink]="['../product-item', orderItem.productItem?.id ]" >{{orderItem.productItem?.id}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="orderItem.order">
+                        <a [routerLink]="['../order', orderItem.order?.id ]" >{{orderItem.order?.id}}</a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['../order-item', orderItem.id ]"
+                                class="btn btn-info btn-sm">
+                            <span class="fa fa-eye"></span>
+                            <span class="hidden-md-down" jhiTranslate="entity.action.view">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'order-item/'+ orderItem.id + '/edit'} }]"
+                                replaceUrl="true"
+                                class="btn btn-primary btn-sm">
+                            <span class="fa fa-pencil"></span>
+                            <span class="hidden-md-down" jhiTranslate="entity.action.edit">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'order-item/'+ orderItem.id + '/delete'} }]"
+                                replaceUrl="true"
+                                class="btn btn-danger btn-sm">
+                            <span class="fa fa-remove"></span>
+                            <span class="hidden-md-down" jhiTranslate="entity.action.delete">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+        <div *ngIf="orderItems && orderItems.length">
+            <div class="row justify-content-center">
+                <jhi-item-count [page]="page" [total]="queryCount" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+            </div>
+            <div class="row justify-content-center">
+                <ngb-pagination [collectionSize]="totalItems" [(page)]="page" (pageChange)="loadPage(page)"></ngb-pagination>
+            </div>
+        </div>
+</div>

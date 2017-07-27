@@ -1,0 +1,30 @@
+{
+    "mallApp": {
+        "shop" : {
+            "home": {
+                "title": "Shops",
+                "createLabel": "建立一筆新的 Shop",
+                "createOrEditLabel": "建立或編輯 Shop",
+                "search": "搜尋 Shop"
+            },
+            "created": "新的 Shop 建立成功，識別碼為 {{ param }}",
+            "updated": "識別碼為 {{ param }} 的 Shop 更新成功",
+            "deleted": "識別碼為 {{ param }} 的 Shop 刪除成功",
+            "delete": {
+                "question": "您確定要刪除 Shop {{ id }} 嗎?"
+            },
+            "detail": {
+                "title": "Shop"
+            },
+            "code": "Code",
+            "name": "Name",
+            "description": "Description",
+            "status": "Status",
+            "createdBy": "Created By",
+            "createdDate": "Created Date",
+            "lastModifiedBy": "Last Modified By",
+            "lastModifiedDate": "Last Modified Date",
+            "account": "Account"
+        }
+    }
+}

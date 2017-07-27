@@ -1,0 +1,30 @@
+{
+    "mallApp": {
+        "shop" : {
+            "home": {
+                "title": "Shops",
+                "createLabel": "Create a new Shop",
+                "createOrEditLabel": "Create or edit a Shop",
+                "search": "Search for Shop"
+            },
+            "created": "A new Shop is created with identifier {{ param }}",
+            "updated": "A Shop is updated with identifier {{ param }}",
+            "deleted": "A Shop is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Shop {{ id }}?"
+            },
+            "detail": {
+                "title": "Shop"
+            },
+            "code": "Code",
+            "name": "Name",
+            "description": "Description",
+            "status": "Status",
+            "createdBy": "Created By",
+            "createdDate": "Created Date",
+            "lastModifiedBy": "Last Modified By",
+            "lastModifiedDate": "Last Modified Date",
+            "account": "Account"
+        }
+    }
+}

@@ -1,0 +1,36 @@
+{
+    "mallApp": {
+        "product" : {
+            "home": {
+                "title": "Products",
+                "createLabel": "建立一筆新的 Product",
+                "createOrEditLabel": "建立或編輯 Product",
+                "search": "搜尋 Product"
+            },
+            "created": "新的 Product 建立成功，識別碼為 {{ param }}",
+            "updated": "識別碼為 {{ param }} 的 Product 更新成功",
+            "deleted": "識別碼為 {{ param }} 的 Product 刪除成功",
+            "delete": {
+                "question": "您確定要刪除 Product {{ id }} 嗎?"
+            },
+            "detail": {
+                "title": "Product"
+            },
+            "name": "Name",
+            "code": "Code",
+            "brand": "Brand",
+            "description": "Description",
+            "content": "Content",
+            "remark": "Remark",
+            "status": "Status",
+            "createdBy": "Created By",
+            "createdDate": "Created Date",
+            "lastModifiedBy": "Last Modified By",
+            "lastModifiedDate": "Last Modified Date",
+            "item": "Item",
+            "history": "History",
+            "userInfo": "User Info",
+            "category": "Category"
+        }
+    }
+}

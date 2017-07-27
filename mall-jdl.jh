@@ -1,0 +1,244 @@
+entity UserInfo {
+}
+
+entity MyAccount {
+	type AccountType
+}
+
+entity Company {
+	code String required,
+	name String,
+	status CommonStatus
+}
+
+entity Department {
+	code String required,
+	name String,
+	status CommonStatus
+}
+
+entity Office {
+	code String required,
+	name String,
+	status CommonStatus
+}
+
+entity Address {
+	line1 String,
+	line2 String,
+	line3 String,
+	line4 String,
+	city String,
+	postalCode String
+}
+
+entity Country {
+	code String required maxlength(2),
+	label String maxlength(3),
+	num String maxlength(3),
+	name String maxlength(100) 
+}
+
+entity State {
+	code String required maxlength(2),
+	label String maxlength(3),
+	name String maxlength(100) 
+}
+
+entity Shop {
+	code String required,
+	name String,
+	description String,
+	status CommonStatus,
+	createdBy String,
+	createdDate ZonedDateTime,
+	lastModifiedBy String,
+	lastModifiedDate ZonedDateTime
+}
+
+entity Delegation {
+	from ZonedDateTime,
+	to ZonedDateTime,
+	type DelegationType,
+	delegateId String, //Long
+	status CommonStatus,
+	createdBy String,
+	createdDate ZonedDateTime,
+	lastModifiedBy String,
+	lastModifiedDate ZonedDateTime
+}
+
+enum DelegationType {
+    ACCOUNT, COMPANY, DEPARTMENT, OFFICE
+}
+
+enum AccountType {
+    PERSONAL, COMPANY
+}
+
+enum CommonStatus {
+    ACTIVE, INACTIVE
+}
+
+entity Category {
+	name String required,
+	description String,
+	status CategoryStatus,
+	createdBy String,
+	createdDate ZonedDateTime,
+	lastModifiedBy String,
+	lastModifiedDate ZonedDateTime
+}
+
+enum CategoryStatus {
+    ACTIVE, RESTRICTED, INACTIVE
+}
+
+entity Product {
+	name String required,
+	code String,
+	brand String,
+	description String,
+	content String,
+	remark String,
+	status ProductStatus,
+	createdBy String,
+	createdDate ZonedDateTime,
+	lastModifiedBy String,
+	lastModifiedDate ZonedDateTime
+}
+
+enum ProductStatus {
+    ACTIVE, RESTRICTED, INACTIVE
+}
+
+entity ProductItem {
+	name String,
+	code String,
+	defaultItem Boolean,
+	color String,
+	size String,
+	quantity Integer,
+	currency CurrencyType,
+	price BigDecimal,
+	createdBy String,
+	createdDate ZonedDateTime,
+	lastModifiedBy String,
+	lastModifiedDate ZonedDateTime
+}
+
+// Product status before or after is active
+entity ProductHistory {
+	name String required,
+	code String,
+	brand String,
+	description String,
+	content String,
+	remark String,
+	status ProductStatus,
+	createdBy String,
+	createdDate ZonedDateTime,
+	lastModifiedBy String,
+	lastModifiedDate ZonedDateTime
+}
+
+// Product status before or after is active
+entity ProductItemHistory {
+	name String,
+	code String,
+	defaultItem Boolean,
+	color String,
+	size String,
+	quantity Integer,
+	currency CurrencyType,
+	price BigDecimal,
+	createdBy String,
+	createdDate ZonedDateTime,
+	lastModifiedBy String,
+	lastModifiedDate ZonedDateTime
+}
+
+entity Price {
+	from ZonedDateTime,
+	to ZonedDateTime,
+	price BigDecimal,
+	currency CurrencyType
+}
+
+enum CurrencyType {
+    HKD, CNY, USD, EUR, JPY, KRW, TWD
+}
+
+entity CurrencyRate {
+	from ZonedDateTime,
+	to ZonedDateTime,
+	rate BigDecimal,
+	sourceCurrency CurrencyType,
+	targetCurrency CurrencyType
+}
+
+entity Order {
+	total BigDecimal,
+	currency CurrencyType,
+	remark String,
+	status OrderStatus
+}
+
+enum OrderStatus {
+    PENDING, COMFIRMED, COMPLETED, CANCELLED
+}
+
+entity OrderItem {
+	quantity Integer,
+	price String,
+	currency CurrencyType
+}
+
+entity OrderStatusHistory {
+	effectiveDate ZonedDateTime,
+	status OrderStatus
+}
+
+relationship OneToOne {
+	UserInfo{user(login)} to User,
+	Office{address} to Address,
+	OrderItem{productItem} to ProductItem{orderItem}
+}
+
+relationship OneToMany {
+	MyAccount{delegation} to Delegation{account},
+	Product{item} to ProductItem{product},
+	Order{item} to OrderItem{order},
+	Order{statusHistory} to OrderStatusHistory{order},
+	Product{history} to ProductHistory{product},
+	ProductItem{history} to ProductItemHistory{item},
+	ProductItem{price} to Price{item}
+}
+
+relationship ManyToOne {
+	MyAccount{company(code)} to Company{account},
+	MyAccount{department(code)} to Department{account},
+	MyAccount{office(code)} to Office{account},
+	Company{parent} to Company,
+	Department{parent} to Department,
+	Address{country} to Country,
+	Address{state} to State,
+	State{country} to Country,
+	Category{parent} to Category,
+	Product{userInfo} to UserInfo,
+	Order{userInfo} to UserInfo
+}
+
+relationship ManyToMany {
+	UserInfo{account} to MyAccount{userInfo(login)},
+	Company{department(code)} to Department{company(code)},
+	Company{office(code)} to Office{company(code)},
+	Department{office(code)} to Office{department(code)},
+	MyAccount{shop} to Shop{account},
+	Category{product} to Product{category}
+}
+
+paginate UserInfo, MyAccount, Company, Department, Office, Country, State, Shop, Category, Product, ProductItem, Order, OrderItem, Price with pagination
+paginate Address with pager
+paginate Delegation, OrderStatusHistory, ProductHistory, ProductItemHistory with infinite-scroll
+service Product, Order with serviceClass

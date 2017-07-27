@@ -1,0 +1,77 @@
+<div>
+    <h2>
+        <span jhiTranslate="mallApp.orderStatusHistory.home.title">Order Status Histories</span>
+        <button class="btn btn-primary float-right jh-create-entity create-order-status-history" [routerLink]="['/', { outlets: { popup: ['order-status-history-new'] } }]">
+            <span class="fa fa-plus"></span>
+            <span class="hidden-sm-down"  jhiTranslate="mallApp.orderStatusHistory.home.createLabel">
+            Create new Order Status History
+            </span>
+        </button>
+    </h2>
+    <jhi-alert></jhi-alert>
+    <div class="row">
+        <div class="col-sm-12">
+            <form name="searchForm" class="form-inline">
+                <div class="input-group w-100 mt-3">
+                    <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'mallApp.orderStatusHistory.home.search' | translate }}">
+                    <button class="input-group-addon btn btn-info" (click)="search(currentSearch)">
+                        <span class="fa fa-search"></span>
+                    </button>
+                    <button class="input-group-addon btn btn-danger" (click)="clear()" *ngIf="currentSearch">
+                        <span class="fa fa-trash-o"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br/>
+    <div class="table-responsive" *ngIf="orderStatusHistories">
+        <table class="table table-striped">
+            <thead>
+            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="effectiveDate"><span jhiTranslate="mallApp.orderStatusHistory.effectiveDate">Effective Date</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="status"><span jhiTranslate="mallApp.orderStatusHistory.status">Status</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="order.id"><span jhiTranslate="mallApp.orderStatusHistory.order">Order</span> <span class="fa fa-sort"></span></th>
+            <th></th>
+            </tr>
+            </thead>
+            <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
+            <tr *ngFor="let orderStatusHistory of orderStatusHistories ;trackBy: trackId">
+                <td><a [routerLink]="['../order-status-history', orderStatusHistory.id ]">{{orderStatusHistory.id}}</a></td>
+                <td>{{orderStatusHistory.effectiveDate | date:'medium'}}</td>
+                <td jhiTranslate="{{'mallApp.OrderStatus.' + orderStatusHistory.status}}">{{orderStatusHistory.status}}</td>
+                <td>
+                    <div *ngIf="orderStatusHistory.order">
+                        <a [routerLink]="['../order', orderStatusHistory.order?.id ]" >{{orderStatusHistory.order?.id}}</a>
+                    </div>
+                </td>
+                <td class="text-right">
+                    <div class="btn-group flex-btn-group-container">
+                        <button type="submit"
+                                [routerLink]="['../order-status-history', orderStatusHistory.id ]"
+                                class="btn btn-info btn-sm">
+                            <span class="fa fa-eye"></span>
+                            <span class="hidden-md-down" jhiTranslate="entity.action.view">View</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'order-status-history/'+ orderStatusHistory.id + '/edit'} }]"
+                                replaceUrl="true"
+                                class="btn btn-primary btn-sm">
+                            <span class="fa fa-pencil"></span>
+                            <span class="hidden-md-down" jhiTranslate="entity.action.edit">Edit</span>
+                        </button>
+                        <button type="submit"
+                                [routerLink]="['/', { outlets: { popup: 'order-status-history/'+ orderStatusHistory.id + '/delete'} }]"
+                                replaceUrl="true"
+                                class="btn btn-danger btn-sm">
+                            <span class="fa fa-remove"></span>
+                            <span class="hidden-md-down" jhiTranslate="entity.action.delete">Delete</span>
+                        </button>
+                    </div>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
