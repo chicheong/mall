@@ -4,7 +4,7 @@
       "packageName": "com.wongs",
       "nativeLanguage": "en"
     },
-    "jhipsterVersion": "4.5.2",
+    "jhipsterVersion": "4.6.2",
     "baseName": "mall",
     "packageName": "com.wongs",
     "packageFolder": "com/wongs",
@@ -22,7 +22,7 @@
     "buildTool": "maven",
     "enableSocialSignIn": false,
     "jwtSecretKey": "c4e03cf03279254c0d6d9d466d31ff8d025544c5",
-    "clientFramework": "angular2",
+    "clientFramework": "angularX",
     "useSass": true,
     "clientPackageManager": "yarn",
     "applicationType": "monolith",
