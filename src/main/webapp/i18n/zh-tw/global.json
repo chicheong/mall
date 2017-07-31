@@ -148,5 +148,14 @@
         "emailexists": "電子郵件地址已被使用!",
         "idexists": "新實體不能包含 ID"
     },
-    "footer": "這裡是您的頁尾"
+    "footer": {
+    	"aboutUs": "關於我們",
+    	"press": "媒體",
+    	"privacyPolicy": "私隱政策",
+    	"faq": "常見問題",
+    	"contactUs": "聯絡我們",
+    	"joinUs": "加入我們",
+    	"legal": "合法",
+    	"terms": "條款"
+    }
 }

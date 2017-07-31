@@ -37,8 +37,6 @@
             <th jhiSortBy="content"><span jhiTranslate="mallApp.product.content">Content</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="remark"><span jhiTranslate="mallApp.product.remark">Remark</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="status"><span jhiTranslate="mallApp.product.status">Status</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="createdBy"><span jhiTranslate="mallApp.product.createdBy">Created By</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="createdDate"><span jhiTranslate="mallApp.product.createdDate">Created Date</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="lastModifiedBy"><span jhiTranslate="mallApp.product.lastModifiedBy">Last Modified By</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="lastModifiedDate"><span jhiTranslate="mallApp.product.lastModifiedDate">Last Modified Date</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="userInfo.id"><span jhiTranslate="mallApp.product.userInfo">User Info</span> <span class="fa fa-sort"></span></th>
@@ -51,12 +49,10 @@
                 <td>{{product.name}}</td>
                 <td>{{product.code}}</td>
                 <td>{{product.brand}}</td>
-                <td>{{product.description}}</td>
-                <td>{{product.content}}</td>
-                <td>{{product.remark}}</td>
+                <td class="truncate">{{product.description}}</td>
+                <td class="truncate">{{product.content}}</td>
+                <td class="truncate">{{product.remark}}</td>
                 <td jhiTranslate="{{'mallApp.ProductStatus.' + product.status}}">{{product.status}}</td>
-                <td>{{product.createdBy}}</td>
-                <td>{{product.createdDate | date:'medium'}}</td>
                 <td>{{product.lastModifiedBy}}</td>
                 <td>{{product.lastModifiedDate | date:'medium'}}</td>
                 <td>
