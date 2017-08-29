@@ -49,9 +49,9 @@
                 <td>{{product.name}}</td>
                 <td>{{product.code}}</td>
                 <td>{{product.brand}}</td>
-                <td>{{product.description}}</td>
-                <td>{{product.content}}</td>
-                <td>{{product.remark}}</td>
+                <td class='truncate'>{{product.description}}</td>
+                <td class='truncate'>{{product.content}}</td>
+                <td class='truncate'>{{product.remark}}</td>
                 <td jhiTranslate="{{'mallApp.ProductStatus.' + product.status}}">{{product.status}}</td>
                 <td>{{product.lastModifiedBy}}</td>
                 <td>{{product.lastModifiedDate | date:'medium'}}</td>
