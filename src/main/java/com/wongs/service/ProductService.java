@@ -73,6 +73,21 @@ public class ProductService {
         Product product = productRepository.findOne(id);
         return product;
     }
+    
+    /**
+     *  Get one product by id with productItem.
+     *
+     *  @param id the id of the entity
+     *  @return the entity with productItem
+     */
+    @Transactional(readOnly = true)
+    public Product findOneWithItems(Long id) {
+        log.debug("Request to get Product : {}", id);
+        Product product = productRepository.findOne(id);
+        product.setItems(productItemRepository.findByProduct(product));
+        
+        return product;
+    }
 
     /**
      *  Delete the  product by id.

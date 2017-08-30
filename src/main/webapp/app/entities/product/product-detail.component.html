@@ -1,5 +1,8 @@
 <div *ngIf="product">
 	<div class="row">
+		<jhi-alert-error></jhi-alert-error>
+	</div>
+	<div class="row">
 	  <div class="col-md-1">photo listing</div>
 	  <div class="col-md-3">main photo</div>	
 	  <div class="col-md-5">product description</div>
@@ -13,6 +16,35 @@
 	  	<span class="hipster img-fluid img-rounded"></span>
 	  </div>	
 	  <div class="col-md-5">
+	  	<div class="row-md jh-entity-details">
+	    	<div>
+	            <span>{{product.description}}</span>
+	        </div>
+	    	<div>
+	            <span>by {{product.brand}}</span>
+	        </div>
+	    	<div>
+	            <span>123 customer reviews</span>
+	        </div>
+<div *ngIf="product.items">	        
+	    	<div *ngFor="let item of product.items">
+	    		<div>
+	            	<span>Anything</span>
+	        	</div>
+	        </div>
+</div>
+<div *ngIf="!product.items">	        
+	    		<div>
+	            	<span>Anything</span>
+	        	</div>
+</div>	    
+	    	<div>
+	            <span>Testing</span>
+	        </div>	             
+	  	</div>
+	  
+	  
+	  
 	  	<table>
 	  		<tr>
 	  			<td>{{product.description}}</td>
