@@ -1,6 +1,7 @@
 package com.wongs.service;
 
 import com.wongs.domain.Product;
+import com.wongs.repository.ProductItemRepository;
 import com.wongs.repository.ProductRepository;
 import com.wongs.repository.search.ProductSearchRepository;
 import org.slf4j.Logger;
@@ -25,10 +26,14 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     private final ProductSearchRepository productSearchRepository;
+    
+    private final ProductItemRepository productItemRepository;
 
-    public ProductService(ProductRepository productRepository, ProductSearchRepository productSearchRepository) {
+    public ProductService(ProductRepository productRepository, ProductSearchRepository productSearchRepository,
+    						ProductItemRepository productItemRepository) {
         this.productRepository = productRepository;
         this.productSearchRepository = productSearchRepository;
+        this.productItemRepository = productItemRepository;
     }
 
     /**
@@ -65,7 +70,8 @@ public class ProductService {
     @Transactional(readOnly = true)
     public Product findOne(Long id) {
         log.debug("Request to get Product : {}", id);
-        return productRepository.findOne(id);
+        Product product = productRepository.findOne(id);
+        return product;
     }
 
     /**
