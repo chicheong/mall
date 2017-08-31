@@ -33,6 +33,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     load(id) {
         this.productService.find(id).subscribe((product) => {
             this.product = product;
+          console.error(product.items);
         });
     }
     previousState() {
