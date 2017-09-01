@@ -31,11 +31,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     }
 
     load(id) {
-        console.error('load starts.');
         this.productService.find(id).subscribe((product) => {
             this.product = product;
-          console.error('product' + JSON.stringify(product));
-          console.error('product.items' + product.items);
         });
     }
     previousState() {

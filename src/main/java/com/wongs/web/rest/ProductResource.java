@@ -5,6 +5,8 @@ import com.wongs.domain.Product;
 import com.wongs.service.ProductService;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
+import com.wongs.web.rest.vm.ProductVM;
+
 import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -108,10 +110,10 @@ public class ProductResource {
      */
     @GetMapping("/products/{id}")
     @Timed
-    public ResponseEntity<Product> getProduct(@PathVariable Long id) {
+    public ResponseEntity<ProductVM> getProduct(@PathVariable Long id) {
         log.debug("REST request to get Product : {}", id);
         Product product = productService.findOneWithItems(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(product));
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(new ProductVM(product)));
     }
 
     /**

@@ -34,10 +34,8 @@ export class ProductService {
 
     find(id: number): Observable<Product> {
         return this.http.get(`${this.resourceUrl}/${id}`).map((res: Response) => {
-          console.error('res: ' + res);
             const jsonResponse = res.json();
             this.convertItemFromServer(jsonResponse);
-         console.error('jsonResponse: ' + jsonResponse.userInfo);
             return jsonResponse;
         });
     }
