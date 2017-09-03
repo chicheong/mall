@@ -8,7 +8,8 @@
 	  <div class="col-md-5">product description</div>
 	  <div class="col-md-3">other</div>	
 	</div>
-	<div class="row">
+	<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+	<div class="row" [ngSwitch]="edit">
 	  <div class="col-md-1">
 	  	<span class="hipster img-fluid img-rounded"></span>
 	  </div>
@@ -18,31 +19,25 @@
 	  <div class="col-md-5">
 	  	<div class="row-md jh-entity-details">
 	    	<div>
-	            <span>{{product.description}}</span>
+	            <span *ngSwitchCase="false">{{product.description}}</span>
+	            <span *ngSwitchCase="true"><input type="text" class="form-control" name="description" id="field_description" [(ngModel)]="product.description"  /></span>
 	        </div>
 	    	<div>
-	            <span>by {{product.brand}}</span>
+	            by <span *ngSwitchCase="false">{{product.brand}}</span>
+	            <span *ngSwitchCase="true"><input type="text" class="form-control" name="brand" id="field_brand" [(ngModel)]="product.brand"  /></span>
 	        </div>
 	    	<div>
 	            <span>123 customer reviews</span>
 	        </div>
-<div *ngIf="product.items">	        
-	    	<div *ngFor="let item of product.items">
-	    		<div>
-	            	<span><input type="button" value="{{item.color}}" /></span>
-	        	</div>
-	        </div>
-</div>
-             
-             
+			<div *ngIf="product.items">
+	        	<span *ngFor="let item of product.items"><input type="button" value="{{item.color}}" /></span>
+			</div>
+			
             <div>
 	  			&nbsp;
 	  		</div>
 	  		<div>
-	  			List Price:	$20.75
-	  		</div>
-	  		<div>
-	  			Price:	$<span th:text="${product.productItems[0].markedPrice}">$99.00</span> &amp; <!-- FREE Shipping on orders over $35. Details -->
+	  			Price:	<span>{{product.items[0].currency}} {{product.items[0].price}}</span>
 	  		</div>	
 	  		<div>
 	  			You Save:	$5.90 (28%)
@@ -75,6 +70,7 @@
 	  </div>
 	  <div class="col-md-3">other</div>		
 	</div>
+	</form>
 	<div class="row">
 		<div class="col-md-1"></div>
 		<div class="col-md-8" th:utext="${product.content}">

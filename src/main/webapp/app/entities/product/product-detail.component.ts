@@ -15,6 +15,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     product: Product;
     private subscription: Subscription;
     private eventSubscriber: Subscription;
+    private edit = false;
 
     constructor(
         private eventManager: JhiEventManager,
