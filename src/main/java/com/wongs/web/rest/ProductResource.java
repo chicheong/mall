@@ -113,7 +113,7 @@ public class ProductResource {
     public ResponseEntity<ProductVM> getProduct(@PathVariable Long id) {
         log.debug("REST request to get Product : {}", id);
         Product product = productService.findOneWithItems(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(new ProductVM(product)));
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(product==null?null:new ProductVM(product)));
     }
 
     /**

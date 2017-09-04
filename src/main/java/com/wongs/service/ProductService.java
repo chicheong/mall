@@ -1,9 +1,9 @@
 package com.wongs.service;
 
-import com.wongs.domain.Product;
-import com.wongs.repository.ProductItemRepository;
-import com.wongs.repository.ProductRepository;
-import com.wongs.repository.search.ProductSearchRepository;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -11,8 +11,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.wongs.domain.Product;
+import com.wongs.domain.ProductItem;
+import com.wongs.repository.ProductItemRepository;
+import com.wongs.repository.ProductRepository;
+import com.wongs.repository.search.ProductSearchRepository;
 
 /**
  * Service Implementation for managing Product.
@@ -84,8 +87,9 @@ public class ProductService {
     public Product findOneWithItems(Long id) {
         log.debug("Request to get Product : {}", id);
         Product product = productRepository.findOne(id);
-        product.setItems(productItemRepository.findByProduct(product));
-        
+        if (product != null){
+        	product.setItems(productItemRepository.findByProduct(product));
+        }
         return product;
     }
 
