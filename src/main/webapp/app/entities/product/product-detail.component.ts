@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Rx';
-import { JhiEventManager  } from 'ng-jhipster';
+import { Subscription, Observable } from 'rxjs/Rx';
+import { JhiEventManager, JhiAlertService  } from 'ng-jhipster';
 
 import { Product } from './product.model';
 import { ProductService } from './product.service';
@@ -13,14 +13,16 @@ import { ProductService } from './product.service';
 export class ProductDetailComponent implements OnInit, OnDestroy {
 
     product: Product;
+    isSaving: boolean;
     private subscription: Subscription;
     private eventSubscriber: Subscription;
-    private edit = false;
+    isEditing = false;
 
     constructor(
         private eventManager: JhiEventManager,
         private productService: ProductService,
-        private route: ActivatedRoute
+        private route: ActivatedRoute,
+        private alertService: JhiAlertService,
     ) {
     }
 
@@ -50,5 +52,49 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
             'productListModification',
             (response) => this.load(this.product.id)
         );
+    }
+
+    save() {
+        this.isSaving = true;
+        if (this.product.id !== undefined) {
+            this.subscribeToSaveResponse(
+                this.productService.update(this.product));
+        } else {
+            this.subscribeToSaveResponse(
+                this.productService.create(this.product));
+        }
+    }
+
+    private subscribeToSaveResponse(result: Observable<Product>) {
+        result.subscribe((res: Product) =>
+            this.onSaveSuccess(res), (res: Response) => this.onSaveError(res));
+    }
+
+    private onSaveSuccess(result: Product) {
+        this.eventManager.broadcast({ name: 'productListModification', content: 'OK'});
+        this.isSaving = false;
+        // this.activeModal.dismiss(result);
+    }
+
+    private onSaveError(error) {
+        try {
+            error.json();
+        } catch (exception) {
+            error.message = error.text();
+        }
+        this.isSaving = false;
+        this.onError(error);
+    }
+
+    private onError(error) {
+        this.alertService.error(error.message, null, null);
+    }
+
+    private edit() {
+        this.isEditing = true;
+    }
+
+    private cancel() {
+        this.isEditing = false;
     }
 }
