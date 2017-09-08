@@ -1,4 +1,5 @@
 <div *ngIf="product" [ngSwitch]="isEditing">
+	<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
 	<div class="row">
 		<jhi-alert-error></jhi-alert-error>
 	</div>
@@ -30,7 +31,6 @@
 	  <div class="col-md-5">product description</div>
 	  <div class="col-md-3">other</div>	
 	</div>
-	<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
 	<div class="row">
 	  <div class="col-md-1">
 	  	<span class="hipster img-fluid img-rounded"></span>
@@ -94,7 +94,6 @@
 	  </div>
 	  <div class="col-md-3">other</div>		
 	</div>
-	</form>
 	<div class="row">
 		<div class="col-md-1"></div>
 		<div class="col-md-11">
@@ -121,11 +120,11 @@ ID: {{product.id}}&nbsp;&nbsp;&nbsp;&nbsp;
 			<dl *ngSwitchCase="true" class="row-md jh-entity-details">
 		        <dt><span jhiTranslate="mallApp.product.name">Name</span></dt>
 		        <dd>
-		            <span><input type="text" class="form-control" name="brand" id="field_brand" [(ngModel)]="product.name"  /></span>
+		            <span><input type="text" class="form-control" name="name" id="field_brand" [(ngModel)]="product.name"  /></span>
 		        </dd>
 		        <dt><span jhiTranslate="mallApp.product.code">Code</span></dt>
 		        <dd>
-		            <span><input type="text" class="form-control" name="brand" id="field_brand" [(ngModel)]="product.code"  /></span>
+		            <span><input type="text" class="form-control" name="code" id="field_brand" [(ngModel)]="product.code"  /></span>
 		        </dd>
 		        <dt><span jhiTranslate="mallApp.product.brand">Brand</span></dt>
 		        <dd>
@@ -133,7 +132,7 @@ ID: {{product.id}}&nbsp;&nbsp;&nbsp;&nbsp;
 		        </dd>
 		        <dt><span jhiTranslate="mallApp.product.remark">Remark</span></dt>
 		        <dd>
-		            <span><input type="text" class="form-control" name="brand" id="field_brand" [(ngModel)]="product.remark"  /></span>
+		            <span><input type="text" class="form-control" name="remark" id="field_brand" [(ngModel)]="product.remark"  /></span>
 		        </dd>
 		        <dt><span jhiTranslate="mallApp.product.status">Status</span></dt>
 		        <dd>
@@ -144,7 +143,7 @@ ID: {{product.id}}&nbsp;&nbsp;&nbsp;&nbsp;
 		            </select>
 		        </dd>
 		        <dt><span jhiTranslate="mallApp.product.createdBy">Created By</span></dt>
-		        <dd>
+		        <!-- <dd>
 		            <span>{{product.createdBy}}</span>
 		        </dd>
 		        <dt><span jhiTranslate="mallApp.product.createdDate">Created Date</span></dt>
@@ -158,7 +157,7 @@ ID: {{product.id}}&nbsp;&nbsp;&nbsp;&nbsp;
 		        <dt><span jhiTranslate="mallApp.product.lastModifiedDate">Last Modified Date</span></dt>
 		        <dd>
 		            <span>{{product.lastModifiedDate | date:'medium'}}</span>
-		        </dd>
+		        </dd>-->
 		        <dt><span jhiTranslate="mallApp.product.userInfo">User Info</span></dt>
 		        <dd>
 		            <div *ngIf="product.userInfo">
@@ -169,4 +168,5 @@ ID: {{product.id}}&nbsp;&nbsp;&nbsp;&nbsp;
 		    
 		</div>
 	</div>
+	</form>
 </div>

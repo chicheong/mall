@@ -73,6 +73,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     private onSaveSuccess(result: Product) {
         this.eventManager.broadcast({ name: 'productListModification', content: 'OK'});
         this.isSaving = false;
+        this.isEditing = false;
         // this.activeModal.dismiss(result);
     }
 
