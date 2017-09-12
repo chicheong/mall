@@ -3,6 +3,8 @@ package com.wongs.service;
 import com.wongs.domain.Order;
 import com.wongs.repository.OrderRepository;
 import com.wongs.repository.search.OrderSearchRepository;
+import com.wongs.service.dto.OrderDTO;
+import com.wongs.service.mapper.OrderMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -24,23 +26,28 @@ public class OrderService {
 
     private final OrderRepository orderRepository;
 
+    private final OrderMapper orderMapper;
+
     private final OrderSearchRepository orderSearchRepository;
 
-    public OrderService(OrderRepository orderRepository, OrderSearchRepository orderSearchRepository) {
+    public OrderService(OrderRepository orderRepository, OrderMapper orderMapper, OrderSearchRepository orderSearchRepository) {
         this.orderRepository = orderRepository;
+        this.orderMapper = orderMapper;
         this.orderSearchRepository = orderSearchRepository;
     }
 
     /**
      * Save a order.
      *
-     * @param order the entity to save
+     * @param orderDTO the entity to save
      * @return the persisted entity
      */
-    public Order save(Order order) {
-        log.debug("Request to save Order : {}", order);
-        Order result = orderRepository.save(order);
-        orderSearchRepository.save(result);
+    public OrderDTO save(OrderDTO orderDTO) {
+        log.debug("Request to save Order : {}", orderDTO);
+        Order order = orderMapper.toEntity(orderDTO);
+        order = orderRepository.save(order);
+        OrderDTO result = orderMapper.toDto(order);
+        orderSearchRepository.save(order);
         return result;
     }
 
@@ -51,9 +58,10 @@ public class OrderService {
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Order> findAll(Pageable pageable) {
+    public Page<OrderDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Orders");
-        return orderRepository.findAll(pageable);
+        return orderRepository.findAll(pageable)
+            .map(orderMapper::toDto);
     }
 
     /**
@@ -63,9 +71,10 @@ public class OrderService {
      *  @return the entity
      */
     @Transactional(readOnly = true)
-    public Order findOne(Long id) {
+    public OrderDTO findOne(Long id) {
         log.debug("Request to get Order : {}", id);
-        return orderRepository.findOne(id);
+        Order order = orderRepository.findOne(id);
+        return orderMapper.toDto(order);
     }
 
     /**
@@ -87,9 +96,9 @@ public class OrderService {
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Order> search(String query, Pageable pageable) {
+    public Page<OrderDTO> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Orders for query {}", query);
         Page<Order> result = orderSearchRepository.search(queryStringQuery(query), pageable);
-        return result;
+        return result.map(orderMapper::toDto);
     }
 }

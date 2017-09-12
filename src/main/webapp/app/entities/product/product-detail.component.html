@@ -120,11 +120,11 @@ ID: {{product.id}}&nbsp;&nbsp;&nbsp;&nbsp;
 			<dl *ngSwitchCase="true" class="row-md jh-entity-details">
 		        <dt><span jhiTranslate="mallApp.product.name">Name</span></dt>
 		        <dd>
-		            <span><input type="text" class="form-control" name="name" id="field_brand" [(ngModel)]="product.name"  /></span>
+		            <input type="text" class="form-control" name="name" id="field_brand" [(ngModel)]="product.name"  />
 		        </dd>
 		        <dt><span jhiTranslate="mallApp.product.code">Code</span></dt>
 		        <dd>
-		            <span><input type="text" class="form-control" name="code" id="field_brand" [(ngModel)]="product.code"  /></span>
+		            <input type="text" class="form-control" name="code" id="field_brand" [(ngModel)]="product.code"  />
 		        </dd>
 		        <dt><span jhiTranslate="mallApp.product.brand">Brand</span></dt>
 		        <dd>
@@ -132,7 +132,7 @@ ID: {{product.id}}&nbsp;&nbsp;&nbsp;&nbsp;
 		        </dd>
 		        <dt><span jhiTranslate="mallApp.product.remark">Remark</span></dt>
 		        <dd>
-		            <span><input type="text" class="form-control" name="remark" id="field_brand" [(ngModel)]="product.remark"  /></span>
+		            <input type="text" class="form-control" name="remark" id="field_brand" [(ngModel)]="product.remark"  />
 		        </dd>
 		        <dt><span jhiTranslate="mallApp.product.status">Status</span></dt>
 		        <dd>
@@ -143,21 +143,21 @@ ID: {{product.id}}&nbsp;&nbsp;&nbsp;&nbsp;
 		            </select>
 		        </dd>
 		        <dt><span jhiTranslate="mallApp.product.createdBy">Created By</span></dt>
-		        <!-- <dd>
-		            <span>{{product.createdBy}}</span>
+		        <dd>
+		        	<input type="text" class="form-control" name="createdBy" id="field_createdBy" [(ngModel)]="product.createdBy" />
 		        </dd>
 		        <dt><span jhiTranslate="mallApp.product.createdDate">Created Date</span></dt>
 		        <dd>
-		            <span>{{product.createdDate | date:'medium'}}</span>
+                	<input id="field_createdDate" type="datetime-local" class="form-control" name="createdDate" [(ngModel)]="product.createdDate" />
 		        </dd>
 		        <dt><span jhiTranslate="mallApp.product.lastModifiedBy">Last Modified By</span></dt>
 		        <dd>
-		            <span>{{product.lastModifiedBy}}</span>
+		        	<input type="text" class="form-control" name="lastModifiedBy" id="field_lastModifiedBy" [(ngModel)]="product.lastModifiedBy" />
 		        </dd>
 		        <dt><span jhiTranslate="mallApp.product.lastModifiedDate">Last Modified Date</span></dt>
 		        <dd>
-		            <span>{{product.lastModifiedDate | date:'medium'}}</span>
-		        </dd>-->
+		            <input id="field_lastModifiedDate" type="datetime-local" class="form-control" name="lastModifiedDate" [(ngModel)]="product.lastModifiedDate" />
+		        </dd>
 		        <dt><span jhiTranslate="mallApp.product.userInfo">User Info</span></dt>
 		        <dd>
 		            <div *ngIf="product.userInfo">

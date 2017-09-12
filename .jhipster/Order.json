@@ -42,7 +42,7 @@
     ],
     "changelogDate": "20170727090143",
     "entityTableName": "order",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceClass"
 }

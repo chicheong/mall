@@ -79,7 +79,7 @@
     ],
     "changelogDate": "20170727090137",
     "entityTableName": "product",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceClass"
 }

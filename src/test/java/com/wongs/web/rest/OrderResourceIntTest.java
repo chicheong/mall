@@ -6,6 +6,8 @@ import com.wongs.domain.Order;
 import com.wongs.repository.OrderRepository;
 import com.wongs.service.OrderService;
 import com.wongs.repository.search.OrderSearchRepository;
+import com.wongs.service.dto.OrderDTO;
+import com.wongs.service.mapper.OrderMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -56,6 +58,9 @@ public class OrderResourceIntTest {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private OrderMapper orderMapper;
 
     @Autowired
     private OrderService orderService;
@@ -116,9 +121,10 @@ public class OrderResourceIntTest {
         int databaseSizeBeforeCreate = orderRepository.findAll().size();
 
         // Create the Order
+        OrderDTO orderDTO = orderMapper.toDto(order);
         restOrderMockMvc.perform(post("/api/orders")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(order)))
+            .content(TestUtil.convertObjectToJsonBytes(orderDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Order in the database
@@ -142,11 +148,12 @@ public class OrderResourceIntTest {
 
         // Create the Order with an existing ID
         order.setId(1L);
+        OrderDTO orderDTO = orderMapper.toDto(order);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restOrderMockMvc.perform(post("/api/orders")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(order)))
+            .content(TestUtil.convertObjectToJsonBytes(orderDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Alice in the database
@@ -200,8 +207,8 @@ public class OrderResourceIntTest {
     @Transactional
     public void updateOrder() throws Exception {
         // Initialize the database
-        orderService.save(order);
-
+        orderRepository.saveAndFlush(order);
+        orderSearchRepository.save(order);
         int databaseSizeBeforeUpdate = orderRepository.findAll().size();
 
         // Update the order
@@ -211,10 +218,11 @@ public class OrderResourceIntTest {
             .currency(UPDATED_CURRENCY)
             .remark(UPDATED_REMARK)
             .status(UPDATED_STATUS);
+        OrderDTO orderDTO = orderMapper.toDto(updatedOrder);
 
         restOrderMockMvc.perform(put("/api/orders")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedOrder)))
+            .content(TestUtil.convertObjectToJsonBytes(orderDTO)))
             .andExpect(status().isOk());
 
         // Validate the Order in the database
@@ -237,11 +245,12 @@ public class OrderResourceIntTest {
         int databaseSizeBeforeUpdate = orderRepository.findAll().size();
 
         // Create the Order
+        OrderDTO orderDTO = orderMapper.toDto(order);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restOrderMockMvc.perform(put("/api/orders")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(order)))
+            .content(TestUtil.convertObjectToJsonBytes(orderDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Order in the database
@@ -253,8 +262,8 @@ public class OrderResourceIntTest {
     @Transactional
     public void deleteOrder() throws Exception {
         // Initialize the database
-        orderService.save(order);
-
+        orderRepository.saveAndFlush(order);
+        orderSearchRepository.save(order);
         int databaseSizeBeforeDelete = orderRepository.findAll().size();
 
         // Get the order
@@ -275,7 +284,8 @@ public class OrderResourceIntTest {
     @Transactional
     public void searchOrder() throws Exception {
         // Initialize the database
-        orderService.save(order);
+        orderRepository.saveAndFlush(order);
+        orderSearchRepository.save(order);
 
         // Search the order
         restOrderMockMvc.perform(get("/api/_search/orders?query=id:" + order.getId()))
@@ -301,5 +311,28 @@ public class OrderResourceIntTest {
         assertThat(order1).isNotEqualTo(order2);
         order1.setId(null);
         assertThat(order1).isNotEqualTo(order2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(OrderDTO.class);
+        OrderDTO orderDTO1 = new OrderDTO();
+        orderDTO1.setId(1L);
+        OrderDTO orderDTO2 = new OrderDTO();
+        assertThat(orderDTO1).isNotEqualTo(orderDTO2);
+        orderDTO2.setId(orderDTO1.getId());
+        assertThat(orderDTO1).isEqualTo(orderDTO2);
+        orderDTO2.setId(2L);
+        assertThat(orderDTO1).isNotEqualTo(orderDTO2);
+        orderDTO1.setId(null);
+        assertThat(orderDTO1).isNotEqualTo(orderDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(orderMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(orderMapper.fromId(null)).isNull();
     }
 }

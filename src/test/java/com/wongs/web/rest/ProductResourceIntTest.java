@@ -6,6 +6,8 @@ import com.wongs.domain.Product;
 import com.wongs.repository.ProductRepository;
 import com.wongs.service.ProductService;
 import com.wongs.repository.search.ProductSearchRepository;
+import com.wongs.service.dto.ProductDTO;
+import com.wongs.service.mapper.ProductMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -82,6 +84,9 @@ public class ProductResourceIntTest {
     private ProductRepository productRepository;
 
     @Autowired
+    private ProductMapper productMapper;
+
+    @Autowired
     private ProductService productService;
 
     @Autowired
@@ -147,9 +152,10 @@ public class ProductResourceIntTest {
         int databaseSizeBeforeCreate = productRepository.findAll().size();
 
         // Create the Product
+        ProductDTO productDTO = productMapper.toDto(product);
         restProductMockMvc.perform(post("/api/products")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(product)))
+            .content(TestUtil.convertObjectToJsonBytes(productDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Product in the database
@@ -180,11 +186,12 @@ public class ProductResourceIntTest {
 
         // Create the Product with an existing ID
         product.setId(1L);
+        ProductDTO productDTO = productMapper.toDto(product);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restProductMockMvc.perform(post("/api/products")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(product)))
+            .content(TestUtil.convertObjectToJsonBytes(productDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Alice in the database
@@ -200,10 +207,11 @@ public class ProductResourceIntTest {
         product.setName(null);
 
         // Create the Product, which fails.
+        ProductDTO productDTO = productMapper.toDto(product);
 
         restProductMockMvc.perform(post("/api/products")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(product)))
+            .content(TestUtil.convertObjectToJsonBytes(productDTO)))
             .andExpect(status().isBadRequest());
 
         List<Product> productList = productRepository.findAll();
@@ -270,8 +278,8 @@ public class ProductResourceIntTest {
     @Transactional
     public void updateProduct() throws Exception {
         // Initialize the database
-        productService.save(product);
-
+        productRepository.saveAndFlush(product);
+        productSearchRepository.save(product);
         int databaseSizeBeforeUpdate = productRepository.findAll().size();
 
         // Update the product
@@ -288,10 +296,11 @@ public class ProductResourceIntTest {
             .createdDate(UPDATED_CREATED_DATE)
             .lastModifiedBy(UPDATED_LAST_MODIFIED_BY)
             .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE);
+        ProductDTO productDTO = productMapper.toDto(updatedProduct);
 
         restProductMockMvc.perform(put("/api/products")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedProduct)))
+            .content(TestUtil.convertObjectToJsonBytes(productDTO)))
             .andExpect(status().isOk());
 
         // Validate the Product in the database
@@ -321,11 +330,12 @@ public class ProductResourceIntTest {
         int databaseSizeBeforeUpdate = productRepository.findAll().size();
 
         // Create the Product
+        ProductDTO productDTO = productMapper.toDto(product);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restProductMockMvc.perform(put("/api/products")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(product)))
+            .content(TestUtil.convertObjectToJsonBytes(productDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Product in the database
@@ -337,8 +347,8 @@ public class ProductResourceIntTest {
     @Transactional
     public void deleteProduct() throws Exception {
         // Initialize the database
-        productService.save(product);
-
+        productRepository.saveAndFlush(product);
+        productSearchRepository.save(product);
         int databaseSizeBeforeDelete = productRepository.findAll().size();
 
         // Get the product
@@ -359,7 +369,8 @@ public class ProductResourceIntTest {
     @Transactional
     public void searchProduct() throws Exception {
         // Initialize the database
-        productService.save(product);
+        productRepository.saveAndFlush(product);
+        productSearchRepository.save(product);
 
         // Search the product
         restProductMockMvc.perform(get("/api/_search/products?query=id:" + product.getId()))
@@ -392,5 +403,28 @@ public class ProductResourceIntTest {
         assertThat(product1).isNotEqualTo(product2);
         product1.setId(null);
         assertThat(product1).isNotEqualTo(product2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(ProductDTO.class);
+        ProductDTO productDTO1 = new ProductDTO();
+        productDTO1.setId(1L);
+        ProductDTO productDTO2 = new ProductDTO();
+        assertThat(productDTO1).isNotEqualTo(productDTO2);
+        productDTO2.setId(productDTO1.getId());
+        assertThat(productDTO1).isEqualTo(productDTO2);
+        productDTO2.setId(2L);
+        assertThat(productDTO1).isNotEqualTo(productDTO2);
+        productDTO1.setId(null);
+        assertThat(productDTO1).isNotEqualTo(productDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(productMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(productMapper.fromId(null)).isNull();
     }
 }

@@ -1,9 +1,12 @@
 package com.wongs.service;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
-import java.util.Set;
-
+import com.wongs.domain.Product;
+import com.wongs.domain.ProductItem;
+import com.wongs.repository.ProductRepository;
+import com.wongs.repository.ProductItemRepository;
+import com.wongs.repository.search.ProductSearchRepository;
+import com.wongs.service.dto.ProductDTO;
+import com.wongs.service.mapper.ProductMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -11,11 +14,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.wongs.domain.Product;
-import com.wongs.domain.ProductItem;
-import com.wongs.repository.ProductItemRepository;
-import com.wongs.repository.ProductRepository;
-import com.wongs.repository.search.ProductSearchRepository;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing Product.
@@ -28,13 +28,16 @@ public class ProductService {
 
     private final ProductRepository productRepository;
 
+    private final ProductMapper productMapper;
+
     private final ProductSearchRepository productSearchRepository;
     
     private final ProductItemRepository productItemRepository;
 
-    public ProductService(ProductRepository productRepository, ProductSearchRepository productSearchRepository,
-    						ProductItemRepository productItemRepository) {
+    public ProductService(ProductRepository productRepository, ProductMapper productMapper, ProductSearchRepository productSearchRepository,
+    			ProductItemRepository productItemRepository) {
         this.productRepository = productRepository;
+        this.productMapper = productMapper;
         this.productSearchRepository = productSearchRepository;
         this.productItemRepository = productItemRepository;
     }
@@ -42,13 +45,17 @@ public class ProductService {
     /**
      * Save a product.
      *
-     * @param product the entity to save
+     * @param productDTO the entity to save
      * @return the persisted entity
      */
-    public Product save(Product product) {
-        log.debug("Request to save Product : {}", product);
-        Product result = productRepository.save(product);
-        productSearchRepository.save(result);
+    public ProductDTO save(ProductDTO productDTO) {
+        log.debug("Request to save Product : {}", productDTO);
+        Product product = productMapper.toEntity(productDTO);
+        if (product != null)
+        	product.setUserInfo(productDTO.getUserInfo());
+        product = productRepository.save(product);
+        ProductDTO result = productMapper.toDto(product);
+        productSearchRepository.save(product);
         return result;
     }
 
@@ -59,9 +66,10 @@ public class ProductService {
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Product> findAll(Pageable pageable) {
+    public Page<ProductDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Products");
-        return productRepository.findAll(pageable);
+        return productRepository.findAll(pageable)
+            .map(productMapper::toDto);
     }
 
     /**
@@ -71,11 +79,12 @@ public class ProductService {
      *  @return the entity
      */
     @Transactional(readOnly = true)
-    public Product findOne(Long id) {
+    public ProductDTO findOne(Long id) {
         log.debug("Request to get Product : {}", id);
         Product product = productRepository.findOne(id);
-        return product;
+        return productMapper.toDto(product);
     }
+
     
     /**
      *  Get one product by id with productItem.
@@ -84,15 +93,18 @@ public class ProductService {
      *  @return the entity with productItem
      */
     @Transactional(readOnly = true)
-    public Product findOneWithItems(Long id) {
+    public ProductDTO findOneWithItems(Long id) {
         log.debug("Request to get Product : {}", id);
         Product product = productRepository.findOne(id);
+        ProductDTO dto = productMapper.toDto(product);
         if (product != null){
-        	product.setItems(productItemRepository.findByProduct(product));
+        	dto.setUserInfo(product.getUserInfo());
+        	dto.setItems(productItemRepository.findByProduct(product));
         }
-        return product;
+        return dto;
     }
-
+    
+    
     /**
      *  Delete the  product by id.
      *
@@ -112,9 +124,9 @@ public class ProductService {
      *  @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Product> search(String query, Pageable pageable) {
+    public Page<ProductDTO> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Products for query {}", query);
         Page<Product> result = productSearchRepository.search(queryStringQuery(query), pageable);
-        return result;
+        return result.map(productMapper::toDto);
     }
 }
