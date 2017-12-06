@@ -36,6 +36,7 @@ export class ProductService {
         return this.http.get(`${this.resourceUrl}/${id}`).map((res: Response) => {
             const jsonResponse = res.json();
             this.convertItemFromServer(jsonResponse);
+            console.error(JSON.stringify(jsonResponse));
             return jsonResponse;
         });
     }
