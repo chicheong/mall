@@ -203,11 +203,15 @@ ui bootstrap tweaks
 /* ==========================================================================
 new testing
 ========================================================================== */
-.truncate {
-	white-space: nowrap;
-	text-overflow:ellipsis;
-	overflow: hidden;
-	max-width: 1px;
-}
+.thread-dump-modal-lock {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    &.long-note {
+        max-width: 450px;
+    }
+ }
 
 /* jhipster-needle-scss-add-main JHipster will add new css style */
