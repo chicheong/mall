@@ -1,0 +1,56 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "account",
+            "otherEntityName": "myAccount",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "from",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "to",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "type",
+            "fieldType": "DelegationType",
+            "fieldValues": "ACCOUNT,COMPANY,DEPARTMENT,OFFICE"
+        },
+        {
+            "fieldName": "delegateId",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "status",
+            "fieldType": "CommonStatus",
+            "fieldValues": "ACTIVE,INACTIVE"
+        },
+        {
+            "fieldName": "createdBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "createdDate",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "lastModifiedBy",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "lastModifiedDate",
+            "fieldType": "ZonedDateTime"
+        }
+    ],
+    "changelogDate": "20170727090135",
+    "entityTableName": "delegation",
+    "dto": "no",
+    "pagination": "infinite-scroll",
+    "service": "no"
+}

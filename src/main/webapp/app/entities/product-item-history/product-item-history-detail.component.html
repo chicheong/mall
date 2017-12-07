@@ -1,0 +1,75 @@
+
+<div *ngIf="productItemHistory">
+    <h2><span jhiTranslate="mallApp.productItemHistory.detail.title">Product Item History</span> {{productItemHistory.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="mallApp.productItemHistory.name">Name</span></dt>
+        <dd>
+            <span>{{productItemHistory.name}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.productItemHistory.code">Code</span></dt>
+        <dd>
+            <span>{{productItemHistory.code}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.productItemHistory.defaultItem">Default Item</span></dt>
+        <dd>
+            <span>{{productItemHistory.defaultItem}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.productItemHistory.color">Color</span></dt>
+        <dd>
+            <span>{{productItemHistory.color}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.productItemHistory.size">Size</span></dt>
+        <dd>
+            <span>{{productItemHistory.size}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.productItemHistory.quantity">Quantity</span></dt>
+        <dd>
+            <span>{{productItemHistory.quantity}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.productItemHistory.currency">Currency</span></dt>
+        <dd>
+            <span jhiTranslate="{{'mallApp.CurrencyType.' + productItemHistory.currency}}">{{productItemHistory.currency}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.productItemHistory.price">Price</span></dt>
+        <dd>
+            <span>{{productItemHistory.price}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.productItemHistory.createdBy">Created By</span></dt>
+        <dd>
+            <span>{{productItemHistory.createdBy}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.productItemHistory.createdDate">Created Date</span></dt>
+        <dd>
+            <span>{{productItemHistory.createdDate | date:'medium'}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.productItemHistory.lastModifiedBy">Last Modified By</span></dt>
+        <dd>
+            <span>{{productItemHistory.lastModifiedBy}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.productItemHistory.lastModifiedDate">Last Modified Date</span></dt>
+        <dd>
+            <span>{{productItemHistory.lastModifiedDate | date:'medium'}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.productItemHistory.item">Item</span></dt>
+        <dd>
+            <div *ngIf="productItemHistory.item">
+                <a [routerLink]="['/product-item', productItemHistory.item?.id]">{{productItemHistory.item?.id}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'product-item-history/'+ productItemHistory.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

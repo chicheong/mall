@@ -1,0 +1,43 @@
+
+<div *ngIf="order">
+    <h2><span jhiTranslate="mallApp.order.detail.title">Order</span> {{order.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="mallApp.order.total">Total</span></dt>
+        <dd>
+            <span>{{order.total}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.order.currency">Currency</span></dt>
+        <dd>
+            <span jhiTranslate="{{'mallApp.CurrencyType.' + order.currency}}">{{order.currency}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.order.remark">Remark</span></dt>
+        <dd>
+            <span>{{order.remark}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.order.status">Status</span></dt>
+        <dd>
+            <span jhiTranslate="{{'mallApp.OrderStatus.' + order.status}}">{{order.status}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.order.userInfo">User Info</span></dt>
+        <dd>
+            <div *ngIf="order.userInfoId">
+                <a [routerLink]="['/user-info', order.userInfoId]">{{order.userInfoId}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'order/'+ order.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

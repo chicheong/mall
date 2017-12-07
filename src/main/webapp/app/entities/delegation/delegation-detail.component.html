@@ -1,0 +1,63 @@
+
+<div *ngIf="delegation">
+    <h2><span jhiTranslate="mallApp.delegation.detail.title">Delegation</span> {{delegation.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="mallApp.delegation.from">From</span></dt>
+        <dd>
+            <span>{{delegation.from | date:'medium'}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.delegation.to">To</span></dt>
+        <dd>
+            <span>{{delegation.to | date:'medium'}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.delegation.type">Type</span></dt>
+        <dd>
+            <span jhiTranslate="{{'mallApp.DelegationType.' + delegation.type}}">{{delegation.type}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.delegation.delegateId">Delegate Id</span></dt>
+        <dd>
+            <span>{{delegation.delegateId}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.delegation.status">Status</span></dt>
+        <dd>
+            <span jhiTranslate="{{'mallApp.CommonStatus.' + delegation.status}}">{{delegation.status}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.delegation.createdBy">Created By</span></dt>
+        <dd>
+            <span>{{delegation.createdBy}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.delegation.createdDate">Created Date</span></dt>
+        <dd>
+            <span>{{delegation.createdDate | date:'medium'}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.delegation.lastModifiedBy">Last Modified By</span></dt>
+        <dd>
+            <span>{{delegation.lastModifiedBy}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.delegation.lastModifiedDate">Last Modified Date</span></dt>
+        <dd>
+            <span>{{delegation.lastModifiedDate | date:'medium'}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.delegation.account">Account</span></dt>
+        <dd>
+            <div *ngIf="delegation.account">
+                <a [routerLink]="['/my-account', delegation.account?.id]">{{delegation.account?.id}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'delegation/'+ delegation.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

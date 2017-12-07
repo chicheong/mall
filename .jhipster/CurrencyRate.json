@@ -1,0 +1,33 @@
+{
+    "fluentMethods": true,
+    "relationships": [],
+    "fields": [
+        {
+            "fieldName": "from",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "to",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "rate",
+            "fieldType": "BigDecimal"
+        },
+        {
+            "fieldName": "sourceCurrency",
+            "fieldType": "CurrencyType",
+            "fieldValues": "HKD,CNY,USD,EUR,JPY,KRW,TWD"
+        },
+        {
+            "fieldName": "targetCurrency",
+            "fieldType": "CurrencyType",
+            "fieldValues": "HKD,CNY,USD,EUR,JPY,KRW,TWD"
+        }
+    ],
+    "changelogDate": "20170727090142",
+    "entityTableName": "currency_rate",
+    "dto": "no",
+    "pagination": "no",
+    "service": "no"
+}

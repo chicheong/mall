@@ -1,0 +1,55 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "parent",
+            "otherEntityName": "department",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityRelationshipName": "department",
+            "relationshipName": "office",
+            "otherEntityName": "office",
+            "otherEntityField": "code",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "account",
+            "otherEntityName": "myAccount",
+            "otherEntityRelationshipName": "department"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "relationshipName": "company",
+            "otherEntityName": "company",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "department"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "code",
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
+        },
+        {
+            "fieldName": "name",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "status",
+            "fieldType": "CommonStatus",
+            "fieldValues": "ACTIVE,INACTIVE"
+        }
+    ],
+    "changelogDate": "20170727090129",
+    "entityTableName": "department",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "no"
+}
