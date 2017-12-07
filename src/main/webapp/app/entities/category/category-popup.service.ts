@@ -29,9 +29,9 @@ export class CategoryPopupService {
             if (id) {
                 this.categoryService.find(id).subscribe((category) => {
                     category.createdDate = this.datePipe
-                        .transform(category.createdDate, 'yyyy-MM-ddThh:mm');
+                        .transform(category.createdDate, 'yyyy-MM-ddTHH:mm:ss');
                     category.lastModifiedDate = this.datePipe
-                        .transform(category.lastModifiedDate, 'yyyy-MM-ddThh:mm');
+                        .transform(category.lastModifiedDate, 'yyyy-MM-ddTHH:mm:ss');
                     this.ngbModalRef = this.categoryModalRef(component, category);
                     resolve(this.ngbModalRef);
                 });

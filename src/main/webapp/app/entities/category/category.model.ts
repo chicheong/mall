@@ -1,6 +1,6 @@
 import { BaseEntity } from './../../shared';
 
-const enum CategoryStatus {
+export const enum CategoryStatus {
     'ACTIVE',
     'RESTRICTED',
     'INACTIVE'

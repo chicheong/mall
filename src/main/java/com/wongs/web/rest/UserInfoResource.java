@@ -5,9 +5,9 @@ import com.wongs.domain.UserInfo;
 
 import com.wongs.repository.UserInfoRepository;
 import com.wongs.repository.search.UserInfoSearchRepository;
+import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +60,7 @@ public class UserInfoResource {
     public ResponseEntity<UserInfo> createUserInfo(@RequestBody UserInfo userInfo) throws URISyntaxException {
         log.debug("REST request to save UserInfo : {}", userInfo);
         if (userInfo.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new userInfo cannot already have an ID")).body(null);
+            throw new BadRequestAlertException("A new userInfo cannot already have an ID", ENTITY_NAME, "idexists");
         }
         UserInfo result = userInfoRepository.save(userInfo);
         userInfoSearchRepository.save(result);
@@ -100,7 +100,7 @@ public class UserInfoResource {
      */
     @GetMapping("/user-infos")
     @Timed
-    public ResponseEntity<List<UserInfo>> getAllUserInfos(@ApiParam Pageable pageable) {
+    public ResponseEntity<List<UserInfo>> getAllUserInfos(Pageable pageable) {
         log.debug("REST request to get a page of UserInfos");
         Page<UserInfo> page = userInfoRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/user-infos");
@@ -146,7 +146,7 @@ public class UserInfoResource {
      */
     @GetMapping("/_search/user-infos")
     @Timed
-    public ResponseEntity<List<UserInfo>> searchUserInfos(@RequestParam String query, @ApiParam Pageable pageable) {
+    public ResponseEntity<List<UserInfo>> searchUserInfos(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of UserInfos for query {}", query);
         Page<UserInfo> page = userInfoSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/user-infos");

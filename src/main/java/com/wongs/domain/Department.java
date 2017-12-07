@@ -14,6 +14,7 @@ import java.util.Objects;
 
 import com.wongs.domain.enumeration.CommonStatus;
 
+
 /**
  * A Department.
  */
@@ -60,6 +61,7 @@ public class Department implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Company> companies = new HashSet<>();
 
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -194,6 +196,7 @@ public class Department implements Serializable {
     public void setCompanies(Set<Company> companies) {
         this.companies = companies;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {

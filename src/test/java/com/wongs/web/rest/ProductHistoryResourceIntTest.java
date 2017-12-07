@@ -29,6 +29,7 @@ import java.time.ZoneId;
 import java.util.List;
 
 import static com.wongs.web.rest.TestUtil.sameInstant;
+import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -102,10 +103,11 @@ public class ProductHistoryResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        ProductHistoryResource productHistoryResource = new ProductHistoryResource(productHistoryRepository, productHistorySearchRepository);
+        final ProductHistoryResource productHistoryResource = new ProductHistoryResource(productHistoryRepository, productHistorySearchRepository);
         this.restProductHistoryMockMvc = MockMvcBuilders.standaloneSetup(productHistoryResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -183,7 +185,7 @@ public class ProductHistoryResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(productHistory)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the ProductHistory in the database
         List<ProductHistory> productHistoryList = productHistoryRepository.findAll();
         assertThat(productHistoryList).hasSize(databaseSizeBeforeCreate);
     }
@@ -272,6 +274,8 @@ public class ProductHistoryResourceIntTest {
 
         // Update the productHistory
         ProductHistory updatedProductHistory = productHistoryRepository.findOne(productHistory.getId());
+        // Disconnect from session so that the updates on updatedProductHistory are not directly saved in db
+        em.detach(updatedProductHistory);
         updatedProductHistory
             .name(UPDATED_NAME)
             .code(UPDATED_CODE)

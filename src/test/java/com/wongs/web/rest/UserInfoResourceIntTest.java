@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -63,10 +64,11 @@ public class UserInfoResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        UserInfoResource userInfoResource = new UserInfoResource(userInfoRepository, userInfoSearchRepository);
+        final UserInfoResource userInfoResource = new UserInfoResource(userInfoRepository, userInfoSearchRepository);
         this.restUserInfoMockMvc = MockMvcBuilders.standaloneSetup(userInfoResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -122,7 +124,7 @@ public class UserInfoResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(userInfo)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the UserInfo in the database
         List<UserInfo> userInfoList = userInfoRepository.findAll();
         assertThat(userInfoList).hasSize(databaseSizeBeforeCreate);
     }
@@ -171,6 +173,8 @@ public class UserInfoResourceIntTest {
 
         // Update the userInfo
         UserInfo updatedUserInfo = userInfoRepository.findOne(userInfo.getId());
+        // Disconnect from session so that the updates on updatedUserInfo are not directly saved in db
+        em.detach(updatedUserInfo);
 
         restUserInfoMockMvc.perform(put("/api/user-infos")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)

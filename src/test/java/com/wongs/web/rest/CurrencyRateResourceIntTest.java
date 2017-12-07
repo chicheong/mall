@@ -30,6 +30,7 @@ import java.time.ZoneId;
 import java.util.List;
 
 import static com.wongs.web.rest.TestUtil.sameInstant;
+import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -86,10 +87,11 @@ public class CurrencyRateResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        CurrencyRateResource currencyRateResource = new CurrencyRateResource(currencyRateRepository, currencyRateSearchRepository);
+        final CurrencyRateResource currencyRateResource = new CurrencyRateResource(currencyRateRepository, currencyRateSearchRepository);
         this.restCurrencyRateMockMvc = MockMvcBuilders.standaloneSetup(currencyRateResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -155,7 +157,7 @@ public class CurrencyRateResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(currencyRate)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the CurrencyRate in the database
         List<CurrencyRate> currencyRateList = currencyRateRepository.findAll();
         assertThat(currencyRateList).hasSize(databaseSizeBeforeCreate);
     }
@@ -214,6 +216,8 @@ public class CurrencyRateResourceIntTest {
 
         // Update the currencyRate
         CurrencyRate updatedCurrencyRate = currencyRateRepository.findOne(currencyRate.getId());
+        // Disconnect from session so that the updates on updatedCurrencyRate are not directly saved in db
+        em.detach(updatedCurrencyRate);
         updatedCurrencyRate
             .from(UPDATED_FROM)
             .to(UPDATED_TO)

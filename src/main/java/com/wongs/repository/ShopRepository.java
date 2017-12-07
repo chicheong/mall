@@ -11,6 +11,6 @@ import org.springframework.data.jpa.repository.*;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface ShopRepository extends JpaRepository<Shop,Long> {
-    
+public interface ShopRepository extends JpaRepository<Shop, Long> {
+
 }

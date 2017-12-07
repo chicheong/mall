@@ -26,7 +26,7 @@ const ENTITY_STATES = [
     imports: [
         MallSharedModule,
         MallAdminModule,
-        RouterModule.forRoot(ENTITY_STATES, { useHash: true })
+        RouterModule.forChild(ENTITY_STATES)
     ],
     declarations: [
         UserInfoComponent,

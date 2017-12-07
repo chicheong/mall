@@ -99,7 +99,7 @@ public class OrderDTO implements Serializable {
     public String toString() {
         return "OrderDTO{" +
             "id=" + getId() +
-            ", total='" + getTotal() + "'" +
+            ", total=" + getTotal() +
             ", currency='" + getCurrency() + "'" +
             ", remark='" + getRemark() + "'" +
             ", status='" + getStatus() + "'" +

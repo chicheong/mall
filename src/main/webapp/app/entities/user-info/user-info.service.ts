@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
+import { SERVER_API_URL } from '../../app.constants';
 
 import { UserInfo } from './user-info.model';
 import { ResponseWrapper, createRequestOption } from '../../shared';
@@ -8,28 +9,31 @@ import { ResponseWrapper, createRequestOption } from '../../shared';
 @Injectable()
 export class UserInfoService {
 
-    private resourceUrl = 'api/user-infos';
-    private resourceSearchUrl = 'api/_search/user-infos';
+    private resourceUrl = SERVER_API_URL + 'api/user-infos';
+    private resourceSearchUrl = SERVER_API_URL + 'api/_search/user-infos';
 
     constructor(private http: Http) { }
 
     create(userInfo: UserInfo): Observable<UserInfo> {
         const copy = this.convert(userInfo);
         return this.http.post(this.resourceUrl, copy).map((res: Response) => {
-            return res.json();
+            const jsonResponse = res.json();
+            return this.convertItemFromServer(jsonResponse);
         });
     }
 
     update(userInfo: UserInfo): Observable<UserInfo> {
         const copy = this.convert(userInfo);
         return this.http.put(this.resourceUrl, copy).map((res: Response) => {
-            return res.json();
+            const jsonResponse = res.json();
+            return this.convertItemFromServer(jsonResponse);
         });
     }
 
     find(id: number): Observable<UserInfo> {
         return this.http.get(`${this.resourceUrl}/${id}`).map((res: Response) => {
-            return res.json();
+            const jsonResponse = res.json();
+            return this.convertItemFromServer(jsonResponse);
         });
     }
 
@@ -51,9 +55,24 @@ export class UserInfoService {
 
     private convertResponse(res: Response): ResponseWrapper {
         const jsonResponse = res.json();
-        return new ResponseWrapper(res.headers, jsonResponse, res.status);
+        const result = [];
+        for (let i = 0; i < jsonResponse.length; i++) {
+            result.push(this.convertItemFromServer(jsonResponse[i]));
+        }
+        return new ResponseWrapper(res.headers, result, res.status);
     }
 
+    /**
+     * Convert a returned JSON object to UserInfo.
+     */
+    private convertItemFromServer(json: any): UserInfo {
+        const entity: UserInfo = Object.assign(new UserInfo(), json);
+        return entity;
+    }
+
+    /**
+     * Convert a UserInfo to a JSON which can be sent to the server.
+     */
     private convert(userInfo: UserInfo): UserInfo {
         const copy: UserInfo = Object.assign({}, userInfo);
         return copy;

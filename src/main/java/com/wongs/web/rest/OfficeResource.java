@@ -5,9 +5,9 @@ import com.wongs.domain.Office;
 
 import com.wongs.repository.OfficeRepository;
 import com.wongs.repository.search.OfficeSearchRepository;
+import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +61,7 @@ public class OfficeResource {
     public ResponseEntity<Office> createOffice(@Valid @RequestBody Office office) throws URISyntaxException {
         log.debug("REST request to save Office : {}", office);
         if (office.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new office cannot already have an ID")).body(null);
+            throw new BadRequestAlertException("A new office cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Office result = officeRepository.save(office);
         officeSearchRepository.save(result);
@@ -101,7 +101,7 @@ public class OfficeResource {
      */
     @GetMapping("/offices")
     @Timed
-    public ResponseEntity<List<Office>> getAllOffices(@ApiParam Pageable pageable) {
+    public ResponseEntity<List<Office>> getAllOffices(Pageable pageable) {
         log.debug("REST request to get a page of Offices");
         Page<Office> page = officeRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/offices");
@@ -147,7 +147,7 @@ public class OfficeResource {
      */
     @GetMapping("/_search/offices")
     @Timed
-    public ResponseEntity<List<Office>> searchOffices(@RequestParam String query, @ApiParam Pageable pageable) {
+    public ResponseEntity<List<Office>> searchOffices(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Offices for query {}", query);
         Page<Office> page = officeSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/offices");

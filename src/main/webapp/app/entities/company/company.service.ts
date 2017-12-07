@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
+import { SERVER_API_URL } from '../../app.constants';
 
 import { Company } from './company.model';
 import { ResponseWrapper, createRequestOption } from '../../shared';
@@ -8,28 +9,31 @@ import { ResponseWrapper, createRequestOption } from '../../shared';
 @Injectable()
 export class CompanyService {
 
-    private resourceUrl = 'api/companies';
-    private resourceSearchUrl = 'api/_search/companies';
+    private resourceUrl = SERVER_API_URL + 'api/companies';
+    private resourceSearchUrl = SERVER_API_URL + 'api/_search/companies';
 
     constructor(private http: Http) { }
 
     create(company: Company): Observable<Company> {
         const copy = this.convert(company);
         return this.http.post(this.resourceUrl, copy).map((res: Response) => {
-            return res.json();
+            const jsonResponse = res.json();
+            return this.convertItemFromServer(jsonResponse);
         });
     }
 
     update(company: Company): Observable<Company> {
         const copy = this.convert(company);
         return this.http.put(this.resourceUrl, copy).map((res: Response) => {
-            return res.json();
+            const jsonResponse = res.json();
+            return this.convertItemFromServer(jsonResponse);
         });
     }
 
     find(id: number): Observable<Company> {
         return this.http.get(`${this.resourceUrl}/${id}`).map((res: Response) => {
-            return res.json();
+            const jsonResponse = res.json();
+            return this.convertItemFromServer(jsonResponse);
         });
     }
 
@@ -51,9 +55,24 @@ export class CompanyService {
 
     private convertResponse(res: Response): ResponseWrapper {
         const jsonResponse = res.json();
-        return new ResponseWrapper(res.headers, jsonResponse, res.status);
+        const result = [];
+        for (let i = 0; i < jsonResponse.length; i++) {
+            result.push(this.convertItemFromServer(jsonResponse[i]));
+        }
+        return new ResponseWrapper(res.headers, result, res.status);
     }
 
+    /**
+     * Convert a returned JSON object to Company.
+     */
+    private convertItemFromServer(json: any): Company {
+        const entity: Company = Object.assign(new Company(), json);
+        return entity;
+    }
+
+    /**
+     * Convert a Company to a JSON which can be sent to the server.
+     */
     private convert(company: Company): Company {
         const copy: Company = Object.assign({}, company);
         return copy;

@@ -11,6 +11,6 @@ import org.springframework.data.jpa.repository.*;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface CountryRepository extends JpaRepository<Country,Long> {
-    
+public interface CountryRepository extends JpaRepository<Country, Long> {
+
 }

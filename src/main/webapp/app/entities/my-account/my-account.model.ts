@@ -1,6 +1,6 @@
 import { BaseEntity } from './../../shared';
 
-const enum AccountType {
+export const enum AccountType {
     'PERSONAL',
     'COMPANY'
 }

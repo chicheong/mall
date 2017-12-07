@@ -29,6 +29,7 @@ import java.time.ZoneId;
 import java.util.List;
 
 import static com.wongs.web.rest.TestUtil.sameInstant;
+import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -90,10 +91,11 @@ public class CategoryResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        CategoryResource categoryResource = new CategoryResource(categoryRepository, categorySearchRepository);
+        final CategoryResource categoryResource = new CategoryResource(categoryRepository, categorySearchRepository);
         this.restCategoryMockMvc = MockMvcBuilders.standaloneSetup(categoryResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -163,7 +165,7 @@ public class CategoryResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(category)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the Category in the database
         List<Category> categoryList = categoryRepository.findAll();
         assertThat(categoryList).hasSize(databaseSizeBeforeCreate);
     }
@@ -244,6 +246,8 @@ public class CategoryResourceIntTest {
 
         // Update the category
         Category updatedCategory = categoryRepository.findOne(category.getId());
+        // Disconnect from session so that the updates on updatedCategory are not directly saved in db
+        em.detach(updatedCategory);
         updatedCategory
             .name(UPDATED_NAME)
             .description(UPDATED_DESCRIPTION)

@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -73,10 +74,11 @@ public class DepartmentResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        DepartmentResource departmentResource = new DepartmentResource(departmentRepository, departmentSearchRepository);
+        final DepartmentResource departmentResource = new DepartmentResource(departmentRepository, departmentSearchRepository);
         this.restDepartmentMockMvc = MockMvcBuilders.standaloneSetup(departmentResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -138,7 +140,7 @@ public class DepartmentResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(department)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the Department in the database
         List<Department> departmentList = departmentRepository.findAll();
         assertThat(departmentList).hasSize(databaseSizeBeforeCreate);
     }
@@ -211,6 +213,8 @@ public class DepartmentResourceIntTest {
 
         // Update the department
         Department updatedDepartment = departmentRepository.findOne(department.getId());
+        // Disconnect from session so that the updates on updatedDepartment are not directly saved in db
+        em.detach(updatedDepartment);
         updatedDepartment
             .code(UPDATED_CODE)
             .name(UPDATED_NAME)

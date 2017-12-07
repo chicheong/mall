@@ -13,6 +13,7 @@ import com.wongs.domain.enumeration.DelegationType;
 
 import com.wongs.domain.enumeration.CommonStatus;
 
+
 /**
  * A Delegation.
  */
@@ -60,6 +61,7 @@ public class Delegation implements Serializable {
     @ManyToOne
     private MyAccount account;
 
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -197,6 +199,7 @@ public class Delegation implements Serializable {
     public void setAccount(MyAccount myAccount) {
         this.account = myAccount;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {

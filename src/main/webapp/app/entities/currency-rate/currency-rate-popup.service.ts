@@ -29,9 +29,9 @@ export class CurrencyRatePopupService {
             if (id) {
                 this.currencyRateService.find(id).subscribe((currencyRate) => {
                     currencyRate.from = this.datePipe
-                        .transform(currencyRate.from, 'yyyy-MM-ddThh:mm');
+                        .transform(currencyRate.from, 'yyyy-MM-ddTHH:mm:ss');
                     currencyRate.to = this.datePipe
-                        .transform(currencyRate.to, 'yyyy-MM-ddThh:mm');
+                        .transform(currencyRate.to, 'yyyy-MM-ddTHH:mm:ss');
                     this.ngbModalRef = this.currencyRateModalRef(component, currencyRate);
                     resolve(this.ngbModalRef);
                 });

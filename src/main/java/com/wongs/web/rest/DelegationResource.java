@@ -5,9 +5,9 @@ import com.wongs.domain.Delegation;
 
 import com.wongs.repository.DelegationRepository;
 import com.wongs.repository.search.DelegationSearchRepository;
+import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +60,7 @@ public class DelegationResource {
     public ResponseEntity<Delegation> createDelegation(@RequestBody Delegation delegation) throws URISyntaxException {
         log.debug("REST request to save Delegation : {}", delegation);
         if (delegation.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new delegation cannot already have an ID")).body(null);
+            throw new BadRequestAlertException("A new delegation cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Delegation result = delegationRepository.save(delegation);
         delegationSearchRepository.save(result);
@@ -100,7 +100,7 @@ public class DelegationResource {
      */
     @GetMapping("/delegations")
     @Timed
-    public ResponseEntity<List<Delegation>> getAllDelegations(@ApiParam Pageable pageable) {
+    public ResponseEntity<List<Delegation>> getAllDelegations(Pageable pageable) {
         log.debug("REST request to get a page of Delegations");
         Page<Delegation> page = delegationRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/delegations");
@@ -146,7 +146,7 @@ public class DelegationResource {
      */
     @GetMapping("/_search/delegations")
     @Timed
-    public ResponseEntity<List<Delegation>> searchDelegations(@RequestParam String query, @ApiParam Pageable pageable) {
+    public ResponseEntity<List<Delegation>> searchDelegations(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Delegations for query {}", query);
         Page<Delegation> page = delegationSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/delegations");

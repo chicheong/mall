@@ -9,6 +9,7 @@ import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.Objects;
 
+
 /**
  * A Country.
  */
@@ -41,6 +42,7 @@ public class Country implements Serializable {
     @Column(name = "name", length = 100)
     private String name;
 
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -100,6 +102,7 @@ public class Country implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {

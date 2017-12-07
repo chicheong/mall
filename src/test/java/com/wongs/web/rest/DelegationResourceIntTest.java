@@ -29,6 +29,7 @@ import java.time.ZoneId;
 import java.util.List;
 
 import static com.wongs.web.rest.TestUtil.sameInstant;
+import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -97,10 +98,11 @@ public class DelegationResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        DelegationResource delegationResource = new DelegationResource(delegationRepository, delegationSearchRepository);
+        final DelegationResource delegationResource = new DelegationResource(delegationRepository, delegationSearchRepository);
         this.restDelegationMockMvc = MockMvcBuilders.standaloneSetup(delegationResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -174,7 +176,7 @@ public class DelegationResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(delegation)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the Delegation in the database
         List<Delegation> delegationList = delegationRepository.findAll();
         assertThat(delegationList).hasSize(databaseSizeBeforeCreate);
     }
@@ -241,6 +243,8 @@ public class DelegationResourceIntTest {
 
         // Update the delegation
         Delegation updatedDelegation = delegationRepository.findOne(delegation.getId());
+        // Disconnect from session so that the updates on updatedDelegation are not directly saved in db
+        em.detach(updatedDelegation);
         updatedDelegation
             .from(UPDATED_FROM)
             .to(UPDATED_TO)

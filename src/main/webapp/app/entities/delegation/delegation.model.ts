@@ -1,13 +1,13 @@
 import { BaseEntity } from './../../shared';
 
-const enum DelegationType {
+export const enum DelegationType {
     'ACCOUNT',
     'COMPANY',
     'DEPARTMENT',
     'OFFICE'
 }
 
-const enum CommonStatus {
+export const enum CommonStatus {
     'ACTIVE',
     'INACTIVE'
 }

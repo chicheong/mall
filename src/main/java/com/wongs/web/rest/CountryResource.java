@@ -5,9 +5,9 @@ import com.wongs.domain.Country;
 
 import com.wongs.repository.CountryRepository;
 import com.wongs.repository.search.CountrySearchRepository;
+import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +61,7 @@ public class CountryResource {
     public ResponseEntity<Country> createCountry(@Valid @RequestBody Country country) throws URISyntaxException {
         log.debug("REST request to save Country : {}", country);
         if (country.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new country cannot already have an ID")).body(null);
+            throw new BadRequestAlertException("A new country cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Country result = countryRepository.save(country);
         countrySearchRepository.save(result);
@@ -101,7 +101,7 @@ public class CountryResource {
      */
     @GetMapping("/countries")
     @Timed
-    public ResponseEntity<List<Country>> getAllCountries(@ApiParam Pageable pageable) {
+    public ResponseEntity<List<Country>> getAllCountries(Pageable pageable) {
         log.debug("REST request to get a page of Countries");
         Page<Country> page = countryRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/countries");
@@ -147,7 +147,7 @@ public class CountryResource {
      */
     @GetMapping("/_search/countries")
     @Timed
-    public ResponseEntity<List<Country>> searchCountries(@RequestParam String query, @ApiParam Pageable pageable) {
+    public ResponseEntity<List<Country>> searchCountries(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Countries for query {}", query);
         Page<Country> page = countrySearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/countries");

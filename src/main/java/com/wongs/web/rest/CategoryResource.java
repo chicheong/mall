@@ -5,9 +5,9 @@ import com.wongs.domain.Category;
 
 import com.wongs.repository.CategoryRepository;
 import com.wongs.repository.search.CategorySearchRepository;
+import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +61,7 @@ public class CategoryResource {
     public ResponseEntity<Category> createCategory(@Valid @RequestBody Category category) throws URISyntaxException {
         log.debug("REST request to save Category : {}", category);
         if (category.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new category cannot already have an ID")).body(null);
+            throw new BadRequestAlertException("A new category cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Category result = categoryRepository.save(category);
         categorySearchRepository.save(result);
@@ -101,7 +101,7 @@ public class CategoryResource {
      */
     @GetMapping("/categories")
     @Timed
-    public ResponseEntity<List<Category>> getAllCategories(@ApiParam Pageable pageable) {
+    public ResponseEntity<List<Category>> getAllCategories(Pageable pageable) {
         log.debug("REST request to get a page of Categories");
         Page<Category> page = categoryRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/categories");
@@ -147,7 +147,7 @@ public class CategoryResource {
      */
     @GetMapping("/_search/categories")
     @Timed
-    public ResponseEntity<List<Category>> searchCategories(@RequestParam String query, @ApiParam Pageable pageable) {
+    public ResponseEntity<List<Category>> searchCategories(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Categories for query {}", query);
         Page<Category> page = categorySearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/categories");

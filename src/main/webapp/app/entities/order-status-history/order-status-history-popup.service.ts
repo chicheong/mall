@@ -29,7 +29,7 @@ export class OrderStatusHistoryPopupService {
             if (id) {
                 this.orderStatusHistoryService.find(id).subscribe((orderStatusHistory) => {
                     orderStatusHistory.effectiveDate = this.datePipe
-                        .transform(orderStatusHistory.effectiveDate, 'yyyy-MM-ddThh:mm');
+                        .transform(orderStatusHistory.effectiveDate, 'yyyy-MM-ddTHH:mm:ss');
                     this.ngbModalRef = this.orderStatusHistoryModalRef(component, orderStatusHistory);
                     resolve(this.ngbModalRef);
                 });

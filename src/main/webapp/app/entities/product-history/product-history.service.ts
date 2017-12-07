@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
+import { SERVER_API_URL } from '../../app.constants';
+
 import { JhiDateUtils } from 'ng-jhipster';
 
 import { ProductHistory } from './product-history.model';
@@ -9,8 +11,8 @@ import { ResponseWrapper, createRequestOption } from '../../shared';
 @Injectable()
 export class ProductHistoryService {
 
-    private resourceUrl = 'api/product-histories';
-    private resourceSearchUrl = 'api/_search/product-histories';
+    private resourceUrl = SERVER_API_URL + 'api/product-histories';
+    private resourceSearchUrl = SERVER_API_URL + 'api/_search/product-histories';
 
     constructor(private http: Http, private dateUtils: JhiDateUtils) { }
 
@@ -18,8 +20,7 @@ export class ProductHistoryService {
         const copy = this.convert(productHistory);
         return this.http.post(this.resourceUrl, copy).map((res: Response) => {
             const jsonResponse = res.json();
-            this.convertItemFromServer(jsonResponse);
-            return jsonResponse;
+            return this.convertItemFromServer(jsonResponse);
         });
     }
 
@@ -27,16 +28,14 @@ export class ProductHistoryService {
         const copy = this.convert(productHistory);
         return this.http.put(this.resourceUrl, copy).map((res: Response) => {
             const jsonResponse = res.json();
-            this.convertItemFromServer(jsonResponse);
-            return jsonResponse;
+            return this.convertItemFromServer(jsonResponse);
         });
     }
 
     find(id: number): Observable<ProductHistory> {
         return this.http.get(`${this.resourceUrl}/${id}`).map((res: Response) => {
             const jsonResponse = res.json();
-            this.convertItemFromServer(jsonResponse);
-            return jsonResponse;
+            return this.convertItemFromServer(jsonResponse);
         });
     }
 
@@ -58,19 +57,28 @@ export class ProductHistoryService {
 
     private convertResponse(res: Response): ResponseWrapper {
         const jsonResponse = res.json();
+        const result = [];
         for (let i = 0; i < jsonResponse.length; i++) {
-            this.convertItemFromServer(jsonResponse[i]);
+            result.push(this.convertItemFromServer(jsonResponse[i]));
         }
-        return new ResponseWrapper(res.headers, jsonResponse, res.status);
+        return new ResponseWrapper(res.headers, result, res.status);
     }
 
-    private convertItemFromServer(entity: any) {
+    /**
+     * Convert a returned JSON object to ProductHistory.
+     */
+    private convertItemFromServer(json: any): ProductHistory {
+        const entity: ProductHistory = Object.assign(new ProductHistory(), json);
         entity.createdDate = this.dateUtils
-            .convertDateTimeFromServer(entity.createdDate);
+            .convertDateTimeFromServer(json.createdDate);
         entity.lastModifiedDate = this.dateUtils
-            .convertDateTimeFromServer(entity.lastModifiedDate);
+            .convertDateTimeFromServer(json.lastModifiedDate);
+        return entity;
     }
 
+    /**
+     * Convert a ProductHistory to a JSON which can be sent to the server.
+     */
     private convert(productHistory: ProductHistory): ProductHistory {
         const copy: ProductHistory = Object.assign({}, productHistory);
 

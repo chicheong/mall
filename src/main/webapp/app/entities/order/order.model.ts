@@ -1,6 +1,6 @@
 import { BaseEntity } from './../../shared';
 
-const enum CurrencyType {
+export const enum CurrencyType {
     'HKD',
     'CNY',
     'USD',
@@ -10,7 +10,7 @@ const enum CurrencyType {
     'TWD'
 }
 
-const enum OrderStatus {
+export const enum OrderStatus {
     'PENDING',
     'COMFIRMED',
     'COMPLETED',

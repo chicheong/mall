@@ -12,6 +12,7 @@ import java.util.Objects;
 
 import com.wongs.domain.enumeration.CurrencyType;
 
+
 /**
  * A ProductItemHistory.
  */
@@ -67,6 +68,7 @@ public class ProductItemHistory implements Serializable {
     @ManyToOne
     private ProductItem item;
 
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -243,6 +245,7 @@ public class ProductItemHistory implements Serializable {
     public void setItem(ProductItem productItem) {
         this.item = productItem;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
@@ -273,9 +276,9 @@ public class ProductItemHistory implements Serializable {
             ", defaultItem='" + isDefaultItem() + "'" +
             ", color='" + getColor() + "'" +
             ", size='" + getSize() + "'" +
-            ", quantity='" + getQuantity() + "'" +
+            ", quantity=" + getQuantity() +
             ", currency='" + getCurrency() + "'" +
-            ", price='" + getPrice() + "'" +
+            ", price=" + getPrice() +
             ", createdBy='" + getCreatedBy() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +
             ", lastModifiedBy='" + getLastModifiedBy() + "'" +

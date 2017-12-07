@@ -30,6 +30,7 @@ import java.time.ZoneId;
 import java.util.List;
 
 import static com.wongs.web.rest.TestUtil.sameInstant;
+import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -106,10 +107,11 @@ public class ProductItemResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        ProductItemResource productItemResource = new ProductItemResource(productItemRepository, productItemSearchRepository);
+        final ProductItemResource productItemResource = new ProductItemResource(productItemRepository, productItemSearchRepository);
         this.restProductItemMockMvc = MockMvcBuilders.standaloneSetup(productItemResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -189,7 +191,7 @@ public class ProductItemResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(productItem)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the ProductItem in the database
         List<ProductItem> productItemList = productItemRepository.findAll();
         assertThat(productItemList).hasSize(databaseSizeBeforeCreate);
     }
@@ -262,6 +264,8 @@ public class ProductItemResourceIntTest {
 
         // Update the productItem
         ProductItem updatedProductItem = productItemRepository.findOne(productItem.getId());
+        // Disconnect from session so that the updates on updatedProductItem are not directly saved in db
+        em.detach(updatedProductItem);
         updatedProductItem
             .name(UPDATED_NAME)
             .code(UPDATED_CODE)

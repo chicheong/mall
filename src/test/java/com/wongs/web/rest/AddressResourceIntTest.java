@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -81,10 +82,11 @@ public class AddressResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        AddressResource addressResource = new AddressResource(addressRepository, addressSearchRepository);
+        final AddressResource addressResource = new AddressResource(addressRepository, addressSearchRepository);
         this.restAddressMockMvc = MockMvcBuilders.standaloneSetup(addressResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -152,7 +154,7 @@ public class AddressResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(address)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the Address in the database
         List<Address> addressList = addressRepository.findAll();
         assertThat(addressList).hasSize(databaseSizeBeforeCreate);
     }
@@ -213,6 +215,8 @@ public class AddressResourceIntTest {
 
         // Update the address
         Address updatedAddress = addressRepository.findOne(address.getId());
+        // Disconnect from session so that the updates on updatedAddress are not directly saved in db
+        em.detach(updatedAddress);
         updatedAddress
             .line1(UPDATED_LINE_1)
             .line2(UPDATED_LINE_2)

@@ -29,6 +29,7 @@ import java.time.ZoneId;
 import java.util.List;
 
 import static com.wongs.web.rest.TestUtil.sameInstant;
+import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -75,10 +76,11 @@ public class OrderStatusHistoryResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        OrderStatusHistoryResource orderStatusHistoryResource = new OrderStatusHistoryResource(orderStatusHistoryRepository, orderStatusHistorySearchRepository);
+        final OrderStatusHistoryResource orderStatusHistoryResource = new OrderStatusHistoryResource(orderStatusHistoryRepository, orderStatusHistorySearchRepository);
         this.restOrderStatusHistoryMockMvc = MockMvcBuilders.standaloneSetup(orderStatusHistoryResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -138,7 +140,7 @@ public class OrderStatusHistoryResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(orderStatusHistory)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the OrderStatusHistory in the database
         List<OrderStatusHistory> orderStatusHistoryList = orderStatusHistoryRepository.findAll();
         assertThat(orderStatusHistoryList).hasSize(databaseSizeBeforeCreate);
     }
@@ -191,6 +193,8 @@ public class OrderStatusHistoryResourceIntTest {
 
         // Update the orderStatusHistory
         OrderStatusHistory updatedOrderStatusHistory = orderStatusHistoryRepository.findOne(orderStatusHistory.getId());
+        // Disconnect from session so that the updates on updatedOrderStatusHistory are not directly saved in db
+        em.detach(updatedOrderStatusHistory);
         updatedOrderStatusHistory
             .effectiveDate(UPDATED_EFFECTIVE_DATE)
             .status(UPDATED_STATUS);

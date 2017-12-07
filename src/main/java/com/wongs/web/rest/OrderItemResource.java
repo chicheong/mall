@@ -5,9 +5,9 @@ import com.wongs.domain.OrderItem;
 
 import com.wongs.repository.OrderItemRepository;
 import com.wongs.repository.search.OrderItemSearchRepository;
+import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +60,7 @@ public class OrderItemResource {
     public ResponseEntity<OrderItem> createOrderItem(@RequestBody OrderItem orderItem) throws URISyntaxException {
         log.debug("REST request to save OrderItem : {}", orderItem);
         if (orderItem.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new orderItem cannot already have an ID")).body(null);
+            throw new BadRequestAlertException("A new orderItem cannot already have an ID", ENTITY_NAME, "idexists");
         }
         OrderItem result = orderItemRepository.save(orderItem);
         orderItemSearchRepository.save(result);
@@ -100,7 +100,7 @@ public class OrderItemResource {
      */
     @GetMapping("/order-items")
     @Timed
-    public ResponseEntity<List<OrderItem>> getAllOrderItems(@ApiParam Pageable pageable) {
+    public ResponseEntity<List<OrderItem>> getAllOrderItems(Pageable pageable) {
         log.debug("REST request to get a page of OrderItems");
         Page<OrderItem> page = orderItemRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/order-items");
@@ -146,7 +146,7 @@ public class OrderItemResource {
      */
     @GetMapping("/_search/order-items")
     @Timed
-    public ResponseEntity<List<OrderItem>> searchOrderItems(@RequestParam String query, @ApiParam Pageable pageable) {
+    public ResponseEntity<List<OrderItem>> searchOrderItems(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of OrderItems for query {}", query);
         Page<OrderItem> page = orderItemSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/order-items");

@@ -5,9 +5,9 @@ import com.wongs.domain.State;
 
 import com.wongs.repository.StateRepository;
 import com.wongs.repository.search.StateSearchRepository;
+import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +61,7 @@ public class StateResource {
     public ResponseEntity<State> createState(@Valid @RequestBody State state) throws URISyntaxException {
         log.debug("REST request to save State : {}", state);
         if (state.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new state cannot already have an ID")).body(null);
+            throw new BadRequestAlertException("A new state cannot already have an ID", ENTITY_NAME, "idexists");
         }
         State result = stateRepository.save(state);
         stateSearchRepository.save(result);
@@ -101,7 +101,7 @@ public class StateResource {
      */
     @GetMapping("/states")
     @Timed
-    public ResponseEntity<List<State>> getAllStates(@ApiParam Pageable pageable) {
+    public ResponseEntity<List<State>> getAllStates(Pageable pageable) {
         log.debug("REST request to get a page of States");
         Page<State> page = stateRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/states");
@@ -147,7 +147,7 @@ public class StateResource {
      */
     @GetMapping("/_search/states")
     @Timed
-    public ResponseEntity<List<State>> searchStates(@RequestParam String query, @ApiParam Pageable pageable) {
+    public ResponseEntity<List<State>> searchStates(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of States for query {}", query);
         Page<State> page = stateSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/states");

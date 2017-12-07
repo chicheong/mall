@@ -1,6 +1,6 @@
 import { BaseEntity } from './../../shared';
 
-const enum CurrencyType {
+export const enum CurrencyType {
     'HKD',
     'CNY',
     'USD',

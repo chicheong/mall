@@ -39,4 +39,5 @@
         <addPrimaryKey columnNames="user_infos_id, accounts_id" tableName="user_info_account"/>
         
     </changeSet>
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -73,10 +74,11 @@ public class CompanyResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        CompanyResource companyResource = new CompanyResource(companyRepository, companySearchRepository);
+        final CompanyResource companyResource = new CompanyResource(companyRepository, companySearchRepository);
         this.restCompanyMockMvc = MockMvcBuilders.standaloneSetup(companyResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -138,7 +140,7 @@ public class CompanyResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(company)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the Company in the database
         List<Company> companyList = companyRepository.findAll();
         assertThat(companyList).hasSize(databaseSizeBeforeCreate);
     }
@@ -211,6 +213,8 @@ public class CompanyResourceIntTest {
 
         // Update the company
         Company updatedCompany = companyRepository.findOne(company.getId());
+        // Disconnect from session so that the updates on updatedCompany are not directly saved in db
+        em.detach(updatedCompany);
         updatedCompany
             .code(UPDATED_CODE)
             .name(UPDATED_NAME)

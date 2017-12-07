@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -72,10 +73,11 @@ public class StateResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        StateResource stateResource = new StateResource(stateRepository, stateSearchRepository);
+        final StateResource stateResource = new StateResource(stateRepository, stateSearchRepository);
         this.restStateMockMvc = MockMvcBuilders.standaloneSetup(stateResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -137,7 +139,7 @@ public class StateResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(state)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the State in the database
         List<State> stateList = stateRepository.findAll();
         assertThat(stateList).hasSize(databaseSizeBeforeCreate);
     }
@@ -210,6 +212,8 @@ public class StateResourceIntTest {
 
         // Update the state
         State updatedState = stateRepository.findOne(state.getId());
+        // Disconnect from session so that the updates on updatedState are not directly saved in db
+        em.detach(updatedState);
         updatedState
             .code(UPDATED_CODE)
             .label(UPDATED_LABEL)

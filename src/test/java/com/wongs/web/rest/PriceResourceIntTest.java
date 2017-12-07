@@ -30,6 +30,7 @@ import java.time.ZoneId;
 import java.util.List;
 
 import static com.wongs.web.rest.TestUtil.sameInstant;
+import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -82,10 +83,11 @@ public class PriceResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        PriceResource priceResource = new PriceResource(priceRepository, priceSearchRepository);
+        final PriceResource priceResource = new PriceResource(priceRepository, priceSearchRepository);
         this.restPriceMockMvc = MockMvcBuilders.standaloneSetup(priceResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -149,7 +151,7 @@ public class PriceResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(price)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the Price in the database
         List<Price> priceList = priceRepository.findAll();
         assertThat(priceList).hasSize(databaseSizeBeforeCreate);
     }
@@ -206,6 +208,8 @@ public class PriceResourceIntTest {
 
         // Update the price
         Price updatedPrice = priceRepository.findOne(price.getId());
+        // Disconnect from session so that the updates on updatedPrice are not directly saved in db
+        em.detach(updatedPrice);
         updatedPrice
             .from(UPDATED_FROM)
             .to(UPDATED_TO)

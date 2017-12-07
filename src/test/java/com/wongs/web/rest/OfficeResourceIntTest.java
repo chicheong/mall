@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -73,10 +74,11 @@ public class OfficeResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        OfficeResource officeResource = new OfficeResource(officeRepository, officeSearchRepository);
+        final OfficeResource officeResource = new OfficeResource(officeRepository, officeSearchRepository);
         this.restOfficeMockMvc = MockMvcBuilders.standaloneSetup(officeResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -138,7 +140,7 @@ public class OfficeResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(office)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the Office in the database
         List<Office> officeList = officeRepository.findAll();
         assertThat(officeList).hasSize(databaseSizeBeforeCreate);
     }
@@ -211,6 +213,8 @@ public class OfficeResourceIntTest {
 
         // Update the office
         Office updatedOffice = officeRepository.findOne(office.getId());
+        // Disconnect from session so that the updates on updatedOffice are not directly saved in db
+        em.detach(updatedOffice);
         updatedOffice
             .code(UPDATED_CODE)
             .name(UPDATED_NAME)

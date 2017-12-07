@@ -5,9 +5,9 @@ import com.wongs.domain.Department;
 
 import com.wongs.repository.DepartmentRepository;
 import com.wongs.repository.search.DepartmentSearchRepository;
+import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +61,7 @@ public class DepartmentResource {
     public ResponseEntity<Department> createDepartment(@Valid @RequestBody Department department) throws URISyntaxException {
         log.debug("REST request to save Department : {}", department);
         if (department.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new department cannot already have an ID")).body(null);
+            throw new BadRequestAlertException("A new department cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Department result = departmentRepository.save(department);
         departmentSearchRepository.save(result);
@@ -101,7 +101,7 @@ public class DepartmentResource {
      */
     @GetMapping("/departments")
     @Timed
-    public ResponseEntity<List<Department>> getAllDepartments(@ApiParam Pageable pageable) {
+    public ResponseEntity<List<Department>> getAllDepartments(Pageable pageable) {
         log.debug("REST request to get a page of Departments");
         Page<Department> page = departmentRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/departments");
@@ -147,7 +147,7 @@ public class DepartmentResource {
      */
     @GetMapping("/_search/departments")
     @Timed
-    public ResponseEntity<List<Department>> searchDepartments(@RequestParam String query, @ApiParam Pageable pageable) {
+    public ResponseEntity<List<Department>> searchDepartments(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Departments for query {}", query);
         Page<Department> page = departmentSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/departments");

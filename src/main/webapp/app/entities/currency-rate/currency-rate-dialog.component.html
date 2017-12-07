@@ -16,49 +16,49 @@
             <label class="form-control-label" jhiTranslate="mallApp.currencyRate.from" for="field_from">From</label>
             <div class="d-flex">
                 <input id="field_from" type="datetime-local" class="form-control" name="from" [(ngModel)]="currencyRate.from"
-                  />
+                />
             </div>
         </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.currencyRate.to" for="field_to">To</label>
             <div class="d-flex">
                 <input id="field_to" type="datetime-local" class="form-control" name="to" [(ngModel)]="currencyRate.to"
-                  />
+                />
             </div>
         </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.currencyRate.rate" for="field_rate">Rate</label>
             <input type="number" class="form-control" name="rate" id="field_rate"
-                [(ngModel)]="currencyRate.rate"  />
+                [(ngModel)]="currencyRate.rate" />
         </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.currencyRate.sourceCurrency" for="field_sourceCurrency">Source Currency</label>
             <select class="form-control" name="sourceCurrency" [(ngModel)]="currencyRate.sourceCurrency" id="field_sourceCurrency" >
-                <option value="HKD" jhiTranslate="mallApp.CurrencyType.HKD">HKD</option>
-                <option value="CNY" jhiTranslate="mallApp.CurrencyType.CNY">CNY</option>
-                <option value="USD" jhiTranslate="mallApp.CurrencyType.USD">USD</option>
-                <option value="EUR" jhiTranslate="mallApp.CurrencyType.EUR">EUR</option>
-                <option value="JPY" jhiTranslate="mallApp.CurrencyType.JPY">JPY</option>
-                <option value="KRW" jhiTranslate="mallApp.CurrencyType.KRW">KRW</option>
-                <option value="TWD" jhiTranslate="mallApp.CurrencyType.TWD">TWD</option>
+                <option value="HKD">{{'mallApp.CurrencyType.HKD' | translate}}</option>
+                <option value="CNY">{{'mallApp.CurrencyType.CNY' | translate}}</option>
+                <option value="USD">{{'mallApp.CurrencyType.USD' | translate}}</option>
+                <option value="EUR">{{'mallApp.CurrencyType.EUR' | translate}}</option>
+                <option value="JPY">{{'mallApp.CurrencyType.JPY' | translate}}</option>
+                <option value="KRW">{{'mallApp.CurrencyType.KRW' | translate}}</option>
+                <option value="TWD">{{'mallApp.CurrencyType.TWD' | translate}}</option>
             </select>
         </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.currencyRate.targetCurrency" for="field_targetCurrency">Target Currency</label>
             <select class="form-control" name="targetCurrency" [(ngModel)]="currencyRate.targetCurrency" id="field_targetCurrency" >
-                <option value="HKD" jhiTranslate="mallApp.CurrencyType.HKD">HKD</option>
-                <option value="CNY" jhiTranslate="mallApp.CurrencyType.CNY">CNY</option>
-                <option value="USD" jhiTranslate="mallApp.CurrencyType.USD">USD</option>
-                <option value="EUR" jhiTranslate="mallApp.CurrencyType.EUR">EUR</option>
-                <option value="JPY" jhiTranslate="mallApp.CurrencyType.JPY">JPY</option>
-                <option value="KRW" jhiTranslate="mallApp.CurrencyType.KRW">KRW</option>
-                <option value="TWD" jhiTranslate="mallApp.CurrencyType.TWD">TWD</option>
+                <option value="HKD">{{'mallApp.CurrencyType.HKD' | translate}}</option>
+                <option value="CNY">{{'mallApp.CurrencyType.CNY' | translate}}</option>
+                <option value="USD">{{'mallApp.CurrencyType.USD' | translate}}</option>
+                <option value="EUR">{{'mallApp.CurrencyType.EUR' | translate}}</option>
+                <option value="JPY">{{'mallApp.CurrencyType.JPY' | translate}}</option>
+                <option value="KRW">{{'mallApp.CurrencyType.KRW' | translate}}</option>
+                <option value="TWD">{{'mallApp.CurrencyType.TWD' | translate}}</option>
             </select>
         </div>
 
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="clear()">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
             <span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
         </button>
         <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">

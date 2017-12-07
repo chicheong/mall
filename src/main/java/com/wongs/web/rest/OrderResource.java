@@ -2,10 +2,10 @@ package com.wongs.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wongs.service.OrderService;
+import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
 import com.wongs.service.dto.OrderDTO;
-import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,7 +54,7 @@ public class OrderResource {
     public ResponseEntity<OrderDTO> createOrder(@RequestBody OrderDTO orderDTO) throws URISyntaxException {
         log.debug("REST request to save Order : {}", orderDTO);
         if (orderDTO.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new order cannot already have an ID")).body(null);
+            throw new BadRequestAlertException("A new order cannot already have an ID", ENTITY_NAME, "idexists");
         }
         OrderDTO result = orderService.save(orderDTO);
         return ResponseEntity.created(new URI("/api/orders/" + result.getId()))
@@ -92,7 +92,7 @@ public class OrderResource {
      */
     @GetMapping("/orders")
     @Timed
-    public ResponseEntity<List<OrderDTO>> getAllOrders(@ApiParam Pageable pageable) {
+    public ResponseEntity<List<OrderDTO>> getAllOrders(Pageable pageable) {
         log.debug("REST request to get a page of Orders");
         Page<OrderDTO> page = orderService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/orders");
@@ -137,7 +137,7 @@ public class OrderResource {
      */
     @GetMapping("/_search/orders")
     @Timed
-    public ResponseEntity<List<OrderDTO>> searchOrders(@RequestParam String query, @ApiParam Pageable pageable) {
+    public ResponseEntity<List<OrderDTO>> searchOrders(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Orders for query {}", query);
         Page<OrderDTO> page = orderService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/orders");

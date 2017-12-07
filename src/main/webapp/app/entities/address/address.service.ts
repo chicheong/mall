@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
+import { SERVER_API_URL } from '../../app.constants';
 
 import { Address } from './address.model';
 import { ResponseWrapper, createRequestOption } from '../../shared';
@@ -8,28 +9,31 @@ import { ResponseWrapper, createRequestOption } from '../../shared';
 @Injectable()
 export class AddressService {
 
-    private resourceUrl = 'api/addresses';
-    private resourceSearchUrl = 'api/_search/addresses';
+    private resourceUrl = SERVER_API_URL + 'api/addresses';
+    private resourceSearchUrl = SERVER_API_URL + 'api/_search/addresses';
 
     constructor(private http: Http) { }
 
     create(address: Address): Observable<Address> {
         const copy = this.convert(address);
         return this.http.post(this.resourceUrl, copy).map((res: Response) => {
-            return res.json();
+            const jsonResponse = res.json();
+            return this.convertItemFromServer(jsonResponse);
         });
     }
 
     update(address: Address): Observable<Address> {
         const copy = this.convert(address);
         return this.http.put(this.resourceUrl, copy).map((res: Response) => {
-            return res.json();
+            const jsonResponse = res.json();
+            return this.convertItemFromServer(jsonResponse);
         });
     }
 
     find(id: number): Observable<Address> {
         return this.http.get(`${this.resourceUrl}/${id}`).map((res: Response) => {
-            return res.json();
+            const jsonResponse = res.json();
+            return this.convertItemFromServer(jsonResponse);
         });
     }
 
@@ -51,9 +55,24 @@ export class AddressService {
 
     private convertResponse(res: Response): ResponseWrapper {
         const jsonResponse = res.json();
-        return new ResponseWrapper(res.headers, jsonResponse, res.status);
+        const result = [];
+        for (let i = 0; i < jsonResponse.length; i++) {
+            result.push(this.convertItemFromServer(jsonResponse[i]));
+        }
+        return new ResponseWrapper(res.headers, result, res.status);
     }
 
+    /**
+     * Convert a returned JSON object to Address.
+     */
+    private convertItemFromServer(json: any): Address {
+        const entity: Address = Object.assign(new Address(), json);
+        return entity;
+    }
+
+    /**
+     * Convert a Address to a JSON which can be sent to the server.
+     */
     private convert(address: Address): Address {
         const copy: Address = Object.assign({}, address);
         return copy;

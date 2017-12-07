@@ -1,6 +1,6 @@
 import { BaseEntity } from './../../shared';
 
-const enum ProductStatus {
+export const enum ProductStatus {
     'ACTIVE',
     'RESTRICTED',
     'INACTIVE'

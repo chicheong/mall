@@ -15,7 +15,7 @@
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.state.code" for="field_code">Code</label>
             <input type="text" class="form-control" name="code" id="field_code"
-                [(ngModel)]="state.code" required maxlength="2" />
+                [(ngModel)]="state.code" required maxlength="2"/>
             <div [hidden]="!(editForm.controls.code?.dirty && editForm.controls.code?.invalid)">
                 <small class="form-text text-danger"
                    [hidden]="!editForm.controls.code?.errors?.required" jhiTranslate="entity.validation.required">
@@ -30,7 +30,7 @@
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.state.label" for="field_label">Label</label>
             <input type="text" class="form-control" name="label" id="field_label"
-                [(ngModel)]="state.label" maxlength="3" />
+                [(ngModel)]="state.label" maxlength="3"/>
             <div [hidden]="!(editForm.controls.label?.dirty && editForm.controls.label?.invalid)">
                 <small class="form-text text-danger"
                    [hidden]="!editForm.controls.label?.errors?.maxlength" jhiTranslate="entity.validation.maxlength" translateValues="{ max: 3 }">
@@ -41,7 +41,7 @@
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.state.name" for="field_name">Name</label>
             <input type="text" class="form-control" name="name" id="field_name"
-                [(ngModel)]="state.name" maxlength="100" />
+                [(ngModel)]="state.name" maxlength="100"/>
             <div [hidden]="!(editForm.controls.name?.dirty && editForm.controls.name?.invalid)">
                 <small class="form-text text-danger"
                    [hidden]="!editForm.controls.name?.errors?.maxlength" jhiTranslate="entity.validation.maxlength" translateValues="{ max: 100 }">
@@ -51,7 +51,7 @@
         </div>
 
         <div class="form-group">
-            <label jhiTranslate="mallApp.state.country" for="field_country">Country</label>
+            <label class="form-control-label" jhiTranslate="mallApp.state.country" for="field_country">Country</label>
             <select class="form-control" id="field_country" name="country" [(ngModel)]="state.country" >
                 <option [ngValue]="null"></option>
                 <option [ngValue]="countryOption.id === state.country?.id ? state.country : countryOption" *ngFor="let countryOption of countries; trackBy: trackCountryById">{{countryOption.id}}</option>
@@ -59,7 +59,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="clear()">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
             <span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
         </button>
         <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
