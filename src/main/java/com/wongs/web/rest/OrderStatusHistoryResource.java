@@ -5,9 +5,9 @@ import com.wongs.domain.OrderStatusHistory;
 
 import com.wongs.repository.OrderStatusHistoryRepository;
 import com.wongs.repository.search.OrderStatusHistorySearchRepository;
+import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +60,7 @@ public class OrderStatusHistoryResource {
     public ResponseEntity<OrderStatusHistory> createOrderStatusHistory(@RequestBody OrderStatusHistory orderStatusHistory) throws URISyntaxException {
         log.debug("REST request to save OrderStatusHistory : {}", orderStatusHistory);
         if (orderStatusHistory.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new orderStatusHistory cannot already have an ID")).body(null);
+            throw new BadRequestAlertException("A new orderStatusHistory cannot already have an ID", ENTITY_NAME, "idexists");
         }
         OrderStatusHistory result = orderStatusHistoryRepository.save(orderStatusHistory);
         orderStatusHistorySearchRepository.save(result);
@@ -100,7 +100,7 @@ public class OrderStatusHistoryResource {
      */
     @GetMapping("/order-status-histories")
     @Timed
-    public ResponseEntity<List<OrderStatusHistory>> getAllOrderStatusHistories(@ApiParam Pageable pageable) {
+    public ResponseEntity<List<OrderStatusHistory>> getAllOrderStatusHistories(Pageable pageable) {
         log.debug("REST request to get a page of OrderStatusHistories");
         Page<OrderStatusHistory> page = orderStatusHistoryRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/order-status-histories");
@@ -146,7 +146,7 @@ public class OrderStatusHistoryResource {
      */
     @GetMapping("/_search/order-status-histories")
     @Timed
-    public ResponseEntity<List<OrderStatusHistory>> searchOrderStatusHistories(@RequestParam String query, @ApiParam Pageable pageable) {
+    public ResponseEntity<List<OrderStatusHistory>> searchOrderStatusHistories(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of OrderStatusHistories for query {}", query);
         Page<OrderStatusHistory> page = orderStatusHistorySearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/order-status-histories");

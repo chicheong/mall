@@ -29,9 +29,9 @@ export class PricePopupService {
             if (id) {
                 this.priceService.find(id).subscribe((price) => {
                     price.from = this.datePipe
-                        .transform(price.from, 'yyyy-MM-ddThh:mm');
+                        .transform(price.from, 'yyyy-MM-ddTHH:mm:ss');
                     price.to = this.datePipe
-                        .transform(price.to, 'yyyy-MM-ddThh:mm');
+                        .transform(price.to, 'yyyy-MM-ddTHH:mm:ss');
                     this.ngbModalRef = this.priceModalRef(component, price);
                     resolve(this.ngbModalRef);
                 });

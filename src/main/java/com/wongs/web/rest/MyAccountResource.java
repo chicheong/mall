@@ -5,9 +5,9 @@ import com.wongs.domain.MyAccount;
 
 import com.wongs.repository.MyAccountRepository;
 import com.wongs.repository.search.MyAccountSearchRepository;
+import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +60,7 @@ public class MyAccountResource {
     public ResponseEntity<MyAccount> createMyAccount(@RequestBody MyAccount myAccount) throws URISyntaxException {
         log.debug("REST request to save MyAccount : {}", myAccount);
         if (myAccount.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new myAccount cannot already have an ID")).body(null);
+            throw new BadRequestAlertException("A new myAccount cannot already have an ID", ENTITY_NAME, "idexists");
         }
         MyAccount result = myAccountRepository.save(myAccount);
         myAccountSearchRepository.save(result);
@@ -100,7 +100,7 @@ public class MyAccountResource {
      */
     @GetMapping("/my-accounts")
     @Timed
-    public ResponseEntity<List<MyAccount>> getAllMyAccounts(@ApiParam Pageable pageable) {
+    public ResponseEntity<List<MyAccount>> getAllMyAccounts(Pageable pageable) {
         log.debug("REST request to get a page of MyAccounts");
         Page<MyAccount> page = myAccountRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/my-accounts");
@@ -146,7 +146,7 @@ public class MyAccountResource {
      */
     @GetMapping("/_search/my-accounts")
     @Timed
-    public ResponseEntity<List<MyAccount>> searchMyAccounts(@RequestParam String query, @ApiParam Pageable pageable) {
+    public ResponseEntity<List<MyAccount>> searchMyAccounts(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of MyAccounts for query {}", query);
         Page<MyAccount> page = myAccountSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/my-accounts");

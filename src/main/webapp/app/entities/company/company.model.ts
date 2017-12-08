@@ -1,6 +1,6 @@
 import { BaseEntity } from './../../shared';
 
-const enum CommonStatus {
+export const enum CommonStatus {
     'ACTIVE',
     'INACTIVE'
 }

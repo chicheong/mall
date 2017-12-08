@@ -5,9 +5,9 @@ import com.wongs.domain.Shop;
 
 import com.wongs.repository.ShopRepository;
 import com.wongs.repository.search.ShopSearchRepository;
+import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +61,7 @@ public class ShopResource {
     public ResponseEntity<Shop> createShop(@Valid @RequestBody Shop shop) throws URISyntaxException {
         log.debug("REST request to save Shop : {}", shop);
         if (shop.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new shop cannot already have an ID")).body(null);
+            throw new BadRequestAlertException("A new shop cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Shop result = shopRepository.save(shop);
         shopSearchRepository.save(result);
@@ -101,7 +101,7 @@ public class ShopResource {
      */
     @GetMapping("/shops")
     @Timed
-    public ResponseEntity<List<Shop>> getAllShops(@ApiParam Pageable pageable) {
+    public ResponseEntity<List<Shop>> getAllShops(Pageable pageable) {
         log.debug("REST request to get a page of Shops");
         Page<Shop> page = shopRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/shops");
@@ -147,7 +147,7 @@ public class ShopResource {
      */
     @GetMapping("/_search/shops")
     @Timed
-    public ResponseEntity<List<Shop>> searchShops(@RequestParam String query, @ApiParam Pageable pageable) {
+    public ResponseEntity<List<Shop>> searchShops(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Shops for query {}", query);
         Page<Shop> page = shopSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/shops");

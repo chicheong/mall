@@ -12,12 +12,11 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface DepartmentRepository extends JpaRepository<Department,Long> {
-    
+public interface DepartmentRepository extends JpaRepository<Department, Long> {
     @Query("select distinct department from Department department left join fetch department.offices")
     List<Department> findAllWithEagerRelationships();
 
     @Query("select department from Department department left join fetch department.offices where department.id =:id")
     Department findOneWithEagerRelationships(@Param("id") Long id);
-    
+
 }

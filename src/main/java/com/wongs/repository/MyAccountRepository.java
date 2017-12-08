@@ -12,12 +12,11 @@ import java.util.List;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface MyAccountRepository extends JpaRepository<MyAccount,Long> {
-    
+public interface MyAccountRepository extends JpaRepository<MyAccount, Long> {
     @Query("select distinct my_account from MyAccount my_account left join fetch my_account.shops")
     List<MyAccount> findAllWithEagerRelationships();
 
     @Query("select my_account from MyAccount my_account left join fetch my_account.shops where my_account.id =:id")
     MyAccount findOneWithEagerRelationships(@Param("id") Long id);
-    
+
 }

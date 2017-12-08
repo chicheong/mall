@@ -39,4 +39,5 @@
         <dropDefaultValue tableName="order_status_history" columnName="effective_date" columnDataType="datetime"/>
         
     </changeSet>
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

@@ -16,21 +16,21 @@
             <label class="form-control-label" jhiTranslate="mallApp.orderStatusHistory.effectiveDate" for="field_effectiveDate">Effective Date</label>
             <div class="d-flex">
                 <input id="field_effectiveDate" type="datetime-local" class="form-control" name="effectiveDate" [(ngModel)]="orderStatusHistory.effectiveDate"
-                  />
+                />
             </div>
         </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.orderStatusHistory.status" for="field_status">Status</label>
             <select class="form-control" name="status" [(ngModel)]="orderStatusHistory.status" id="field_status" >
-                <option value="PENDING" jhiTranslate="mallApp.OrderStatus.PENDING">PENDING</option>
-                <option value="COMFIRMED" jhiTranslate="mallApp.OrderStatus.COMFIRMED">COMFIRMED</option>
-                <option value="COMPLETED" jhiTranslate="mallApp.OrderStatus.COMPLETED">COMPLETED</option>
-                <option value="CANCELLED" jhiTranslate="mallApp.OrderStatus.CANCELLED">CANCELLED</option>
+                <option value="PENDING">{{'mallApp.OrderStatus.PENDING' | translate}}</option>
+                <option value="COMFIRMED">{{'mallApp.OrderStatus.COMFIRMED' | translate}}</option>
+                <option value="COMPLETED">{{'mallApp.OrderStatus.COMPLETED' | translate}}</option>
+                <option value="CANCELLED">{{'mallApp.OrderStatus.CANCELLED' | translate}}</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label jhiTranslate="mallApp.orderStatusHistory.order" for="field_order">Order</label>
+            <label class="form-control-label" jhiTranslate="mallApp.orderStatusHistory.order" for="field_order">Order</label>
             <select class="form-control" id="field_order" name="order" [(ngModel)]="orderStatusHistory.order" >
                 <option [ngValue]="null"></option>
                 <option [ngValue]="orderOption.id === orderStatusHistory.order?.id ? orderStatusHistory.order : orderOption" *ngFor="let orderOption of orders; trackBy: trackOrderById">{{orderOption.id}}</option>
@@ -38,7 +38,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="clear()">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
             <span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
         </button>
         <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">

@@ -11,6 +11,7 @@ import java.util.Objects;
 
 import com.wongs.domain.enumeration.OrderStatus;
 
+
 /**
  * A OrderStatusHistory.
  */
@@ -36,6 +37,7 @@ public class OrderStatusHistory implements Serializable {
     @ManyToOne
     private Order order;
 
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -82,6 +84,7 @@ public class OrderStatusHistory implements Serializable {
     public void setOrder(Order order) {
         this.order = order;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {

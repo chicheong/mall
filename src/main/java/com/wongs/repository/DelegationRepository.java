@@ -11,6 +11,6 @@ import org.springframework.data.jpa.repository.*;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface DelegationRepository extends JpaRepository<Delegation,Long> {
-    
+public interface DelegationRepository extends JpaRepository<Delegation, Long> {
+
 }

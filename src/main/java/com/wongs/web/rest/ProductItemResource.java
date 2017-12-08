@@ -5,9 +5,9 @@ import com.wongs.domain.ProductItem;
 
 import com.wongs.repository.ProductItemRepository;
 import com.wongs.repository.search.ProductItemSearchRepository;
+import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +60,7 @@ public class ProductItemResource {
     public ResponseEntity<ProductItem> createProductItem(@RequestBody ProductItem productItem) throws URISyntaxException {
         log.debug("REST request to save ProductItem : {}", productItem);
         if (productItem.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new productItem cannot already have an ID")).body(null);
+            throw new BadRequestAlertException("A new productItem cannot already have an ID", ENTITY_NAME, "idexists");
         }
         ProductItem result = productItemRepository.save(productItem);
         productItemSearchRepository.save(result);
@@ -101,7 +101,7 @@ public class ProductItemResource {
      */
     @GetMapping("/product-items")
     @Timed
-    public ResponseEntity<List<ProductItem>> getAllProductItems(@ApiParam Pageable pageable, @RequestParam(required = false) String filter) {
+    public ResponseEntity<List<ProductItem>> getAllProductItems(Pageable pageable, @RequestParam(required = false) String filter) {
         if ("orderitem-is-null".equals(filter)) {
             log.debug("REST request to get all ProductItems where orderItem is null");
             return new ResponseEntity<>(StreamSupport
@@ -154,7 +154,7 @@ public class ProductItemResource {
      */
     @GetMapping("/_search/product-items")
     @Timed
-    public ResponseEntity<List<ProductItem>> searchProductItems(@RequestParam String query, @ApiParam Pageable pageable) {
+    public ResponseEntity<List<ProductItem>> searchProductItems(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of ProductItems for query {}", query);
         Page<ProductItem> page = productItemSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/product-items");

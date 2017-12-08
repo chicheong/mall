@@ -29,9 +29,9 @@ export class ShopPopupService {
             if (id) {
                 this.shopService.find(id).subscribe((shop) => {
                     shop.createdDate = this.datePipe
-                        .transform(shop.createdDate, 'yyyy-MM-ddThh:mm');
+                        .transform(shop.createdDate, 'yyyy-MM-ddTHH:mm:ss');
                     shop.lastModifiedDate = this.datePipe
-                        .transform(shop.lastModifiedDate, 'yyyy-MM-ddThh:mm');
+                        .transform(shop.lastModifiedDate, 'yyyy-MM-ddTHH:mm:ss');
                     this.ngbModalRef = this.shopModalRef(component, shop);
                     resolve(this.ngbModalRef);
                 });

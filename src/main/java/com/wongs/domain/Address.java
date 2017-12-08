@@ -8,6 +8,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
+
 /**
  * A Address.
  */
@@ -47,6 +48,7 @@ public class Address implements Serializable {
     @ManyToOne
     private State state;
 
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -158,6 +160,7 @@ public class Address implements Serializable {
     public void setState(State state) {
         this.state = state;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {

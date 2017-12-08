@@ -5,11 +5,11 @@ import { BrowserModule } from '@angular/platform-browser';
 import { Ng2Webstorage } from 'ng2-webstorage';
 
 import { MallSharedModule, UserRouteAccessService } from './shared';
+import { MallAppRoutingModule} from './app-routing.module';
 import { MallHomeModule } from './home/home.module';
 import { MallAdminModule } from './admin/admin.module';
 import { MallAccountModule } from './account/account.module';
 import { MallEntityModule } from './entities/entity.module';
-
 import { customHttpProvider } from './blocks/interceptor/http.provider';
 import { PaginationConfig } from './blocks/config/uib-pagination.config';
 
@@ -17,7 +17,6 @@ import { PaginationConfig } from './blocks/config/uib-pagination.config';
 
 import {
     JhiMainComponent,
-    LayoutRoutingModule,
     NavbarComponent,
     FooterComponent,
     ProfileService,
@@ -29,7 +28,7 @@ import {
 @NgModule({
     imports: [
         BrowserModule,
-        LayoutRoutingModule,
+        MallAppRoutingModule,
         Ng2Webstorage.forRoot({ prefix: 'jhi', separator: '-'}),
         MallSharedModule,
         MallHomeModule,

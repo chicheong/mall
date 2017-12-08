@@ -53,4 +53,5 @@
         <addPrimaryKey columnNames="my_accounts_id, shops_id" tableName="my_account_shop"/>
         
     </changeSet>
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

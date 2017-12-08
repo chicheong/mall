@@ -5,9 +5,9 @@ import com.wongs.domain.Address;
 
 import com.wongs.repository.AddressRepository;
 import com.wongs.repository.search.AddressSearchRepository;
+import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +60,7 @@ public class AddressResource {
     public ResponseEntity<Address> createAddress(@RequestBody Address address) throws URISyntaxException {
         log.debug("REST request to save Address : {}", address);
         if (address.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new address cannot already have an ID")).body(null);
+            throw new BadRequestAlertException("A new address cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Address result = addressRepository.save(address);
         addressSearchRepository.save(result);
@@ -100,7 +100,7 @@ public class AddressResource {
      */
     @GetMapping("/addresses")
     @Timed
-    public ResponseEntity<List<Address>> getAllAddresses(@ApiParam Pageable pageable) {
+    public ResponseEntity<List<Address>> getAllAddresses(Pageable pageable) {
         log.debug("REST request to get a page of Addresses");
         Page<Address> page = addressRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/addresses");
@@ -146,7 +146,7 @@ public class AddressResource {
      */
     @GetMapping("/_search/addresses")
     @Timed
-    public ResponseEntity<List<Address>> searchAddresses(@RequestParam String query, @ApiParam Pageable pageable) {
+    public ResponseEntity<List<Address>> searchAddresses(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Addresses for query {}", query);
         Page<Address> page = addressSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/addresses");

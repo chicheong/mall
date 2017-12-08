@@ -32,6 +32,7 @@ import java.time.ZoneId;
 import java.util.List;
 
 import static com.wongs.web.rest.TestUtil.sameInstant;
+import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -111,10 +112,11 @@ public class ProductResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        ProductResource productResource = new ProductResource(productService);
+        final ProductResource productResource = new ProductResource(productService);
         this.restProductMockMvc = MockMvcBuilders.standaloneSetup(productResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -194,7 +196,7 @@ public class ProductResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(productDTO)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the Product in the database
         List<Product> productList = productRepository.findAll();
         assertThat(productList).hasSize(databaseSizeBeforeCreate);
     }
@@ -284,6 +286,8 @@ public class ProductResourceIntTest {
 
         // Update the product
         Product updatedProduct = productRepository.findOne(product.getId());
+        // Disconnect from session so that the updates on updatedProduct are not directly saved in db
+        em.detach(updatedProduct);
         updatedProduct
             .name(UPDATED_NAME)
             .code(UPDATED_CODE)

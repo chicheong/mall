@@ -29,6 +29,7 @@ import java.time.ZoneId;
 import java.util.List;
 
 import static com.wongs.web.rest.TestUtil.sameInstant;
+import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -93,10 +94,11 @@ public class ShopResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        ShopResource shopResource = new ShopResource(shopRepository, shopSearchRepository);
+        final ShopResource shopResource = new ShopResource(shopRepository, shopSearchRepository);
         this.restShopMockMvc = MockMvcBuilders.standaloneSetup(shopResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -168,7 +170,7 @@ public class ShopResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(shop)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the Shop in the database
         List<Shop> shopList = shopRepository.findAll();
         assertThat(shopList).hasSize(databaseSizeBeforeCreate);
     }
@@ -251,6 +253,8 @@ public class ShopResourceIntTest {
 
         // Update the shop
         Shop updatedShop = shopRepository.findOne(shop.getId());
+        // Disconnect from session so that the updates on updatedShop are not directly saved in db
+        em.detach(updatedShop);
         updatedShop
             .code(UPDATED_CODE)
             .name(UPDATED_NAME)

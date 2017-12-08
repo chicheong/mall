@@ -11,6 +11,6 @@ import org.springframework.data.jpa.repository.*;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface CurrencyRateRepository extends JpaRepository<CurrencyRate,Long> {
-    
+public interface CurrencyRateRepository extends JpaRepository<CurrencyRate, Long> {
+
 }

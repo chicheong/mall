@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
+import { SERVER_API_URL } from '../../app.constants';
+
 import { JhiDateUtils } from 'ng-jhipster';
 
 import { Price } from './price.model';
@@ -9,8 +11,8 @@ import { ResponseWrapper, createRequestOption } from '../../shared';
 @Injectable()
 export class PriceService {
 
-    private resourceUrl = 'api/prices';
-    private resourceSearchUrl = 'api/_search/prices';
+    private resourceUrl = SERVER_API_URL + 'api/prices';
+    private resourceSearchUrl = SERVER_API_URL + 'api/_search/prices';
 
     constructor(private http: Http, private dateUtils: JhiDateUtils) { }
 
@@ -18,8 +20,7 @@ export class PriceService {
         const copy = this.convert(price);
         return this.http.post(this.resourceUrl, copy).map((res: Response) => {
             const jsonResponse = res.json();
-            this.convertItemFromServer(jsonResponse);
-            return jsonResponse;
+            return this.convertItemFromServer(jsonResponse);
         });
     }
 
@@ -27,16 +28,14 @@ export class PriceService {
         const copy = this.convert(price);
         return this.http.put(this.resourceUrl, copy).map((res: Response) => {
             const jsonResponse = res.json();
-            this.convertItemFromServer(jsonResponse);
-            return jsonResponse;
+            return this.convertItemFromServer(jsonResponse);
         });
     }
 
     find(id: number): Observable<Price> {
         return this.http.get(`${this.resourceUrl}/${id}`).map((res: Response) => {
             const jsonResponse = res.json();
-            this.convertItemFromServer(jsonResponse);
-            return jsonResponse;
+            return this.convertItemFromServer(jsonResponse);
         });
     }
 
@@ -58,19 +57,28 @@ export class PriceService {
 
     private convertResponse(res: Response): ResponseWrapper {
         const jsonResponse = res.json();
+        const result = [];
         for (let i = 0; i < jsonResponse.length; i++) {
-            this.convertItemFromServer(jsonResponse[i]);
+            result.push(this.convertItemFromServer(jsonResponse[i]));
         }
-        return new ResponseWrapper(res.headers, jsonResponse, res.status);
+        return new ResponseWrapper(res.headers, result, res.status);
     }
 
-    private convertItemFromServer(entity: any) {
+    /**
+     * Convert a returned JSON object to Price.
+     */
+    private convertItemFromServer(json: any): Price {
+        const entity: Price = Object.assign(new Price(), json);
         entity.from = this.dateUtils
-            .convertDateTimeFromServer(entity.from);
+            .convertDateTimeFromServer(json.from);
         entity.to = this.dateUtils
-            .convertDateTimeFromServer(entity.to);
+            .convertDateTimeFromServer(json.to);
+        return entity;
     }
 
+    /**
+     * Convert a Price to a JSON which can be sent to the server.
+     */
     private convert(price: Price): Price {
         const copy: Price = Object.assign({}, price);
 

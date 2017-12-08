@@ -11,6 +11,6 @@ import org.springframework.data.jpa.repository.*;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface OfficeRepository extends JpaRepository<Office,Long> {
-    
+public interface OfficeRepository extends JpaRepository<Office, Long> {
+
 }

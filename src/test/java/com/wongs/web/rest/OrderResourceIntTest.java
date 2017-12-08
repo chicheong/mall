@@ -28,6 +28,7 @@ import javax.persistence.EntityManager;
 import java.math.BigDecimal;
 import java.util.List;
 
+import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -87,10 +88,11 @@ public class OrderResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        OrderResource orderResource = new OrderResource(orderService);
+        final OrderResource orderResource = new OrderResource(orderService);
         this.restOrderMockMvc = MockMvcBuilders.standaloneSetup(orderResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -156,7 +158,7 @@ public class OrderResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(orderDTO)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the Order in the database
         List<Order> orderList = orderRepository.findAll();
         assertThat(orderList).hasSize(databaseSizeBeforeCreate);
     }
@@ -213,6 +215,8 @@ public class OrderResourceIntTest {
 
         // Update the order
         Order updatedOrder = orderRepository.findOne(order.getId());
+        // Disconnect from session so that the updates on updatedOrder are not directly saved in db
+        em.detach(updatedOrder);
         updatedOrder
             .total(UPDATED_TOTAL)
             .currency(UPDATED_CURRENCY)

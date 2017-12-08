@@ -16,6 +16,7 @@ import com.wongs.domain.enumeration.CurrencyType;
 
 import com.wongs.domain.enumeration.OrderStatus;
 
+
 /**
  * A Order.
  */
@@ -58,6 +59,7 @@ public class Order implements Serializable {
     @ManyToOne
     private UserInfo userInfo;
 
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -180,6 +182,7 @@ public class Order implements Serializable {
     public void setUserInfo(UserInfo userInfo) {
         this.userInfo = userInfo;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {
@@ -205,7 +208,7 @@ public class Order implements Serializable {
     public String toString() {
         return "Order{" +
             "id=" + getId() +
-            ", total='" + getTotal() + "'" +
+            ", total=" + getTotal() +
             ", currency='" + getCurrency() + "'" +
             ", remark='" + getRemark() + "'" +
             ", status='" + getStatus() + "'" +

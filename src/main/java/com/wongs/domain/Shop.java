@@ -15,6 +15,7 @@ import java.util.Objects;
 
 import com.wongs.domain.enumeration.CommonStatus;
 
+
 /**
  * A Shop.
  */
@@ -61,6 +62,7 @@ public class Shop implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<MyAccount> accounts = new HashSet<>();
 
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -197,6 +199,7 @@ public class Shop implements Serializable {
     public void setAccounts(Set<MyAccount> myAccounts) {
         this.accounts = myAccounts;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {

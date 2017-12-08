@@ -29,9 +29,9 @@ export class ProductItemPopupService {
             if (id) {
                 this.productItemService.find(id).subscribe((productItem) => {
                     productItem.createdDate = this.datePipe
-                        .transform(productItem.createdDate, 'yyyy-MM-ddThh:mm');
+                        .transform(productItem.createdDate, 'yyyy-MM-ddTHH:mm:ss');
                     productItem.lastModifiedDate = this.datePipe
-                        .transform(productItem.lastModifiedDate, 'yyyy-MM-ddThh:mm');
+                        .transform(productItem.lastModifiedDate, 'yyyy-MM-ddTHH:mm:ss');
                     this.ngbModalRef = this.productItemModalRef(component, productItem);
                     resolve(this.ngbModalRef);
                 });

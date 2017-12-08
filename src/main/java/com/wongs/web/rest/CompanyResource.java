@@ -5,9 +5,9 @@ import com.wongs.domain.Company;
 
 import com.wongs.repository.CompanyRepository;
 import com.wongs.repository.search.CompanySearchRepository;
+import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,7 +61,7 @@ public class CompanyResource {
     public ResponseEntity<Company> createCompany(@Valid @RequestBody Company company) throws URISyntaxException {
         log.debug("REST request to save Company : {}", company);
         if (company.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new company cannot already have an ID")).body(null);
+            throw new BadRequestAlertException("A new company cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Company result = companyRepository.save(company);
         companySearchRepository.save(result);
@@ -101,7 +101,7 @@ public class CompanyResource {
      */
     @GetMapping("/companies")
     @Timed
-    public ResponseEntity<List<Company>> getAllCompanies(@ApiParam Pageable pageable) {
+    public ResponseEntity<List<Company>> getAllCompanies(Pageable pageable) {
         log.debug("REST request to get a page of Companies");
         Page<Company> page = companyRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/companies");
@@ -147,7 +147,7 @@ public class CompanyResource {
      */
     @GetMapping("/_search/companies")
     @Timed
-    public ResponseEntity<List<Company>> searchCompanies(@RequestParam String query, @ApiParam Pageable pageable) {
+    public ResponseEntity<List<Company>> searchCompanies(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Companies for query {}", query);
         Page<Company> page = companySearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/companies");

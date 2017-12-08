@@ -10,6 +10,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
 
+
 /**
  * A UserInfo.
  */
@@ -36,6 +37,7 @@ public class UserInfo implements Serializable {
                inverseJoinColumns = @JoinColumn(name="accounts_id", referencedColumnName="id"))
     private Set<MyAccount> accounts = new HashSet<>();
 
+    // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
     }
@@ -81,6 +83,7 @@ public class UserInfo implements Serializable {
     public void setAccounts(Set<MyAccount> myAccounts) {
         this.accounts = myAccounts;
     }
+    // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
     public boolean equals(Object o) {

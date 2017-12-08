@@ -53,4 +53,5 @@
         <addPrimaryKey columnNames="departments_id, offices_id" tableName="department_office"/>
         
     </changeSet>
+    <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

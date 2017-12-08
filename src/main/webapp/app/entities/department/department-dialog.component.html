@@ -15,7 +15,7 @@
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.department.code" for="field_code">Code</label>
             <input type="text" class="form-control" name="code" id="field_code"
-                [(ngModel)]="department.code" required />
+                [(ngModel)]="department.code" required/>
             <div [hidden]="!(editForm.controls.code?.dirty && editForm.controls.code?.invalid)">
                 <small class="form-text text-danger"
                    [hidden]="!editForm.controls.code?.errors?.required" jhiTranslate="entity.validation.required">
@@ -26,18 +26,18 @@
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.department.name" for="field_name">Name</label>
             <input type="text" class="form-control" name="name" id="field_name"
-                [(ngModel)]="department.name"  />
+                [(ngModel)]="department.name" />
         </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.department.status" for="field_status">Status</label>
             <select class="form-control" name="status" [(ngModel)]="department.status" id="field_status" >
-                <option value="ACTIVE" jhiTranslate="mallApp.CommonStatus.ACTIVE">ACTIVE</option>
-                <option value="INACTIVE" jhiTranslate="mallApp.CommonStatus.INACTIVE">INACTIVE</option>
+                <option value="ACTIVE">{{'mallApp.CommonStatus.ACTIVE' | translate}}</option>
+                <option value="INACTIVE">{{'mallApp.CommonStatus.INACTIVE' | translate}}</option>
             </select>
         </div>
 
         <div class="form-group">
-            <label jhiTranslate="mallApp.department.parent" for="field_parent">Parent</label>
+            <label class="form-control-label" jhiTranslate="mallApp.department.parent" for="field_parent">Parent</label>
             <select class="form-control" id="field_parent" name="parent" [(ngModel)]="department.parent" >
                 <option [ngValue]="null"></option>
                 <option [ngValue]="departmentOption.id === department.parent?.id ? department.parent : departmentOption" *ngFor="let departmentOption of departments; trackBy: trackDepartmentById">{{departmentOption.id}}</option>
@@ -51,7 +51,7 @@
         </div>
     </div>
     <div class="modal-footer">
-        <button type="button" class="btn btn-default" data-dismiss="modal" (click)="clear()">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
             <span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
         </button>
         <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">

@@ -5,6 +5,7 @@ import com.wongs.domain.CurrencyRate;
 
 import com.wongs.repository.CurrencyRateRepository;
 import com.wongs.repository.search.CurrencyRateSearchRepository;
+import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
@@ -54,7 +55,7 @@ public class CurrencyRateResource {
     public ResponseEntity<CurrencyRate> createCurrencyRate(@RequestBody CurrencyRate currencyRate) throws URISyntaxException {
         log.debug("REST request to save CurrencyRate : {}", currencyRate);
         if (currencyRate.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new currencyRate cannot already have an ID")).body(null);
+            throw new BadRequestAlertException("A new currencyRate cannot already have an ID", ENTITY_NAME, "idexists");
         }
         CurrencyRate result = currencyRateRepository.save(currencyRate);
         currencyRateSearchRepository.save(result);
@@ -96,7 +97,7 @@ public class CurrencyRateResource {
     public List<CurrencyRate> getAllCurrencyRates() {
         log.debug("REST request to get all CurrencyRates");
         return currencyRateRepository.findAll();
-    }
+        }
 
     /**
      * GET  /currency-rates/:id : get the "id" currencyRate.

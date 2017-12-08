@@ -5,9 +5,9 @@ import com.wongs.domain.Price;
 
 import com.wongs.repository.PriceRepository;
 import com.wongs.repository.search.PriceSearchRepository;
+import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +60,7 @@ public class PriceResource {
     public ResponseEntity<Price> createPrice(@RequestBody Price price) throws URISyntaxException {
         log.debug("REST request to save Price : {}", price);
         if (price.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new price cannot already have an ID")).body(null);
+            throw new BadRequestAlertException("A new price cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Price result = priceRepository.save(price);
         priceSearchRepository.save(result);
@@ -100,7 +100,7 @@ public class PriceResource {
      */
     @GetMapping("/prices")
     @Timed
-    public ResponseEntity<List<Price>> getAllPrices(@ApiParam Pageable pageable) {
+    public ResponseEntity<List<Price>> getAllPrices(Pageable pageable) {
         log.debug("REST request to get a page of Prices");
         Page<Price> page = priceRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/prices");
@@ -146,7 +146,7 @@ public class PriceResource {
      */
     @GetMapping("/_search/prices")
     @Timed
-    public ResponseEntity<List<Price>> searchPrices(@RequestParam String query, @ApiParam Pageable pageable) {
+    public ResponseEntity<List<Price>> searchPrices(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Prices for query {}", query);
         Page<Price> page = priceSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/prices");

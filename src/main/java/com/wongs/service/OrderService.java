@@ -52,10 +52,10 @@ public class OrderService {
     }
 
     /**
-     *  Get all the orders.
+     * Get all the orders.
      *
-     *  @param pageable the pagination information
-     *  @return the list of entities
+     * @param pageable the pagination information
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<OrderDTO> findAll(Pageable pageable) {
@@ -65,10 +65,10 @@ public class OrderService {
     }
 
     /**
-     *  Get one order by id.
+     * Get one order by id.
      *
-     *  @param id the id of the entity
-     *  @return the entity
+     * @param id the id of the entity
+     * @return the entity
      */
     @Transactional(readOnly = true)
     public OrderDTO findOne(Long id) {
@@ -78,9 +78,9 @@ public class OrderService {
     }
 
     /**
-     *  Delete the  order by id.
+     * Delete the order by id.
      *
-     *  @param id the id of the entity
+     * @param id the id of the entity
      */
     public void delete(Long id) {
         log.debug("Request to delete Order : {}", id);
@@ -91,9 +91,9 @@ public class OrderService {
     /**
      * Search for the order corresponding to the query.
      *
-     *  @param query the query of the search
-     *  @param pageable the pagination information
-     *  @return the list of entities
+     * @param query the query of the search
+     * @param pageable the pagination information
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<OrderDTO> search(String query, Pageable pageable) {

@@ -29,13 +29,13 @@ export class DelegationPopupService {
             if (id) {
                 this.delegationService.find(id).subscribe((delegation) => {
                     delegation.from = this.datePipe
-                        .transform(delegation.from, 'yyyy-MM-ddThh:mm');
+                        .transform(delegation.from, 'yyyy-MM-ddTHH:mm:ss');
                     delegation.to = this.datePipe
-                        .transform(delegation.to, 'yyyy-MM-ddThh:mm');
+                        .transform(delegation.to, 'yyyy-MM-ddTHH:mm:ss');
                     delegation.createdDate = this.datePipe
-                        .transform(delegation.createdDate, 'yyyy-MM-ddThh:mm');
+                        .transform(delegation.createdDate, 'yyyy-MM-ddTHH:mm:ss');
                     delegation.lastModifiedDate = this.datePipe
-                        .transform(delegation.lastModifiedDate, 'yyyy-MM-ddThh:mm');
+                        .transform(delegation.lastModifiedDate, 'yyyy-MM-ddTHH:mm:ss');
                     this.ngbModalRef = this.delegationModalRef(component, delegation);
                     resolve(this.ngbModalRef);
                 });

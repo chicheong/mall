@@ -37,6 +37,7 @@ public class CacheConfiguration {
     @Bean
     public JCacheManagerCustomizer cacheManagerCustomizer() {
         return cm -> {
+            cm.createCache("users", jcacheConfiguration);
             cm.createCache(com.wongs.domain.User.class.getName(), jcacheConfiguration);
             cm.createCache(com.wongs.domain.Authority.class.getName(), jcacheConfiguration);
             cm.createCache(com.wongs.domain.User.class.getName() + ".authorities", jcacheConfiguration);

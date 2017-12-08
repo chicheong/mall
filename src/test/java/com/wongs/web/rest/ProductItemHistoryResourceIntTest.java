@@ -30,6 +30,7 @@ import java.time.ZoneId;
 import java.util.List;
 
 import static com.wongs.web.rest.TestUtil.sameInstant;
+import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -106,10 +107,11 @@ public class ProductItemHistoryResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        ProductItemHistoryResource productItemHistoryResource = new ProductItemHistoryResource(productItemHistoryRepository, productItemHistorySearchRepository);
+        final ProductItemHistoryResource productItemHistoryResource = new ProductItemHistoryResource(productItemHistoryRepository, productItemHistorySearchRepository);
         this.restProductItemHistoryMockMvc = MockMvcBuilders.standaloneSetup(productItemHistoryResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -189,7 +191,7 @@ public class ProductItemHistoryResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(productItemHistory)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the ProductItemHistory in the database
         List<ProductItemHistory> productItemHistoryList = productItemHistoryRepository.findAll();
         assertThat(productItemHistoryList).hasSize(databaseSizeBeforeCreate);
     }
@@ -262,6 +264,8 @@ public class ProductItemHistoryResourceIntTest {
 
         // Update the productItemHistory
         ProductItemHistory updatedProductItemHistory = productItemHistoryRepository.findOne(productItemHistory.getId());
+        // Disconnect from session so that the updates on updatedProductItemHistory are not directly saved in db
+        em.detach(updatedProductItemHistory);
         updatedProductItemHistory
             .name(UPDATED_NAME)
             .code(UPDATED_CODE)

@@ -60,10 +60,10 @@ public class ProductService {
     }
 
     /**
-     *  Get all the products.
+     * Get all the products.
      *
-     *  @param pageable the pagination information
-     *  @return the list of entities
+     * @param pageable the pagination information
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<ProductDTO> findAll(Pageable pageable) {
@@ -73,10 +73,10 @@ public class ProductService {
     }
 
     /**
-     *  Get one product by id.
+     * Get one product by id.
      *
-     *  @param id the id of the entity
-     *  @return the entity
+     * @param id the id of the entity
+     * @return the entity
      */
     @Transactional(readOnly = true)
     public ProductDTO findOne(Long id) {
@@ -106,9 +106,9 @@ public class ProductService {
     
     
     /**
-     *  Delete the  product by id.
+     * Delete the product by id.
      *
-     *  @param id the id of the entity
+     * @param id the id of the entity
      */
     public void delete(Long id) {
         log.debug("Request to delete Product : {}", id);
@@ -119,9 +119,9 @@ public class ProductService {
     /**
      * Search for the product corresponding to the query.
      *
-     *  @param query the query of the search
-     *  @param pageable the pagination information
-     *  @return the list of entities
+     * @param query the query of the search
+     * @param pageable the pagination information
+     * @return the list of entities
      */
     @Transactional(readOnly = true)
     public Page<ProductDTO> search(String query, Pageable pageable) {

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
+import { SERVER_API_URL } from '../../app.constants';
+
 import { JhiDateUtils } from 'ng-jhipster';
 
 import { Category } from './category.model';
@@ -9,8 +11,8 @@ import { ResponseWrapper, createRequestOption } from '../../shared';
 @Injectable()
 export class CategoryService {
 
-    private resourceUrl = 'api/categories';
-    private resourceSearchUrl = 'api/_search/categories';
+    private resourceUrl = SERVER_API_URL + 'api/categories';
+    private resourceSearchUrl = SERVER_API_URL + 'api/_search/categories';
 
     constructor(private http: Http, private dateUtils: JhiDateUtils) { }
 
@@ -18,8 +20,7 @@ export class CategoryService {
         const copy = this.convert(category);
         return this.http.post(this.resourceUrl, copy).map((res: Response) => {
             const jsonResponse = res.json();
-            this.convertItemFromServer(jsonResponse);
-            return jsonResponse;
+            return this.convertItemFromServer(jsonResponse);
         });
     }
 
@@ -27,16 +28,14 @@ export class CategoryService {
         const copy = this.convert(category);
         return this.http.put(this.resourceUrl, copy).map((res: Response) => {
             const jsonResponse = res.json();
-            this.convertItemFromServer(jsonResponse);
-            return jsonResponse;
+            return this.convertItemFromServer(jsonResponse);
         });
     }
 
     find(id: number): Observable<Category> {
         return this.http.get(`${this.resourceUrl}/${id}`).map((res: Response) => {
             const jsonResponse = res.json();
-            this.convertItemFromServer(jsonResponse);
-            return jsonResponse;
+            return this.convertItemFromServer(jsonResponse);
         });
     }
 
@@ -58,19 +57,28 @@ export class CategoryService {
 
     private convertResponse(res: Response): ResponseWrapper {
         const jsonResponse = res.json();
+        const result = [];
         for (let i = 0; i < jsonResponse.length; i++) {
-            this.convertItemFromServer(jsonResponse[i]);
+            result.push(this.convertItemFromServer(jsonResponse[i]));
         }
-        return new ResponseWrapper(res.headers, jsonResponse, res.status);
+        return new ResponseWrapper(res.headers, result, res.status);
     }
 
-    private convertItemFromServer(entity: any) {
+    /**
+     * Convert a returned JSON object to Category.
+     */
+    private convertItemFromServer(json: any): Category {
+        const entity: Category = Object.assign(new Category(), json);
         entity.createdDate = this.dateUtils
-            .convertDateTimeFromServer(entity.createdDate);
+            .convertDateTimeFromServer(json.createdDate);
         entity.lastModifiedDate = this.dateUtils
-            .convertDateTimeFromServer(entity.lastModifiedDate);
+            .convertDateTimeFromServer(json.lastModifiedDate);
+        return entity;
     }
 
+    /**
+     * Convert a Category to a JSON which can be sent to the server.
+     */
     private convert(category: Category): Category {
         const copy: Category = Object.assign({}, category);
 

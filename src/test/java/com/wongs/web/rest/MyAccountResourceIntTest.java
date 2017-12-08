@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.EntityManager;
 import java.util.List;
 
+import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -67,10 +68,11 @@ public class MyAccountResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        MyAccountResource myAccountResource = new MyAccountResource(myAccountRepository, myAccountSearchRepository);
+        final MyAccountResource myAccountResource = new MyAccountResource(myAccountRepository, myAccountSearchRepository);
         this.restMyAccountMockMvc = MockMvcBuilders.standaloneSetup(myAccountResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
             .setMessageConverters(jacksonMessageConverter).build();
     }
 
@@ -128,7 +130,7 @@ public class MyAccountResourceIntTest {
             .content(TestUtil.convertObjectToJsonBytes(myAccount)))
             .andExpect(status().isBadRequest());
 
-        // Validate the Alice in the database
+        // Validate the MyAccount in the database
         List<MyAccount> myAccountList = myAccountRepository.findAll();
         assertThat(myAccountList).hasSize(databaseSizeBeforeCreate);
     }
@@ -179,6 +181,8 @@ public class MyAccountResourceIntTest {
 
         // Update the myAccount
         MyAccount updatedMyAccount = myAccountRepository.findOne(myAccount.getId());
+        // Disconnect from session so that the updates on updatedMyAccount are not directly saved in db
+        em.detach(updatedMyAccount);
         updatedMyAccount
             .type(UPDATED_TYPE);
 

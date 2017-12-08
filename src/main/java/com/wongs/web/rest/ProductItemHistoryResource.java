@@ -5,9 +5,9 @@ import com.wongs.domain.ProductItemHistory;
 
 import com.wongs.repository.ProductItemHistoryRepository;
 import com.wongs.repository.search.ProductItemHistorySearchRepository;
+import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
-import io.swagger.annotations.ApiParam;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +60,7 @@ public class ProductItemHistoryResource {
     public ResponseEntity<ProductItemHistory> createProductItemHistory(@RequestBody ProductItemHistory productItemHistory) throws URISyntaxException {
         log.debug("REST request to save ProductItemHistory : {}", productItemHistory);
         if (productItemHistory.getId() != null) {
-            return ResponseEntity.badRequest().headers(HeaderUtil.createFailureAlert(ENTITY_NAME, "idexists", "A new productItemHistory cannot already have an ID")).body(null);
+            throw new BadRequestAlertException("A new productItemHistory cannot already have an ID", ENTITY_NAME, "idexists");
         }
         ProductItemHistory result = productItemHistoryRepository.save(productItemHistory);
         productItemHistorySearchRepository.save(result);
@@ -100,7 +100,7 @@ public class ProductItemHistoryResource {
      */
     @GetMapping("/product-item-histories")
     @Timed
-    public ResponseEntity<List<ProductItemHistory>> getAllProductItemHistories(@ApiParam Pageable pageable) {
+    public ResponseEntity<List<ProductItemHistory>> getAllProductItemHistories(Pageable pageable) {
         log.debug("REST request to get a page of ProductItemHistories");
         Page<ProductItemHistory> page = productItemHistoryRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/product-item-histories");
@@ -146,7 +146,7 @@ public class ProductItemHistoryResource {
      */
     @GetMapping("/_search/product-item-histories")
     @Timed
-    public ResponseEntity<List<ProductItemHistory>> searchProductItemHistories(@RequestParam String query, @ApiParam Pageable pageable) {
+    public ResponseEntity<List<ProductItemHistory>> searchProductItemHistories(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of ProductItemHistories for query {}", query);
         Page<ProductItemHistory> page = productItemHistorySearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/product-item-histories");

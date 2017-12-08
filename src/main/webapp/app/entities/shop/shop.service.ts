@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
+import { SERVER_API_URL } from '../../app.constants';
+
 import { JhiDateUtils } from 'ng-jhipster';
 
 import { Shop } from './shop.model';
@@ -9,8 +11,8 @@ import { ResponseWrapper, createRequestOption } from '../../shared';
 @Injectable()
 export class ShopService {
 
-    private resourceUrl = 'api/shops';
-    private resourceSearchUrl = 'api/_search/shops';
+    private resourceUrl = SERVER_API_URL + 'api/shops';
+    private resourceSearchUrl = SERVER_API_URL + 'api/_search/shops';
 
     constructor(private http: Http, private dateUtils: JhiDateUtils) { }
 
@@ -18,8 +20,7 @@ export class ShopService {
         const copy = this.convert(shop);
         return this.http.post(this.resourceUrl, copy).map((res: Response) => {
             const jsonResponse = res.json();
-            this.convertItemFromServer(jsonResponse);
-            return jsonResponse;
+            return this.convertItemFromServer(jsonResponse);
         });
     }
 
@@ -27,16 +28,14 @@ export class ShopService {
         const copy = this.convert(shop);
         return this.http.put(this.resourceUrl, copy).map((res: Response) => {
             const jsonResponse = res.json();
-            this.convertItemFromServer(jsonResponse);
-            return jsonResponse;
+            return this.convertItemFromServer(jsonResponse);
         });
     }
 
     find(id: number): Observable<Shop> {
         return this.http.get(`${this.resourceUrl}/${id}`).map((res: Response) => {
             const jsonResponse = res.json();
-            this.convertItemFromServer(jsonResponse);
-            return jsonResponse;
+            return this.convertItemFromServer(jsonResponse);
         });
     }
 
@@ -58,19 +57,28 @@ export class ShopService {
 
     private convertResponse(res: Response): ResponseWrapper {
         const jsonResponse = res.json();
+        const result = [];
         for (let i = 0; i < jsonResponse.length; i++) {
-            this.convertItemFromServer(jsonResponse[i]);
+            result.push(this.convertItemFromServer(jsonResponse[i]));
         }
-        return new ResponseWrapper(res.headers, jsonResponse, res.status);
+        return new ResponseWrapper(res.headers, result, res.status);
     }
 
-    private convertItemFromServer(entity: any) {
+    /**
+     * Convert a returned JSON object to Shop.
+     */
+    private convertItemFromServer(json: any): Shop {
+        const entity: Shop = Object.assign(new Shop(), json);
         entity.createdDate = this.dateUtils
-            .convertDateTimeFromServer(entity.createdDate);
+            .convertDateTimeFromServer(json.createdDate);
         entity.lastModifiedDate = this.dateUtils
-            .convertDateTimeFromServer(entity.lastModifiedDate);
+            .convertDateTimeFromServer(json.lastModifiedDate);
+        return entity;
     }
 
+    /**
+     * Convert a Shop to a JSON which can be sent to the server.
+     */
     private convert(shop: Shop): Shop {
         const copy: Shop = Object.assign({}, shop);
 
