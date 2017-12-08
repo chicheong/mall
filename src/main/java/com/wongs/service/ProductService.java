@@ -95,13 +95,17 @@ public class ProductService {
     @Transactional(readOnly = true)
     public ProductDTO findOneWithItems(Long id) {
         log.debug("Request to get Product : {}", id);
-        Product product = productRepository.findOne(id);
-        ProductDTO dto = productMapper.toDto(product);
-        if (product != null){
-        	dto.setUserInfo(product.getUserInfo());
-        	dto.setItems(productItemRepository.findByProduct(product));
+        if (id == 0) {
+        	return productMapper.toDto(new Product());
+        }else {
+	        Product product = productRepository.findOne(id);
+	        ProductDTO dto = productMapper.toDto(product);
+	        if (product != null){
+	        	dto.setUserInfo(product.getUserInfo());
+	        	dto.setItems(productItemRepository.findByProduct(product));
+	        }
+	        return dto;
         }
-        return dto;
     }
     
     

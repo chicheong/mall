@@ -36,6 +36,9 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     load(id) {
         this.productService.find(id).subscribe((product) => {
             this.product = product;
+            if (!product.id) {
+                this.isEditing = true;
+            }
         });
     }
     previousState() {
@@ -56,10 +59,12 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
     save() {
         this.isSaving = true;
-        if (this.product.id !== undefined) {
+        if (this.product.id) { // !== undefined
+            console.error('update');
             this.subscribeToSaveResponse(
                 this.productService.update(this.product));
         } else {
+            console.error('create');
             this.subscribeToSaveResponse(
                 this.productService.create(this.product));
         }

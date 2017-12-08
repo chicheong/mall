@@ -59,7 +59,7 @@
 	  			&nbsp;
 	  		</div>
 	  		<div>
-	  			Price:	<span>{{product.items[0].currency}} {{product.items[0].price}}</span>
+	  			Price:	<span>{{product.items[0]?product.items[0].currency : 'Fuck you'}} {{product.items[0]?product.items[0].price : 'asshole'}}</span>
 	  		</div>	
 	  		<div>
 	  			You Save:	$5.90 (28%)
@@ -98,6 +98,8 @@
 		<div class="col-md-1"></div>
 		<div class="col-md-11">
 
+<hr style='border-color: #5E5E5E;border-style: solid none;border-width: 2px 0;' />
+<span>Stuffs below are for your reference only, will not be shown on your product page</span><br/>
 <span jhiTranslate="mallApp.product.detail.title">Product</span>&nbsp;&nbsp;&nbsp;&nbsp;
 ID: {{product.id}}&nbsp;&nbsp;&nbsp;&nbsp;
 <span jhiTranslate="mallApp.product.name">Name</span>: <span>{{product.name}}</span>&nbsp;&nbsp;&nbsp;&nbsp;

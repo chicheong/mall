@@ -5,7 +5,9 @@
     		<h2 jhiTranslate="mallApp.product.home.title">Products</h2>
     	</div>
     	<div class="col-sm-4 text-right">
-    		<button class="btn btn-primary float-right jh-create-entity create-product" [routerLink]="['/', { outlets: { popup: ['product-new'] } }]" [ngbTooltip]="addTooltip" placement="bottom">
+    		<!-- <button class="btn btn-primary float-right jh-create-entity create-product" [routerLink]="['/', { outlets: { popup: ['product-new'] } }]" [ngbTooltip]="addTooltip" placement="bottom">-->
+    		<button class="btn btn-primary float-right jh-create-entity create-product" type="submit" [routerLink]="['../product', 0 ]" [ngbTooltip]="addTooltip" placement="bottom">
+    		
 	            <span class="fa fa-plus"></span>
                 <ng-template #addTooltip>
                     <span jhiTranslate="mallApp.product.home.createLabel">Create new Product</span>
