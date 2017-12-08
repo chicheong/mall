@@ -38,6 +38,7 @@ export class ProductService {
             this.convertItemFromServer(jsonResponse);
             console.error(JSON.stringify(jsonResponse));
             return jsonResponse;
+            //return this.convertItemFromServer(jsonResponse);
         });
     }
 

@@ -200,17 +200,14 @@ ui bootstrap tweaks
     outline: none;
 }
 
-/* ==========================================================================
-new testing
-========================================================================== */
 .thread-dump-modal-lock {
-    max-width: 200px;
-    overflow: hidden;
+    max-width: 450px;
+	overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    cursor: pointer;
-    &.long-note {
-        max-width: 450px;
+    &.short-note {
+        cursor: pointer;
+        max-width: 200px;
     }
  }
 

@@ -82,7 +82,7 @@
         </div>
 
         <div class="form-group">
-            <label jhiTranslate="mallApp.product.userInfo" for="field_userInfo">User Info</label>
+            <label class="form-control-label" jhiTranslate="mallApp.product.userInfo" for="field_userInfo">User Info</label>
             <select class="form-control" id="field_userInfo" name="userInfo" [(ngModel)]="product.userInfo" >
                 <option [ngValue]="null"></option>
                 <option [ngValue]="userInfoOption.id === product.userInfo?.id ? product.userInfo : userInfoOption" *ngFor="let userInfoOption of userinfos; trackBy: trackUserInfoById">{{userInfoOption.id}}</option>
