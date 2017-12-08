@@ -1,3 +1,4 @@
+
 <div *ngIf="product">
     <h2><span jhiTranslate="mallApp.product.detail.title">Product</span> {{product.id}}</h2>
     <hr>
@@ -49,8 +50,8 @@
         </dd>
         <dt><span jhiTranslate="mallApp.product.userInfo">User Info</span></dt>
         <dd>
-            <div *ngIf="product.userInfo">
-                <a [routerLink]="['/user-info', product.userInfo?.id]">{{product.userInfo?.id}}</a>
+            <div *ngIf="product.userInfoId">
+                <a [routerLink]="['/user-info', product.userInfoId]">{{product.userInfoId}}</a>
             </div>
         </dd>
     </dl>
