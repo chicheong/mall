@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subscription, Observable } from 'rxjs/Rx';
 import { JhiEventManager, JhiAlertService  } from 'ng-jhipster';
 
@@ -23,6 +23,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         private productService: ProductService,
         private route: ActivatedRoute,
         private alertService: JhiAlertService,
+        private router: Router
     ) {
     }
 
@@ -79,6 +80,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.eventManager.broadcast({ name: 'productListModification', content: 'OK'});
         this.isSaving = false;
         this.isEditing = false;
+        this.router.navigate(['/product', result.id]);
         // this.activeModal.dismiss(result);
     }
 
@@ -102,5 +104,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
     private cancel() {
         this.isEditing = false;
+        this.route.params.subscribe((params) => {
+            this.load(params['id']);
+        });
     }
 }
