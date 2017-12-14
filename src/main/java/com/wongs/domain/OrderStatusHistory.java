@@ -35,7 +35,7 @@ public class OrderStatusHistory implements Serializable {
     private OrderStatus status;
 
     @ManyToOne
-    private Order order;
+    private MyOrder order;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -72,17 +72,17 @@ public class OrderStatusHistory implements Serializable {
         this.status = status;
     }
 
-    public Order getOrder() {
+    public MyOrder getOrder() {
         return order;
     }
 
-    public OrderStatusHistory order(Order order) {
-        this.order = order;
+    public OrderStatusHistory order(MyOrder myOrder) {
+        this.order = myOrder;
         return this;
     }
 
-    public void setOrder(Order order) {
-        this.order = order;
+    public void setOrder(MyOrder myOrder) {
+        this.order = myOrder;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

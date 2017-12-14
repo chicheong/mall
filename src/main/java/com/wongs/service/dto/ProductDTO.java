@@ -9,9 +9,9 @@ import java.util.Set;
 import java.util.Objects;
 
 import com.wongs.domain.Category;
+import com.wongs.domain.Product;
 import com.wongs.domain.ProductHistory;
 import com.wongs.domain.ProductItem;
-import com.wongs.domain.UserInfo;
 import com.wongs.domain.enumeration.ProductStatus;
 
 /**
@@ -43,12 +43,36 @@ public class ProductDTO implements Serializable {
     private String lastModifiedBy;
 
     private ZonedDateTime lastModifiedDate;
-    
+
     private Set<ProductItem> items = new HashSet<>();
     private Set<ProductHistory> histories = new HashSet<>();
-    private UserInfo userInfo;
     private Set<Category> categories = new HashSet<>();
+    private Long shopId;
 
+    public ProductDTO() {
+        // Empty constructor needed for Jackson.
+    }
+
+    public ProductDTO(Product product) {
+        this.id = product.getId();
+    	this.name = product.getName();
+    	this.code = product.getCode();
+    	this.brand = product.getBrand();
+    	this.description = product.getDescription();
+    	this.content = product.getContent();
+    	this.remark = product.getRemark();
+    	this.status = product.getStatus();
+    	this.createdBy = product.getCreatedBy();
+    	this.createdDate = product.getCreatedDate();
+    	this.lastModifiedBy = product.getLastModifiedBy();
+    	this.lastModifiedDate = product.getLastModifiedDate();
+    	
+    	this.items = product.getItems();
+    	this.histories = product.getHistories();
+    	this.categories = product.getCategories();
+    }
+
+    
     public Long getId() {
         return id;
     }
@@ -161,14 +185,6 @@ public class ProductDTO implements Serializable {
 		this.histories = histories;
 	}
 
-	public UserInfo getUserInfo() {
-		return userInfo;
-	}
-
-	public void setUserInfo(UserInfo userInfo) {
-		this.userInfo = userInfo;
-	}
-
 	public Set<Category> getCategories() {
 		return categories;
 	}
@@ -177,7 +193,15 @@ public class ProductDTO implements Serializable {
 		this.categories = categories;
 	}
 
-	@Override
+    public Long getShopId() {
+        return shopId;
+    }
+
+    public void setShopId(Long shopId) {
+        this.shopId = shopId;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

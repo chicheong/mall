@@ -77,7 +77,7 @@ public class Product implements Serializable {
     private Set<ProductHistory> histories = new HashSet<>();
 
     @ManyToOne
-    private UserInfo userInfo;
+    private Shop shop;
 
     @ManyToMany(mappedBy = "products")
     @JsonIgnore
@@ -286,17 +286,17 @@ public class Product implements Serializable {
         this.histories = productHistories;
     }
 
-    public UserInfo getUserInfo() {
-        return userInfo;
+    public Shop getShop() {
+        return shop;
     }
 
-    public Product userInfo(UserInfo userInfo) {
-        this.userInfo = userInfo;
+    public Product shop(Shop shop) {
+        this.shop = shop;
         return this;
     }
 
-    public void setUserInfo(UserInfo userInfo) {
-        this.userInfo = userInfo;
+    public void setShop(Shop shop) {
+        this.shop = shop;
     }
 
     public Set<Category> getCategories() {

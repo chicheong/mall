@@ -78,11 +78,11 @@ public class CacheConfiguration {
             cm.createCache(com.wongs.domain.ProductItemHistory.class.getName(), jcacheConfiguration);
             cm.createCache(com.wongs.domain.Price.class.getName(), jcacheConfiguration);
             cm.createCache(com.wongs.domain.CurrencyRate.class.getName(), jcacheConfiguration);
-            cm.createCache(com.wongs.domain.Order.class.getName(), jcacheConfiguration);
-            cm.createCache(com.wongs.domain.Order.class.getName() + ".items", jcacheConfiguration);
-            cm.createCache(com.wongs.domain.Order.class.getName() + ".statusHistories", jcacheConfiguration);
             cm.createCache(com.wongs.domain.OrderItem.class.getName(), jcacheConfiguration);
             cm.createCache(com.wongs.domain.OrderStatusHistory.class.getName(), jcacheConfiguration);
+            cm.createCache(com.wongs.domain.MyOrder.class.getName(), jcacheConfiguration);
+            cm.createCache(com.wongs.domain.MyOrder.class.getName() + ".items", jcacheConfiguration);
+            cm.createCache(com.wongs.domain.MyOrder.class.getName() + ".statusHistories", jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

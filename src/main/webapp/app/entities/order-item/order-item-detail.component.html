@@ -25,7 +25,7 @@
         <dt><span jhiTranslate="mallApp.orderItem.order">Order</span></dt>
         <dd>
             <div *ngIf="orderItem.order">
-                <a [routerLink]="['/order', orderItem.order?.id]">{{orderItem.order?.id}}</a>
+                <a [routerLink]="['/my-order', orderItem.order?.id]">{{orderItem.order?.id}}</a>
             </div>
         </dd>
     </dl>

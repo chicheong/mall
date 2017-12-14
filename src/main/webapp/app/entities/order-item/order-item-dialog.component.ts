@@ -10,7 +10,7 @@ import { OrderItem } from './order-item.model';
 import { OrderItemPopupService } from './order-item-popup.service';
 import { OrderItemService } from './order-item.service';
 import { ProductItem, ProductItemService } from '../product-item';
-import { Order, OrderService } from '../order';
+import { MyOrder, MyOrderService } from '../my-order';
 import { ResponseWrapper } from '../../shared';
 
 @Component({
@@ -24,14 +24,14 @@ export class OrderItemDialogComponent implements OnInit {
 
     productitems: ProductItem[];
 
-    orders: Order[];
+    myorders: MyOrder[];
 
     constructor(
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
         private orderItemService: OrderItemService,
         private productItemService: ProductItemService,
-        private orderService: OrderService,
+        private myOrderService: MyOrderService,
         private eventManager: JhiEventManager
     ) {
     }
@@ -51,8 +51,8 @@ export class OrderItemDialogComponent implements OnInit {
                         }, (subRes: ResponseWrapper) => this.onError(subRes.json));
                 }
             }, (res: ResponseWrapper) => this.onError(res.json));
-        this.orderService.query()
-            .subscribe((res: ResponseWrapper) => { this.orders = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+        this.myOrderService.query()
+            .subscribe((res: ResponseWrapper) => { this.myorders = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
     }
 
     clear() {
@@ -93,7 +93,7 @@ export class OrderItemDialogComponent implements OnInit {
         return item.id;
     }
 
-    trackOrderById(index: number, item: Order) {
+    trackMyOrderById(index: number, item: MyOrder) {
         return item.id;
     }
 }

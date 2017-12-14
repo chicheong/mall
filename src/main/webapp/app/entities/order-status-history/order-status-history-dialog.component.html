@@ -33,7 +33,7 @@
             <label class="form-control-label" jhiTranslate="mallApp.orderStatusHistory.order" for="field_order">Order</label>
             <select class="form-control" id="field_order" name="order" [(ngModel)]="orderStatusHistory.order" >
                 <option [ngValue]="null"></option>
-                <option [ngValue]="orderOption.id === orderStatusHistory.order?.id ? orderStatusHistory.order : orderOption" *ngFor="let orderOption of orders; trackBy: trackOrderById">{{orderOption.id}}</option>
+                <option [ngValue]="myOrderOption.id === orderStatusHistory.order?.id ? orderStatusHistory.order : myOrderOption" *ngFor="let myOrderOption of myorders; trackBy: trackMyOrderById">{{myOrderOption.id}}</option>
             </select>
         </div>
     </div>

@@ -24,9 +24,9 @@
                 "productItemHistory": "Product Item History",
                 "price": "Price",
                 "currencyRate": "Currency Rate",
-                "order": "Order",
                 "orderItem": "Order Item",
                 "orderStatusHistory": "Order Status History",
+                "myOrder": "My Order",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

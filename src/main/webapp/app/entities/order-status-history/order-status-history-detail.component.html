@@ -15,7 +15,7 @@
         <dt><span jhiTranslate="mallApp.orderStatusHistory.order">Order</span></dt>
         <dd>
             <div *ngIf="orderStatusHistory.order">
-                <a [routerLink]="['/order', orderStatusHistory.order?.id]">{{orderStatusHistory.order?.id}}</a>
+                <a [routerLink]="['/my-order', orderStatusHistory.order?.id]">{{orderStatusHistory.order?.id}}</a>
             </div>
         </dd>
     </dl>

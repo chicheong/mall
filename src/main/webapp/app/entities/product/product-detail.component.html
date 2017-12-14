@@ -1,172 +1,71 @@
-<div *ngIf="product" [ngSwitch]="isEditing">
-	<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
-	<div class="row">
-		<jhi-alert-error></jhi-alert-error>
-	</div>
-	<div class="row">
-		<div class="col-md-1"></div>
-		<div class="col-md-3"></div>
-		<div class="col-md-8" [ngSwitch]="isEditing">
-		    <button type="button" [disabled]="isSaving" class="btn btn-info" (click)="previousState()">
-		        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
-		    </button>
-		    <button *ngSwitchCase="true" type="button" [disabled]="isSaving" class="btn btn-default" (click)="cancel()">
-	            <span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
-	        </button>
-	        <button *ngSwitchCase="true" type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
-	            <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
-	        </button>	        
-	        <button *ngSwitchCase="false" type="submit" [disabled]="isSaving" class="btn btn-primary" (click)="edit()">
-	            <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
-	        </button>
-		</div>
-		<div class="col-md-3"></div>
-    </div>
-		
-	<div class="row">
-	  <div class="col-md-1">photo listing</div>
-	  <div class="col-md-3">main photo</div>	
-	  <div class="col-md-5">product description</div>
-	  <div class="col-md-3">other</div>	
-	</div>
-	<div class="row">
-	  <div class="col-md-1">
-	  	<span class="hipster img-fluid img-rounded"></span>
-	  </div>
-	  <div class="col-md-3">
-	  	<span class="hipster img-fluid img-rounded"></span>
-	  </div>	
-	  <div class="col-md-5">
-	  	<div class="row-md jh-entity-details">
-	    	<div>
-	            <span *ngSwitchCase="false">{{product.description}}</span>
-	            <span *ngSwitchCase="true"><textarea class="form-control" name="description" id="field_description" [(ngModel)]="product.description" rows="5" cols="50"></textarea></span>
-	        </div>
-	    	<div>
-	            by <span *ngSwitchCase="false">{{product.brand}}</span>
-	            <span *ngSwitchCase="true"><input type="text" class="form-control" name="brand" id="field_brand" [(ngModel)]="product.brand"  /></span>
-	        </div>
-	    	<div>
-	            <span>123 customer reviews</span>
-	        </div>
-			<div *ngIf="product.items">
-	        	<span *ngFor="let item of product.items"><input type="button" value="{{item.color}}" /></span>
-			</div>
-			
-            <div>
-	  			&nbsp;
-	  		</div>
-	  		<div>
-	  			Price:	<span>{{product.items[0]?product.items[0].currency : 'Fuck you'}} {{product.items[0]?product.items[0].price : 'asshole'}}</span>
-	  		</div>	
-	  		<div>
-	  			You Save:	$5.90 (28%)
-	  		</div>	  		  
-			<div>
-			    <button type="button" [disabled]="isSaving" class="btn btn-default" (click)="cancel()">
-		            <span>Add to Cart</span>
-		        </button>
-			</div>
-			
-			<div *ngIf="false">
-		  		In stock/Pre-order/Out-of-order
-		  	</div>
-		  	<div *ngIf="false">
-		  		Estimated Delivery Date: Monday, Feb. 8 when you choose Two-Day Shipping at checkout.
-		  	</div>
-		  	<div *ngIf="false">
-		  		Ships from and sold by Koozam.
-		  	</div>
-		  	<div *ngIf="false">
-		  		Size: With Backpack
-		  	</div>
-		  	<div *ngIf="false">
-		  		Options
-		  	</div>	
-		  	<div *ngIf="false">
-		  		Item Description
-		  	</div> 
-			
-	  	</div>
 
-	  </div>
-	  <div class="col-md-3">other</div>		
-	</div>
-	<div class="row">
-		<div class="col-md-1"></div>
-		<div class="col-md-11">
+<div *ngIf="product">
+    <h2><span jhiTranslate="mallApp.product.detail.title">Product</span> {{product.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="mallApp.product.name">Name</span></dt>
+        <dd>
+            <span>{{product.name}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.product.code">Code</span></dt>
+        <dd>
+            <span>{{product.code}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.product.brand">Brand</span></dt>
+        <dd>
+            <span>{{product.brand}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.product.description">Description</span></dt>
+        <dd>
+            <span>{{product.description}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.product.content">Content</span></dt>
+        <dd>
+            <span>{{product.content}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.product.remark">Remark</span></dt>
+        <dd>
+            <span>{{product.remark}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.product.status">Status</span></dt>
+        <dd>
+            <span jhiTranslate="{{'mallApp.ProductStatus.' + product.status}}">{{product.status}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.product.createdBy">Created By</span></dt>
+        <dd>
+            <span>{{product.createdBy}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.product.createdDate">Created Date</span></dt>
+        <dd>
+            <span>{{product.createdDate | date:'medium'}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.product.lastModifiedBy">Last Modified By</span></dt>
+        <dd>
+            <span>{{product.lastModifiedBy}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.product.lastModifiedDate">Last Modified Date</span></dt>
+        <dd>
+            <span>{{product.lastModifiedDate | date:'medium'}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.product.shop">Shop</span></dt>
+        <dd>
+            <div *ngIf="product.shopId">
+                <a [routerLink]="['/shop', product.shopId]">{{product.shopId}}</a>
+            </div>
+        </dd>
+    </dl>
 
-<hr style='border-color: #5E5E5E;border-style: solid none;border-width: 2px 0;' />
-<span>Stuffs below are for your reference only, will not be shown on your product page</span><br/>
-<span jhiTranslate="mallApp.product.detail.title">Product</span>&nbsp;&nbsp;&nbsp;&nbsp;
-ID: {{product.id}}&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.name">Name</span>: <span>{{product.name}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.code">Code</span>: <span>{{product.code}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.brand">Brand</span>: <span>{{product.brand}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.description">Description</span>: <span>{{product.description}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.content">Content</span>: <span>{{product.content}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.remark">Remark</span>: <span>{{product.remark}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.status">Status</span>: <span jhiTranslate="{{'mallApp.ProductStatus.' + product.status}}">{{product.status}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.createdBy">Created By</span>: <span>{{product.createdBy}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.createdDate">Created Date</span>: <span>{{product.createdDate | date:'medium'}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.lastModifiedBy">Last Modified By</span>: <span>{{product.lastModifiedBy}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.lastModifiedDate">Last Modified Date</span>: <span>{{product.lastModifiedDate | date:'medium'}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.userInfo">User Info</span>: 
-<div *ngIf="product.userInfo">
-	<a [routerLink]="['/user-info', product.userInfo?.id]">{{product.userInfo?.id}}</a>
-</div>
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
 
-
-			<dl *ngSwitchCase="true" class="row-md jh-entity-details">
-		        <dt><span jhiTranslate="mallApp.product.name">Name</span></dt>
-		        <dd>
-		            <input type="text" class="form-control" name="name" id="field_brand" [(ngModel)]="product.name"  />
-		        </dd>
-		        <dt><span jhiTranslate="mallApp.product.code">Code</span></dt>
-		        <dd>
-		            <input type="text" class="form-control" name="code" id="field_brand" [(ngModel)]="product.code"  />
-		        </dd>
-		        <dt><span jhiTranslate="mallApp.product.brand">Brand</span></dt>
-		        <dd>
-		            <span>{{product.brand}}</span>
-		        </dd>
-		        <dt><span jhiTranslate="mallApp.product.remark">Remark</span></dt>
-		        <dd>
-		            <input type="text" class="form-control" name="remark" id="field_brand" [(ngModel)]="product.remark"  />
-		        </dd>
-		        <dt><span jhiTranslate="mallApp.product.status">Status</span></dt>
-		        <dd>
-		            <select class="form-control" name="status" [(ngModel)]="product.status" id="field_status" >
-		                <option value="ACTIVE" jhiTranslate="mallApp.ProductStatus.ACTIVE">ACTIVE</option>
-		                <option value="RESTRICTED" jhiTranslate="mallApp.ProductStatus.RESTRICTED">RESTRICTED</option>
-		                <option value="INACTIVE" jhiTranslate="mallApp.ProductStatus.INACTIVE">INACTIVE</option>
-		            </select>
-		        </dd>
-		        <dt><span jhiTranslate="mallApp.product.createdBy">Created By</span></dt>
-		        <dd>
-		        	<input type="text" class="form-control" name="createdBy" id="field_createdBy" [(ngModel)]="product.createdBy" />
-		        </dd>
-		        <dt><span jhiTranslate="mallApp.product.createdDate">Created Date</span></dt>
-		        <dd>
-                	<input id="field_createdDate" type="datetime-local" class="form-control" name="createdDate" [(ngModel)]="product.createdDate" />
-		        </dd>
-		        <dt><span jhiTranslate="mallApp.product.lastModifiedBy">Last Modified By</span></dt>
-		        <dd>
-		        	<input type="text" class="form-control" name="lastModifiedBy" id="field_lastModifiedBy" [(ngModel)]="product.lastModifiedBy" />
-		        </dd>
-		        <dt><span jhiTranslate="mallApp.product.lastModifiedDate">Last Modified Date</span></dt>
-		        <dd>
-		            <input id="field_lastModifiedDate" type="datetime-local" class="form-control" name="lastModifiedDate" [(ngModel)]="product.lastModifiedDate" />
-		        </dd>
-		        <dt><span jhiTranslate="mallApp.product.userInfo">User Info</span></dt>
-		        <dd>
-		            <div *ngIf="product.userInfo">
-		                <a [routerLink]="['/user-info', product.userInfo?.id]">{{product.userInfo?.id}}</a>
-		            </div>
-		        </dd>
-		    </dl>
-		    
-		</div>
-	</div>
-	</form>
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'product/'+ product.id + '/edit'} }]"
+            replaceUrl="true"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
 </div>

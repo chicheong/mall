@@ -12,7 +12,7 @@
                                  baseTableName="order_status_history"
                                  constraintName="fk_order_status_history_order_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="jhi_order"/>
+                                 referencedTableName="my_order"/>
 
     </changeSet>
 </databaseChangeLog>

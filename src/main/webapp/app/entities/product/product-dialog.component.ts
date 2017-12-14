@@ -9,7 +9,7 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { Product } from './product.model';
 import { ProductPopupService } from './product-popup.service';
 import { ProductService } from './product.service';
-import { UserInfo, UserInfoService } from '../user-info';
+import { Shop, ShopService } from '../shop';
 import { Category, CategoryService } from '../category';
 import { ResponseWrapper } from '../../shared';
 
@@ -22,7 +22,7 @@ export class ProductDialogComponent implements OnInit {
     product: Product;
     isSaving: boolean;
 
-    userinfos: UserInfo[];
+    shops: Shop[];
 
     categories: Category[];
 
@@ -30,7 +30,7 @@ export class ProductDialogComponent implements OnInit {
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
         private productService: ProductService,
-        private userInfoService: UserInfoService,
+        private shopService: ShopService,
         private categoryService: CategoryService,
         private eventManager: JhiEventManager
     ) {
@@ -38,8 +38,8 @@ export class ProductDialogComponent implements OnInit {
 
     ngOnInit() {
         this.isSaving = false;
-        this.userInfoService.query()
-            .subscribe((res: ResponseWrapper) => { this.userinfos = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+        this.shopService.query()
+            .subscribe((res: ResponseWrapper) => { this.shops = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
         this.categoryService.query()
             .subscribe((res: ResponseWrapper) => { this.categories = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
     }
@@ -78,7 +78,7 @@ export class ProductDialogComponent implements OnInit {
         this.jhiAlertService.error(error.message, null, null);
     }
 
-    trackUserInfoById(index: number, item: UserInfo) {
+    trackShopById(index: number, item: Shop) {
         return item.id;
     }
 

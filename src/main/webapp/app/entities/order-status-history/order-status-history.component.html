@@ -43,7 +43,7 @@
                 <td jhiTranslate="{{'mallApp.OrderStatus.' + orderStatusHistory.status}}">{{orderStatusHistory.status}}</td>
                 <td>
                     <div *ngIf="orderStatusHistory.order">
-                        <a [routerLink]="['../order', orderStatusHistory.order?.id ]" >{{orderStatusHistory.order?.id}}</a>
+                        <a [routerLink]="['../my-order', orderStatusHistory.order?.id ]" >{{orderStatusHistory.order?.id}}</a>
                     </div>
                 </td>
                 <td class="text-right">

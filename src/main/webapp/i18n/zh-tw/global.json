@@ -1,12 +1,12 @@
 {
     "global": {
         "title": "Mall",
-        "browsehappy": "æ‚¨çš„ç€è¦½å™¨å·²ç¶“<strong>éæ™‚</strong>ï¼Œå»ºè­°æ‚¨<a href=\"http://browsehappy.com/?locale=en\">å‡ç´šç€è¦½å™¨</a>ï¼Œä»¥ä¾¿æœ‰æ›´å¥½çš„é«”é©—ã€‚",
+        "browsehappy": "şı¨çşışıè¦½şı¨å·²ç¶şıstrong>şıæşı</strong>ï¼Œå»ºè­°æ‚¨<a href=\"http://browsehappy.com/?locale=en\">şı‡çşışıè¦½şışı/a>ï¼Œä»¥ä¾¿æşışı´å¥½şı„éşıé©—ãşı",
         "menu": {
-            "home": "é¦–é ",
+            "home": "é¦–éşı",
             "jhipster-needle-menu-add-element": "JHipster will add additional menu entries here (do not translate!)",
             "entities": {
-                "main": "å¯¦é«”",
+                "main": "å¯¦éşı",
                 "userInfo": "User Info",
                 "myAccount": "My Account",
                 "company": "Company",
@@ -24,77 +24,77 @@
                 "productItemHistory": "Product Item History",
                 "price": "Price",
                 "currencyRate": "Currency Rate",
-                "order": "Order",
                 "orderItem": "Order Item",
                 "orderStatusHistory": "Order Status History",
+                "myOrder": "My Order",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {
-                "main": "å¸³è™Ÿ",
-                "settings": "è¨­å®š",
+                "main": "å¸³èşı",
+                "settings": "è¨­åşı",
                 "password": "å¯†ç¢¼",
-                "sessions": "å·¥ä½œéšæ®µ",
-                "login": "ç™»å…¥",
-                "logout": "ç™»å‡º",
-                "register": "è¨»å†Š"
+                "sessions": "å·¥äşışıæ®µ",
+                "login": "şı»å…¥",
+                "logout": "şı»å‡º",
+                "register": "è¨»åşı"
             },
             "admin": {
-                "main": "ç®¡ç†",
-                "userManagement": "ä½¿ç”¨è€…ç®¡ç†",
-                "tracker": "ä½¿ç”¨è€…è¿½è¹¤",
-                "metrics": "è³‡æºç›£æ§",
-                "health": "æœå‹™ç‹€æ…‹",
-                "configuration": "è¨­å®š",
-                "logs": "ç´€éŒ„",
+                "main": "ç®¡çşı",
+                "userManagement": "ä½¿ç”¨şı…ç®¡şışı,
+                "tracker": "ä½¿ç”¨şı…è¿½è¹şı,
+                "metrics": "è³‡æşışışı§",
+                "health": "şıåşışışışı",
+                "configuration": "è¨­åşı",
+                "logs": "ç´şışı",
                 "audits": "ç¨½æ ¸",
                 "apidocs": "API",
-                "database": "è³‡æ–™åº«",
+                "database": "è³‡æşıåºşı,
                 "jhipster-needle-menu-add-admin-element": "JHipster will add additional menu entries here (do not translate!)"
             },
-            "language": "èªè¨€"
+            "language": "èªèşı"
         },
         "form": {
-            "username": "å¸³è™Ÿ",
-            "username.placeholder": "æ‚¨çš„å¸³è™Ÿ",
-            "newpassword": "æ–°å¯†ç¢¼",
-            "newpassword.placeholder": "æ‚¨çš„æ–°å¯†ç¢¼",
-            "confirmpassword": "æ–°å¯†ç¢¼ç¢ºèª",
-            "confirmpassword.placeholder": "ç¢ºèªæ‚¨çš„æ–°å¯†ç¢¼",
-            "email": "é›»å­éƒµä»¶",
-            "email.placeholder": "æ‚¨çš„é›»å­éƒµä»¶åœ°å€"
+            "username": "å¸³èşı",
+            "username.placeholder": "şı¨çşıå¸³èşı",
+            "newpassword": "şı°åşıç¢şı,
+            "newpassword.placeholder": "şı¨çşışı°åşıç¢şı,
+            "confirmpassword": "şı°åşıç¢¼ç¢ºèªşı,
+            "confirmpassword.placeholder": "ç¢ºèşışı¨çşışı°åşıç¢şı,
+            "email": "şı»åşışıµä»¶",
+            "email.placeholder": "şı¨çşışı»åşışıµä»¶şı°åşı"
         },
         "messages": {
             "info": {
                 "authenticated": {
-                    "prefix": "å¦‚æœæ‚¨è¦",
-                    "link": "ç™»å…¥",
-                    "suffix": "ï¼Œå¯ä»¥ä½¿ç”¨é è¨­å¸³è™Ÿ:<br/>- ç®¡ç†å“¡ (å¸³è™Ÿæ˜¯ \"admin\"ï¼Œå¯†ç¢¼æ˜¯ \"admin\") <br/>- ä½¿ç”¨è€… (å¸³è™Ÿ \"user\"ï¼Œå¯†ç¢¼æ˜¯ \"user\")ã€‚"
+                    "prefix": "å¦‚æşışı¨èşı",
+                    "link": "şı»å…¥",
+                    "suffix": "ï¼Œå¯ä»¥ä½¿şı¨éşıè¨­å¸³şışı<br/>- ç®¡çşışışı(å¸³èşışışı\"admin\"ï¼Œåşıç¢¼æ˜¯ \"admin\") <br/>- ä½¿ç”¨şışı(å¸³èşı \"user\"ï¼Œåşıç¢¼æ˜¯ \"user\")şışı
                 },
                 "register": {
-                    "noaccount": "é‚„æ²’æœ‰å¸³è™Ÿå—?",
-                    "link": "è¨»å†Šä¸€å€‹å§"
+                    "noaccount": "şı„æşışı‰å¸³şıŸåşı?",
+                    "link": "è¨»åşıä¸şışışışı
                 }
             },
             "error": {
-                "dontmatch" : "æ‚¨è¼¸å…¥çš„å…©æ¬¡å¯†ç¢¼ä¸ä¸€è‡´!"
+                "dontmatch" : "şı¨è¼¸şı¥çşışı©æ¬¡å¯†ç¢¼ä¸äşışışı"
             },
             "validate": {
                 "newpassword": {
-                    "required": "æ‚¨çš„å¯†ç¢¼æ˜¯å¿…å¡«æ¬„ä½ã€‚",
-                    "minlength": "æ‚¨çš„å¯†ç¢¼é•·åº¦è‡³å°‘è¦æœ‰ 5 å€‹å­—å…ƒã€‚",
-                    "maxlength": "æ‚¨çš„å¯†ç¢¼é•·åº¦ä¸èƒ½è¶…é 50 å€‹å­—å…ƒã€‚",
+                    "required": "şı¨çşıå¯†ç¢¼şı¯åşıå¡«æşıä½ãşı",
+                    "minlength": "şı¨çşıå¯†ç¢¼şı·åº¦şı³åşıè¦æşı 5 şı‹åşışıƒãşı",
+                    "maxlength": "şı¨çşıå¯†ç¢¼şı·åº¦ä¸èƒ½è¶…éşı 50 şı‹åşışıƒãşı",
                     "strength": "å¯†ç¢¼å¼·åº¦:"
                 },
                 "confirmpassword": {
-                    "required": "æ‚¨çš„ç¢ºèªå¯†ç¢¼æ˜¯å¿…å¡«æ¬„ä½ã€‚",
-                    "minlength": "æ‚¨çš„ç¢ºèªå¯†ç¢¼é•·åº¦è‡³å°‘è¦æœ‰ 5 å€‹å­—å…ƒã€‚",
-                    "maxlength": "æ‚¨çš„ç¢ºèªå¯†ç¢¼é•·åº¦ä¸èƒ½è¶…é 50 å€‹å­—å…ƒã€‚"
+                    "required": "şı¨çşıç¢ºèşıå¯†ç¢¼şı¯åşıå¡«æşıä½ãşı",
+                    "minlength": "şı¨çşıç¢ºèşıå¯†ç¢¼şı·åº¦şı³åşıè¦æşı 5 şı‹åşışıƒãşı",
+                    "maxlength": "şı¨çşıç¢ºèşıå¯†ç¢¼şı·åº¦ä¸èƒ½è¶…éşı 50 şı‹åşışıƒãşı"
                 },
                 "email": {
-                    "required": "æ‚¨çš„é›»å­éƒµä»¶æ˜¯å¿…å¡«æ¬„ä½ã€‚",
-                    "invalid": "æ‚¨çš„é›»å­éƒµä»¶åœ°å€æ ¼å¼éŒ¯èª¤ã€‚",
-                    "minlength": "æ‚¨çš„é›»å­éƒµä»¶åœ°å€é•·åº¦è‡³å°‘è¦æœ‰ 5 å€‹å­—å…ƒã€‚",
-                    "maxlength": "æ‚¨çš„é›»å­éƒµä»¶åœ°å€é•·åº¦ä¸èƒ½è¶…é 50 å€‹å­—å…ƒã€‚"
+                    "required": "şı¨çşışı»åşışıµä»¶şı¯åşıå¡«æşıä½ãşı",
+                    "invalid": "şı¨çşışı»åşışıµä»¶şı°åşışı¼åşışı¯èª¤şışı,
+                    "minlength": "şı¨çşışı»åşışıµä»¶şı°åşışı·åº¦şı³åşıè¦æşı 5 şı‹åşışıƒãşı",
+                    "maxlength": "şı¨çşışı»åşışıµä»¶şı°åşışı·åº¦ä¸èƒ½è¶…éşı 50 şı‹åşışıƒãşı"
                 }
             }
         },
@@ -102,60 +102,60 @@
             "id" : "ID"
         },
         "ribbon": {
-            "dev":"é–‹ç™¼ç’°å¢ƒ"
+            "dev":"şı‹ç™¼şı°åşı"
         },
-        "item-count": "é¡¯ç¤ºç¬¬ {{first}} è‡³ {{second}} ç­†ï¼Œå…± {{total}} ç­†ã€‚"
+        "item-count": "é¡¯ç¤ºç¬şı{{first}} şışı{{second}} ç­†ïşışışı{{total}} ç­†ãşı"
     },
     "entity": {
         "action": {
-            "addblob": "æ–°å¢ Blob",
-            "addimage": "æ–°å¢åœ–ç‰‡",
-            "back": "è¿”å›",
-            "cancel": "å–æ¶ˆ",
-            "delete": "åˆªé™¤",
+            "addblob": "şı°åşı Blob",
+            "addimage": "şı°åşışı–çşı",
+            "back": "è¿”åşı",
+            "cancel": "şı–æşı",
+            "delete": "şıªé™¤",
             "edit": "ç·¨è¼¯",
-            "open": "é–‹å•Ÿ",
-            "save": "å„²å­˜",
-            "view": "æª¢è¦–"
+            "open": "şı‹åşı",
+            "save": "şı²åşı",
+            "view": "æª¢èşı"
         },
         "detail": {
-            "field": "æ¬„ä½",
-            "value": "å€¼"
+            "field": "æ¬„äşı",
+            "value": "şışı
         },
         "delete": {
-            "title": "åˆªé™¤ä½œæ¥­ç¢ºèª"
+            "title": "şıªé™¤ä½œæ¥­ç¢ºèşı"
         },
         "validation": {
-            "required": "æ­¤æ¬„ä½å¿…é ˆå¡«å¯«ã€‚",
-            "minlength": "æ­¤æ¬„ä½è‡³å°‘è¦æœ‰ {{min}} å€‹å­—å…ƒã€‚",
-            "maxlength": "æ­¤æ¬„ä½ä¸èƒ½è¶…é {{max}} å€‹å­—å…ƒã€‚",
-            "min": "æ­¤æ¬„ä½ä¸èƒ½æ¯” {{min}} å°ã€‚",
-            "max": "æ­¤æ¬„ä½ä¸èƒ½å¤§æ–¼ {{max}}ã€‚",
-            "minbytes": "æ­¤æ¬„ä½è‡³å°‘è¦æœ‰ {{min}} å€‹ä½å…ƒçµ„ã€‚",
-            "maxbytes": "æ­¤æ¬„ä½ä¸èƒ½è¶…é {{max}} å€‹ä½å…ƒçµ„ã€‚",
-            "pattern": "æ­¤æ¬„ä½è¦ç¬¦åˆæ¨¡å¼ {{pattern}}ã€‚",
-            "number": "æ­¤æ¬„ä½åªèƒ½æ˜¯æ•¸å­—ã€‚",
-            "datetimelocal": "æ­¤æ¬„ä½æ‡‰ç‚ºæ—¥æœŸå’Œæ™‚é–“ã€‚"
+            "required": "æ­¤æşıä½åşışıˆå¡«å¯«ãşı",
+            "minlength": "æ­¤æşıä½è‡³å°‘èşışışı{{min}} şı‹åşışıƒãşı",
+            "maxlength": "æ­¤æşıä½äşışı½èşışışı{{max}} şı‹åşışıƒãşı",
+            "min": "æ­¤æşıä½äşışı½æşı {{min}} å°ãşı",
+            "max": "æ­¤æşıä½äşışı½å¤§şışı{{max}}şışı,
+            "minbytes": "æ­¤æşıä½è‡³å°‘èşışışı{{min}} şı‹äşışıƒçşışışı,
+            "maxbytes": "æ­¤æşıä½äşışı½èşışışı{{max}} şı‹äşışıƒçşışışı,
+            "pattern": "æ­¤æşıä½èşıç¬¦åşıæ¨¡åşı {{pattern}}şışı,
+            "number": "æ­¤æşıä½åªşı½æ˜¯şı¸åşışışı,
+            "datetimelocal": "æ­¤æşıä½æşışıºæ—¥şıŸåşışı‚éşışışı
         }
     },
     "error": {
-        "internalServerError": "ä¼ºæœå™¨å…§éƒ¨éŒ¯èª¤",
-        "server.not.reachable": "ç„¡æ³•é€£åˆ°ä¼ºæœå™¨",
-        "url.not.found": "æ‰¾ä¸åˆ°",
-        "NotNull": "æ¬„ä½ {{fieldName}} ä¸èƒ½ç‚ºç©º!",
-        "Size": "æ¬„ä½ {{fieldName}} ä¸ç¬¦åˆå¤§å°éœ€æ±‚!",
-        "userexists": "ç™»å…¥å¸³è™Ÿåç¨±å·²è¢«ä½¿ç”¨!",
-        "emailexists": "é›»å­éƒµä»¶åœ°å€å·²è¢«ä½¿ç”¨!",
-        "idexists": "æ–°å¯¦é«”ä¸èƒ½åŒ…å« ID"
+        "internalServerError": "ä¼ºæşışı¨å…§şı¨éŒ¯èªşı,
+        "server.not.reachable": "şı¡æşışışıˆ°ä¼ºæşışışı,
+        "url.not.found": "şı¾äşışışı,
+        "NotNull": "æ¬„äşı {{fieldName}} ä¸èƒ½şıºç©º!",
+        "Size": "æ¬„äşı {{fieldName}} ä¸ç¬¦şıˆå¤§å°éşıæ±şı",
+        "userexists": "şı»å…¥å¸³èşışıç¨±å·²è¢«ä½¿ç”¨!",
+        "emailexists": "şı»åşışıµä»¶şı°åşıå·²è¢«ä½¿ç”¨!",
+        "idexists": "şı°å¯¦é«”äşışı½åşışışıID"
     },
     "footer": {
-    	"aboutUs": "é—œæ–¼æˆ‘å€‘",
-    	"press": "åª’é«”",
-    	"privacyPolicy": "ç§éš±æ”¿ç­–",
-    	"faq": "å¸¸è¦‹å•é¡Œ",
-    	"contactUs": "è¯çµ¡æˆ‘å€‘",
-    	"joinUs": "åŠ å…¥æˆ‘å€‘",
-    	"legal": "åˆæ³•",
+    	"aboutUs": "şıœæ–¼şı‘åşı",
+    	"press": "åª’éşı",
+    	"privacyPolicy": "ç§éš±şı¿çşı",
+    	"faq": "å¸¸èşışıéşı",
+    	"contactUs": "şı¯çµ¡şı‘åşı",
+    	"joinUs": "şı å…¥şı‘åşı",
+    	"legal": "şıˆæşı",
     	"terms": "æ¢æ¬¾"
     }
 }

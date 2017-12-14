@@ -177,7 +177,7 @@ entity CurrencyRate {
 	targetCurrency CurrencyType
 }
 
-entity Order {
+entity MyOrder {
 	total BigDecimal,
 	currency CurrencyType,
 	remark String,
@@ -208,8 +208,8 @@ relationship OneToOne {
 relationship OneToMany {
 	MyAccount{delegation} to Delegation{account},
 	Product{item} to ProductItem{product},
-	Order{item} to OrderItem{order},
-	Order{statusHistory} to OrderStatusHistory{order},
+	MyOrder{item} to OrderItem{order},
+	MyOrder{statusHistory} to OrderStatusHistory{order},
 	Product{history} to ProductHistory{product},
 	ProductItem{history} to ProductItemHistory{item},
 	ProductItem{price} to Price{item}
@@ -226,7 +226,7 @@ relationship ManyToOne {
 	State{country} to Country,
 	Category{parent} to Category,
 	Product{shop} to Shop,
-	Order{account} to MyAccount
+	MyOrder{account} to MyAccount
 }
 
 relationship ManyToMany {
@@ -238,8 +238,8 @@ relationship ManyToMany {
 	Category{product} to Product{category}
 }
 
-paginate UserInfo, MyAccount, Company, Department, Office, Country, State, Shop, Category, Product, ProductItem, Order, OrderItem, Price with pagination
+paginate UserInfo, MyAccount, Company, Department, Office, Country, State, Shop, Category, Product, ProductItem, MyOrder, OrderItem, Price with pagination
 paginate Address with pager
 paginate Delegation, OrderStatusHistory, ProductHistory, ProductItemHistory with infinite-scroll
-service Product, Order with serviceClass
-dto Product, Order with mapstruct
+service Product, MyOrder with serviceClass
+dto Product, MyOrder with mapstruct

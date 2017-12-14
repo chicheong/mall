@@ -56,7 +56,7 @@ describe('Product e2e test', () => {
         expect(productDialogPage.getLastModifiedByInput()).toMatch('lastModifiedBy');
         productDialogPage.setLastModifiedDateInput(12310020012301);
         expect(productDialogPage.getLastModifiedDateInput()).toMatch('2001-12-31T02:30');
-        productDialogPage.userInfoSelectLastOption();
+        productDialogPage.shopSelectLastOption();
         productDialogPage.save();
         expect(productDialogPage.getSaveButton().isPresent()).toBeFalsy();
     }); 
@@ -94,7 +94,7 @@ export class ProductDialogPage {
     createdDateInput = element(by.css('input#field_createdDate'));
     lastModifiedByInput = element(by.css('input#field_lastModifiedBy'));
     lastModifiedDateInput = element(by.css('input#field_lastModifiedDate'));
-    userInfoSelect = element(by.css('select#field_userInfo'));
+    shopSelect = element(by.css('select#field_shop'));
 
     getModalTitle() {
         return this.modalTitle.getAttribute('jhiTranslate');
@@ -191,20 +191,20 @@ export class ProductDialogPage {
         return this.lastModifiedDateInput.getAttribute('value');
     }
 
-    userInfoSelectLastOption = function () {
-        this.userInfoSelect.all(by.tagName('option')).last().click();
+    shopSelectLastOption = function () {
+        this.shopSelect.all(by.tagName('option')).last().click();
     }
 
-    userInfoSelectOption = function (option) {
-        this.userInfoSelect.sendKeys(option);
+    shopSelectOption = function (option) {
+        this.shopSelect.sendKeys(option);
     }
 
-    getUserInfoSelect = function () {
-        return this.userInfoSelect;
+    getShopSelect = function () {
+        return this.shopSelect;
     }
 
-    getUserInfoSelectedOption = function () {
-        return this.userInfoSelect.element(by.css('option:checked')).getText();
+    getShopSelectedOption = function () {
+        return this.shopSelect.element(by.css('option:checked')).getText();
     }
 
     save() {

@@ -132,12 +132,6 @@
                         </a>
                     </li>
                     <li>
-                        <a class="dropdown-item" routerLink="order" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                            <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
-                            <span jhiTranslate="global.menu.entities.order">Order</span>
-                        </a>
-                    </li>
-                    <li>
                         <a class="dropdown-item" routerLink="order-item" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
                             <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
                             <span jhiTranslate="global.menu.entities.orderItem">Order Item</span>
@@ -147,6 +141,12 @@
                         <a class="dropdown-item" routerLink="order-status-history" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
                             <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
                             <span jhiTranslate="global.menu.entities.orderStatusHistory">Order Status History</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a class="dropdown-item" routerLink="my-order" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
+                            <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
+                            <span jhiTranslate="global.menu.entities.myOrder">My Order</span>
                         </a>
                     </li>
                     <!-- jhipster-needle-add-entity-to-menu - JHipster will add entities to the menu here -->

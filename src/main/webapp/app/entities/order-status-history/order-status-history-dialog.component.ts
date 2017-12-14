@@ -9,7 +9,7 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { OrderStatusHistory } from './order-status-history.model';
 import { OrderStatusHistoryPopupService } from './order-status-history-popup.service';
 import { OrderStatusHistoryService } from './order-status-history.service';
-import { Order, OrderService } from '../order';
+import { MyOrder, MyOrderService } from '../my-order';
 import { ResponseWrapper } from '../../shared';
 
 @Component({
@@ -21,21 +21,21 @@ export class OrderStatusHistoryDialogComponent implements OnInit {
     orderStatusHistory: OrderStatusHistory;
     isSaving: boolean;
 
-    orders: Order[];
+    myorders: MyOrder[];
 
     constructor(
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
         private orderStatusHistoryService: OrderStatusHistoryService,
-        private orderService: OrderService,
+        private myOrderService: MyOrderService,
         private eventManager: JhiEventManager
     ) {
     }
 
     ngOnInit() {
         this.isSaving = false;
-        this.orderService.query()
-            .subscribe((res: ResponseWrapper) => { this.orders = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+        this.myOrderService.query()
+            .subscribe((res: ResponseWrapper) => { this.myorders = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
     }
 
     clear() {
@@ -72,7 +72,7 @@ export class OrderStatusHistoryDialogComponent implements OnInit {
         this.jhiAlertService.error(error.message, null, null);
     }
 
-    trackOrderById(index: number, item: Order) {
+    trackMyOrderById(index: number, item: MyOrder) {
         return item.id;
     }
 }

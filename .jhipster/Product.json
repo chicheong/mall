@@ -15,8 +15,8 @@
         },
         {
             "relationshipType": "many-to-one",
-            "relationshipName": "userInfo",
-            "otherEntityName": "userInfo",
+            "relationshipName": "shop",
+            "otherEntityName": "shop",
             "otherEntityField": "id"
         },
         {
@@ -81,5 +81,6 @@
     "entityTableName": "product",
     "dto": "mapstruct",
     "pagination": "pagination",
-    "service": "serviceClass"
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false
 }

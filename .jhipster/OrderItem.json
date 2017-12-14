@@ -12,7 +12,7 @@
         {
             "relationshipType": "many-to-one",
             "relationshipName": "order",
-            "otherEntityName": "order",
+            "otherEntityName": "myOrder",
             "otherEntityField": "id"
         }
     ],
@@ -35,5 +35,6 @@
     "entityTableName": "order_item",
     "dto": "no",
     "pagination": "pagination",
-    "service": "no"
+    "service": "no",
+    "jpaMetamodelFiltering": false
 }
