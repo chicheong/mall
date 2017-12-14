@@ -2,9 +2,14 @@ package com.wongs.service;
 
 import com.wongs.domain.Authority;
 import com.wongs.domain.User;
+import com.wongs.domain.UserInfo;
 import com.wongs.repository.AuthorityRepository;
+import com.wongs.repository.MyAccountRepository;
+import com.wongs.repository.UserInfoRepository;
 import com.wongs.config.Constants;
 import com.wongs.repository.UserRepository;
+import com.wongs.repository.search.MyAccountSearchRepository;
+import com.wongs.repository.search.UserInfoSearchRepository;
 import com.wongs.repository.search.UserSearchRepository;
 import com.wongs.security.AuthoritiesConstants;
 import com.wongs.security.SecurityUtils;
@@ -47,13 +52,24 @@ public class UserService {
     private final AuthorityRepository authorityRepository;
 
     private final CacheManager cacheManager;
+    
+    private final UserInfoRepository userInfoRepository;
+    private final UserInfoSearchRepository userInfoSearchRepository;
+    private final MyAccountRepository myAccountRepository;
+    private final MyAccountSearchRepository myAccountSearchRepository;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserSearchRepository userSearchRepository, AuthorityRepository authorityRepository, CacheManager cacheManager) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserSearchRepository userSearchRepository, AuthorityRepository authorityRepository, CacheManager cacheManager,
+    		UserInfoRepository userInfoRepository, UserInfoSearchRepository userInfoSearchRepository,
+    		MyAccountRepository myAccountRepository, MyAccountSearchRepository myAccountSearchRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userSearchRepository = userSearchRepository;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
+        this.userInfoRepository = userInfoRepository;
+        this.userInfoSearchRepository = userInfoSearchRepository;
+        this.myAccountRepository = myAccountRepository;
+        this.myAccountSearchRepository = myAccountSearchRepository;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -147,6 +163,12 @@ public class UserService {
         userRepository.save(user);
         userSearchRepository.save(user);
         log.debug("Created Information for User: {}", user);
+        
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUser(user);
+        userInfoRepository.save(userInfo);
+        userInfoSearchRepository.save(userInfo);
+        
         return user;
     }
 

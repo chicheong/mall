@@ -225,8 +225,8 @@ relationship ManyToOne {
 	Address{state} to State,
 	State{country} to Country,
 	Category{parent} to Category,
-	Product{userInfo} to UserInfo,
-	Order{userInfo} to UserInfo
+	Product{shop} to Shop,
+	Order{account} to MyAccount
 }
 
 relationship ManyToMany {
