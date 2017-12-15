@@ -3,6 +3,7 @@ package com.wongs.web.rest;
 import com.wongs.config.Constants;
 import com.codahale.metrics.annotation.Timed;
 import com.wongs.domain.User;
+import com.wongs.repository.UserInfoRepository;
 import com.wongs.repository.UserRepository;
 import com.wongs.repository.search.UserSearchRepository;
 import com.wongs.security.AuthoritiesConstants;
@@ -176,9 +177,13 @@ public class UserResource {
     @Timed
     public ResponseEntity<UserDTO> getUser(@PathVariable String login) {
         log.debug("REST request to get User : {}", login);
-        return ResponseUtil.wrapOrNotFound(
-            userService.getUserWithAuthoritiesByLogin(login)
-                .map(UserDTO::new));
+        
+        return ResponseUtil.wrapOrNotFound(userService.getUserWithAuthoritiesByLogin(login)
+				.map(UserDTO::new).map(userDTO ->  {
+					userDTO.setUserInfo(null);
+					return userDTO;
+				})
+            );
     }
 
     /**

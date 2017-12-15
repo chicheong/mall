@@ -43,7 +43,7 @@
 	            <span *ngSwitchCase="true"><textarea class="form-control" name="description" id="field_description" [(ngModel)]="product.description" rows="5" cols="50"></textarea></span>
 	        </div>
 	    	<div>
-	            by <span *ngSwitchCase="false">{{product.brand}}</span>
+	            <span *ngIf="product.brand">by </span><span *ngSwitchCase="false">{{product.brand}}</span>
 	            <span *ngSwitchCase="true"><input type="text" class="form-control" name="brand" id="field_brand" [(ngModel)]="product.brand"  /></span>
 	        </div>
 	    	<div>
@@ -57,7 +57,7 @@
 	  			&nbsp;
 	  		</div>
 	  		<div>
-	  			Price:	<span>{{product.items[0]?product.items[0].currency : 'Fuck you'}} {{product.items[0]?product.items[0].price : 'asshole'}}</span>
+	  			Price:	<span>{{product.items?product.items[0].currency : 'Fuck you'}} {{product.items?product.items[0].price : 'asshole'}}</span>
 	  		</div>	
 	  		<div>
 	  			You Save:	$5.90 (28%)
@@ -163,13 +163,13 @@ ID: {{product.id}}&nbsp;&nbsp;&nbsp;&nbsp;
 		            <div *ngIf="product.userInfo">
 		                <a [routerLink]="['/user-info', product.userInfo?.id]">{{product.userInfo?.id}}</a>
 		            </div>
-		        </dd> -->
+		        </dd> 
 		        <dt><span jhiTranslate="mallApp.product.shop">Shop</span></dt>
 		        <dd>
 		            <div *ngIf="product.shopId">
 		                <a [routerLink]="['/shop', product.shopId]">{{product.shopId}}</a>
 		            </div>
-		        </dd>
+		        </dd>-->
 		    </dl>
 		    
 		</div>

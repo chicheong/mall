@@ -1,6 +1,7 @@
 package com.wongs.service;
 
 import com.wongs.domain.Authority;
+import com.wongs.domain.MyAccount;
 import com.wongs.domain.User;
 import com.wongs.domain.UserInfo;
 import com.wongs.repository.AuthorityRepository;
@@ -168,6 +169,11 @@ public class UserService {
         userInfo.setUser(user);
         userInfoRepository.save(userInfo);
         userInfoSearchRepository.save(userInfo);
+        
+        MyAccount myAccount = new MyAccount();
+        myAccount.setUserInfos(Collections.singleton(userInfo));
+        myAccountRepository.save(myAccount);
+        myAccountSearchRepository.save(myAccount);
         
         return user;
     }

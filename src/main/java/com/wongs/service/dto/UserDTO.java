@@ -3,7 +3,9 @@ package com.wongs.service.dto;
 import com.wongs.config.Constants;
 
 import com.wongs.domain.Authority;
+import com.wongs.domain.MyAccount;
 import com.wongs.domain.User;
+import com.wongs.domain.UserInfo;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
@@ -52,6 +54,10 @@ public class UserDTO {
     private Instant lastModifiedDate;
 
     private Set<String> authorities;
+    
+    private UserInfo userInfo = null;
+    
+    private Set<MyAccount> myAccounts = null;
 
     public UserDTO() {
         // Empty constructor needed for Jackson.
@@ -178,8 +184,24 @@ public class UserDTO {
     public void setAuthorities(Set<String> authorities) {
         this.authorities = authorities;
     }
+    
+    public UserInfo getUserInfo() {
+		return userInfo;
+	}
 
-    @Override
+	public void setUserInfo(UserInfo userInfo) {
+		this.userInfo = userInfo;
+	}
+
+	public Set<MyAccount> getMyAccounts() {
+		return myAccounts;
+	}
+
+	public void setMyAccounts(Set<MyAccount> myAccounts) {
+		this.myAccounts = myAccounts;
+	}
+
+	@Override
     public String toString() {
         return "UserDTO{" +
             "login='" + login + '\'' +
@@ -194,6 +216,8 @@ public class UserDTO {
             ", lastModifiedBy='" + lastModifiedBy + '\'' +
             ", lastModifiedDate=" + lastModifiedDate +
             ", authorities=" + authorities +
+            ", userIno=" + userInfo +
+            ", myAccounts=" + myAccounts +
             "}";
     }
 }
