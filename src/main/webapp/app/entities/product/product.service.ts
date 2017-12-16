@@ -69,10 +69,10 @@ export class ProductService {
      */
     private convertItemFromServer(json: any): Product {
         const entity: Product = Object.assign(new Product(), json);
-        entity.createdDate = this.dateUtils
-            .convertDateTimeFromServer(json.createdDate);
-        entity.lastModifiedDate = this.dateUtils
-            .convertDateTimeFromServer(json.lastModifiedDate);
+        // entity.createdDate = this.dateUtils
+        //    .convertDateTimeFromServer(json.createdDate);
+        // entity.lastModifiedDate = this.dateUtils
+        //    .convertDateTimeFromServer(json.lastModifiedDate);
         return entity;
     }
 
@@ -83,6 +83,7 @@ export class ProductService {
         const copy: Product = Object.assign({}, product);
 
         console.error('product.createdDate' + JSON.stringify(product.createdDate));
+        console.error('product.id' + product.id);
         copy.createdDate = this.dateUtils.toDate(product.createdDate);
 
         copy.lastModifiedDate = this.dateUtils.toDate(product.lastModifiedDate);

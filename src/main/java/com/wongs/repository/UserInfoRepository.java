@@ -19,6 +19,4 @@ public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
 
     @Query("select user_info from UserInfo user_info left join fetch user_info.accounts where user_info.id =:id")
     UserInfo findOneWithEagerRelationships(@Param("id") Long id);
-
-    UserInfo findOneWithUserId(Long userId);
 }

@@ -80,7 +80,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.eventManager.broadcast({ name: 'productListModification', content: 'OK'});
         this.isSaving = false;
         this.isEditing = false;
-        this.router.navigate(['/product', result.id]);
+      console.error('result.id=' + result.id);
+        setTimeout(this.router.navigate(['/product', result.id]), 0);
         // this.activeModal.dismiss(result);
     }
 
@@ -98,11 +99,11 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.alertService.error(error.message, null, null);
     }
 
-    private edit() {
+    edit() {
         this.isEditing = true;
     }
 
-    private cancel() {
+    cancel() {
         this.isEditing = false;
         this.route.params.subscribe((params) => {
             this.load(params['id']);

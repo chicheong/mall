@@ -179,10 +179,7 @@ public class UserResource {
         log.debug("REST request to get User : {}", login);
         
         return ResponseUtil.wrapOrNotFound(userService.getUserWithAuthoritiesByLogin(login)
-				.map(UserDTO::new).map(userDTO ->  {
-					userDTO.setUserInfo(null);
-					return userDTO;
-				})
+				.map(UserDTO::new)
             );
     }
 
