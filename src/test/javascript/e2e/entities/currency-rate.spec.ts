@@ -1,15 +1,11 @@
-import { browser, element, by, $ } from 'protractor';
+import { browser, element, by } from 'protractor';
 import { NavBarPage } from './../page-objects/jhi-page-objects';
-const path = require('path');
 
 describe('CurrencyRate e2e test', () => {
 
     let navBarPage: NavBarPage;
     let currencyRateDialogPage: CurrencyRateDialogPage;
     let currencyRateComponentsPage: CurrencyRateComponentsPage;
-    const fileToUpload = '../../../../main/webapp/content/images/logo-jhipster.png';
-    const absolutePath = path.resolve(__dirname, fileToUpload);
-    
 
     beforeAll(() => {
         browser.get('/');
@@ -45,7 +41,7 @@ describe('CurrencyRate e2e test', () => {
         currencyRateDialogPage.targetCurrencySelectLastOption();
         currencyRateDialogPage.save();
         expect(currencyRateDialogPage.getSaveButton().isPresent()).toBeFalsy();
-    }); 
+    });
 
     afterAll(() => {
         navBarPage.autoSignOut();
@@ -79,50 +75,50 @@ export class CurrencyRateDialogPage {
         return this.modalTitle.getAttribute('jhiTranslate');
     }
 
-    setFromInput = function (from) {
+    setFromInput = function(from) {
         this.fromInput.sendKeys(from);
     }
 
-    getFromInput = function () {
+    getFromInput = function() {
         return this.fromInput.getAttribute('value');
     }
 
-    setToInput = function (to) {
+    setToInput = function(to) {
         this.toInput.sendKeys(to);
     }
 
-    getToInput = function () {
+    getToInput = function() {
         return this.toInput.getAttribute('value');
     }
 
-    setRateInput = function (rate) {
+    setRateInput = function(rate) {
         this.rateInput.sendKeys(rate);
     }
 
-    getRateInput = function () {
+    getRateInput = function() {
         return this.rateInput.getAttribute('value');
     }
 
-    setSourceCurrencySelect = function (sourceCurrency) {
+    setSourceCurrencySelect = function(sourceCurrency) {
         this.sourceCurrencySelect.sendKeys(sourceCurrency);
     }
 
-    getSourceCurrencySelect = function () {
+    getSourceCurrencySelect = function() {
         return this.sourceCurrencySelect.element(by.css('option:checked')).getText();
     }
 
-    sourceCurrencySelectLastOption = function () {
+    sourceCurrencySelectLastOption = function() {
         this.sourceCurrencySelect.all(by.tagName('option')).last().click();
     }
-    setTargetCurrencySelect = function (targetCurrency) {
+    setTargetCurrencySelect = function(targetCurrency) {
         this.targetCurrencySelect.sendKeys(targetCurrency);
     }
 
-    getTargetCurrencySelect = function () {
+    getTargetCurrencySelect = function() {
         return this.targetCurrencySelect.element(by.css('option:checked')).getText();
     }
 
-    targetCurrencySelectLastOption = function () {
+    targetCurrencySelectLastOption = function() {
         this.targetCurrencySelect.all(by.tagName('option')).last().click();
     }
     save() {

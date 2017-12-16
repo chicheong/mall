@@ -113,7 +113,7 @@ public class MyAccountResourceIntTest {
 
         // Validate the MyAccount in Elasticsearch
         MyAccount myAccountEs = myAccountSearchRepository.findOne(testMyAccount.getId());
-        assertThat(myAccountEs).isEqualToComparingFieldByField(testMyAccount);
+        assertThat(myAccountEs).isEqualToIgnoringGivenFields(testMyAccount);
     }
 
     @Test
@@ -199,7 +199,7 @@ public class MyAccountResourceIntTest {
 
         // Validate the MyAccount in Elasticsearch
         MyAccount myAccountEs = myAccountSearchRepository.findOne(testMyAccount.getId());
-        assertThat(myAccountEs).isEqualToComparingFieldByField(testMyAccount);
+        assertThat(myAccountEs).isEqualToIgnoringGivenFields(testMyAccount);
     }
 
     @Test

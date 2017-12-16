@@ -1,15 +1,11 @@
-import { browser, element, by, $ } from 'protractor';
+import { browser, element, by } from 'protractor';
 import { NavBarPage } from './../page-objects/jhi-page-objects';
-const path = require('path');
 
 describe('ProductItem e2e test', () => {
 
     let navBarPage: NavBarPage;
     let productItemDialogPage: ProductItemDialogPage;
     let productItemComponentsPage: ProductItemComponentsPage;
-    const fileToUpload = '../../../../main/webapp/content/images/logo-jhipster.png';
-    const absolutePath = path.resolve(__dirname, fileToUpload);
-    
 
     beforeAll(() => {
         browser.get('/');
@@ -39,7 +35,7 @@ describe('ProductItem e2e test', () => {
         expect(productItemDialogPage.getNameInput()).toMatch('name');
         productItemDialogPage.setCodeInput('code');
         expect(productItemDialogPage.getCodeInput()).toMatch('code');
-        productItemDialogPage.getDefaultItemInput().isSelected().then(function (selected) {
+        productItemDialogPage.getDefaultItemInput().isSelected().then((selected) => {
             if (selected) {
                 productItemDialogPage.getDefaultItemInput().click();
                 expect(productItemDialogPage.getDefaultItemInput().isSelected()).toBeFalsy();
@@ -68,7 +64,7 @@ describe('ProductItem e2e test', () => {
         productItemDialogPage.productSelectLastOption();
         productItemDialogPage.save();
         expect(productItemDialogPage.getSaveButton().isPresent()).toBeFalsy();
-    }); 
+    });
 
     afterAll(() => {
         navBarPage.autoSignOut();
@@ -110,113 +106,113 @@ export class ProductItemDialogPage {
         return this.modalTitle.getAttribute('jhiTranslate');
     }
 
-    setNameInput = function (name) {
+    setNameInput = function(name) {
         this.nameInput.sendKeys(name);
     }
 
-    getNameInput = function () {
+    getNameInput = function() {
         return this.nameInput.getAttribute('value');
     }
 
-    setCodeInput = function (code) {
+    setCodeInput = function(code) {
         this.codeInput.sendKeys(code);
     }
 
-    getCodeInput = function () {
+    getCodeInput = function() {
         return this.codeInput.getAttribute('value');
     }
 
-    getDefaultItemInput = function () {
+    getDefaultItemInput = function() {
         return this.defaultItemInput;
     }
-    setColorInput = function (color) {
+    setColorInput = function(color) {
         this.colorInput.sendKeys(color);
     }
 
-    getColorInput = function () {
+    getColorInput = function() {
         return this.colorInput.getAttribute('value');
     }
 
-    setSizeInput = function (size) {
+    setSizeInput = function(size) {
         this.sizeInput.sendKeys(size);
     }
 
-    getSizeInput = function () {
+    getSizeInput = function() {
         return this.sizeInput.getAttribute('value');
     }
 
-    setQuantityInput = function (quantity) {
+    setQuantityInput = function(quantity) {
         this.quantityInput.sendKeys(quantity);
     }
 
-    getQuantityInput = function () {
+    getQuantityInput = function() {
         return this.quantityInput.getAttribute('value');
     }
 
-    setCurrencySelect = function (currency) {
+    setCurrencySelect = function(currency) {
         this.currencySelect.sendKeys(currency);
     }
 
-    getCurrencySelect = function () {
+    getCurrencySelect = function() {
         return this.currencySelect.element(by.css('option:checked')).getText();
     }
 
-    currencySelectLastOption = function () {
+    currencySelectLastOption = function() {
         this.currencySelect.all(by.tagName('option')).last().click();
     }
-    setPriceInput = function (price) {
+    setPriceInput = function(price) {
         this.priceInput.sendKeys(price);
     }
 
-    getPriceInput = function () {
+    getPriceInput = function() {
         return this.priceInput.getAttribute('value');
     }
 
-    setCreatedByInput = function (createdBy) {
+    setCreatedByInput = function(createdBy) {
         this.createdByInput.sendKeys(createdBy);
     }
 
-    getCreatedByInput = function () {
+    getCreatedByInput = function() {
         return this.createdByInput.getAttribute('value');
     }
 
-    setCreatedDateInput = function (createdDate) {
+    setCreatedDateInput = function(createdDate) {
         this.createdDateInput.sendKeys(createdDate);
     }
 
-    getCreatedDateInput = function () {
+    getCreatedDateInput = function() {
         return this.createdDateInput.getAttribute('value');
     }
 
-    setLastModifiedByInput = function (lastModifiedBy) {
+    setLastModifiedByInput = function(lastModifiedBy) {
         this.lastModifiedByInput.sendKeys(lastModifiedBy);
     }
 
-    getLastModifiedByInput = function () {
+    getLastModifiedByInput = function() {
         return this.lastModifiedByInput.getAttribute('value');
     }
 
-    setLastModifiedDateInput = function (lastModifiedDate) {
+    setLastModifiedDateInput = function(lastModifiedDate) {
         this.lastModifiedDateInput.sendKeys(lastModifiedDate);
     }
 
-    getLastModifiedDateInput = function () {
+    getLastModifiedDateInput = function() {
         return this.lastModifiedDateInput.getAttribute('value');
     }
 
-    productSelectLastOption = function () {
+    productSelectLastOption = function() {
         this.productSelect.all(by.tagName('option')).last().click();
     }
 
-    productSelectOption = function (option) {
+    productSelectOption = function(option) {
         this.productSelect.sendKeys(option);
     }
 
-    getProductSelect = function () {
+    getProductSelect = function() {
         return this.productSelect;
     }
 
-    getProductSelectedOption = function () {
+    getProductSelectedOption = function() {
         return this.productSelect.element(by.css('option:checked')).getText();
     }
 

@@ -2,7 +2,7 @@ import './vendor.ts';
 
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { Ng2Webstorage } from 'ng2-webstorage';
+import { Ng2Webstorage } from 'ngx-webstorage';
 
 import { MallSharedModule, UserRouteAccessService } from './shared';
 import { MallAppRoutingModule} from './app-routing.module';

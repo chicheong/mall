@@ -140,7 +140,7 @@ public class MyOrderResourceIntTest {
 
         // Validate the MyOrder in Elasticsearch
         MyOrder myOrderEs = myOrderSearchRepository.findOne(testMyOrder.getId());
-        assertThat(myOrderEs).isEqualToComparingFieldByField(testMyOrder);
+        assertThat(myOrderEs).isEqualToIgnoringGivenFields(testMyOrder);
     }
 
     @Test
@@ -240,7 +240,7 @@ public class MyOrderResourceIntTest {
 
         // Validate the MyOrder in Elasticsearch
         MyOrder myOrderEs = myOrderSearchRepository.findOne(testMyOrder.getId());
-        assertThat(myOrderEs).isEqualToComparingFieldByField(testMyOrder);
+        assertThat(myOrderEs).isEqualToIgnoringGivenFields(testMyOrder);
     }
 
     @Test

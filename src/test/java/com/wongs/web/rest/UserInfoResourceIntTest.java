@@ -107,7 +107,7 @@ public class UserInfoResourceIntTest {
 
         // Validate the UserInfo in Elasticsearch
         UserInfo userInfoEs = userInfoSearchRepository.findOne(testUserInfo.getId());
-        assertThat(userInfoEs).isEqualToComparingFieldByField(testUserInfo);
+        assertThat(userInfoEs).isEqualToIgnoringGivenFields(testUserInfo);
     }
 
     @Test
@@ -188,7 +188,7 @@ public class UserInfoResourceIntTest {
 
         // Validate the UserInfo in Elasticsearch
         UserInfo userInfoEs = userInfoSearchRepository.findOne(testUserInfo.getId());
-        assertThat(userInfoEs).isEqualToComparingFieldByField(testUserInfo);
+        assertThat(userInfoEs).isEqualToIgnoringGivenFields(testUserInfo);
     }
 
     @Test

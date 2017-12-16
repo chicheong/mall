@@ -123,7 +123,7 @@ public class CompanyResourceIntTest {
 
         // Validate the Company in Elasticsearch
         Company companyEs = companySearchRepository.findOne(testCompany.getId());
-        assertThat(companyEs).isEqualToComparingFieldByField(testCompany);
+        assertThat(companyEs).isEqualToIgnoringGivenFields(testCompany);
     }
 
     @Test
@@ -235,7 +235,7 @@ public class CompanyResourceIntTest {
 
         // Validate the Company in Elasticsearch
         Company companyEs = companySearchRepository.findOne(testCompany.getId());
-        assertThat(companyEs).isEqualToComparingFieldByField(testCompany);
+        assertThat(companyEs).isEqualToIgnoringGivenFields(testCompany);
     }
 
     @Test

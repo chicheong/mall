@@ -159,7 +159,11 @@ public class DelegationResourceIntTest {
 
         // Validate the Delegation in Elasticsearch
         Delegation delegationEs = delegationSearchRepository.findOne(testDelegation.getId());
-        assertThat(delegationEs).isEqualToComparingFieldByField(testDelegation);
+        assertThat(testDelegation.getFrom()).isEqualTo(testDelegation.getFrom());
+        assertThat(testDelegation.getTo()).isEqualTo(testDelegation.getTo());
+        assertThat(testDelegation.getCreatedDate()).isEqualTo(testDelegation.getCreatedDate());
+        assertThat(testDelegation.getLastModifiedDate()).isEqualTo(testDelegation.getLastModifiedDate());
+        assertThat(delegationEs).isEqualToIgnoringGivenFields(testDelegation, "from", "to", "createdDate", "lastModifiedDate");
     }
 
     @Test
@@ -277,7 +281,11 @@ public class DelegationResourceIntTest {
 
         // Validate the Delegation in Elasticsearch
         Delegation delegationEs = delegationSearchRepository.findOne(testDelegation.getId());
-        assertThat(delegationEs).isEqualToComparingFieldByField(testDelegation);
+        assertThat(testDelegation.getFrom()).isEqualTo(testDelegation.getFrom());
+        assertThat(testDelegation.getTo()).isEqualTo(testDelegation.getTo());
+        assertThat(testDelegation.getCreatedDate()).isEqualTo(testDelegation.getCreatedDate());
+        assertThat(testDelegation.getLastModifiedDate()).isEqualTo(testDelegation.getLastModifiedDate());
+        assertThat(delegationEs).isEqualToIgnoringGivenFields(testDelegation, "from", "to", "createdDate", "lastModifiedDate");
     }
 
     @Test

@@ -1,15 +1,11 @@
-import { browser, element, by, $ } from 'protractor';
+import { browser, element, by } from 'protractor';
 import { NavBarPage } from './../page-objects/jhi-page-objects';
-const path = require('path');
 
 describe('Country e2e test', () => {
 
     let navBarPage: NavBarPage;
     let countryDialogPage: CountryDialogPage;
     let countryComponentsPage: CountryComponentsPage;
-    const fileToUpload = '../../../../main/webapp/content/images/logo-jhipster.png';
-    const absolutePath = path.resolve(__dirname, fileToUpload);
-    
 
     beforeAll(() => {
         browser.get('/');
@@ -45,7 +41,7 @@ describe('Country e2e test', () => {
         expect(countryDialogPage.getNameInput()).toMatch('name');
         countryDialogPage.save();
         expect(countryDialogPage.getSaveButton().isPresent()).toBeFalsy();
-    }); 
+    });
 
     afterAll(() => {
         navBarPage.autoSignOut();
@@ -78,35 +74,35 @@ export class CountryDialogPage {
         return this.modalTitle.getAttribute('jhiTranslate');
     }
 
-    setCodeInput = function (code) {
+    setCodeInput = function(code) {
         this.codeInput.sendKeys(code);
     }
 
-    getCodeInput = function () {
+    getCodeInput = function() {
         return this.codeInput.getAttribute('value');
     }
 
-    setLabelInput = function (label) {
+    setLabelInput = function(label) {
         this.labelInput.sendKeys(label);
     }
 
-    getLabelInput = function () {
+    getLabelInput = function() {
         return this.labelInput.getAttribute('value');
     }
 
-    setNumInput = function (num) {
+    setNumInput = function(num) {
         this.numInput.sendKeys(num);
     }
 
-    getNumInput = function () {
+    getNumInput = function() {
         return this.numInput.getAttribute('value');
     }
 
-    setNameInput = function (name) {
+    setNameInput = function(name) {
         this.nameInput.sendKeys(name);
     }
 
-    getNameInput = function () {
+    getNameInput = function() {
         return this.nameInput.getAttribute('value');
     }
 

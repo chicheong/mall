@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-
-import { UserRouteAccessService } from '../../shared';
 import { JhiPaginationUtil } from 'ng-jhipster';
 
+import { UserRouteAccessService } from '../../shared';
 import { MyAccountComponent } from './my-account.component';
 import { MyAccountDetailComponent } from './my-account-detail.component';
 import { MyAccountPopupComponent } from './my-account-dialog.component';

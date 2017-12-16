@@ -123,7 +123,7 @@ public class DepartmentResourceIntTest {
 
         // Validate the Department in Elasticsearch
         Department departmentEs = departmentSearchRepository.findOne(testDepartment.getId());
-        assertThat(departmentEs).isEqualToComparingFieldByField(testDepartment);
+        assertThat(departmentEs).isEqualToIgnoringGivenFields(testDepartment);
     }
 
     @Test
@@ -235,7 +235,7 @@ public class DepartmentResourceIntTest {
 
         // Validate the Department in Elasticsearch
         Department departmentEs = departmentSearchRepository.findOne(testDepartment.getId());
-        assertThat(departmentEs).isEqualToComparingFieldByField(testDepartment);
+        assertThat(departmentEs).isEqualToIgnoringGivenFields(testDepartment);
     }
 
     @Test

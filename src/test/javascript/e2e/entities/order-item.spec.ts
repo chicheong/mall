@@ -1,15 +1,11 @@
-import { browser, element, by, $ } from 'protractor';
+import { browser, element, by } from 'protractor';
 import { NavBarPage } from './../page-objects/jhi-page-objects';
-const path = require('path');
 
 describe('OrderItem e2e test', () => {
 
     let navBarPage: NavBarPage;
     let orderItemDialogPage: OrderItemDialogPage;
     let orderItemComponentsPage: OrderItemComponentsPage;
-    const fileToUpload = '../../../../main/webapp/content/images/logo-jhipster.png';
-    const absolutePath = path.resolve(__dirname, fileToUpload);
-    
 
     beforeAll(() => {
         browser.get('/');
@@ -44,7 +40,7 @@ describe('OrderItem e2e test', () => {
         orderItemDialogPage.orderSelectLastOption();
         orderItemDialogPage.save();
         expect(orderItemDialogPage.getSaveButton().isPresent()).toBeFalsy();
-    }); 
+    });
 
     afterAll(() => {
         navBarPage.autoSignOut();
@@ -78,62 +74,62 @@ export class OrderItemDialogPage {
         return this.modalTitle.getAttribute('jhiTranslate');
     }
 
-    setQuantityInput = function (quantity) {
+    setQuantityInput = function(quantity) {
         this.quantityInput.sendKeys(quantity);
     }
 
-    getQuantityInput = function () {
+    getQuantityInput = function() {
         return this.quantityInput.getAttribute('value');
     }
 
-    setPriceInput = function (price) {
+    setPriceInput = function(price) {
         this.priceInput.sendKeys(price);
     }
 
-    getPriceInput = function () {
+    getPriceInput = function() {
         return this.priceInput.getAttribute('value');
     }
 
-    setCurrencySelect = function (currency) {
+    setCurrencySelect = function(currency) {
         this.currencySelect.sendKeys(currency);
     }
 
-    getCurrencySelect = function () {
+    getCurrencySelect = function() {
         return this.currencySelect.element(by.css('option:checked')).getText();
     }
 
-    currencySelectLastOption = function () {
+    currencySelectLastOption = function() {
         this.currencySelect.all(by.tagName('option')).last().click();
     }
-    productItemSelectLastOption = function () {
+    productItemSelectLastOption = function() {
         this.productItemSelect.all(by.tagName('option')).last().click();
     }
 
-    productItemSelectOption = function (option) {
+    productItemSelectOption = function(option) {
         this.productItemSelect.sendKeys(option);
     }
 
-    getProductItemSelect = function () {
+    getProductItemSelect = function() {
         return this.productItemSelect;
     }
 
-    getProductItemSelectedOption = function () {
+    getProductItemSelectedOption = function() {
         return this.productItemSelect.element(by.css('option:checked')).getText();
     }
 
-    orderSelectLastOption = function () {
+    orderSelectLastOption = function() {
         this.orderSelect.all(by.tagName('option')).last().click();
     }
 
-    orderSelectOption = function (option) {
+    orderSelectOption = function(option) {
         this.orderSelect.sendKeys(option);
     }
 
-    getOrderSelect = function () {
+    getOrderSelect = function() {
         return this.orderSelect;
     }
 
-    getOrderSelectedOption = function () {
+    getOrderSelectedOption = function() {
         return this.orderSelect.element(by.css('option:checked')).getText();
     }
 

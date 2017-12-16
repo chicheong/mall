@@ -1,15 +1,11 @@
-import { browser, element, by, $ } from 'protractor';
+import { browser, element, by } from 'protractor';
 import { NavBarPage } from './../page-objects/jhi-page-objects';
-const path = require('path');
 
 describe('Product e2e test', () => {
 
     let navBarPage: NavBarPage;
     let productDialogPage: ProductDialogPage;
     let productComponentsPage: ProductComponentsPage;
-    const fileToUpload = '../../../../main/webapp/content/images/logo-jhipster.png';
-    const absolutePath = path.resolve(__dirname, fileToUpload);
-    
 
     beforeAll(() => {
         browser.get('/');
@@ -59,7 +55,7 @@ describe('Product e2e test', () => {
         productDialogPage.shopSelectLastOption();
         productDialogPage.save();
         expect(productDialogPage.getSaveButton().isPresent()).toBeFalsy();
-    }); 
+    });
 
     afterAll(() => {
         navBarPage.autoSignOut();
@@ -100,110 +96,110 @@ export class ProductDialogPage {
         return this.modalTitle.getAttribute('jhiTranslate');
     }
 
-    setNameInput = function (name) {
+    setNameInput = function(name) {
         this.nameInput.sendKeys(name);
     }
 
-    getNameInput = function () {
+    getNameInput = function() {
         return this.nameInput.getAttribute('value');
     }
 
-    setCodeInput = function (code) {
+    setCodeInput = function(code) {
         this.codeInput.sendKeys(code);
     }
 
-    getCodeInput = function () {
+    getCodeInput = function() {
         return this.codeInput.getAttribute('value');
     }
 
-    setBrandInput = function (brand) {
+    setBrandInput = function(brand) {
         this.brandInput.sendKeys(brand);
     }
 
-    getBrandInput = function () {
+    getBrandInput = function() {
         return this.brandInput.getAttribute('value');
     }
 
-    setDescriptionInput = function (description) {
+    setDescriptionInput = function(description) {
         this.descriptionInput.sendKeys(description);
     }
 
-    getDescriptionInput = function () {
+    getDescriptionInput = function() {
         return this.descriptionInput.getAttribute('value');
     }
 
-    setContentInput = function (content) {
+    setContentInput = function(content) {
         this.contentInput.sendKeys(content);
     }
 
-    getContentInput = function () {
+    getContentInput = function() {
         return this.contentInput.getAttribute('value');
     }
 
-    setRemarkInput = function (remark) {
+    setRemarkInput = function(remark) {
         this.remarkInput.sendKeys(remark);
     }
 
-    getRemarkInput = function () {
+    getRemarkInput = function() {
         return this.remarkInput.getAttribute('value');
     }
 
-    setStatusSelect = function (status) {
+    setStatusSelect = function(status) {
         this.statusSelect.sendKeys(status);
     }
 
-    getStatusSelect = function () {
+    getStatusSelect = function() {
         return this.statusSelect.element(by.css('option:checked')).getText();
     }
 
-    statusSelectLastOption = function () {
+    statusSelectLastOption = function() {
         this.statusSelect.all(by.tagName('option')).last().click();
     }
-    setCreatedByInput = function (createdBy) {
+    setCreatedByInput = function(createdBy) {
         this.createdByInput.sendKeys(createdBy);
     }
 
-    getCreatedByInput = function () {
+    getCreatedByInput = function() {
         return this.createdByInput.getAttribute('value');
     }
 
-    setCreatedDateInput = function (createdDate) {
+    setCreatedDateInput = function(createdDate) {
         this.createdDateInput.sendKeys(createdDate);
     }
 
-    getCreatedDateInput = function () {
+    getCreatedDateInput = function() {
         return this.createdDateInput.getAttribute('value');
     }
 
-    setLastModifiedByInput = function (lastModifiedBy) {
+    setLastModifiedByInput = function(lastModifiedBy) {
         this.lastModifiedByInput.sendKeys(lastModifiedBy);
     }
 
-    getLastModifiedByInput = function () {
+    getLastModifiedByInput = function() {
         return this.lastModifiedByInput.getAttribute('value');
     }
 
-    setLastModifiedDateInput = function (lastModifiedDate) {
+    setLastModifiedDateInput = function(lastModifiedDate) {
         this.lastModifiedDateInput.sendKeys(lastModifiedDate);
     }
 
-    getLastModifiedDateInput = function () {
+    getLastModifiedDateInput = function() {
         return this.lastModifiedDateInput.getAttribute('value');
     }
 
-    shopSelectLastOption = function () {
+    shopSelectLastOption = function() {
         this.shopSelect.all(by.tagName('option')).last().click();
     }
 
-    shopSelectOption = function (option) {
+    shopSelectOption = function(option) {
         this.shopSelect.sendKeys(option);
     }
 
-    getShopSelect = function () {
+    getShopSelect = function() {
         return this.shopSelect;
     }
 
-    getShopSelectedOption = function () {
+    getShopSelectedOption = function() {
         return this.shopSelect.element(by.css('option:checked')).getText();
     }
 

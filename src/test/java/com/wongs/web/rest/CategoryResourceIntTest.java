@@ -148,7 +148,9 @@ public class CategoryResourceIntTest {
 
         // Validate the Category in Elasticsearch
         Category categoryEs = categorySearchRepository.findOne(testCategory.getId());
-        assertThat(categoryEs).isEqualToComparingFieldByField(testCategory);
+        assertThat(testCategory.getCreatedDate()).isEqualTo(testCategory.getCreatedDate());
+        assertThat(testCategory.getLastModifiedDate()).isEqualTo(testCategory.getLastModifiedDate());
+        assertThat(categoryEs).isEqualToIgnoringGivenFields(testCategory, "createdDate", "lastModifiedDate");
     }
 
     @Test
@@ -276,7 +278,9 @@ public class CategoryResourceIntTest {
 
         // Validate the Category in Elasticsearch
         Category categoryEs = categorySearchRepository.findOne(testCategory.getId());
-        assertThat(categoryEs).isEqualToComparingFieldByField(testCategory);
+        assertThat(testCategory.getCreatedDate()).isEqualTo(testCategory.getCreatedDate());
+        assertThat(testCategory.getLastModifiedDate()).isEqualTo(testCategory.getLastModifiedDate());
+        assertThat(categoryEs).isEqualToIgnoringGivenFields(testCategory, "createdDate", "lastModifiedDate");
     }
 
     @Test

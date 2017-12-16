@@ -1,15 +1,11 @@
-import { browser, element, by, $ } from 'protractor';
+import { browser, element, by } from 'protractor';
 import { NavBarPage } from './../page-objects/jhi-page-objects';
-const path = require('path');
 
 describe('MyOrder e2e test', () => {
 
     let navBarPage: NavBarPage;
     let myOrderDialogPage: MyOrderDialogPage;
     let myOrderComponentsPage: MyOrderComponentsPage;
-    const fileToUpload = '../../../../main/webapp/content/images/logo-jhipster.png';
-    const absolutePath = path.resolve(__dirname, fileToUpload);
-    
 
     beforeAll(() => {
         browser.get('/');
@@ -44,7 +40,7 @@ describe('MyOrder e2e test', () => {
         myOrderDialogPage.accountSelectLastOption();
         myOrderDialogPage.save();
         expect(myOrderDialogPage.getSaveButton().isPresent()).toBeFalsy();
-    }); 
+    });
 
     afterAll(() => {
         navBarPage.autoSignOut();
@@ -78,57 +74,57 @@ export class MyOrderDialogPage {
         return this.modalTitle.getAttribute('jhiTranslate');
     }
 
-    setTotalInput = function (total) {
+    setTotalInput = function(total) {
         this.totalInput.sendKeys(total);
     }
 
-    getTotalInput = function () {
+    getTotalInput = function() {
         return this.totalInput.getAttribute('value');
     }
 
-    setCurrencySelect = function (currency) {
+    setCurrencySelect = function(currency) {
         this.currencySelect.sendKeys(currency);
     }
 
-    getCurrencySelect = function () {
+    getCurrencySelect = function() {
         return this.currencySelect.element(by.css('option:checked')).getText();
     }
 
-    currencySelectLastOption = function () {
+    currencySelectLastOption = function() {
         this.currencySelect.all(by.tagName('option')).last().click();
     }
-    setRemarkInput = function (remark) {
+    setRemarkInput = function(remark) {
         this.remarkInput.sendKeys(remark);
     }
 
-    getRemarkInput = function () {
+    getRemarkInput = function() {
         return this.remarkInput.getAttribute('value');
     }
 
-    setStatusSelect = function (status) {
+    setStatusSelect = function(status) {
         this.statusSelect.sendKeys(status);
     }
 
-    getStatusSelect = function () {
+    getStatusSelect = function() {
         return this.statusSelect.element(by.css('option:checked')).getText();
     }
 
-    statusSelectLastOption = function () {
+    statusSelectLastOption = function() {
         this.statusSelect.all(by.tagName('option')).last().click();
     }
-    accountSelectLastOption = function () {
+    accountSelectLastOption = function() {
         this.accountSelect.all(by.tagName('option')).last().click();
     }
 
-    accountSelectOption = function (option) {
+    accountSelectOption = function(option) {
         this.accountSelect.sendKeys(option);
     }
 
-    getAccountSelect = function () {
+    getAccountSelect = function() {
         return this.accountSelect;
     }
 
-    getAccountSelectedOption = function () {
+    getAccountSelectedOption = function() {
         return this.accountSelect.element(by.css('option:checked')).getText();
     }
 

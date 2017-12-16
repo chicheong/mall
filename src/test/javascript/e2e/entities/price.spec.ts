@@ -1,15 +1,11 @@
-import { browser, element, by, $ } from 'protractor';
+import { browser, element, by } from 'protractor';
 import { NavBarPage } from './../page-objects/jhi-page-objects';
-const path = require('path');
 
 describe('Price e2e test', () => {
 
     let navBarPage: NavBarPage;
     let priceDialogPage: PriceDialogPage;
     let priceComponentsPage: PriceComponentsPage;
-    const fileToUpload = '../../../../main/webapp/content/images/logo-jhipster.png';
-    const absolutePath = path.resolve(__dirname, fileToUpload);
-    
 
     beforeAll(() => {
         browser.get('/');
@@ -45,7 +41,7 @@ describe('Price e2e test', () => {
         priceDialogPage.itemSelectLastOption();
         priceDialogPage.save();
         expect(priceDialogPage.getSaveButton().isPresent()).toBeFalsy();
-    }); 
+    });
 
     afterAll(() => {
         navBarPage.autoSignOut();
@@ -79,54 +75,54 @@ export class PriceDialogPage {
         return this.modalTitle.getAttribute('jhiTranslate');
     }
 
-    setFromInput = function (from) {
+    setFromInput = function(from) {
         this.fromInput.sendKeys(from);
     }
 
-    getFromInput = function () {
+    getFromInput = function() {
         return this.fromInput.getAttribute('value');
     }
 
-    setToInput = function (to) {
+    setToInput = function(to) {
         this.toInput.sendKeys(to);
     }
 
-    getToInput = function () {
+    getToInput = function() {
         return this.toInput.getAttribute('value');
     }
 
-    setPriceInput = function (price) {
+    setPriceInput = function(price) {
         this.priceInput.sendKeys(price);
     }
 
-    getPriceInput = function () {
+    getPriceInput = function() {
         return this.priceInput.getAttribute('value');
     }
 
-    setCurrencySelect = function (currency) {
+    setCurrencySelect = function(currency) {
         this.currencySelect.sendKeys(currency);
     }
 
-    getCurrencySelect = function () {
+    getCurrencySelect = function() {
         return this.currencySelect.element(by.css('option:checked')).getText();
     }
 
-    currencySelectLastOption = function () {
+    currencySelectLastOption = function() {
         this.currencySelect.all(by.tagName('option')).last().click();
     }
-    itemSelectLastOption = function () {
+    itemSelectLastOption = function() {
         this.itemSelect.all(by.tagName('option')).last().click();
     }
 
-    itemSelectOption = function (option) {
+    itemSelectOption = function(option) {
         this.itemSelect.sendKeys(option);
     }
 
-    getItemSelect = function () {
+    getItemSelect = function() {
         return this.itemSelect;
     }
 
-    getItemSelectedOption = function () {
+    getItemSelectedOption = function() {
         return this.itemSelect.element(by.css('option:checked')).getText();
     }
 

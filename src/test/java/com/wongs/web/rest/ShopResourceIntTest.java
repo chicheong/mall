@@ -153,7 +153,9 @@ public class ShopResourceIntTest {
 
         // Validate the Shop in Elasticsearch
         Shop shopEs = shopSearchRepository.findOne(testShop.getId());
-        assertThat(shopEs).isEqualToComparingFieldByField(testShop);
+        assertThat(testShop.getCreatedDate()).isEqualTo(testShop.getCreatedDate());
+        assertThat(testShop.getLastModifiedDate()).isEqualTo(testShop.getLastModifiedDate());
+        assertThat(shopEs).isEqualToIgnoringGivenFields(testShop, "createdDate", "lastModifiedDate");
     }
 
     @Test
@@ -285,7 +287,9 @@ public class ShopResourceIntTest {
 
         // Validate the Shop in Elasticsearch
         Shop shopEs = shopSearchRepository.findOne(testShop.getId());
-        assertThat(shopEs).isEqualToComparingFieldByField(testShop);
+        assertThat(testShop.getCreatedDate()).isEqualTo(testShop.getCreatedDate());
+        assertThat(testShop.getLastModifiedDate()).isEqualTo(testShop.getLastModifiedDate());
+        assertThat(shopEs).isEqualToIgnoringGivenFields(testShop, "createdDate", "lastModifiedDate");
     }
 
     @Test

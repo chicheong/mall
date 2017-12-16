@@ -134,7 +134,9 @@ public class PriceResourceIntTest {
 
         // Validate the Price in Elasticsearch
         Price priceEs = priceSearchRepository.findOne(testPrice.getId());
-        assertThat(priceEs).isEqualToComparingFieldByField(testPrice);
+        assertThat(testPrice.getFrom()).isEqualTo(testPrice.getFrom());
+        assertThat(testPrice.getTo()).isEqualTo(testPrice.getTo());
+        assertThat(priceEs).isEqualToIgnoringGivenFields(testPrice, "from", "to");
     }
 
     @Test
@@ -232,7 +234,9 @@ public class PriceResourceIntTest {
 
         // Validate the Price in Elasticsearch
         Price priceEs = priceSearchRepository.findOne(testPrice.getId());
-        assertThat(priceEs).isEqualToComparingFieldByField(testPrice);
+        assertThat(testPrice.getFrom()).isEqualTo(testPrice.getFrom());
+        assertThat(testPrice.getTo()).isEqualTo(testPrice.getTo());
+        assertThat(priceEs).isEqualToIgnoringGivenFields(testPrice, "from", "to");
     }
 
     @Test

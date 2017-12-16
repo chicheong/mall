@@ -1,15 +1,11 @@
-import { browser, element, by, $ } from 'protractor';
+import { browser, element, by } from 'protractor';
 import { NavBarPage } from './../page-objects/jhi-page-objects';
-const path = require('path');
 
 describe('Delegation e2e test', () => {
 
     let navBarPage: NavBarPage;
     let delegationDialogPage: DelegationDialogPage;
     let delegationComponentsPage: DelegationComponentsPage;
-    const fileToUpload = '../../../../main/webapp/content/images/logo-jhipster.png';
-    const absolutePath = path.resolve(__dirname, fileToUpload);
-    
 
     beforeAll(() => {
         browser.get('/');
@@ -54,7 +50,7 @@ describe('Delegation e2e test', () => {
         delegationDialogPage.accountSelectLastOption();
         delegationDialogPage.save();
         expect(delegationDialogPage.getSaveButton().isPresent()).toBeFalsy();
-    }); 
+    });
 
     afterAll(() => {
         navBarPage.autoSignOut();
@@ -93,97 +89,97 @@ export class DelegationDialogPage {
         return this.modalTitle.getAttribute('jhiTranslate');
     }
 
-    setFromInput = function (from) {
+    setFromInput = function(from) {
         this.fromInput.sendKeys(from);
     }
 
-    getFromInput = function () {
+    getFromInput = function() {
         return this.fromInput.getAttribute('value');
     }
 
-    setToInput = function (to) {
+    setToInput = function(to) {
         this.toInput.sendKeys(to);
     }
 
-    getToInput = function () {
+    getToInput = function() {
         return this.toInput.getAttribute('value');
     }
 
-    setTypeSelect = function (type) {
+    setTypeSelect = function(type) {
         this.typeSelect.sendKeys(type);
     }
 
-    getTypeSelect = function () {
+    getTypeSelect = function() {
         return this.typeSelect.element(by.css('option:checked')).getText();
     }
 
-    typeSelectLastOption = function () {
+    typeSelectLastOption = function() {
         this.typeSelect.all(by.tagName('option')).last().click();
     }
-    setDelegateIdInput = function (delegateId) {
+    setDelegateIdInput = function(delegateId) {
         this.delegateIdInput.sendKeys(delegateId);
     }
 
-    getDelegateIdInput = function () {
+    getDelegateIdInput = function() {
         return this.delegateIdInput.getAttribute('value');
     }
 
-    setStatusSelect = function (status) {
+    setStatusSelect = function(status) {
         this.statusSelect.sendKeys(status);
     }
 
-    getStatusSelect = function () {
+    getStatusSelect = function() {
         return this.statusSelect.element(by.css('option:checked')).getText();
     }
 
-    statusSelectLastOption = function () {
+    statusSelectLastOption = function() {
         this.statusSelect.all(by.tagName('option')).last().click();
     }
-    setCreatedByInput = function (createdBy) {
+    setCreatedByInput = function(createdBy) {
         this.createdByInput.sendKeys(createdBy);
     }
 
-    getCreatedByInput = function () {
+    getCreatedByInput = function() {
         return this.createdByInput.getAttribute('value');
     }
 
-    setCreatedDateInput = function (createdDate) {
+    setCreatedDateInput = function(createdDate) {
         this.createdDateInput.sendKeys(createdDate);
     }
 
-    getCreatedDateInput = function () {
+    getCreatedDateInput = function() {
         return this.createdDateInput.getAttribute('value');
     }
 
-    setLastModifiedByInput = function (lastModifiedBy) {
+    setLastModifiedByInput = function(lastModifiedBy) {
         this.lastModifiedByInput.sendKeys(lastModifiedBy);
     }
 
-    getLastModifiedByInput = function () {
+    getLastModifiedByInput = function() {
         return this.lastModifiedByInput.getAttribute('value');
     }
 
-    setLastModifiedDateInput = function (lastModifiedDate) {
+    setLastModifiedDateInput = function(lastModifiedDate) {
         this.lastModifiedDateInput.sendKeys(lastModifiedDate);
     }
 
-    getLastModifiedDateInput = function () {
+    getLastModifiedDateInput = function() {
         return this.lastModifiedDateInput.getAttribute('value');
     }
 
-    accountSelectLastOption = function () {
+    accountSelectLastOption = function() {
         this.accountSelect.all(by.tagName('option')).last().click();
     }
 
-    accountSelectOption = function (option) {
+    accountSelectOption = function(option) {
         this.accountSelect.sendKeys(option);
     }
 
-    getAccountSelect = function () {
+    getAccountSelect = function() {
         return this.accountSelect;
     }
 
-    getAccountSelectedOption = function () {
+    getAccountSelectedOption = function() {
         return this.accountSelect.element(by.css('option:checked')).getText();
     }
 

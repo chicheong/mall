@@ -1,15 +1,11 @@
-import { browser, element, by, $ } from 'protractor';
+import { browser, element, by } from 'protractor';
 import { NavBarPage } from './../page-objects/jhi-page-objects';
-const path = require('path');
 
 describe('MyAccount e2e test', () => {
 
     let navBarPage: NavBarPage;
     let myAccountDialogPage: MyAccountDialogPage;
     let myAccountComponentsPage: MyAccountComponentsPage;
-    const fileToUpload = '../../../../main/webapp/content/images/logo-jhipster.png';
-    const absolutePath = path.resolve(__dirname, fileToUpload);
-    
 
     beforeAll(() => {
         browser.get('/');
@@ -42,7 +38,7 @@ describe('MyAccount e2e test', () => {
         // myAccountDialogPage.shopSelectLastOption();
         myAccountDialogPage.save();
         expect(myAccountDialogPage.getSaveButton().isPresent()).toBeFalsy();
-    }); 
+    });
 
     afterAll(() => {
         navBarPage.autoSignOut();
@@ -76,78 +72,78 @@ export class MyAccountDialogPage {
         return this.modalTitle.getAttribute('jhiTranslate');
     }
 
-    setTypeSelect = function (type) {
+    setTypeSelect = function(type) {
         this.typeSelect.sendKeys(type);
     }
 
-    getTypeSelect = function () {
+    getTypeSelect = function() {
         return this.typeSelect.element(by.css('option:checked')).getText();
     }
 
-    typeSelectLastOption = function () {
+    typeSelectLastOption = function() {
         this.typeSelect.all(by.tagName('option')).last().click();
     }
-    companySelectLastOption = function () {
+    companySelectLastOption = function() {
         this.companySelect.all(by.tagName('option')).last().click();
     }
 
-    companySelectOption = function (option) {
+    companySelectOption = function(option) {
         this.companySelect.sendKeys(option);
     }
 
-    getCompanySelect = function () {
+    getCompanySelect = function() {
         return this.companySelect;
     }
 
-    getCompanySelectedOption = function () {
+    getCompanySelectedOption = function() {
         return this.companySelect.element(by.css('option:checked')).getText();
     }
 
-    departmentSelectLastOption = function () {
+    departmentSelectLastOption = function() {
         this.departmentSelect.all(by.tagName('option')).last().click();
     }
 
-    departmentSelectOption = function (option) {
+    departmentSelectOption = function(option) {
         this.departmentSelect.sendKeys(option);
     }
 
-    getDepartmentSelect = function () {
+    getDepartmentSelect = function() {
         return this.departmentSelect;
     }
 
-    getDepartmentSelectedOption = function () {
+    getDepartmentSelectedOption = function() {
         return this.departmentSelect.element(by.css('option:checked')).getText();
     }
 
-    officeSelectLastOption = function () {
+    officeSelectLastOption = function() {
         this.officeSelect.all(by.tagName('option')).last().click();
     }
 
-    officeSelectOption = function (option) {
+    officeSelectOption = function(option) {
         this.officeSelect.sendKeys(option);
     }
 
-    getOfficeSelect = function () {
+    getOfficeSelect = function() {
         return this.officeSelect;
     }
 
-    getOfficeSelectedOption = function () {
+    getOfficeSelectedOption = function() {
         return this.officeSelect.element(by.css('option:checked')).getText();
     }
 
-    shopSelectLastOption = function () {
+    shopSelectLastOption = function() {
         this.shopSelect.all(by.tagName('option')).last().click();
     }
 
-    shopSelectOption = function (option) {
+    shopSelectOption = function(option) {
         this.shopSelect.sendKeys(option);
     }
 
-    getShopSelect = function () {
+    getShopSelect = function() {
         return this.shopSelect;
     }
 
-    getShopSelectedOption = function () {
+    getShopSelectedOption = function() {
         return this.shopSelect.element(by.css('option:checked')).getText();
     }
 

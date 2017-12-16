@@ -122,7 +122,7 @@ public class StateResourceIntTest {
 
         // Validate the State in Elasticsearch
         State stateEs = stateSearchRepository.findOne(testState.getId());
-        assertThat(stateEs).isEqualToComparingFieldByField(testState);
+        assertThat(stateEs).isEqualToIgnoringGivenFields(testState);
     }
 
     @Test
@@ -234,7 +234,7 @@ public class StateResourceIntTest {
 
         // Validate the State in Elasticsearch
         State stateEs = stateSearchRepository.findOne(testState.getId());
-        assertThat(stateEs).isEqualToComparingFieldByField(testState);
+        assertThat(stateEs).isEqualToIgnoringGivenFields(testState);
     }
 
     @Test

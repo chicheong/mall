@@ -123,7 +123,7 @@ public class OfficeResourceIntTest {
 
         // Validate the Office in Elasticsearch
         Office officeEs = officeSearchRepository.findOne(testOffice.getId());
-        assertThat(officeEs).isEqualToComparingFieldByField(testOffice);
+        assertThat(officeEs).isEqualToIgnoringGivenFields(testOffice);
     }
 
     @Test
@@ -235,7 +235,7 @@ public class OfficeResourceIntTest {
 
         // Validate the Office in Elasticsearch
         Office officeEs = officeSearchRepository.findOne(testOffice.getId());
-        assertThat(officeEs).isEqualToComparingFieldByField(testOffice);
+        assertThat(officeEs).isEqualToIgnoringGivenFields(testOffice);
     }
 
     @Test
