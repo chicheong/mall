@@ -1,0 +1,56 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "delegation",
+            "otherEntityName": "delegation",
+            "otherEntityRelationshipName": "account"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "company",
+            "otherEntityName": "company",
+            "otherEntityField": "code"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "department",
+            "otherEntityName": "department",
+            "otherEntityField": "code"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "office",
+            "otherEntityName": "office",
+            "otherEntityField": "code"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityRelationshipName": "account",
+            "relationshipName": "shop",
+            "otherEntityName": "shop",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "many-to-many",
+            "relationshipName": "userInfo",
+            "otherEntityName": "userInfo",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "account"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "type",
+            "fieldType": "AccountType",
+            "fieldValues": "PERSONAL,COMPANY"
+        }
+    ],
+    "changelogDate": "20170727090127",
+    "entityTableName": "my_account",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "no"
+}

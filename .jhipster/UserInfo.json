@@ -1,0 +1,27 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "user",
+            "otherEntityName": "user",
+            "otherEntityField": "login",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "userInfo"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityRelationshipName": "userInfo",
+            "relationshipName": "account",
+            "otherEntityName": "myAccount",
+            "otherEntityField": "id",
+            "ownerSide": true
+        }
+    ],
+    "fields": [],
+    "changelogDate": "20170727090126",
+    "entityTableName": "user_info",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "no"
+}

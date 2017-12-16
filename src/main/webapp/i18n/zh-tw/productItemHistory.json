@@ -1,0 +1,34 @@
+{
+    "mallApp": {
+        "productItemHistory" : {
+            "home": {
+                "title": "Product Item Histories",
+                "createLabel": "建立一筆新的 Product Item History",
+                "createOrEditLabel": "建立或編輯 Product Item History",
+                "search": "搜尋 Product Item History"
+            },
+            "created": "新的 Product Item History 建立成功，識別碼為 {{ param }}",
+            "updated": "識別碼為 {{ param }} 的 Product Item History 更新成功",
+            "deleted": "識別碼為 {{ param }} 的 Product Item History 刪除成功",
+            "delete": {
+                "question": "您確定要刪除 Product Item History {{ id }} 嗎?"
+            },
+            "detail": {
+                "title": "Product Item History"
+            },
+            "name": "Name",
+            "code": "Code",
+            "defaultItem": "Default Item",
+            "color": "Color",
+            "size": "Size",
+            "quantity": "Quantity",
+            "currency": "Currency",
+            "price": "Price",
+            "createdBy": "Created By",
+            "createdDate": "Created Date",
+            "lastModifiedBy": "Last Modified By",
+            "lastModifiedDate": "Last Modified Date",
+            "item": "Item"
+        }
+    }
+}

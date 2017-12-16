@@ -1,0 +1,28 @@
+{
+    "mallApp": {
+        "myOrder" : {
+            "home": {
+                "title": "My Orders",
+                "createLabel": "Create a new My Order",
+                "createOrEditLabel": "Create or edit a My Order",
+                "search": "Search for My Order"
+            },
+            "created": "A new My Order is created with identifier {{ param }}",
+            "updated": "A My Order is updated with identifier {{ param }}",
+            "deleted": "A My Order is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete My Order {{ id }}?"
+            },
+            "detail": {
+                "title": "My Order"
+            },
+            "total": "Total",
+            "currency": "Currency",
+            "remark": "Remark",
+            "status": "Status",
+            "item": "Item",
+            "statusHistory": "Status History",
+            "account": "Account"
+        }
+    }
+}

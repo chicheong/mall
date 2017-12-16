@@ -1,0 +1,34 @@
+{
+    "mallApp": {
+        "productItemHistory" : {
+            "home": {
+                "title": "Product Item Histories",
+                "createLabel": "Create a new Product Item History",
+                "createOrEditLabel": "Create or edit a Product Item History",
+                "search": "Search for Product Item History"
+            },
+            "created": "A new Product Item History is created with identifier {{ param }}",
+            "updated": "A Product Item History is updated with identifier {{ param }}",
+            "deleted": "A Product Item History is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Product Item History {{ id }}?"
+            },
+            "detail": {
+                "title": "Product Item History"
+            },
+            "name": "Name",
+            "code": "Code",
+            "defaultItem": "Default Item",
+            "color": "Color",
+            "size": "Size",
+            "quantity": "Quantity",
+            "currency": "Currency",
+            "price": "Price",
+            "createdBy": "Created By",
+            "createdDate": "Created Date",
+            "lastModifiedBy": "Last Modified By",
+            "lastModifiedDate": "Last Modified Date",
+            "item": "Item"
+        }
+    }
+}

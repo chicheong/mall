@@ -1,0 +1,103 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myProductItemHistoryLabel" jhiTranslate="mallApp.productItemHistory.home.createOrEditLabel">Create or edit a Product Item History</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!productItemHistory.id">
+            <label for="id" jhiTranslate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="productItemHistory.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.name" for="field_name">Name</label>
+            <input type="text" class="form-control" name="name" id="field_name"
+                [(ngModel)]="productItemHistory.name" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.code" for="field_code">Code</label>
+            <input type="text" class="form-control" name="code" id="field_code"
+                [(ngModel)]="productItemHistory.code" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.defaultItem" for="field_defaultItem">Default Item</label>
+            <input type="checkbox" class="form-control" name="defaultItem" id="field_defaultItem"
+                [(ngModel)]="productItemHistory.defaultItem" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.color" for="field_color">Color</label>
+            <input type="text" class="form-control" name="color" id="field_color"
+                [(ngModel)]="productItemHistory.color" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.size" for="field_size">Size</label>
+            <input type="text" class="form-control" name="size" id="field_size"
+                [(ngModel)]="productItemHistory.size" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.quantity" for="field_quantity">Quantity</label>
+            <input type="number" class="form-control" name="quantity" id="field_quantity"
+                [(ngModel)]="productItemHistory.quantity" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.currency" for="field_currency">Currency</label>
+            <select class="form-control" name="currency" [(ngModel)]="productItemHistory.currency" id="field_currency" >
+                <option value="HKD">{{'mallApp.CurrencyType.HKD' | translate}}</option>
+                <option value="CNY">{{'mallApp.CurrencyType.CNY' | translate}}</option>
+                <option value="USD">{{'mallApp.CurrencyType.USD' | translate}}</option>
+                <option value="EUR">{{'mallApp.CurrencyType.EUR' | translate}}</option>
+                <option value="JPY">{{'mallApp.CurrencyType.JPY' | translate}}</option>
+                <option value="KRW">{{'mallApp.CurrencyType.KRW' | translate}}</option>
+                <option value="TWD">{{'mallApp.CurrencyType.TWD' | translate}}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.price" for="field_price">Price</label>
+            <input type="number" class="form-control" name="price" id="field_price"
+                [(ngModel)]="productItemHistory.price" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.createdBy" for="field_createdBy">Created By</label>
+            <input type="text" class="form-control" name="createdBy" id="field_createdBy"
+                [(ngModel)]="productItemHistory.createdBy" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.createdDate" for="field_createdDate">Created Date</label>
+            <div class="d-flex">
+                <input id="field_createdDate" type="datetime-local" class="form-control" name="createdDate" [(ngModel)]="productItemHistory.createdDate"
+                />
+            </div>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.lastModifiedBy" for="field_lastModifiedBy">Last Modified By</label>
+            <input type="text" class="form-control" name="lastModifiedBy" id="field_lastModifiedBy"
+                [(ngModel)]="productItemHistory.lastModifiedBy" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.lastModifiedDate" for="field_lastModifiedDate">Last Modified Date</label>
+            <div class="d-flex">
+                <input id="field_lastModifiedDate" type="datetime-local" class="form-control" name="lastModifiedDate" [(ngModel)]="productItemHistory.lastModifiedDate"
+                />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.item" for="field_item">Item</label>
+            <select class="form-control" id="field_item" name="item" [(ngModel)]="productItemHistory.item" >
+                <option [ngValue]="null"></option>
+                <option [ngValue]="productItemOption.id === productItemHistory.item?.id ? productItemHistory.item : productItemOption" *ngFor="let productItemOption of productitems; trackBy: trackProductItemById">{{productItemOption.id}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

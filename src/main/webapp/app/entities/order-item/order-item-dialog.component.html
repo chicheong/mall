@@ -1,0 +1,61 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myOrderItemLabel" jhiTranslate="mallApp.orderItem.home.createOrEditLabel">Create or edit a Order Item</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
+                (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+        <div class="form-group" [hidden]="!orderItem.id">
+            <label for="id" jhiTranslate="global.field.id">ID</label>
+            <input type="text" class="form-control" id="id" name="id"
+                   [(ngModel)]="orderItem.id" readonly />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.orderItem.quantity" for="field_quantity">Quantity</label>
+            <input type="number" class="form-control" name="quantity" id="field_quantity"
+                [(ngModel)]="orderItem.quantity" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.orderItem.price" for="field_price">Price</label>
+            <input type="text" class="form-control" name="price" id="field_price"
+                [(ngModel)]="orderItem.price" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.orderItem.currency" for="field_currency">Currency</label>
+            <select class="form-control" name="currency" [(ngModel)]="orderItem.currency" id="field_currency" >
+                <option value="HKD">{{'mallApp.CurrencyType.HKD' | translate}}</option>
+                <option value="CNY">{{'mallApp.CurrencyType.CNY' | translate}}</option>
+                <option value="USD">{{'mallApp.CurrencyType.USD' | translate}}</option>
+                <option value="EUR">{{'mallApp.CurrencyType.EUR' | translate}}</option>
+                <option value="JPY">{{'mallApp.CurrencyType.JPY' | translate}}</option>
+                <option value="KRW">{{'mallApp.CurrencyType.KRW' | translate}}</option>
+                <option value="TWD">{{'mallApp.CurrencyType.TWD' | translate}}</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.orderItem.productItem" for="field_productItem">Product Item</label>
+            <select class="form-control" id="field_productItem" name="productItem" [(ngModel)]="orderItem.productItem">
+                <option [ngValue]="null"></option>
+                <option [ngValue]="productItemOption.id === orderItem.productItem?.id ? orderItem.productItem : productItemOption" *ngFor="let productItemOption of productitems; trackBy: trackProductItemById">{{productItemOption.id}}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.orderItem.order" for="field_order">Order</label>
+            <select class="form-control" id="field_order" name="order" [(ngModel)]="orderItem.order" >
+                <option [ngValue]="null"></option>
+                <option [ngValue]="myOrderOption.id === orderItem.order?.id ? orderItem.order : myOrderOption" *ngFor="let myOrderOption of myorders; trackBy: trackMyOrderById">{{myOrderOption.id}}</option>
+            </select>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
+            <span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+        </button>
+        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+            <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+        </button>
+    </div>
+</form>

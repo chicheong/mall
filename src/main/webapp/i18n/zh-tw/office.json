@@ -1,0 +1,28 @@
+{
+    "mallApp": {
+        "office" : {
+            "home": {
+                "title": "Offices",
+                "createLabel": "建立一筆新的 Office",
+                "createOrEditLabel": "建立或編輯 Office",
+                "search": "搜尋 Office"
+            },
+            "created": "新的 Office 建立成功，識別碼為 {{ param }}",
+            "updated": "識別碼為 {{ param }} 的 Office 更新成功",
+            "deleted": "識別碼為 {{ param }} 的 Office 刪除成功",
+            "delete": {
+                "question": "您確定要刪除 Office {{ id }} 嗎?"
+            },
+            "detail": {
+                "title": "Office"
+            },
+            "code": "Code",
+            "name": "Name",
+            "status": "Status",
+            "address": "Address",
+            "account": "Account",
+            "company": "Company",
+            "department": "Department"
+        }
+    }
+}

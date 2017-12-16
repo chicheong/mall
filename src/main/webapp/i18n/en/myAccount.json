@@ -1,0 +1,28 @@
+{
+    "mallApp": {
+        "myAccount" : {
+            "home": {
+                "title": "My Accounts",
+                "createLabel": "Create a new My Account",
+                "createOrEditLabel": "Create or edit a My Account",
+                "search": "Search for My Account"
+            },
+            "created": "A new My Account is created with identifier {{ param }}",
+            "updated": "A My Account is updated with identifier {{ param }}",
+            "deleted": "A My Account is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete My Account {{ id }}?"
+            },
+            "detail": {
+                "title": "My Account"
+            },
+            "type": "Type",
+            "delegation": "Delegation",
+            "company": "Company",
+            "department": "Department",
+            "office": "Office",
+            "shop": "Shop",
+            "userInfo": "User Info"
+        }
+    }
+}
