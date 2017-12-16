@@ -1,15 +1,11 @@
-import { browser, element, by, $ } from 'protractor';
+import { browser, element, by } from 'protractor';
 import { NavBarPage } from './../page-objects/jhi-page-objects';
-const path = require('path');
 
 describe('Office e2e test', () => {
 
     let navBarPage: NavBarPage;
     let officeDialogPage: OfficeDialogPage;
     let officeComponentsPage: OfficeComponentsPage;
-    const fileToUpload = '../../../../main/webapp/content/images/logo-jhipster.png';
-    const absolutePath = path.resolve(__dirname, fileToUpload);
-    
 
     beforeAll(() => {
         browser.get('/');
@@ -43,7 +39,7 @@ describe('Office e2e test', () => {
         officeDialogPage.addressSelectLastOption();
         officeDialogPage.save();
         expect(officeDialogPage.getSaveButton().isPresent()).toBeFalsy();
-    }); 
+    });
 
     afterAll(() => {
         navBarPage.autoSignOut();
@@ -76,46 +72,46 @@ export class OfficeDialogPage {
         return this.modalTitle.getAttribute('jhiTranslate');
     }
 
-    setCodeInput = function (code) {
+    setCodeInput = function(code) {
         this.codeInput.sendKeys(code);
     }
 
-    getCodeInput = function () {
+    getCodeInput = function() {
         return this.codeInput.getAttribute('value');
     }
 
-    setNameInput = function (name) {
+    setNameInput = function(name) {
         this.nameInput.sendKeys(name);
     }
 
-    getNameInput = function () {
+    getNameInput = function() {
         return this.nameInput.getAttribute('value');
     }
 
-    setStatusSelect = function (status) {
+    setStatusSelect = function(status) {
         this.statusSelect.sendKeys(status);
     }
 
-    getStatusSelect = function () {
+    getStatusSelect = function() {
         return this.statusSelect.element(by.css('option:checked')).getText();
     }
 
-    statusSelectLastOption = function () {
+    statusSelectLastOption = function() {
         this.statusSelect.all(by.tagName('option')).last().click();
     }
-    addressSelectLastOption = function () {
+    addressSelectLastOption = function() {
         this.addressSelect.all(by.tagName('option')).last().click();
     }
 
-    addressSelectOption = function (option) {
+    addressSelectOption = function(option) {
         this.addressSelect.sendKeys(option);
     }
 
-    getAddressSelect = function () {
+    getAddressSelect = function() {
         return this.addressSelect;
     }
 
-    getAddressSelectedOption = function () {
+    getAddressSelectedOption = function() {
         return this.addressSelect.element(by.css('option:checked')).getText();
     }
 

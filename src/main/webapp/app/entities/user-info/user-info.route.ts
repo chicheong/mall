@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-
-import { UserRouteAccessService } from '../../shared';
 import { JhiPaginationUtil } from 'ng-jhipster';
 
+import { UserRouteAccessService } from '../../shared';
 import { UserInfoComponent } from './user-info.component';
 import { UserInfoDetailComponent } from './user-info-detail.component';
 import { UserInfoPopupComponent } from './user-info-dialog.component';

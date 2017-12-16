@@ -2,9 +2,10 @@ package com.wongs.domain;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
+
+import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
@@ -12,7 +13,6 @@ import java.util.Objects;
 import com.wongs.domain.enumeration.DelegationType;
 
 import com.wongs.domain.enumeration.CommonStatus;
-
 
 /**
  * A Delegation.

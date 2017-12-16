@@ -1,9 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-
-import { UserRouteAccessService } from '../../shared';
 import { JhiPaginationUtil } from 'ng-jhipster';
 
+import { UserRouteAccessService } from '../../shared';
 import { ProductItemComponent } from './product-item.component';
 import { ProductItemDetailComponent } from './product-item-detail.component';
 import { ProductItemPopupComponent } from './product-item-dialog.component';

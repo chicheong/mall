@@ -3,9 +3,10 @@ package com.wongs.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
+
+import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -15,7 +16,6 @@ import java.util.Objects;
 import com.wongs.domain.enumeration.CurrencyType;
 
 import com.wongs.domain.enumeration.OrderStatus;
-
 
 /**
  * A MyOrder.

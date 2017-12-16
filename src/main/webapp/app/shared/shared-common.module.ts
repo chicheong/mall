@@ -1,5 +1,7 @@
 import { NgModule, LOCALE_ID } from '@angular/core';
 import { Title } from '@angular/platform-browser';
+import { registerLocaleData } from '@angular/common';
+import locale from '@angular/common/locales/en';
 
 import {
     MallSharedLibsModule,
@@ -33,4 +35,8 @@ import {
         JhiAlertErrorComponent
     ]
 })
-export class MallSharedCommonModule {}
+export class MallSharedCommonModule {
+    constructor() {
+        registerLocaleData(locale);
+    }
+}

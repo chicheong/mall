@@ -178,7 +178,9 @@ public class ProductResourceIntTest {
 
         // Validate the Product in Elasticsearch
         Product productEs = productSearchRepository.findOne(testProduct.getId());
-        assertThat(productEs).isEqualToComparingFieldByField(testProduct);
+        assertThat(testProduct.getCreatedDate()).isEqualTo(testProduct.getCreatedDate());
+        assertThat(testProduct.getLastModifiedDate()).isEqualTo(testProduct.getLastModifiedDate());
+        assertThat(productEs).isEqualToIgnoringGivenFields(testProduct, "createdDate", "lastModifiedDate");
     }
 
     @Test
@@ -325,7 +327,9 @@ public class ProductResourceIntTest {
 
         // Validate the Product in Elasticsearch
         Product productEs = productSearchRepository.findOne(testProduct.getId());
-        assertThat(productEs).isEqualToComparingFieldByField(testProduct);
+        assertThat(testProduct.getCreatedDate()).isEqualTo(testProduct.getCreatedDate());
+        assertThat(testProduct.getLastModifiedDate()).isEqualTo(testProduct.getLastModifiedDate());
+        assertThat(productEs).isEqualToIgnoringGivenFields(testProduct, "createdDate", "lastModifiedDate");
     }
 
     @Test

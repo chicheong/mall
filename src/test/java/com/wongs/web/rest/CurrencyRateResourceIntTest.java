@@ -140,7 +140,9 @@ public class CurrencyRateResourceIntTest {
 
         // Validate the CurrencyRate in Elasticsearch
         CurrencyRate currencyRateEs = currencyRateSearchRepository.findOne(testCurrencyRate.getId());
-        assertThat(currencyRateEs).isEqualToComparingFieldByField(testCurrencyRate);
+        assertThat(testCurrencyRate.getFrom()).isEqualTo(testCurrencyRate.getFrom());
+        assertThat(testCurrencyRate.getTo()).isEqualTo(testCurrencyRate.getTo());
+        assertThat(currencyRateEs).isEqualToIgnoringGivenFields(testCurrencyRate, "from", "to");
     }
 
     @Test
@@ -242,7 +244,9 @@ public class CurrencyRateResourceIntTest {
 
         // Validate the CurrencyRate in Elasticsearch
         CurrencyRate currencyRateEs = currencyRateSearchRepository.findOne(testCurrencyRate.getId());
-        assertThat(currencyRateEs).isEqualToComparingFieldByField(testCurrencyRate);
+        assertThat(testCurrencyRate.getFrom()).isEqualTo(testCurrencyRate.getFrom());
+        assertThat(testCurrencyRate.getTo()).isEqualTo(testCurrencyRate.getTo());
+        assertThat(currencyRateEs).isEqualToIgnoringGivenFields(testCurrencyRate, "from", "to");
     }
 
     @Test

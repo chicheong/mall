@@ -1,15 +1,11 @@
-import { browser, element, by, $ } from 'protractor';
+import { browser, element, by } from 'protractor';
 import { NavBarPage } from './../page-objects/jhi-page-objects';
-const path = require('path');
 
 describe('Address e2e test', () => {
 
     let navBarPage: NavBarPage;
     let addressDialogPage: AddressDialogPage;
     let addressComponentsPage: AddressComponentsPage;
-    const fileToUpload = '../../../../main/webapp/content/images/logo-jhipster.png';
-    const absolutePath = path.resolve(__dirname, fileToUpload);
-    
 
     beforeAll(() => {
         browser.get('/');
@@ -51,7 +47,7 @@ describe('Address e2e test', () => {
         addressDialogPage.stateSelectLastOption();
         addressDialogPage.save();
         expect(addressDialogPage.getSaveButton().isPresent()).toBeFalsy();
-    }); 
+    });
 
     afterAll(() => {
         navBarPage.autoSignOut();
@@ -88,83 +84,83 @@ export class AddressDialogPage {
         return this.modalTitle.getAttribute('jhiTranslate');
     }
 
-    setLine1Input = function (line1) {
+    setLine1Input = function(line1) {
         this.line1Input.sendKeys(line1);
     }
 
-    getLine1Input = function () {
+    getLine1Input = function() {
         return this.line1Input.getAttribute('value');
     }
 
-    setLine2Input = function (line2) {
+    setLine2Input = function(line2) {
         this.line2Input.sendKeys(line2);
     }
 
-    getLine2Input = function () {
+    getLine2Input = function() {
         return this.line2Input.getAttribute('value');
     }
 
-    setLine3Input = function (line3) {
+    setLine3Input = function(line3) {
         this.line3Input.sendKeys(line3);
     }
 
-    getLine3Input = function () {
+    getLine3Input = function() {
         return this.line3Input.getAttribute('value');
     }
 
-    setLine4Input = function (line4) {
+    setLine4Input = function(line4) {
         this.line4Input.sendKeys(line4);
     }
 
-    getLine4Input = function () {
+    getLine4Input = function() {
         return this.line4Input.getAttribute('value');
     }
 
-    setCityInput = function (city) {
+    setCityInput = function(city) {
         this.cityInput.sendKeys(city);
     }
 
-    getCityInput = function () {
+    getCityInput = function() {
         return this.cityInput.getAttribute('value');
     }
 
-    setPostalCodeInput = function (postalCode) {
+    setPostalCodeInput = function(postalCode) {
         this.postalCodeInput.sendKeys(postalCode);
     }
 
-    getPostalCodeInput = function () {
+    getPostalCodeInput = function() {
         return this.postalCodeInput.getAttribute('value');
     }
 
-    countrySelectLastOption = function () {
+    countrySelectLastOption = function() {
         this.countrySelect.all(by.tagName('option')).last().click();
     }
 
-    countrySelectOption = function (option) {
+    countrySelectOption = function(option) {
         this.countrySelect.sendKeys(option);
     }
 
-    getCountrySelect = function () {
+    getCountrySelect = function() {
         return this.countrySelect;
     }
 
-    getCountrySelectedOption = function () {
+    getCountrySelectedOption = function() {
         return this.countrySelect.element(by.css('option:checked')).getText();
     }
 
-    stateSelectLastOption = function () {
+    stateSelectLastOption = function() {
         this.stateSelect.all(by.tagName('option')).last().click();
     }
 
-    stateSelectOption = function (option) {
+    stateSelectOption = function(option) {
         this.stateSelect.sendKeys(option);
     }
 
-    getStateSelect = function () {
+    getStateSelect = function() {
         return this.stateSelect;
     }
 
-    getStateSelectedOption = function () {
+    getStateSelectedOption = function() {
         return this.stateSelect.element(by.css('option:checked')).getText();
     }
 

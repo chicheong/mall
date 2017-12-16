@@ -1,11 +1,8 @@
 /* tslint:disable max-line-length */
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { DatePipe } from '@angular/common';
-import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs/Rx';
-import { JhiDateUtils, JhiDataUtils, JhiEventManager } from 'ng-jhipster';
+
 import { MallTestModule } from '../../../test.module';
-import { MockActivatedRoute } from '../../../helpers/mock-route.service';
 import { MyAccountDetailComponent } from '../../../../../../main/webapp/app/entities/my-account/my-account-detail.component';
 import { MyAccountService } from '../../../../../../main/webapp/app/entities/my-account/my-account.service';
 import { MyAccount } from '../../../../../../main/webapp/app/entities/my-account/my-account.model';
@@ -22,17 +19,10 @@ describe('Component Tests', () => {
                 imports: [MallTestModule],
                 declarations: [MyAccountDetailComponent],
                 providers: [
-                    JhiDateUtils,
-                    JhiDataUtils,
-                    DatePipe,
-                    {
-                        provide: ActivatedRoute,
-                        useValue: new MockActivatedRoute({id: 123})
-                    },
-                    MyAccountService,
-                    JhiEventManager
+                    MyAccountService
                 ]
-            }).overrideTemplate(MyAccountDetailComponent, '')
+            })
+            .overrideTemplate(MyAccountDetailComponent, '')
             .compileComponents();
         }));
 
@@ -44,16 +34,16 @@ describe('Component Tests', () => {
 
         describe('OnInit', () => {
             it('Should call load all on init', () => {
-            // GIVEN
+                // GIVEN
 
-            spyOn(service, 'find').and.returnValue(Observable.of(new MyAccount(10)));
+                spyOn(service, 'find').and.returnValue(Observable.of(new MyAccount(123)));
 
-            // WHEN
-            comp.ngOnInit();
+                // WHEN
+                comp.ngOnInit();
 
-            // THEN
-            expect(service.find).toHaveBeenCalledWith(123);
-            expect(comp.myAccount).toEqual(jasmine.objectContaining({id: 10}));
+                // THEN
+                expect(service.find).toHaveBeenCalledWith(123);
+                expect(comp.myAccount).toEqual(jasmine.objectContaining({id: 123}));
             });
         });
     });

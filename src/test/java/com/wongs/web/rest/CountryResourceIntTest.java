@@ -127,7 +127,7 @@ public class CountryResourceIntTest {
 
         // Validate the Country in Elasticsearch
         Country countryEs = countrySearchRepository.findOne(testCountry.getId());
-        assertThat(countryEs).isEqualToComparingFieldByField(testCountry);
+        assertThat(countryEs).isEqualToIgnoringGivenFields(testCountry);
     }
 
     @Test
@@ -243,7 +243,7 @@ public class CountryResourceIntTest {
 
         // Validate the Country in Elasticsearch
         Country countryEs = countrySearchRepository.findOne(testCountry.getId());
-        assertThat(countryEs).isEqualToComparingFieldByField(testCountry);
+        assertThat(countryEs).isEqualToIgnoringGivenFields(testCountry);
     }
 
     @Test

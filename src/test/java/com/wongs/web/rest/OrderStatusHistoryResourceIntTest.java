@@ -123,7 +123,8 @@ public class OrderStatusHistoryResourceIntTest {
 
         // Validate the OrderStatusHistory in Elasticsearch
         OrderStatusHistory orderStatusHistoryEs = orderStatusHistorySearchRepository.findOne(testOrderStatusHistory.getId());
-        assertThat(orderStatusHistoryEs).isEqualToComparingFieldByField(testOrderStatusHistory);
+        assertThat(testOrderStatusHistory.getEffectiveDate()).isEqualTo(testOrderStatusHistory.getEffectiveDate());
+        assertThat(orderStatusHistoryEs).isEqualToIgnoringGivenFields(testOrderStatusHistory, "effectiveDate");
     }
 
     @Test
@@ -213,7 +214,8 @@ public class OrderStatusHistoryResourceIntTest {
 
         // Validate the OrderStatusHistory in Elasticsearch
         OrderStatusHistory orderStatusHistoryEs = orderStatusHistorySearchRepository.findOne(testOrderStatusHistory.getId());
-        assertThat(orderStatusHistoryEs).isEqualToComparingFieldByField(testOrderStatusHistory);
+        assertThat(testOrderStatusHistory.getEffectiveDate()).isEqualTo(testOrderStatusHistory.getEffectiveDate());
+        assertThat(orderStatusHistoryEs).isEqualToIgnoringGivenFields(testOrderStatusHistory, "effectiveDate");
     }
 
     @Test

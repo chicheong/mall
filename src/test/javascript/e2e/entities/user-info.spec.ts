@@ -1,13 +1,11 @@
-import { browser, element, by, $ } from 'protractor';
+import { browser, element, by } from 'protractor';
 import { NavBarPage } from './../page-objects/jhi-page-objects';
-
 
 describe('UserInfo e2e test', () => {
 
     let navBarPage: NavBarPage;
     let userInfoDialogPage: UserInfoDialogPage;
     let userInfoComponentsPage: UserInfoComponentsPage;
-
 
     beforeAll(() => {
         browser.get('/');
@@ -37,7 +35,7 @@ describe('UserInfo e2e test', () => {
         // userInfoDialogPage.accountSelectLastOption();
         userInfoDialogPage.save();
         expect(userInfoDialogPage.getSaveButton().isPresent()).toBeFalsy();
-    }); 
+    });
 
     afterAll(() => {
         navBarPage.autoSignOut();
@@ -68,35 +66,35 @@ export class UserInfoDialogPage {
         return this.modalTitle.getAttribute('jhiTranslate');
     }
 
-    userSelectLastOption = function () {
+    userSelectLastOption = function() {
         this.userSelect.all(by.tagName('option')).last().click();
     }
 
-    userSelectOption = function (option) {
+    userSelectOption = function(option) {
         this.userSelect.sendKeys(option);
     }
 
-    getUserSelect = function () {
+    getUserSelect = function() {
         return this.userSelect;
     }
 
-    getUserSelectedOption = function () {
+    getUserSelectedOption = function() {
         return this.userSelect.element(by.css('option:checked')).getText();
     }
 
-    accountSelectLastOption = function () {
+    accountSelectLastOption = function() {
         this.accountSelect.all(by.tagName('option')).last().click();
     }
 
-    accountSelectOption = function (option) {
+    accountSelectOption = function(option) {
         this.accountSelect.sendKeys(option);
     }
 
-    getAccountSelect = function () {
+    getAccountSelect = function() {
         return this.accountSelect;
     }
 
-    getAccountSelectedOption = function () {
+    getAccountSelectedOption = function() {
         return this.accountSelect.element(by.css('option:checked')).getText();
     }
 

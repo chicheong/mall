@@ -1,9 +1,6 @@
-import { Injectable } from '@angular/core';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
+import { Routes } from '@angular/router';
 
 import { UserRouteAccessService } from '../../shared';
-import { JhiPaginationUtil } from 'ng-jhipster';
-
 import { OrderStatusHistoryComponent } from './order-status-history.component';
 import { OrderStatusHistoryDetailComponent } from './order-status-history-detail.component';
 import { OrderStatusHistoryPopupComponent } from './order-status-history-dialog.component';

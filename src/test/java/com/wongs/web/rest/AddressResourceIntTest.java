@@ -137,7 +137,7 @@ public class AddressResourceIntTest {
 
         // Validate the Address in Elasticsearch
         Address addressEs = addressSearchRepository.findOne(testAddress.getId());
-        assertThat(addressEs).isEqualToComparingFieldByField(testAddress);
+        assertThat(addressEs).isEqualToIgnoringGivenFields(testAddress);
     }
 
     @Test
@@ -243,7 +243,7 @@ public class AddressResourceIntTest {
 
         // Validate the Address in Elasticsearch
         Address addressEs = addressSearchRepository.findOne(testAddress.getId());
-        assertThat(addressEs).isEqualToComparingFieldByField(testAddress);
+        assertThat(addressEs).isEqualToIgnoringGivenFields(testAddress);
     }
 
     @Test

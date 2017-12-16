@@ -1,15 +1,11 @@
-import { browser, element, by, $ } from 'protractor';
+import { browser, element, by } from 'protractor';
 import { NavBarPage } from './../page-objects/jhi-page-objects';
-const path = require('path');
 
 describe('OrderStatusHistory e2e test', () => {
 
     let navBarPage: NavBarPage;
     let orderStatusHistoryDialogPage: OrderStatusHistoryDialogPage;
     let orderStatusHistoryComponentsPage: OrderStatusHistoryComponentsPage;
-    const fileToUpload = '../../../../main/webapp/content/images/logo-jhipster.png';
-    const absolutePath = path.resolve(__dirname, fileToUpload);
-    
 
     beforeAll(() => {
         browser.get('/');
@@ -41,7 +37,7 @@ describe('OrderStatusHistory e2e test', () => {
         orderStatusHistoryDialogPage.orderSelectLastOption();
         orderStatusHistoryDialogPage.save();
         expect(orderStatusHistoryDialogPage.getSaveButton().isPresent()).toBeFalsy();
-    }); 
+    });
 
     afterAll(() => {
         navBarPage.autoSignOut();
@@ -73,38 +69,38 @@ export class OrderStatusHistoryDialogPage {
         return this.modalTitle.getAttribute('jhiTranslate');
     }
 
-    setEffectiveDateInput = function (effectiveDate) {
+    setEffectiveDateInput = function(effectiveDate) {
         this.effectiveDateInput.sendKeys(effectiveDate);
     }
 
-    getEffectiveDateInput = function () {
+    getEffectiveDateInput = function() {
         return this.effectiveDateInput.getAttribute('value');
     }
 
-    setStatusSelect = function (status) {
+    setStatusSelect = function(status) {
         this.statusSelect.sendKeys(status);
     }
 
-    getStatusSelect = function () {
+    getStatusSelect = function() {
         return this.statusSelect.element(by.css('option:checked')).getText();
     }
 
-    statusSelectLastOption = function () {
+    statusSelectLastOption = function() {
         this.statusSelect.all(by.tagName('option')).last().click();
     }
-    orderSelectLastOption = function () {
+    orderSelectLastOption = function() {
         this.orderSelect.all(by.tagName('option')).last().click();
     }
 
-    orderSelectOption = function (option) {
+    orderSelectOption = function(option) {
         this.orderSelect.sendKeys(option);
     }
 
-    getOrderSelect = function () {
+    getOrderSelect = function() {
         return this.orderSelect;
     }
 
-    getOrderSelectedOption = function () {
+    getOrderSelectedOption = function() {
         return this.orderSelect.element(by.css('option:checked')).getText();
     }
 
