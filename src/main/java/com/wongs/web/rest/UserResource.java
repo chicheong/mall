@@ -3,6 +3,7 @@ package com.wongs.web.rest;
 import com.wongs.config.Constants;
 import com.codahale.metrics.annotation.Timed;
 import com.wongs.domain.User;
+import com.wongs.domain.UserInfo;
 import com.wongs.repository.UserInfoRepository;
 import com.wongs.repository.UserRepository;
 import com.wongs.repository.search.UserSearchRepository;
@@ -179,7 +180,10 @@ public class UserResource {
         log.debug("REST request to get User : {}", login);
         
         return ResponseUtil.wrapOrNotFound(userService.getUserWithAuthoritiesByLogin(login)
-				.map(UserDTO::new)
+				.map(UserDTO::new).map(userDTO -> {
+					userDTO.setUserInfo(userService.getUserInfo(login));
+					return userDTO;
+        		})
             );
     }
 

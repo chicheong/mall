@@ -7,6 +7,7 @@ import com.wongs.domain.MyAccount;
 import com.wongs.domain.User;
 import com.wongs.domain.UserInfo;
 
+import org.hibernate.Hibernate;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -56,6 +57,8 @@ public class UserDTO {
     private Set<String> authorities;
     
     private UserInfo userInfo = null;
+    
+    private MyAccount myAccount = null;
     
     private Set<MyAccount> myAccounts = null;
 
@@ -191,6 +194,17 @@ public class UserDTO {
 
 	public void setUserInfo(UserInfo userInfo) {
 		this.userInfo = userInfo;
+		if (userInfo != null && userInfo.getAccounts() != null) {
+			this.myAccounts = userInfo.getAccounts();
+		}
+	}
+
+	public MyAccount getMyAccount() {
+		return myAccount;
+	}
+
+	public void setMyAccount(MyAccount myAccount) {
+		this.myAccount = myAccount;
 	}
 
 	public Set<MyAccount> getMyAccounts() {
@@ -217,6 +231,7 @@ public class UserDTO {
             ", lastModifiedDate=" + lastModifiedDate +
             ", authorities=" + authorities +
             ", userIno=" + userInfo +
+            ", myAccount=" + myAccount +
             ", myAccounts=" + myAccounts +
             "}";
     }

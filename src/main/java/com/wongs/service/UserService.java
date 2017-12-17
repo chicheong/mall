@@ -135,6 +135,21 @@ public class UserService {
         userRepository.save(newUser);
         userSearchRepository.save(newUser);
         log.debug("Created Information for User: {}", newUser);
+        
+        UserInfo userInfo = new UserInfo();
+        userInfo.setUser(newUser);
+        userInfoRepository.save(userInfo);
+        userInfoSearchRepository.save(userInfo);
+        
+        MyAccount myAccount = new MyAccount();
+        myAccount.getUserInfos().add(userInfo);
+        myAccountRepository.save(myAccount);
+        myAccountSearchRepository.save(myAccount);
+        
+        userInfo.getAccounts().add(myAccount);
+        userInfoRepository.save(userInfo);
+        userInfoSearchRepository.save(userInfo);
+        
         return newUser;
     }
 
@@ -171,9 +186,13 @@ public class UserService {
         userInfoSearchRepository.save(userInfo);
         
         MyAccount myAccount = new MyAccount();
-        myAccount.setUserInfos(Collections.singleton(userInfo));
+        myAccount.getUserInfos().add(userInfo);
         myAccountRepository.save(myAccount);
         myAccountSearchRepository.save(myAccount);
+        
+        userInfo.getAccounts().add(myAccount);
+        userInfoRepository.save(userInfo);
+        userInfoSearchRepository.save(userInfo);
         
         return user;
     }
@@ -234,6 +253,20 @@ public class UserService {
 
     public void deleteUser(String login) {
         userRepository.findOneByLogin(login).ifPresent(user -> {
+        	       	
+        	UserInfo userInfo = this.getUserInfo(user.getLogin());
+        	if (userInfo != null) {
+        		userInfoRepository.delete(userInfo);
+            	Optional<Set<MyAccount>> myAccounts = this.getMyAcounts(userInfo.getId());
+            	if (myAccounts.isPresent()) {
+        			Iterator<MyAccount> iter = myAccounts.get().iterator();
+        			if (iter.hasNext()) {
+        				myAccountRepository.delete(iter.next());
+        				//TODO: should only delete the primary account of UserInfo
+        			}
+            	}
+        	}
+        	
             userRepository.delete(user);
             userSearchRepository.delete(user);
             cacheManager.getCache(USERS_CACHE).evict(login);
@@ -293,6 +326,18 @@ public class UserService {
      */
     public List<String> getAuthorities() {
         return authorityRepository.findAll().stream().map(Authority::getName).collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public UserInfo getUserInfo(String login) {
+    	UserInfo test = userInfoRepository.findOneByUserLogin(login);
+        return test;
+    }
+    
+    @Transactional(readOnly = true)
+    public Optional<Set<MyAccount>> getMyAcounts(Long userInfoId) {
+    	Set<MyAccount> test = userInfoRepository.findByUserInfoId(userInfoId); 
+        return Optional.ofNullable(test);
     }
 
 }

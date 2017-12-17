@@ -22,12 +22,13 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         private eventManager: JhiEventManager,
         private productService: ProductService,
         private route: ActivatedRoute,
-        private alertService: JhiAlertService,
+        private jhiAlertService: JhiAlertService,
         private router: Router
     ) {
     }
 
     ngOnInit() {
+        this.isSaving = false;
         this.subscription = this.route.params.subscribe((params) => {
             this.load(params['id']);
         });
@@ -77,11 +78,11 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     }
 
     private onSaveSuccess(result: Product) {
-        this.eventManager.broadcast({ name: 'productListModification', content: 'OK'});
+        // this.eventManager.broadcast({ name: 'productListModification', content: 'OK'});
         this.isSaving = false;
         this.isEditing = false;
-      console.error('result.id=' + result.id);
-        setTimeout(this.router.navigate(['/product', result.id]), 0);
+        console.error('result.id=' + result.id);
+        this.router.navigate(['/product', result.id]);
         // this.activeModal.dismiss(result);
     }
 
@@ -96,7 +97,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     }
 
     private onError(error) {
-        this.alertService.error(error.message, null, null);
+        this.jhiAlertService.error(error.message, null, null);
     }
 
     edit() {

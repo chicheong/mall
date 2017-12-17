@@ -3,6 +3,7 @@ package com.wongs.web.rest;
 import com.codahale.metrics.annotation.Timed;
 
 import com.wongs.domain.User;
+import com.wongs.domain.UserInfo;
 import com.wongs.repository.UserRepository;
 import com.wongs.security.SecurityUtils;
 import com.wongs.service.MailService;
@@ -103,8 +104,10 @@ public class AccountResource {
     @Timed
     public UserDTO getAccount() {
         return userService.getUserWithAuthorities()
-            .map(UserDTO::new)
-            .orElseThrow(() -> new InternalServerErrorException("User could not be found"));
+            .map(UserDTO::new).map(userDTO -> {
+				userDTO.setUserInfo(userService.getUserInfo(userDTO.getLogin()));
+				return userDTO;
+    		}).orElseThrow(() -> new InternalServerErrorException("User could not be found"));
     }
 
     /**

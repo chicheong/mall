@@ -1,11 +1,15 @@
 package com.wongs.repository;
 
 import com.wongs.domain.MyAccount;
+import com.wongs.domain.UserInfo;
+
 import org.springframework.stereotype.Repository;
 
 import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * Spring Data JPA repository for the MyAccount entity.

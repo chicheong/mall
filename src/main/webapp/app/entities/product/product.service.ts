@@ -69,10 +69,10 @@ export class ProductService {
      */
     private convertItemFromServer(json: any): Product {
         const entity: Product = Object.assign(new Product(), json);
-        // entity.createdDate = this.dateUtils
-        //    .convertDateTimeFromServer(json.createdDate);
-        // entity.lastModifiedDate = this.dateUtils
-        //    .convertDateTimeFromServer(json.lastModifiedDate);
+        entity.createdDate = this.dateUtils
+            .convertDateTimeFromServer(json.createdDate);
+        entity.lastModifiedDate = this.dateUtils
+            .convertDateTimeFromServer(json.lastModifiedDate);
         return entity;
     }
 
