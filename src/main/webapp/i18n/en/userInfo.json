@@ -17,6 +17,8 @@
                 "title": "User Info"
             },
             "user": "User",
+            "primaryAccount": "Primary Account",
+            "defaultAccount": "Default Account",
             "account": "Account"
         }
     }

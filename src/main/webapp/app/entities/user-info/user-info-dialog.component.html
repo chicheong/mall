@@ -21,6 +21,20 @@
             </select>
         </div>
         <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.userInfo.primaryAccount" for="field_primaryAccount">Primary Account</label>
+            <select class="form-control" id="field_primaryAccount" name="primaryAccount" [(ngModel)]="userInfo.primaryAccount">
+                <option [ngValue]="null"></option>
+                <option [ngValue]="myAccountOption.id === userInfo.primaryAccount?.id ? userInfo.primaryAccount : myAccountOption" *ngFor="let myAccountOption of primaryaccounts; trackBy: trackMyAccountById">{{myAccountOption.id}}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.userInfo.defaultAccount" for="field_defaultAccount">Default Account</label>
+            <select class="form-control" id="field_defaultAccount" name="defaultAccount" [(ngModel)]="userInfo.defaultAccount">
+                <option [ngValue]="null"></option>
+                <option [ngValue]="myAccountOption.id === userInfo.defaultAccount?.id ? userInfo.defaultAccount : myAccountOption" *ngFor="let myAccountOption of defaultaccounts; trackBy: trackMyAccountById">{{myAccountOption.id}}</option>
+            </select>
+        </div>
+        <div class="form-group">
             <label jhiTranslate="mallApp.userInfo.account" for="field_account">Account</label>
             <select class="form-control" id="field_account" multiple name="account" [(ngModel)]="userInfo.accounts">
                 <option [ngValue]="getSelected(userInfo.accounts, myAccountOption)" *ngFor="let myAccountOption of myaccounts; trackBy: trackMyAccountById">{{myAccountOption.id}}</option>

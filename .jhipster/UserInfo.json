@@ -10,6 +10,22 @@
             "otherEntityRelationshipName": "userInfo"
         },
         {
+            "relationshipType": "one-to-one",
+            "relationshipName": "primaryAccount",
+            "otherEntityName": "myAccount",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "userInfo"
+        },
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "defaultAccount",
+            "otherEntityName": "myAccount",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "userInfo"
+        },
+        {
             "relationshipType": "many-to-many",
             "otherEntityRelationshipName": "userInfo",
             "relationshipName": "account",
@@ -23,5 +39,6 @@
     "entityTableName": "user_info",
     "dto": "no",
     "pagination": "pagination",
-    "service": "no"
+    "service": "no",
+    "jpaMetamodelFiltering": false
 }

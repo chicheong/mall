@@ -25,6 +25,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     version: string;
     eventSubscriber: Subscription;
     accounts: any[];
+    shops: any[];
 
     constructor(
         private loginService: LoginService,

@@ -201,6 +201,8 @@ entity OrderStatusHistory {
 
 relationship OneToOne {
 	UserInfo{user(login)} to User,
+	UserInfo{primaryAccount} to MyAccount,
+	UserInfo{defaultAccount} to MyAccount,
 	Office{address} to Address,
 	OrderItem{productItem} to ProductItem{orderItem}
 }

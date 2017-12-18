@@ -180,9 +180,11 @@ public class UserResource {
         log.debug("REST request to get User : {}", login);
         
         return ResponseUtil.wrapOrNotFound(userService.getUserWithAuthoritiesByLogin(login)
-				.map(UserDTO::new).map(userDTO -> {
-					userDTO.setUserInfo(userService.getUserInfo(login));
-					return userDTO;
+                .map(user -> {
+                	UserDTO userDTO = new UserDTO(user);
+    				userDTO.setUserInfo(userService.getUserInfo(user.getLogin()));
+    				userDTO.setMyAccount(userDTO.getUserInfo() != null? userService.getMyAccountWithShops(userDTO.getUserInfo().getDefaultAccount().getId()) : null);
+    				return userDTO;
         		})
             );
     }

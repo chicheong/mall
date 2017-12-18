@@ -23,6 +23,10 @@
                 <constraints primaryKey="true" nullable="false"/>
             </column>            <column name="user_id" type="bigint">
                 <constraints unique="true" nullable="true" />
+            </column>            <column name="primary_account_id" type="bigint">
+                <constraints unique="true" nullable="true" />
+            </column>            <column name="default_account_id" type="bigint">
+                <constraints unique="true" nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>

@@ -104,8 +104,10 @@ public class AccountResource {
     @Timed
     public UserDTO getAccount() {
         return userService.getUserWithAuthorities()
-            .map(UserDTO::new).map(userDTO -> {
-				userDTO.setUserInfo(userService.getUserInfo(userDTO.getLogin()));
+            .map(user -> {
+            	UserDTO userDTO = new UserDTO(user);
+				userDTO.setUserInfo(userService.getUserInfo(user.getLogin()));
+				userDTO.setMyAccount(userDTO.getUserInfo() != null? userService.getMyAccountWithShops(userDTO.getUserInfo().getDefaultAccount().getId()) : null);
 				return userDTO;
     		}).orElseThrow(() -> new InternalServerErrorException("User could not be found"));
     }

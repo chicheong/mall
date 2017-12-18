@@ -8,6 +8,18 @@
         <dd>
             {{userInfo.user?.login}}
         </dd>
+        <dt><span jhiTranslate="mallApp.userInfo.primaryAccount">Primary Account</span></dt>
+        <dd>
+            <div *ngIf="userInfo.primaryAccount">
+                <a [routerLink]="['/my-account', userInfo.primaryAccount?.id]">{{userInfo.primaryAccount?.id}}</a>
+            </div>
+        </dd>
+        <dt><span jhiTranslate="mallApp.userInfo.defaultAccount">Default Account</span></dt>
+        <dd>
+            <div *ngIf="userInfo.defaultAccount">
+                <a [routerLink]="['/my-account', userInfo.defaultAccount?.id]">{{userInfo.defaultAccount?.id}}</a>
+            </div>
+        </dd>
         <dt><span jhiTranslate="mallApp.userInfo.account">Account</span></dt>
         <dd>
             <span *ngFor="let account of userInfo.accounts; let last = last">

@@ -4,6 +4,7 @@ import com.wongs.config.Constants;
 
 import com.wongs.domain.Authority;
 import com.wongs.domain.MyAccount;
+import com.wongs.domain.Shop;
 import com.wongs.domain.User;
 import com.wongs.domain.UserInfo;
 
@@ -61,6 +62,8 @@ public class UserDTO {
     private MyAccount myAccount = null;
     
     private Set<MyAccount> myAccounts = null;
+    
+    private Set<Shop> shops = null;
 
     public UserDTO() {
         // Empty constructor needed for Jackson.
@@ -205,6 +208,9 @@ public class UserDTO {
 
 	public void setMyAccount(MyAccount myAccount) {
 		this.myAccount = myAccount;
+		if (myAccount != null && myAccount.getShops() != null) {
+			this.shops = myAccount.getShops();
+		}
 	}
 
 	public Set<MyAccount> getMyAccounts() {
@@ -213,6 +219,14 @@ public class UserDTO {
 
 	public void setMyAccounts(Set<MyAccount> myAccounts) {
 		this.myAccounts = myAccounts;
+	}
+
+	public Set<Shop> getShops() {
+		return shops;
+	}
+
+	public void setShops(Set<Shop> shops) {
+		this.shops = shops;
 	}
 
 	@Override
@@ -233,6 +247,7 @@ public class UserDTO {
             ", userIno=" + userInfo +
             ", myAccount=" + myAccount +
             ", myAccounts=" + myAccounts +
+            ", shops=" + shops +
             "}";
     }
 }

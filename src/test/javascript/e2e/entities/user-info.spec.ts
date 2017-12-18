@@ -32,6 +32,8 @@ describe('UserInfo e2e test', () => {
     it('should create and save UserInfos', () => {
         userInfoComponentsPage.clickOnCreateButton();
         userInfoDialogPage.userSelectLastOption();
+        userInfoDialogPage.primaryAccountSelectLastOption();
+        userInfoDialogPage.defaultAccountSelectLastOption();
         // userInfoDialogPage.accountSelectLastOption();
         userInfoDialogPage.save();
         expect(userInfoDialogPage.getSaveButton().isPresent()).toBeFalsy();
@@ -60,6 +62,8 @@ export class UserInfoDialogPage {
     saveButton = element(by.css('.modal-footer .btn.btn-primary'));
     closeButton = element(by.css('button.close'));
     userSelect = element(by.css('select#field_user'));
+    primaryAccountSelect = element(by.css('select#field_primaryAccount'));
+    defaultAccountSelect = element(by.css('select#field_defaultAccount'));
     accountSelect = element(by.css('select#field_account'));
 
     getModalTitle() {
@@ -80,6 +84,38 @@ export class UserInfoDialogPage {
 
     getUserSelectedOption = function() {
         return this.userSelect.element(by.css('option:checked')).getText();
+    }
+
+    primaryAccountSelectLastOption = function() {
+        this.primaryAccountSelect.all(by.tagName('option')).last().click();
+    }
+
+    primaryAccountSelectOption = function(option) {
+        this.primaryAccountSelect.sendKeys(option);
+    }
+
+    getPrimaryAccountSelect = function() {
+        return this.primaryAccountSelect;
+    }
+
+    getPrimaryAccountSelectedOption = function() {
+        return this.primaryAccountSelect.element(by.css('option:checked')).getText();
+    }
+
+    defaultAccountSelectLastOption = function() {
+        this.defaultAccountSelect.all(by.tagName('option')).last().click();
+    }
+
+    defaultAccountSelectOption = function(option) {
+        this.defaultAccountSelect.sendKeys(option);
+    }
+
+    getDefaultAccountSelect = function() {
+        return this.defaultAccountSelect;
+    }
+
+    getDefaultAccountSelectedOption = function() {
+        return this.defaultAccountSelect.element(by.css('option:checked')).getText();
     }
 
     accountSelectLastOption = function() {

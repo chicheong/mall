@@ -147,6 +147,8 @@ public class UserService {
         myAccountSearchRepository.save(myAccount);
         
         userInfo.getAccounts().add(myAccount);
+        userInfo.setPrimaryAccount(myAccount);
+        userInfo.setDefaultAccount(myAccount);
         userInfoRepository.save(userInfo);
         userInfoSearchRepository.save(userInfo);
         
@@ -191,6 +193,8 @@ public class UserService {
         myAccountSearchRepository.save(myAccount);
         
         userInfo.getAccounts().add(myAccount);
+        userInfo.setPrimaryAccount(myAccount);
+        userInfo.setDefaultAccount(myAccount);
         userInfoRepository.save(userInfo);
         userInfoSearchRepository.save(userInfo);
         
@@ -331,6 +335,12 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserInfo getUserInfo(String login) {
     	UserInfo test = userInfoRepository.findOneByUserLogin(login);
+        return test;
+    }
+    
+    @Transactional(readOnly = true)
+    public MyAccount getMyAccountWithShops(long id) {
+    	MyAccount test = myAccountRepository.findOneWithEagerRelationships(id);
         return test;
     }
     

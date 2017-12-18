@@ -30,6 +30,14 @@ public class UserInfo implements Serializable {
     @JoinColumn(unique = true)
     private User user;
 
+    @OneToOne
+    @JoinColumn(unique = true)
+    private MyAccount primaryAccount;
+
+    @OneToOne
+    @JoinColumn(unique = true)
+    private MyAccount defaultAccount;
+
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "user_info_account",
@@ -57,6 +65,32 @@ public class UserInfo implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public MyAccount getPrimaryAccount() {
+        return primaryAccount;
+    }
+
+    public UserInfo primaryAccount(MyAccount myAccount) {
+        this.primaryAccount = myAccount;
+        return this;
+    }
+
+    public void setPrimaryAccount(MyAccount myAccount) {
+        this.primaryAccount = myAccount;
+    }
+
+    public MyAccount getDefaultAccount() {
+        return defaultAccount;
+    }
+
+    public UserInfo defaultAccount(MyAccount myAccount) {
+        this.defaultAccount = myAccount;
+        return this;
+    }
+
+    public void setDefaultAccount(MyAccount myAccount) {
+        this.defaultAccount = myAccount;
     }
 
     public Set<MyAccount> getAccounts() {
