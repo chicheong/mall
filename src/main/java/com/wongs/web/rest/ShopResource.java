@@ -9,6 +9,8 @@ import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+
+import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -108,19 +110,39 @@ public class ShopResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+    
+    /**
+     * GET  /shops/:code : get the "code" shop.
+     *
+     * @param id the id of the shop to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the shop, or with status 404 (Not Found)
+     */
+    @GetMapping("/shops/{code}")
+    @Timed
+    public ResponseEntity<Shop> getShop(@PathVariable String code) {
+        log.debug("REST request to get Shop : {}", code);
+        
+        Shop shop;
+        if (StringUtils.isNumeric(code))
+        	shop = shopRepository.findOne(Long.valueOf(code));
+        else
+        	shop = shopRepository.findByCode(code);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(shop));
+    }
+    
     /**
      * GET  /shops/:id : get the "id" shop.
      *
      * @param id the id of the shop to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the shop, or with status 404 (Not Found)
      */
-    @GetMapping("/shops/{id}")
-    @Timed
-    public ResponseEntity<Shop> getShop(@PathVariable Long id) {
-        log.debug("REST request to get Shop : {}", id);
-        Shop shop = shopRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(shop));
-    }
+//    @GetMapping("/shops/{id}")
+//    @Timed
+//    public ResponseEntity<Shop> getShop(@PathVariable Long id) {
+//        log.debug("REST request to get Shop : {}", id);
+//        Shop shop = shopRepository.findOne(id);
+//        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(shop));
+//    }
 
     /**
      * DELETE  /shops/:id : delete the "id" shop.

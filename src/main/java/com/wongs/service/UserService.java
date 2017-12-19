@@ -2,14 +2,17 @@ package com.wongs.service;
 
 import com.wongs.domain.Authority;
 import com.wongs.domain.MyAccount;
+import com.wongs.domain.Shop;
 import com.wongs.domain.User;
 import com.wongs.domain.UserInfo;
 import com.wongs.repository.AuthorityRepository;
 import com.wongs.repository.MyAccountRepository;
+import com.wongs.repository.ShopRepository;
 import com.wongs.repository.UserInfoRepository;
 import com.wongs.config.Constants;
 import com.wongs.repository.UserRepository;
 import com.wongs.repository.search.MyAccountSearchRepository;
+import com.wongs.repository.search.ShopSearchRepository;
 import com.wongs.repository.search.UserInfoSearchRepository;
 import com.wongs.repository.search.UserSearchRepository;
 import com.wongs.security.AuthoritiesConstants;
@@ -58,10 +61,15 @@ public class UserService {
     private final UserInfoSearchRepository userInfoSearchRepository;
     private final MyAccountRepository myAccountRepository;
     private final MyAccountSearchRepository myAccountSearchRepository;
+    
+    private final ShopRepository shopRepository;
+    private final ShopSearchRepository shopSearchRepository;
+    
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserSearchRepository userSearchRepository, AuthorityRepository authorityRepository, CacheManager cacheManager,
     		UserInfoRepository userInfoRepository, UserInfoSearchRepository userInfoSearchRepository,
-    		MyAccountRepository myAccountRepository, MyAccountSearchRepository myAccountSearchRepository) {
+    		MyAccountRepository myAccountRepository, MyAccountSearchRepository myAccountSearchRepository,
+    		ShopRepository shopRepository, ShopSearchRepository shopSearchRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userSearchRepository = userSearchRepository;
@@ -71,6 +79,8 @@ public class UserService {
         this.userInfoSearchRepository = userInfoSearchRepository;
         this.myAccountRepository = myAccountRepository;
         this.myAccountSearchRepository = myAccountSearchRepository;
+        this.shopRepository = shopRepository;
+        this.shopSearchRepository = shopSearchRepository;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -151,6 +161,26 @@ public class UserService {
         userInfo.setDefaultAccount(myAccount);
         userInfoRepository.save(userInfo);
         userInfoSearchRepository.save(userInfo);
+        
+        //Add shops for Testing only
+        Shop shop1 = new Shop();
+        shop1.setName("Shop001");
+        shop1.setCode("SHOP001");
+        shop1.getAccounts().add(myAccount);
+        shopRepository.save(shop1);
+        shopSearchRepository.save(shop1);
+        
+        Shop shop2 = new Shop();
+        shop2.setName("Shop002");
+        shop2.setCode("SHOP002");
+        shop2.getAccounts().add(myAccount);
+        shopRepository.save(shop2);
+        shopSearchRepository.save(shop2);
+        
+        myAccount.getShops().add(shop1);
+        myAccount.getShops().add(shop2);
+        myAccountRepository.save(myAccount);
+        myAccountSearchRepository.save(myAccount);
         
         return newUser;
     }

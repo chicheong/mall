@@ -50,7 +50,25 @@ export class NavbarComponent implements OnInit, OnDestroy {
             this.inProduction = profileInfo.inProduction;
             this.swaggerEnabled = profileInfo.swaggerEnabled;
         });
-        this.registerChangeInAccount();
+        // this.registerChangeInAccount();
+        this.principal.identity().then((account) => {
+            if (account) {
+                if (account.shops) {
+                    this.shops = account.shops;
+                }
+            }
+        });
+        this.registerAuthenticationSuccess();
+    }
+
+    registerAuthenticationSuccess() {
+        this.eventManager.subscribe('authenticationSuccess', (message) => {
+            this.principal.identity().then((account) => {
+                if (account.shops) {
+                    this.shops = account.shops;
+                }
+            });
+        });
     }
 
     ngOnDestroy() {
@@ -74,6 +92,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
             console.error('Account.password: ' + account.password);
             console.error('Account.email: ' + account.email);
             console.error('Account.userInfo: ' + account.userInfo);
+            console.error('Account.shops: ' + account.shops);
+            if (account.shops) {
+                this.shops = account.shops;
+            }
         });
     }
 

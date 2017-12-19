@@ -13,4 +13,5 @@ import org.springframework.data.jpa.repository.*;
 @Repository
 public interface ShopRepository extends JpaRepository<Shop, Long> {
 
+	Shop findByCode(String code);
 }
