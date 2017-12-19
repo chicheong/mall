@@ -4,7 +4,10 @@ import com.wongs.MallApp;
 
 import com.wongs.domain.Shop;
 import com.wongs.repository.ShopRepository;
+import com.wongs.service.ShopService;
 import com.wongs.repository.search.ShopSearchRepository;
+import com.wongs.service.dto.ShopDTO;
+import com.wongs.service.mapper.ShopMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -73,6 +76,12 @@ public class ShopResourceIntTest {
     private ShopRepository shopRepository;
 
     @Autowired
+    private ShopMapper shopMapper;
+
+    @Autowired
+    private ShopService shopService;
+
+    @Autowired
     private ShopSearchRepository shopSearchRepository;
 
     @Autowired
@@ -94,7 +103,7 @@ public class ShopResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ShopResource shopResource = new ShopResource(shopRepository, shopSearchRepository);
+        final ShopResource shopResource = new ShopResource(shopService);
         this.restShopMockMvc = MockMvcBuilders.standaloneSetup(shopResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -133,9 +142,10 @@ public class ShopResourceIntTest {
         int databaseSizeBeforeCreate = shopRepository.findAll().size();
 
         // Create the Shop
+        ShopDTO shopDTO = shopMapper.toDto(shop);
         restShopMockMvc.perform(post("/api/shops")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(shop)))
+            .content(TestUtil.convertObjectToJsonBytes(shopDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Shop in the database
@@ -165,11 +175,12 @@ public class ShopResourceIntTest {
 
         // Create the Shop with an existing ID
         shop.setId(1L);
+        ShopDTO shopDTO = shopMapper.toDto(shop);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restShopMockMvc.perform(post("/api/shops")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(shop)))
+            .content(TestUtil.convertObjectToJsonBytes(shopDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Shop in the database
@@ -185,10 +196,11 @@ public class ShopResourceIntTest {
         shop.setCode(null);
 
         // Create the Shop, which fails.
+        ShopDTO shopDTO = shopMapper.toDto(shop);
 
         restShopMockMvc.perform(post("/api/shops")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(shop)))
+            .content(TestUtil.convertObjectToJsonBytes(shopDTO)))
             .andExpect(status().isBadRequest());
 
         List<Shop> shopList = shopRepository.findAll();
@@ -266,10 +278,11 @@ public class ShopResourceIntTest {
             .createdDate(UPDATED_CREATED_DATE)
             .lastModifiedBy(UPDATED_LAST_MODIFIED_BY)
             .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE);
+        ShopDTO shopDTO = shopMapper.toDto(updatedShop);
 
         restShopMockMvc.perform(put("/api/shops")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedShop)))
+            .content(TestUtil.convertObjectToJsonBytes(shopDTO)))
             .andExpect(status().isOk());
 
         // Validate the Shop in the database
@@ -298,11 +311,12 @@ public class ShopResourceIntTest {
         int databaseSizeBeforeUpdate = shopRepository.findAll().size();
 
         // Create the Shop
+        ShopDTO shopDTO = shopMapper.toDto(shop);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restShopMockMvc.perform(put("/api/shops")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(shop)))
+            .content(TestUtil.convertObjectToJsonBytes(shopDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Shop in the database
@@ -367,5 +381,28 @@ public class ShopResourceIntTest {
         assertThat(shop1).isNotEqualTo(shop2);
         shop1.setId(null);
         assertThat(shop1).isNotEqualTo(shop2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(ShopDTO.class);
+        ShopDTO shopDTO1 = new ShopDTO();
+        shopDTO1.setId(1L);
+        ShopDTO shopDTO2 = new ShopDTO();
+        assertThat(shopDTO1).isNotEqualTo(shopDTO2);
+        shopDTO2.setId(shopDTO1.getId());
+        assertThat(shopDTO1).isEqualTo(shopDTO2);
+        shopDTO2.setId(2L);
+        assertThat(shopDTO1).isNotEqualTo(shopDTO2);
+        shopDTO1.setId(null);
+        assertThat(shopDTO1).isNotEqualTo(shopDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(shopMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(shopMapper.fromId(null)).isNull();
     }
 }

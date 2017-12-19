@@ -1,16 +1,12 @@
 package com.wongs.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.wongs.domain.Shop;
-
-import com.wongs.repository.ShopRepository;
-import com.wongs.repository.search.ShopSearchRepository;
+import com.wongs.service.ShopService;
 import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
+import com.wongs.service.dto.ShopDTO;
 import io.github.jhipster.web.util.ResponseUtil;
-
-import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -26,7 +22,6 @@ import java.net.URISyntaxException;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -42,31 +37,27 @@ public class ShopResource {
 
     private static final String ENTITY_NAME = "shop";
 
-    private final ShopRepository shopRepository;
+    private final ShopService shopService;
 
-    private final ShopSearchRepository shopSearchRepository;
-
-    public ShopResource(ShopRepository shopRepository, ShopSearchRepository shopSearchRepository) {
-        this.shopRepository = shopRepository;
-        this.shopSearchRepository = shopSearchRepository;
+    public ShopResource(ShopService shopService) {
+        this.shopService = shopService;
     }
 
     /**
      * POST  /shops : Create a new shop.
      *
-     * @param shop the shop to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new shop, or with status 400 (Bad Request) if the shop has already an ID
+     * @param shopDTO the shopDTO to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new shopDTO, or with status 400 (Bad Request) if the shop has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/shops")
     @Timed
-    public ResponseEntity<Shop> createShop(@Valid @RequestBody Shop shop) throws URISyntaxException {
-        log.debug("REST request to save Shop : {}", shop);
-        if (shop.getId() != null) {
+    public ResponseEntity<ShopDTO> createShop(@Valid @RequestBody ShopDTO shopDTO) throws URISyntaxException {
+        log.debug("REST request to save Shop : {}", shopDTO);
+        if (shopDTO.getId() != null) {
             throw new BadRequestAlertException("A new shop cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Shop result = shopRepository.save(shop);
-        shopSearchRepository.save(result);
+        ShopDTO result = shopService.save(shopDTO);
         return ResponseEntity.created(new URI("/api/shops/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -75,23 +66,22 @@ public class ShopResource {
     /**
      * PUT  /shops : Updates an existing shop.
      *
-     * @param shop the shop to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated shop,
-     * or with status 400 (Bad Request) if the shop is not valid,
-     * or with status 500 (Internal Server Error) if the shop couldn't be updated
+     * @param shopDTO the shopDTO to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated shopDTO,
+     * or with status 400 (Bad Request) if the shopDTO is not valid,
+     * or with status 500 (Internal Server Error) if the shopDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/shops")
     @Timed
-    public ResponseEntity<Shop> updateShop(@Valid @RequestBody Shop shop) throws URISyntaxException {
-        log.debug("REST request to update Shop : {}", shop);
-        if (shop.getId() == null) {
-            return createShop(shop);
+    public ResponseEntity<ShopDTO> updateShop(@Valid @RequestBody ShopDTO shopDTO) throws URISyntaxException {
+        log.debug("REST request to update Shop : {}", shopDTO);
+        if (shopDTO.getId() == null) {
+            return createShop(shopDTO);
         }
-        Shop result = shopRepository.save(shop);
-        shopSearchRepository.save(result);
+        ShopDTO result = shopService.save(shopDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, shop.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, shopDTO.getId().toString()))
             .body(result);
     }
 
@@ -103,59 +93,52 @@ public class ShopResource {
      */
     @GetMapping("/shops")
     @Timed
-    public ResponseEntity<List<Shop>> getAllShops(Pageable pageable) {
+    public ResponseEntity<List<ShopDTO>> getAllShops(Pageable pageable) {
         log.debug("REST request to get a page of Shops");
-        Page<Shop> page = shopRepository.findAll(pageable);
+        Page<ShopDTO> page = shopService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/shops");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
-    
     /**
      * GET  /shops/:code : get the "code" shop.
      *
-     * @param id the id of the shop to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the shop, or with status 404 (Not Found)
+     * @param code the code of the shopDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the shopDTO, or with status 404 (Not Found)
      */
     @GetMapping("/shops/{code}")
     @Timed
-    public ResponseEntity<Shop> getShop(@PathVariable String code) {
+    public ResponseEntity<ShopDTO> getShop(@PathVariable String code) {
         log.debug("REST request to get Shop : {}", code);
-        
-        Shop shop;
-        if (StringUtils.isNumeric(code))
-        	shop = shopRepository.findOne(Long.valueOf(code));
-        else
-        	shop = shopRepository.findByCode(code);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(shop));
+        ShopDTO shopDTO = shopService.findByCode(code);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(shopDTO));
     }
     
     /**
      * GET  /shops/:id : get the "id" shop.
      *
-     * @param id the id of the shop to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the shop, or with status 404 (Not Found)
+     * @param id the id of the shopDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the shopDTO, or with status 404 (Not Found)
      */
-//    @GetMapping("/shops/{id}")
-//    @Timed
-//    public ResponseEntity<Shop> getShop(@PathVariable Long id) {
-//        log.debug("REST request to get Shop : {}", id);
-//        Shop shop = shopRepository.findOne(id);
-//        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(shop));
-//    }
+    @GetMapping("/shops/{id}")
+    @Timed
+    public ResponseEntity<ShopDTO> getShop(@PathVariable Long id) {
+        log.debug("REST request to get Shop : {}", id);
+        ShopDTO shopDTO = shopService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(shopDTO));
+    }
 
     /**
      * DELETE  /shops/:id : delete the "id" shop.
      *
-     * @param id the id of the shop to delete
+     * @param id the id of the shopDTO to delete
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/shops/{id}")
     @Timed
     public ResponseEntity<Void> deleteShop(@PathVariable Long id) {
         log.debug("REST request to delete Shop : {}", id);
-        shopRepository.delete(id);
-        shopSearchRepository.delete(id);
+        shopService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -169,9 +152,9 @@ public class ShopResource {
      */
     @GetMapping("/_search/shops")
     @Timed
-    public ResponseEntity<List<Shop>> searchShops(@RequestParam String query, Pageable pageable) {
+    public ResponseEntity<List<ShopDTO>> searchShops(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Shops for query {}", query);
-        Page<Shop> page = shopSearchRepository.search(queryStringQuery(query), pageable);
+        Page<ShopDTO> page = shopService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/shops");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
