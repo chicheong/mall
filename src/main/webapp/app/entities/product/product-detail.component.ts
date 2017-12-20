@@ -30,7 +30,14 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.isSaving = false;
         this.subscription = this.route.params.subscribe((params) => {
-            this.load(params['id']);
+            if ((params['id']) === '0') {
+                console.error((params['id']));
+                const entity: Product = Object.assign(new Product());
+                entity.shopId = 0;
+                this.product = entity;
+            } else {
+                this.load(params['id']);
+            }
         });
         this.registerChangeInProducts();
     }

@@ -19,15 +19,15 @@
                 </a>
             </li>
             <li ngbDropdown class="nav-item dropdown pointer" *ngIf="shops">
-                <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="languagesnavBarDropdown" *ngIf="shops.length > 1">
+                <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="languagesnavBarDropdown" *ngIf="shops.length > 0">
                     <span>
                         <i class="fa fa-cubes" aria-hidden="true"></i>
                         <span jhiTranslate="global.menu.entities.shop">Shop</span>
                     </span>
                 </a>
-                <ul class="dropdown-menu" ngbDropdownMenu *ngIf="shops.length > 1">
+                <ul class="dropdown-menu" ngbDropdownMenu *ngIf="shops.length > 0">
                     <li *ngFor="let shop of shops">
-                        <a class="dropdown-item" [jhiActiveMenu]="shop" href="javascript:void(0);" (click)="changeLanguage(shop);collapseNavbar();">{{shop.name}}</a>
+                        <a class="dropdown-item"  [routerLink]="'shop/' + shop.code" routerLinkActive="active" [jhiActiveMenu]="shop" href="javascript:void(0);" (click)="collapseNavbar();">{{shop.name}}</a>
                     </li>
                 </ul>
             </li>            

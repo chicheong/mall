@@ -53,7 +53,7 @@ public class ShopMapper {
             .collect(Collectors.toList());
     }
 
-    public Shop shopFromId(Long id) {
+    public Shop fromId(Long id) {
         if (id == null) {
             return null;
         }

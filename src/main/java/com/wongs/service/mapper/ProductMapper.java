@@ -5,6 +5,7 @@ import com.wongs.service.dto.ProductDTO;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.mapstruct.*;
@@ -20,11 +21,11 @@ public class ProductMapper {
 		return new ProductDTO(product);
 	}
 
-    public List<ProductDTO> productsToProductDTOs(List<Product> products) {
+    public Set<ProductDTO> productsToProductDTOs(Set<Product> products) {
         return products.stream()
             .filter(Objects::nonNull)
             .map(this::productToProductDTO)
-            .collect(Collectors.toList());
+            .collect(Collectors.toSet());
     }
 
     public Product productDTOToProduct(ProductDTO productDTO) {
@@ -53,11 +54,11 @@ public class ProductMapper {
         }
     }
 
-    public List<Product> productDTOsToProducts(List<ProductDTO> productDTOs) {
+    public Set<Product> productDTOsToProducts(Set<ProductDTO> productDTOs) {
         return productDTOs.stream()
             .filter(Objects::nonNull)
             .map(this::productDTOToProduct)
-            .collect(Collectors.toList());
+            .collect(Collectors.toSet());
     }
 
     public Product productFromId(Long id) {

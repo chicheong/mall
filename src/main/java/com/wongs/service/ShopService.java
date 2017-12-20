@@ -29,11 +29,15 @@ public class ShopService {
     private final ShopMapper shopMapper;
 
     private final ShopSearchRepository shopSearchRepository;
+    
+    private final ProductService productService;
 
-    public ShopService(ShopRepository shopRepository, ShopMapper shopMapper, ShopSearchRepository shopSearchRepository) {
+    public ShopService(ShopRepository shopRepository, ShopMapper shopMapper, ShopSearchRepository shopSearchRepository,
+    		ProductService productService) {
         this.shopRepository = shopRepository;
         this.shopMapper = shopMapper;
         this.shopSearchRepository = shopSearchRepository;
+        this.productService = productService;
     }
 
     /**
@@ -74,6 +78,9 @@ public class ShopService {
     public ShopDTO findOne(Long id) {
         log.debug("Request to get Shop : {}", id);
         Shop shop = shopRepository.findOne(id);
+        
+        ShopDTO shopDTO = shopMapper.toDto(shop);
+        shopDTO.setProducts(productService.findByShopId(shop.getId()));
         return shopMapper.toDto(shop);
     }
 
@@ -87,7 +94,10 @@ public class ShopService {
     public ShopDTO findByCode(String code) {
         log.debug("Request to get Shop : {}", code);
         Shop shop = shopRepository.findByCode(code);
-        return shopMapper.toDto(shop);
+        
+        ShopDTO shopDTO = shopMapper.toDto(shop);
+        shopDTO.setProducts(productService.findByShopId(shop.getId()));
+        return shopDTO;
     }
     
     /**

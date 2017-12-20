@@ -17,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
+import java.util.List;
+import java.util.Set;
+
 /**
  * Service Implementation for managing Product.
  */
@@ -93,7 +96,7 @@ public class ProductService {
     @Transactional(readOnly = true)
     public ProductDTO findOneWithItems(Long id) {
         log.debug("Request to get Product : {}", id);
-        if (id == 0) {
+        if (id == 0) { //TODO: remove this later
         	return productMapper.productToProductDTO(new Product());
         }else {
 	        Product product = productRepository.findOne(id);
@@ -126,5 +129,18 @@ public class ProductService {
         log.debug("Request to search for a page of Products for query {}", query);
         Page<Product> result = productSearchRepository.search(queryStringQuery(query), pageable);
         return result.map(productMapper::productToProductDTO);
+    }
+    
+    /**
+     * Get products by shop id.
+     *
+     * @param id the id of the Shop
+     * @return the list of entities
+     */
+    @Transactional(readOnly = true)
+    public Set<ProductDTO> findByShopId(Long id) {
+        log.debug("Request to get Products By Shop Id : {}", id);
+        Set<Product> products = productRepository.findByShopId(id);
+        return productMapper.productsToProductDTOs(products);
     }
 }

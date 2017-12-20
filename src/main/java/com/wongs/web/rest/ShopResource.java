@@ -7,6 +7,8 @@ import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
 import com.wongs.service.dto.ShopDTO;
 import io.github.jhipster.web.util.ResponseUtil;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -110,7 +112,11 @@ public class ShopResource {
     @Timed
     public ResponseEntity<ShopDTO> getShop(@PathVariable String code) {
         log.debug("REST request to get Shop : {}", code);
-        ShopDTO shopDTO = shopService.findByCode(code);
+        ShopDTO shopDTO;
+        if (StringUtils.isNumeric(code))
+        	shopDTO = shopService.findOne(Long.valueOf(code));
+        else
+        	shopDTO = shopService.findByCode(code);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(shopDTO));
     }
     
@@ -120,13 +126,13 @@ public class ShopResource {
      * @param id the id of the shopDTO to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the shopDTO, or with status 404 (Not Found)
      */
-    @GetMapping("/shops/{id}")
-    @Timed
-    public ResponseEntity<ShopDTO> getShop(@PathVariable Long id) {
-        log.debug("REST request to get Shop : {}", id);
-        ShopDTO shopDTO = shopService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(shopDTO));
-    }
+//    @GetMapping("/shops/{id}")
+//    @Timed
+//    public ResponseEntity<ShopDTO> getShop(@PathVariable Long id) {
+//        log.debug("REST request to get Shop : {}", id);
+//        ShopDTO shopDTO = shopService.findOne(id);
+//        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(shopDTO));
+//    }
 
     /**
      * DELETE  /shops/:id : delete the "id" shop.

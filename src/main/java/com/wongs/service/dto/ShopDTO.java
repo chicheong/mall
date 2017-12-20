@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
 
+import com.wongs.domain.Product;
 import com.wongs.domain.Shop;
 import com.wongs.domain.enumeration.CommonStatus;
 
@@ -35,6 +36,8 @@ public class ShopDTO implements Serializable {
 
     private ZonedDateTime lastModifiedDate;
 
+    private Set<ProductDTO> products = null;
+    
     public ShopDTO() {
         // Empty constructor needed for Jackson.
     }
@@ -122,8 +125,16 @@ public class ShopDTO implements Serializable {
     public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
+    
+    public Set<ProductDTO> getProducts() {
+		return products;
+	}
 
-    @Override
+	public void setProducts(Set<ProductDTO> products) {
+		this.products = products;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -156,6 +167,7 @@ public class ShopDTO implements Serializable {
             ", createdDate='" + getCreatedDate() + "'" +
             ", lastModifiedBy='" + getLastModifiedBy() + "'" +
             ", lastModifiedDate='" + getLastModifiedDate() + "'" +
+            ", products=" + getProducts() +
             "}";
     }
 }

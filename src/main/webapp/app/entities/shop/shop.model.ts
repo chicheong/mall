@@ -1,4 +1,5 @@
 import { BaseEntity } from './../../shared';
+import { Product } from './../product';
 
 export const enum CommonStatus {
     'ACTIVE',
@@ -17,6 +18,7 @@ export class Shop implements BaseEntity {
         public lastModifiedBy?: string,
         public lastModifiedDate?: any,
         public accounts?: BaseEntity[],
+        public products?: Product[],
     ) {
     }
 }
