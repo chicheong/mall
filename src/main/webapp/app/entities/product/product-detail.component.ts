@@ -5,6 +5,7 @@ import { JhiEventManager, JhiAlertService  } from 'ng-jhipster';
 
 import { Product } from './product.model';
 import { ProductService } from './product.service';
+import { Principal } from '../../shared';
 
 @Component({
     selector: 'jhi-product-detail',
@@ -17,19 +18,24 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     private subscription: Subscription;
     private eventSubscriber: Subscription;
     isEditing = false;
+    shopId: number;
 
     constructor(
         private eventManager: JhiEventManager,
         private productService: ProductService,
         private route: ActivatedRoute,
         private jhiAlertService: JhiAlertService,
-        private router: Router
+        private router: Router,
+        private principal: Principal
     ) {
     }
 
     ngOnInit() {
         this.isSaving = false;
         this.subscription = this.route.params.subscribe((params) => {
+            this.principal.identity().then((account) => {
+                // this.currentAccount = account;
+            });
             if ((params['id']) === '0') {
                 console.error((params['id']));
                 const entity: Product = Object.assign(new Product());
