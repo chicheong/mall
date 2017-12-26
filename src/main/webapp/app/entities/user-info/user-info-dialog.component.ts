@@ -24,8 +24,6 @@ export class UserInfoDialogComponent implements OnInit {
 
     users: User[];
 
-    primaryaccounts: MyAccount[];
-
     defaultaccounts: MyAccount[];
 
     myaccounts: MyAccount[];
@@ -44,19 +42,6 @@ export class UserInfoDialogComponent implements OnInit {
         this.isSaving = false;
         this.userService.query()
             .subscribe((res: ResponseWrapper) => { this.users = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
-        this.myAccountService
-            .query({filter: 'userinfo-is-null'})
-            .subscribe((res: ResponseWrapper) => {
-                if (!this.userInfo.primaryAccount || !this.userInfo.primaryAccount.id) {
-                    this.primaryaccounts = res.json;
-                } else {
-                    this.myAccountService
-                        .find(this.userInfo.primaryAccount.id)
-                        .subscribe((subRes: MyAccount) => {
-                            this.primaryaccounts = [subRes].concat(res.json);
-                        }, (subRes: ResponseWrapper) => this.onError(subRes.json));
-                }
-            }, (res: ResponseWrapper) => this.onError(res.json));
         this.myAccountService
             .query({filter: 'userinfo-is-null'})
             .subscribe((res: ResponseWrapper) => {

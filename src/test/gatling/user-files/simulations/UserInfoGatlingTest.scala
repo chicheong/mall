@@ -68,7 +68,7 @@ class UserInfoGatlingTest extends Simulation {
             .exec(http("Create new userInfo")
             .post("/api/user-infos")
             .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null}""")).asJSON
+            .body(StringBody("""{"id":null, "accountId":null, "shopId":null}""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_userInfo_url"))).exitHereIfFailed
             .pause(10)

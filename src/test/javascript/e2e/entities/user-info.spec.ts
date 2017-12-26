@@ -31,8 +31,11 @@ describe('UserInfo e2e test', () => {
 
     it('should create and save UserInfos', () => {
         userInfoComponentsPage.clickOnCreateButton();
+        userInfoDialogPage.setAccountIdInput('5');
+        expect(userInfoDialogPage.getAccountIdInput()).toMatch('5');
+        userInfoDialogPage.setShopIdInput('5');
+        expect(userInfoDialogPage.getShopIdInput()).toMatch('5');
         userInfoDialogPage.userSelectLastOption();
-        userInfoDialogPage.primaryAccountSelectLastOption();
         userInfoDialogPage.defaultAccountSelectLastOption();
         // userInfoDialogPage.accountSelectLastOption();
         userInfoDialogPage.save();
@@ -61,13 +64,30 @@ export class UserInfoDialogPage {
     modalTitle = element(by.css('h4#myUserInfoLabel'));
     saveButton = element(by.css('.modal-footer .btn.btn-primary'));
     closeButton = element(by.css('button.close'));
+    accountIdInput = element(by.css('input#field_accountId'));
+    shopIdInput = element(by.css('input#field_shopId'));
     userSelect = element(by.css('select#field_user'));
-    primaryAccountSelect = element(by.css('select#field_primaryAccount'));
     defaultAccountSelect = element(by.css('select#field_defaultAccount'));
     accountSelect = element(by.css('select#field_account'));
 
     getModalTitle() {
         return this.modalTitle.getAttribute('jhiTranslate');
+    }
+
+    setAccountIdInput = function(accountId) {
+        this.accountIdInput.sendKeys(accountId);
+    }
+
+    getAccountIdInput = function() {
+        return this.accountIdInput.getAttribute('value');
+    }
+
+    setShopIdInput = function(shopId) {
+        this.shopIdInput.sendKeys(shopId);
+    }
+
+    getShopIdInput = function() {
+        return this.shopIdInput.getAttribute('value');
     }
 
     userSelectLastOption = function() {
@@ -84,22 +104,6 @@ export class UserInfoDialogPage {
 
     getUserSelectedOption = function() {
         return this.userSelect.element(by.css('option:checked')).getText();
-    }
-
-    primaryAccountSelectLastOption = function() {
-        this.primaryAccountSelect.all(by.tagName('option')).last().click();
-    }
-
-    primaryAccountSelectOption = function(option) {
-        this.primaryAccountSelect.sendKeys(option);
-    }
-
-    getPrimaryAccountSelect = function() {
-        return this.primaryAccountSelect;
-    }
-
-    getPrimaryAccountSelectedOption = function() {
-        return this.primaryAccountSelect.element(by.css('option:checked')).getText();
     }
 
     defaultAccountSelectLastOption = function() {

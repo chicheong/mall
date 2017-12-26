@@ -14,12 +14,6 @@
                                  referencedColumnNames="id"
                                  referencedTableName="jhi_user"/>
 
-        <addForeignKeyConstraint baseColumnNames="primary_account_id"
-                                 baseTableName="user_info"
-                                 constraintName="fk_user_info_primary_account_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="my_account"/>
-
         <addForeignKeyConstraint baseColumnNames="default_account_id"
                                  baseTableName="user_info"
                                  constraintName="fk_user_info_default_account_id"

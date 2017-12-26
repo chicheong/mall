@@ -16,8 +16,9 @@
             "detail": {
                 "title": "User Info"
             },
+            "accountId": "Account Id",
+            "shopId": "Shop Id",
             "user": "User",
-            "primaryAccount": "Primary Account",
             "defaultAccount": "Default Account",
             "account": "Account"
         }

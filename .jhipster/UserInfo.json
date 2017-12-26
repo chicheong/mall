@@ -11,14 +11,6 @@
         },
         {
             "relationshipType": "one-to-one",
-            "relationshipName": "primaryAccount",
-            "otherEntityName": "myAccount",
-            "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "userInfo"
-        },
-        {
-            "relationshipType": "one-to-one",
             "relationshipName": "defaultAccount",
             "otherEntityName": "myAccount",
             "otherEntityField": "id",
@@ -34,7 +26,16 @@
             "ownerSide": true
         }
     ],
-    "fields": [],
+    "fields": [
+        {
+            "fieldName": "accountId",
+            "fieldType": "Long"
+        },
+        {
+            "fieldName": "shopId",
+            "fieldType": "Long"
+        }
+    ],
     "changelogDate": "20170727090126",
     "entityTableName": "user_info",
     "dto": "no",

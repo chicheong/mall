@@ -4,15 +4,17 @@
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="mallApp.userInfo.accountId">Account Id</span></dt>
+        <dd>
+            <span>{{userInfo.accountId}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.userInfo.shopId">Shop Id</span></dt>
+        <dd>
+            <span>{{userInfo.shopId}}</span>
+        </dd>
         <dt><span jhiTranslate="mallApp.userInfo.user">User</span></dt>
         <dd>
             {{userInfo.user?.login}}
-        </dd>
-        <dt><span jhiTranslate="mallApp.userInfo.primaryAccount">Primary Account</span></dt>
-        <dd>
-            <div *ngIf="userInfo.primaryAccount">
-                <a [routerLink]="['/my-account', userInfo.primaryAccount?.id]">{{userInfo.primaryAccount?.id}}</a>
-            </div>
         </dd>
         <dt><span jhiTranslate="mallApp.userInfo.defaultAccount">Default Account</span></dt>
         <dd>

@@ -30,8 +30,9 @@
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
             <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="accountId"><span jhiTranslate="mallApp.userInfo.accountId">Account Id</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="shopId"><span jhiTranslate="mallApp.userInfo.shopId">Shop Id</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="user.login"><span jhiTranslate="mallApp.userInfo.user">User</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="primaryAccount.id"><span jhiTranslate="mallApp.userInfo.primaryAccount">Primary Account</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="defaultAccount.id"><span jhiTranslate="mallApp.userInfo.defaultAccount">Default Account</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
@@ -39,13 +40,10 @@
             <tbody>
             <tr *ngFor="let userInfo of userInfos ;trackBy: trackId">
                 <td><a [routerLink]="['../user-info', userInfo.id ]">{{userInfo.id}}</a></td>
+                <td>{{userInfo.accountId}}</td>
+                <td>{{userInfo.shopId}}</td>
                 <td>
                     {{userInfo.user?.login}}
-                </td>
-                <td>
-                    <div *ngIf="userInfo.primaryAccount">
-                        <a [routerLink]="['../my-account', userInfo.primaryAccount?.id ]" >{{userInfo.primaryAccount?.id}}</a>
-                    </div>
                 </td>
                 <td>
                     <div *ngIf="userInfo.defaultAccount">

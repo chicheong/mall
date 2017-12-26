@@ -12,19 +12,22 @@
             <input type="text" class="form-control" id="id" name="id"
                    [(ngModel)]="userInfo.id" readonly />
         </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.userInfo.accountId" for="field_accountId">Account Id</label>
+            <input type="number" class="form-control" name="accountId" id="field_accountId"
+                [(ngModel)]="userInfo.accountId" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.userInfo.shopId" for="field_shopId">Shop Id</label>
+            <input type="number" class="form-control" name="shopId" id="field_shopId"
+                [(ngModel)]="userInfo.shopId" />
+        </div>
 
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.userInfo.user" for="field_user">User</label>
             <select class="form-control" id="field_user" name="user" [(ngModel)]="userInfo.user" >
                 <option [ngValue]="null"></option>
                 <option [ngValue]="userOption.id === userInfo.user?.id ? userInfo.user : userOption" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.login}}</option>
-            </select>
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.userInfo.primaryAccount" for="field_primaryAccount">Primary Account</label>
-            <select class="form-control" id="field_primaryAccount" name="primaryAccount" [(ngModel)]="userInfo.primaryAccount">
-                <option [ngValue]="null"></option>
-                <option [ngValue]="myAccountOption.id === userInfo.primaryAccount?.id ? userInfo.primaryAccount : myAccountOption" *ngFor="let myAccountOption of primaryaccounts; trackBy: trackMyAccountById">{{myAccountOption.id}}</option>
             </select>
         </div>
         <div class="form-group">

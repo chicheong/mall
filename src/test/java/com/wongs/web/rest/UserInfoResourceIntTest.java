@@ -39,6 +39,12 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = MallApp.class)
 public class UserInfoResourceIntTest {
 
+    private static final Long DEFAULT_ACCOUNT_ID = 1L;
+    private static final Long UPDATED_ACCOUNT_ID = 2L;
+
+    private static final Long DEFAULT_SHOP_ID = 1L;
+    private static final Long UPDATED_SHOP_ID = 2L;
+
     @Autowired
     private UserInfoRepository userInfoRepository;
 
@@ -79,7 +85,9 @@ public class UserInfoResourceIntTest {
      * if they test an entity which requires the current entity.
      */
     public static UserInfo createEntity(EntityManager em) {
-        UserInfo userInfo = new UserInfo();
+        UserInfo userInfo = new UserInfo()
+            .accountId(DEFAULT_ACCOUNT_ID)
+            .shopId(DEFAULT_SHOP_ID);
         return userInfo;
     }
 
@@ -104,6 +112,8 @@ public class UserInfoResourceIntTest {
         List<UserInfo> userInfoList = userInfoRepository.findAll();
         assertThat(userInfoList).hasSize(databaseSizeBeforeCreate + 1);
         UserInfo testUserInfo = userInfoList.get(userInfoList.size() - 1);
+        assertThat(testUserInfo.getAccountId()).isEqualTo(DEFAULT_ACCOUNT_ID);
+        assertThat(testUserInfo.getShopId()).isEqualTo(DEFAULT_SHOP_ID);
 
         // Validate the UserInfo in Elasticsearch
         UserInfo userInfoEs = userInfoSearchRepository.findOne(testUserInfo.getId());
@@ -139,7 +149,9 @@ public class UserInfoResourceIntTest {
         restUserInfoMockMvc.perform(get("/api/user-infos?sort=id,desc"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(userInfo.getId().intValue())));
+            .andExpect(jsonPath("$.[*].id").value(hasItem(userInfo.getId().intValue())))
+            .andExpect(jsonPath("$.[*].accountId").value(hasItem(DEFAULT_ACCOUNT_ID.intValue())))
+            .andExpect(jsonPath("$.[*].shopId").value(hasItem(DEFAULT_SHOP_ID.intValue())));
     }
 
     @Test
@@ -152,7 +164,9 @@ public class UserInfoResourceIntTest {
         restUserInfoMockMvc.perform(get("/api/user-infos/{id}", userInfo.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.id").value(userInfo.getId().intValue()));
+            .andExpect(jsonPath("$.id").value(userInfo.getId().intValue()))
+            .andExpect(jsonPath("$.accountId").value(DEFAULT_ACCOUNT_ID.intValue()))
+            .andExpect(jsonPath("$.shopId").value(DEFAULT_SHOP_ID.intValue()));
     }
 
     @Test
@@ -175,6 +189,9 @@ public class UserInfoResourceIntTest {
         UserInfo updatedUserInfo = userInfoRepository.findOne(userInfo.getId());
         // Disconnect from session so that the updates on updatedUserInfo are not directly saved in db
         em.detach(updatedUserInfo);
+        updatedUserInfo
+            .accountId(UPDATED_ACCOUNT_ID)
+            .shopId(UPDATED_SHOP_ID);
 
         restUserInfoMockMvc.perform(put("/api/user-infos")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -185,6 +202,8 @@ public class UserInfoResourceIntTest {
         List<UserInfo> userInfoList = userInfoRepository.findAll();
         assertThat(userInfoList).hasSize(databaseSizeBeforeUpdate);
         UserInfo testUserInfo = userInfoList.get(userInfoList.size() - 1);
+        assertThat(testUserInfo.getAccountId()).isEqualTo(UPDATED_ACCOUNT_ID);
+        assertThat(testUserInfo.getShopId()).isEqualTo(UPDATED_SHOP_ID);
 
         // Validate the UserInfo in Elasticsearch
         UserInfo userInfoEs = userInfoSearchRepository.findOne(testUserInfo.getId());
@@ -242,7 +261,9 @@ public class UserInfoResourceIntTest {
         restUserInfoMockMvc.perform(get("/api/_search/user-infos?query=id:" + userInfo.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
-            .andExpect(jsonPath("$.[*].id").value(hasItem(userInfo.getId().intValue())));
+            .andExpect(jsonPath("$.[*].id").value(hasItem(userInfo.getId().intValue())))
+            .andExpect(jsonPath("$.[*].accountId").value(hasItem(DEFAULT_ACCOUNT_ID.intValue())))
+            .andExpect(jsonPath("$.[*].shopId").value(hasItem(DEFAULT_SHOP_ID.intValue())));
     }
 
     @Test

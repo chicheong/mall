@@ -26,13 +26,15 @@ public class UserInfo implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    @JoinColumn(unique = true)
-    private User user;
+    @Column(name = "account_id")
+    private Long accountId;
+
+    @Column(name = "shop_id")
+    private Long shopId;
 
     @OneToOne
     @JoinColumn(unique = true)
-    private MyAccount primaryAccount;
+    private User user;
 
     @OneToOne
     @JoinColumn(unique = true)
@@ -54,6 +56,32 @@ public class UserInfo implements Serializable {
         this.id = id;
     }
 
+    public Long getAccountId() {
+        return accountId;
+    }
+
+    public UserInfo accountId(Long accountId) {
+        this.accountId = accountId;
+        return this;
+    }
+
+    public void setAccountId(Long accountId) {
+        this.accountId = accountId;
+    }
+
+    public Long getShopId() {
+        return shopId;
+    }
+
+    public UserInfo shopId(Long shopId) {
+        this.shopId = shopId;
+        return this;
+    }
+
+    public void setShopId(Long shopId) {
+        this.shopId = shopId;
+    }
+
     public User getUser() {
         return user;
     }
@@ -65,19 +93,6 @@ public class UserInfo implements Serializable {
 
     public void setUser(User user) {
         this.user = user;
-    }
-
-    public MyAccount getPrimaryAccount() {
-        return primaryAccount;
-    }
-
-    public UserInfo primaryAccount(MyAccount myAccount) {
-        this.primaryAccount = myAccount;
-        return this;
-    }
-
-    public void setPrimaryAccount(MyAccount myAccount) {
-        this.primaryAccount = myAccount;
     }
 
     public MyAccount getDefaultAccount() {
@@ -143,6 +158,8 @@ public class UserInfo implements Serializable {
     public String toString() {
         return "UserInfo{" +
             "id=" + getId() +
+            ", accountId=" + getAccountId() +
+            ", shopId=" + getShopId() +
             "}";
     }
 }

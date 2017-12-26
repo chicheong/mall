@@ -1,6 +1,6 @@
 entity UserInfo {
-	shopId Long,
-	primaryAccountId Long,
+	accountId Long,
+	shopId Long
 }
 
 entity MyAccount {
