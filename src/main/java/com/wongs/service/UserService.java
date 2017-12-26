@@ -157,7 +157,7 @@ public class UserService {
         myAccountSearchRepository.save(myAccount);
         
         userInfo.getAccounts().add(myAccount);
-        userInfo.setPrimaryAccount(myAccount);
+        userInfo.setAccountId(myAccount.getId());
         userInfo.setDefaultAccount(myAccount);
         userInfoRepository.save(userInfo);
         userInfoSearchRepository.save(userInfo);
@@ -223,7 +223,7 @@ public class UserService {
         myAccountSearchRepository.save(myAccount);
         
         userInfo.getAccounts().add(myAccount);
-        userInfo.setPrimaryAccount(myAccount);
+        userInfo.setAccountId(myAccount.getId());
         userInfo.setDefaultAccount(myAccount);
         userInfoRepository.save(userInfo);
         userInfoSearchRepository.save(userInfo);
