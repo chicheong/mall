@@ -1,6 +1,7 @@
 package com.wongs.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wongs.service.ProductService;
 import com.wongs.service.ShopService;
 import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
@@ -40,9 +41,12 @@ public class ShopResource {
     private static final String ENTITY_NAME = "shop";
 
     private final ShopService shopService;
+    
+    private final ProductService productService;
 
-    public ShopResource(ShopService shopService) {
+    public ShopResource(ShopService shopService, ProductService productService) {
         this.shopService = shopService;
+        this.productService = productService;
     }
 
     /**
@@ -117,6 +121,7 @@ public class ShopResource {
         	shopDTO = shopService.findOne(Long.valueOf(code));
         else
         	shopDTO = shopService.findByCode(code);
+        shopDTO.setProducts(productService.findByShopId(shopDTO.getId()));
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(shopDTO));
     }
     

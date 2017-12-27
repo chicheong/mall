@@ -29,15 +29,11 @@ public class ShopService {
     private final ShopMapper shopMapper;
 
     private final ShopSearchRepository shopSearchRepository;
-    
-    private final ProductService productService;
 
-    public ShopService(ShopRepository shopRepository, ShopMapper shopMapper, ShopSearchRepository shopSearchRepository,
-    		ProductService productService) {
+    public ShopService(ShopRepository shopRepository, ShopMapper shopMapper, ShopSearchRepository shopSearchRepository) {
         this.shopRepository = shopRepository;
         this.shopMapper = shopMapper;
         this.shopSearchRepository = shopSearchRepository;
-        this.productService = productService;
     }
 
     /**
@@ -80,8 +76,19 @@ public class ShopService {
         Shop shop = shopRepository.findOne(id);
         
         ShopDTO shopDTO = shopMapper.toDto(shop);
-        shopDTO.setProducts(productService.findByShopId(shop.getId()));
-        return shopMapper.toDto(shop);
+        return shopDTO;
+    }
+    
+    /**
+     * Get one shop by id.
+     *
+     * @param id the id of the entity
+     * @return the entity
+     */
+    @Transactional(readOnly = true)
+    public Shop getOne(Long id) {
+        log.debug("Request to get Shop : {}", id);
+        return shopRepository.findOne(id);
     }
 
     /**
@@ -96,7 +103,6 @@ public class ShopService {
         Shop shop = shopRepository.findByCode(code);
         
         ShopDTO shopDTO = shopMapper.toDto(shop);
-        shopDTO.setProducts(productService.findByShopId(shop.getId()));
         return shopDTO;
     }
     

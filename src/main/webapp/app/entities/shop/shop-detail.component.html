@@ -6,7 +6,7 @@
     	</div>
 	    <div class="col-sm-4 text-right">
 	   		
-	   		<button class="btn btn-primary float-right jh-create-entity create-product" type="submit" [routerLink]="['../../product', 0 ]" [ngbTooltip]="addTooltip" placement="bottom">
+	   		<button class="btn btn-primary float-right jh-create-entity create-product" type="submit" [routerLink]="['../../shop/' + shop.id + '/product']" [ngbTooltip]="addTooltip" placement="bottom">
 	   		
 	            <span class="fa fa-plus"></span>
 	               <ng-template #addTooltip>

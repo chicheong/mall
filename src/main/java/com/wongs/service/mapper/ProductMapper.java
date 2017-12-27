@@ -1,6 +1,7 @@
 package com.wongs.service.mapper;
 
 import com.wongs.domain.*;
+import com.wongs.service.ShopService;
 import com.wongs.service.dto.ProductDTO;
 
 import java.util.List;
@@ -49,6 +50,10 @@ public class ProductMapper {
         	product.setItems(productDTO.getItems());
         	product.setHistories(productDTO.getHistories());
         	product.setCategories(productDTO.getCategories());
+        	
+        	Shop shop = new Shop();
+        	shop.setId(productDTO.getShopId());
+        	product.setShop(shop);
         	
             return product;
         }

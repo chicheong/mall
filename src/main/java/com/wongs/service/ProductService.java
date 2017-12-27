@@ -36,13 +36,16 @@ public class ProductService {
     private final ProductSearchRepository productSearchRepository;
     
     private final ProductItemRepository productItemRepository;
+    
+    private final ShopService shopService;
 
     public ProductService(ProductRepository productRepository, ProductMapper productMapper, ProductSearchRepository productSearchRepository,
-			ProductItemRepository productItemRepository) {
+			ProductItemRepository productItemRepository, ShopService shopService) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
         this.productSearchRepository = productSearchRepository;
         this.productItemRepository = productItemRepository;
+        this.shopService = shopService;
     }
 
     /**
@@ -54,6 +57,9 @@ public class ProductService {
     public ProductDTO save(ProductDTO productDTO) {
         log.debug("Request to save Product : {}", productDTO);
         Product product = productMapper.productDTOToProduct(productDTO);
+        if (productDTO.getShopId() != null) {
+        	product.setShop(shopService.getOne(productDTO.getShopId()));
+        }
         product = productRepository.save(product);
         ProductDTO result = productMapper.productToProductDTO(product);
         productSearchRepository.save(product);

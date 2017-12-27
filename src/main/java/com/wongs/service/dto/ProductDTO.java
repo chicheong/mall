@@ -70,6 +70,7 @@ public class ProductDTO implements Serializable {
     	this.items = product.getItems();
     	this.histories = product.getHistories();
     	this.categories = product.getCategories();
+    	this.shopId = product.getShop() != null? product.getShop().getId() : 0L;
     }
 
     

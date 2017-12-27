@@ -156,12 +156,6 @@ public class UserService {
         myAccountRepository.save(myAccount);
         myAccountSearchRepository.save(myAccount);
         
-        userInfo.getAccounts().add(myAccount);
-        userInfo.setAccountId(myAccount.getId());
-        userInfo.setDefaultAccount(myAccount);
-        userInfoRepository.save(userInfo);
-        userInfoSearchRepository.save(userInfo);
-        
         //Add shops for Testing only
         Shop shop1 = new Shop();
         shop1.setName("Shop001");
@@ -176,6 +170,13 @@ public class UserService {
         shop2.getAccounts().add(myAccount);
         shopRepository.save(shop2);
         shopSearchRepository.save(shop2);
+        
+        userInfo.getAccounts().add(myAccount);
+        userInfo.setAccountId(myAccount.getId());
+        userInfo.setDefaultAccount(myAccount);
+        userInfo.setShopId(shop1.getId());
+        userInfoRepository.save(userInfo);
+        userInfoSearchRepository.save(userInfo);
         
         myAccount.getShops().add(shop1);
         myAccount.getShops().add(shop2);

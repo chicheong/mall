@@ -4,6 +4,7 @@ import com.wongs.MallApp;
 
 import com.wongs.domain.Shop;
 import com.wongs.repository.ShopRepository;
+import com.wongs.service.ProductService;
 import com.wongs.service.ShopService;
 import com.wongs.repository.search.ShopSearchRepository;
 import com.wongs.service.dto.ShopDTO;
@@ -80,6 +81,9 @@ public class ShopResourceIntTest {
 
     @Autowired
     private ShopService shopService;
+    
+    @Autowired
+    private ProductService productService;
 
     @Autowired
     private ShopSearchRepository shopSearchRepository;
@@ -103,7 +107,7 @@ public class ShopResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ShopResource shopResource = new ShopResource(shopService);
+        final ShopResource shopResource = new ShopResource(shopService, productService);
         this.restShopMockMvc = MockMvcBuilders.standaloneSetup(shopResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

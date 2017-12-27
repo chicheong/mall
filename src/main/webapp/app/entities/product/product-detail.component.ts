@@ -18,7 +18,6 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     private subscription: Subscription;
     private eventSubscriber: Subscription;
     isEditing = false;
-    shopId: number;
 
     constructor(
         private eventManager: JhiEventManager,
@@ -33,16 +32,26 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.isSaving = false;
         this.subscription = this.route.params.subscribe((params) => {
-            this.principal.identity().then((account) => {
-                // this.currentAccount = account;
-            });
-            if ((params['id']) === '0') {
-                console.error((params['id']));
+            if ((params['id'])) {
+                if ((params['id']) === 'new') {
+                    const entity: Product = Object.assign(new Product());
+                    // If no shopId provided, get from user account
+                    this.principal.identity().then((account) => {
+                        entity.shopId = account.shopId;
+                    });
+                    this.product = entity;
+                    this.isEditing = true;
+                } else {
+                    this.load(params['id']);
+                }
+            } else if ((params['shopId'])) {
+                console.error((params['shopId']));
                 const entity: Product = Object.assign(new Product());
-                entity.shopId = 0;
+                entity.shopId = (params['shopId']);
                 this.product = entity;
+                this.isEditing = true;
             } else {
-                this.load(params['id']);
+
             }
         });
         this.registerChangeInProducts();
@@ -51,9 +60,6 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     load(id) {
         this.productService.find(id).subscribe((product) => {
             this.product = product;
-            if (!product.id) {
-                this.isEditing = true;
-            }
         });
     }
     previousState() {
