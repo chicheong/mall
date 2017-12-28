@@ -7,6 +7,8 @@ import { Product } from './product.model';
 import { ProductService } from './product.service';
 import { Principal } from '../../shared';
 
+import { ProductItem } from './../product-item';
+
 @Component({
     selector: 'jhi-product-detail',
     templateUrl: './product-detail.component.html'
@@ -40,6 +42,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                         entity.shopId = account.shopId;
                     });
                     this.product = entity;
+                    const item: ProductItem = Object.assign(new ProductItem());
+                    this.product.items = [item];
                     this.isEditing = true;
                 } else {
                     this.load(params['id']);
@@ -49,6 +53,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                 const entity: Product = Object.assign(new Product());
                 entity.shopId = (params['shopId']);
                 this.product = entity;
+                const item: ProductItem = Object.assign(new ProductItem());
+                this.product.items = [item];
                 this.isEditing = true;
             } else {
 
@@ -81,11 +87,11 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     save() {
         this.isSaving = true;
         if (this.product.id) { // !== undefined
-            console.error('update');
+            console.error('update: ' + this.product.id);
             this.subscribeToSaveResponse(
                 this.productService.update(this.product));
         } else {
-            console.error('create');
+            console.error('create: ' + this.product.id);
             this.subscribeToSaveResponse(
                 this.productService.create(this.product));
         }
@@ -102,6 +108,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.isEditing = false;
         console.error('result.id=' + result.id);
         this.router.navigate(['/product', result.id]);
+        this.product = result;
         // this.activeModal.dismiss(result);
     }
 

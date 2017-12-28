@@ -49,18 +49,27 @@
 	    	<div>
 	            <span>123 customer reviews</span>
 	        </div>
+            <div>
+	  			&nbsp;
+	  		</div>	        
 			<div *ngIf="product.items">
-	        	<span *ngFor="let item of product.items"><input type="button" value="{{item.color}}" /></span>
+	        	<span *ngFor="let item of product.items">
+	        		<button [disabled]="isSaving" class="btn btn-default" (click)="cancel()">
+	        			<span>{{item.color}}</span>
+	        		</button>
+	        	</span>
+	        	<button [disabled]="isSaving" class="btn btn-default" (click)="cancel()">
+		            <span>+</span>
+		        </button>
 			</div>
-			
             <div>
 	  			&nbsp;
 	  		</div>
-	  		<!-- <div>
-	  			Price:	<span>{{product.items?product.items[0].currency : 'Fuck you'}} {{product.items?product.items[0].price : 'asshole'}}</span>
-	  		</div> -->	
 	  		<div>
-	  			You Save:	$5.90 (28%)
+	  			Price:	<span>{{product.items?product.items[0].currency : 'Fuck you'}} {{product.items?product.items[0].price : 'asshole'}}</span>
+	  		</div>
+	  		<div>
+	  			You Save: $5.90 (28%)
 	  		</div>	  		  
 			<div>
 			    <button type="button" [disabled]="isSaving" class="btn btn-default" (click)="cancel()">
@@ -96,25 +105,17 @@
 		<div class="col-md-1"></div>
 		<div class="col-md-11">
 
-<hr style='border-color: #5E5E5E;border-style: solid none;border-width: 2px 0;' />
-<span>Stuffs below are for your reference only, will not be shown on your product page</span><br/>
-<span jhiTranslate="mallApp.product.detail.title">Product</span>&nbsp;&nbsp;&nbsp;&nbsp;
-ID: {{product.id}}&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.name">Name</span>: <span>{{product.name}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.code">Code</span>: <span>{{product.code}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.brand">Brand</span>: <span>{{product.brand}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.description">Description</span>: <span>{{product.description}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.content">Content</span>: <span>{{product.content}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.remark">Remark</span>: <span>{{product.remark}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.status">Status</span>: <span jhiTranslate="{{'mallApp.ProductStatus.' + product.status}}">{{product.status}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.createdBy">Created By</span>: <span>{{product.createdBy}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.createdDate">Created Date</span>: <span>{{product.createdDate | date:'medium'}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.lastModifiedBy">Last Modified By</span>: <span>{{product.lastModifiedBy}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-<span jhiTranslate="mallApp.product.lastModifiedDate">Last Modified Date</span>: <span>{{product.lastModifiedDate | date:'medium'}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-<!-- <span jhiTranslate="mallApp.product.userInfo">User Info</span>: 
-<div *ngIf="product.userInfo">
-	<a [routerLink]="['/user-info', product.userInfo?.id]">{{product.userInfo?.id}}</a>
-</div> -->
+			<hr style='border-color: #5E5E5E;border-style: solid none;border-width: 2px 0;' />
+			<span>Stuffs below are for reference only, will not be shown on your product page</span><br/>
+			<span jhiTranslate="mallApp.product.detail.title">Product</span>&nbsp;&nbsp;&nbsp;&nbsp;
+			ID: {{product.id}}&nbsp;&nbsp;&nbsp;&nbsp;
+			<span jhiTranslate="mallApp.product.description">Description</span>: <span>{{product.description}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+			<span jhiTranslate="mallApp.product.content">Content</span>: <span>{{product.content}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+			<span jhiTranslate="mallApp.product.status">Status</span>: <span jhiTranslate="{{'mallApp.ProductStatus.' + product.status}}">{{product.status}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+			<!-- <span jhiTranslate="mallApp.product.userInfo">User Info</span>: 
+			<div *ngIf="product.userInfo">
+				<a [routerLink]="['/user-info', product.userInfo?.id]">{{product.userInfo?.id}}</a>
+			</div> -->
 
 
 			<dl *ngSwitchCase="true" class="row-md jh-entity-details">
@@ -142,7 +143,7 @@ ID: {{product.id}}&nbsp;&nbsp;&nbsp;&nbsp;
 		                <option value="INACTIVE" jhiTranslate="mallApp.ProductStatus.INACTIVE">INACTIVE</option>
 		            </select>
 		        </dd>
-		        <dt><span jhiTranslate="mallApp.product.createdBy">Created By</span></dt>
+				<!-- <dt><span jhiTranslate="mallApp.product.createdBy">Created By</span></dt>
 		        <dd>
 		        	<input type="text" class="form-control" name="createdBy" id="field_createdBy" [(ngModel)]="product.createdBy" />
 		        </dd>
@@ -158,20 +159,26 @@ ID: {{product.id}}&nbsp;&nbsp;&nbsp;&nbsp;
 		        <dd>
 		            <input id="field_lastModifiedDate" type="datetime-local" class="form-control" name="lastModifiedDate" [(ngModel)]="product.lastModifiedDate" />
 		        </dd>
-		        <!-- <dt><span jhiTranslate="mallApp.product.userInfo">User Info</span></dt>
+		        <dt><span jhiTranslate="mallApp.product.userInfo">User Info</span></dt>
 		        <dd>
 		            <div *ngIf="product.userInfo">
 		                <a [routerLink]="['/user-info', product.userInfo?.id]">{{product.userInfo?.id}}</a>
 		            </div>
-		        </dd> 
+		        </dd>-->
 		        <dt><span jhiTranslate="mallApp.product.shop">Shop</span></dt>
 		        <dd>
 		            <div *ngIf="product.shopId">
 		                <a [routerLink]="['/shop', product.shopId]">{{product.shopId}}</a>
 		            </div>
-		        </dd>-->
+		        </dd>
 		    </dl>
-		    
+		    <hr style='border-color: #5E5E5E;border-style: solid none;border-width: 2px 0;' />
+		    <dl *ngSwitchCase="true" class="row-md jh-entity-details">
+		        <dd><span jhiTranslate="mallApp.product.createdBy">Created By</span>:&nbsp;<span>{{product.createdBy}}</span></dd>
+		        <dd><span jhiTranslate="mallApp.product.createdDate">Created Date</span>:&nbsp;<span>{{product.createdDate | date:'medium'}}</span></dd>
+		        <dd><span jhiTranslate="mallApp.product.lastModifiedBy">Last Modified By</span>:&nbsp;<span>{{product.lastModifiedBy}}</span></dd>
+		        <dd><span jhiTranslate="mallApp.product.lastModifiedDate">Last Modified Date</span>:&nbsp;<span>{{product.lastModifiedDate | date:'medium'}}</span></dd>
+		    </dl>
 		</div>
 	</div>
 	</form>

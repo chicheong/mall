@@ -205,7 +205,7 @@ relationship OneToOne {
 	UserInfo{user(login)} to User,
 	UserInfo{defaultAccount} to MyAccount,
 	Office{address} to Address,
-	OrderItem{productItem} to ProductItem{orderItem}
+	OrderItem{productItem} to ProductItem
 }
 
 relationship OneToMany {

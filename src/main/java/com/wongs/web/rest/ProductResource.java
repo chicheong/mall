@@ -1,6 +1,7 @@
 package com.wongs.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wongs.security.SecurityUtils;
 import com.wongs.service.ProductService;
 import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
@@ -19,7 +20,10 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
@@ -57,6 +61,12 @@ public class ProductResource {
         if (productDTO.getId() != null) {
             throw new BadRequestAlertException("A new product cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        Date today = Calendar.getInstance().getTime();
+        productDTO.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
+        productDTO.setCreatedDate(ZonedDateTime.ofInstant(today.toInstant(), ZoneId.systemDefault()));
+        productDTO.setLastModifiedBy(SecurityUtils.getCurrentUserLogin().get());
+        productDTO.setLastModifiedDate(ZonedDateTime.ofInstant(today.toInstant(), ZoneId.systemDefault()));
+        
         ProductDTO result = productService.save(productDTO);
         log.error(ResponseEntity.created(new URI("/api/products/" + result.getId()))
         .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
@@ -80,6 +90,10 @@ public class ProductResource {
     @Timed
     public ResponseEntity<ProductDTO> updateProduct(@Valid @RequestBody ProductDTO productDTO) throws URISyntaxException {
         log.debug("REST request to update Product : {}", productDTO);
+        Date today = Calendar.getInstance().getTime();
+        productDTO.setLastModifiedBy(SecurityUtils.getCurrentUserLogin().get());
+        productDTO.setLastModifiedDate(ZonedDateTime.ofInstant(today.toInstant(), ZoneId.systemDefault()));
+        
         if (productDTO.getId() == null) {
             return createProduct(productDTO);
         }

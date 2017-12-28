@@ -83,10 +83,10 @@ export class ProductService {
         const copy: Product = Object.assign({}, product);
 
         console.error('product.createdDate: ' + JSON.stringify(product.createdDate));
+        console.error('product.lastModifiedDate: ' + JSON.stringify(product.lastModifiedDate));
         console.error('product.id: ' + product.id);
-        copy.createdDate = this.dateUtils.toDate(product.createdDate);
-
-        copy.lastModifiedDate = this.dateUtils.toDate(product.lastModifiedDate);
+        // copy.createdDate = this.dateUtils.toDate(product.createdDate);
+        // copy.lastModifiedDate = this.dateUtils.toDate(product.lastModifiedDate);
         return copy;
     }
 }
