@@ -3,8 +3,6 @@ import { Http, Response } from '@angular/http';
 import { Observable } from 'rxjs/Rx';
 import { SERVER_API_URL } from '../../app.constants';
 
-import { JhiDateUtils } from 'ng-jhipster';
-
 import { ProductItem } from './product-item.model';
 import { ResponseWrapper, createRequestOption } from '../../shared';
 
@@ -14,7 +12,7 @@ export class ProductItemService {
     private resourceUrl = SERVER_API_URL + 'api/product-items';
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/product-items';
 
-    constructor(private http: Http, private dateUtils: JhiDateUtils) { }
+    constructor(private http: Http) { }
 
     create(productItem: ProductItem): Observable<ProductItem> {
         const copy = this.convert(productItem);
@@ -69,10 +67,6 @@ export class ProductItemService {
      */
     private convertItemFromServer(json: any): ProductItem {
         const entity: ProductItem = Object.assign(new ProductItem(), json);
-        entity.createdDate = this.dateUtils
-            .convertDateTimeFromServer(json.createdDate);
-        entity.lastModifiedDate = this.dateUtils
-            .convertDateTimeFromServer(json.lastModifiedDate);
         return entity;
     }
 
@@ -81,10 +75,6 @@ export class ProductItemService {
      */
     private convert(productItem: ProductItem): ProductItem {
         const copy: ProductItem = Object.assign({}, productItem);
-
-        copy.createdDate = this.dateUtils.toDate(productItem.createdDate);
-
-        copy.lastModifiedDate = this.dateUtils.toDate(productItem.lastModifiedDate);
         return copy;
     }
 }

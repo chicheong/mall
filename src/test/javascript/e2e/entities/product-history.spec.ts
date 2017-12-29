@@ -31,6 +31,8 @@ describe('ProductHistory e2e test', () => {
 
     it('should create and save ProductHistories', () => {
         productHistoryComponentsPage.clickOnCreateButton();
+        productHistoryDialogPage.setProductIdInput('5');
+        expect(productHistoryDialogPage.getProductIdInput()).toMatch('5');
         productHistoryDialogPage.setNameInput('name');
         expect(productHistoryDialogPage.getNameInput()).toMatch('name');
         productHistoryDialogPage.setCodeInput('code');
@@ -48,11 +50,6 @@ describe('ProductHistory e2e test', () => {
         expect(productHistoryDialogPage.getCreatedByInput()).toMatch('createdBy');
         productHistoryDialogPage.setCreatedDateInput(12310020012301);
         expect(productHistoryDialogPage.getCreatedDateInput()).toMatch('2001-12-31T02:30');
-        productHistoryDialogPage.setLastModifiedByInput('lastModifiedBy');
-        expect(productHistoryDialogPage.getLastModifiedByInput()).toMatch('lastModifiedBy');
-        productHistoryDialogPage.setLastModifiedDateInput(12310020012301);
-        expect(productHistoryDialogPage.getLastModifiedDateInput()).toMatch('2001-12-31T02:30');
-        productHistoryDialogPage.productSelectLastOption();
         productHistoryDialogPage.save();
         expect(productHistoryDialogPage.getSaveButton().isPresent()).toBeFalsy();
     });
@@ -79,6 +76,7 @@ export class ProductHistoryDialogPage {
     modalTitle = element(by.css('h4#myProductHistoryLabel'));
     saveButton = element(by.css('.modal-footer .btn.btn-primary'));
     closeButton = element(by.css('button.close'));
+    productIdInput = element(by.css('input#field_productId'));
     nameInput = element(by.css('input#field_name'));
     codeInput = element(by.css('input#field_code'));
     brandInput = element(by.css('input#field_brand'));
@@ -88,12 +86,17 @@ export class ProductHistoryDialogPage {
     statusSelect = element(by.css('select#field_status'));
     createdByInput = element(by.css('input#field_createdBy'));
     createdDateInput = element(by.css('input#field_createdDate'));
-    lastModifiedByInput = element(by.css('input#field_lastModifiedBy'));
-    lastModifiedDateInput = element(by.css('input#field_lastModifiedDate'));
-    productSelect = element(by.css('select#field_product'));
 
     getModalTitle() {
         return this.modalTitle.getAttribute('jhiTranslate');
+    }
+
+    setProductIdInput = function(productId) {
+        this.productIdInput.sendKeys(productId);
+    }
+
+    getProductIdInput = function() {
+        return this.productIdInput.getAttribute('value');
     }
 
     setNameInput = function(name) {
@@ -169,38 +172,6 @@ export class ProductHistoryDialogPage {
 
     getCreatedDateInput = function() {
         return this.createdDateInput.getAttribute('value');
-    }
-
-    setLastModifiedByInput = function(lastModifiedBy) {
-        this.lastModifiedByInput.sendKeys(lastModifiedBy);
-    }
-
-    getLastModifiedByInput = function() {
-        return this.lastModifiedByInput.getAttribute('value');
-    }
-
-    setLastModifiedDateInput = function(lastModifiedDate) {
-        this.lastModifiedDateInput.sendKeys(lastModifiedDate);
-    }
-
-    getLastModifiedDateInput = function() {
-        return this.lastModifiedDateInput.getAttribute('value');
-    }
-
-    productSelectLastOption = function() {
-        this.productSelect.all(by.tagName('option')).last().click();
-    }
-
-    productSelectOption = function(option) {
-        this.productSelect.sendKeys(option);
-    }
-
-    getProductSelect = function() {
-        return this.productSelect;
-    }
-
-    getProductSelectedOption = function() {
-        return this.productSelect.element(by.css('option:checked')).getText();
     }
 
     save() {

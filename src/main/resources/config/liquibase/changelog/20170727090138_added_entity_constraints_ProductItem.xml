@@ -8,6 +8,18 @@
     -->
     <changeSet id="20170727090138-2" author="jhipster">
         
+        <addForeignKeyConstraint baseColumnNames="color_id"
+                                 baseTableName="product_item"
+                                 constraintName="fk_product_item_color_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="product_style"/>
+
+        <addForeignKeyConstraint baseColumnNames="size_id"
+                                 baseTableName="product_item"
+                                 constraintName="fk_product_item_size_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="product_style"/>
+
         <addForeignKeyConstraint baseColumnNames="product_id"
                                  baseTableName="product_item"
                                  constraintName="fk_product_item_product_id"

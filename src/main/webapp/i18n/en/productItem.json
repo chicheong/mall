@@ -16,20 +16,13 @@
             "detail": {
                 "title": "Product Item"
             },
-            "name": "Name",
             "code": "Code",
-            "defaultItem": "Default Item",
-            "color": "Color",
-            "size": "Size",
+            "isDefault": "Is Default",
             "quantity": "Quantity",
             "currency": "Currency",
             "price": "Price",
-            "createdBy": "Created By",
-            "createdDate": "Created Date",
-            "lastModifiedBy": "Last Modified By",
-            "lastModifiedDate": "Last Modified Date",
-            "history": "History",
-            "orderItem": "Order Item",
+            "color": "Color",
+            "size": "Size",
             "product": "Product"
         }
     }

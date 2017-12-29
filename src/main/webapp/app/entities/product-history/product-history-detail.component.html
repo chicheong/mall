@@ -4,6 +4,10 @@
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="mallApp.productHistory.productId">Product Id</span></dt>
+        <dd>
+            <span>{{productHistory.productId}}</span>
+        </dd>
         <dt><span jhiTranslate="mallApp.productHistory.name">Name</span></dt>
         <dd>
             <span>{{productHistory.name}}</span>
@@ -39,20 +43,6 @@
         <dt><span jhiTranslate="mallApp.productHistory.createdDate">Created Date</span></dt>
         <dd>
             <span>{{productHistory.createdDate | date:'medium'}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productHistory.lastModifiedBy">Last Modified By</span></dt>
-        <dd>
-            <span>{{productHistory.lastModifiedBy}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productHistory.lastModifiedDate">Last Modified Date</span></dt>
-        <dd>
-            <span>{{productHistory.lastModifiedDate | date:'medium'}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productHistory.product">Product</span></dt>
-        <dd>
-            <div *ngIf="productHistory.product">
-                <a [routerLink]="['/product', productHistory.product?.id]">{{productHistory.product?.id}}</a>
-            </div>
         </dd>
     </dl>
 

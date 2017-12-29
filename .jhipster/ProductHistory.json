@@ -1,14 +1,11 @@
 {
     "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "product",
-            "otherEntityName": "product",
-            "otherEntityField": "id"
-        }
-    ],
+    "relationships": [],
     "fields": [
+        {
+            "fieldName": "productId",
+            "fieldType": "Long"
+        },
         {
             "fieldName": "name",
             "fieldType": "String",
@@ -48,19 +45,12 @@
         {
             "fieldName": "createdDate",
             "fieldType": "ZonedDateTime"
-        },
-        {
-            "fieldName": "lastModifiedBy",
-            "fieldType": "String"
-        },
-        {
-            "fieldName": "lastModifiedDate",
-            "fieldType": "ZonedDateTime"
         }
     ],
     "changelogDate": "20170727090139",
     "entityTableName": "product_history",
     "dto": "no",
     "pagination": "infinite-scroll",
-    "service": "no"
+    "service": "no",
+    "jpaMetamodelFiltering": false
 }

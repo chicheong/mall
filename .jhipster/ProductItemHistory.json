@@ -1,33 +1,14 @@
 {
     "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "item",
-            "otherEntityName": "productItem",
-            "otherEntityField": "id"
-        }
-    ],
+    "relationships": [],
     "fields": [
-        {
-            "fieldName": "name",
-            "fieldType": "String"
-        },
         {
             "fieldName": "code",
             "fieldType": "String"
         },
         {
-            "fieldName": "defaultItem",
+            "fieldName": "isDefault",
             "fieldType": "Boolean"
-        },
-        {
-            "fieldName": "color",
-            "fieldType": "String"
-        },
-        {
-            "fieldName": "size",
-            "fieldType": "String"
         },
         {
             "fieldName": "quantity",
@@ -49,19 +30,12 @@
         {
             "fieldName": "createdDate",
             "fieldType": "ZonedDateTime"
-        },
-        {
-            "fieldName": "lastModifiedBy",
-            "fieldType": "String"
-        },
-        {
-            "fieldName": "lastModifiedDate",
-            "fieldType": "ZonedDateTime"
         }
     ],
     "changelogDate": "20170727090140",
     "entityTableName": "product_item_history",
     "dto": "no",
     "pagination": "infinite-scroll",
-    "service": "no"
+    "service": "no",
+    "jpaMetamodelFiltering": false
 }

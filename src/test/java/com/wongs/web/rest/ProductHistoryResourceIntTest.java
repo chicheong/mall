@@ -45,6 +45,9 @@ import com.wongs.domain.enumeration.ProductStatus;
 @SpringBootTest(classes = MallApp.class)
 public class ProductHistoryResourceIntTest {
 
+    private static final Long DEFAULT_PRODUCT_ID = 1L;
+    private static final Long UPDATED_PRODUCT_ID = 2L;
+
     private static final String DEFAULT_NAME = "AAAAAAAAAA";
     private static final String UPDATED_NAME = "BBBBBBBBBB";
 
@@ -71,12 +74,6 @@ public class ProductHistoryResourceIntTest {
 
     private static final ZonedDateTime DEFAULT_CREATED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_CREATED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final String DEFAULT_LAST_MODIFIED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_LAST_MODIFIED_BY = "BBBBBBBBBB";
-
-    private static final ZonedDateTime DEFAULT_LAST_MODIFIED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_LAST_MODIFIED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
     @Autowired
     private ProductHistoryRepository productHistoryRepository;
@@ -119,6 +116,7 @@ public class ProductHistoryResourceIntTest {
      */
     public static ProductHistory createEntity(EntityManager em) {
         ProductHistory productHistory = new ProductHistory()
+            .productId(DEFAULT_PRODUCT_ID)
             .name(DEFAULT_NAME)
             .code(DEFAULT_CODE)
             .brand(DEFAULT_BRAND)
@@ -127,9 +125,7 @@ public class ProductHistoryResourceIntTest {
             .remark(DEFAULT_REMARK)
             .status(DEFAULT_STATUS)
             .createdBy(DEFAULT_CREATED_BY)
-            .createdDate(DEFAULT_CREATED_DATE)
-            .lastModifiedBy(DEFAULT_LAST_MODIFIED_BY)
-            .lastModifiedDate(DEFAULT_LAST_MODIFIED_DATE);
+            .createdDate(DEFAULT_CREATED_DATE);
         return productHistory;
     }
 
@@ -154,6 +150,7 @@ public class ProductHistoryResourceIntTest {
         List<ProductHistory> productHistoryList = productHistoryRepository.findAll();
         assertThat(productHistoryList).hasSize(databaseSizeBeforeCreate + 1);
         ProductHistory testProductHistory = productHistoryList.get(productHistoryList.size() - 1);
+        assertThat(testProductHistory.getProductId()).isEqualTo(DEFAULT_PRODUCT_ID);
         assertThat(testProductHistory.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testProductHistory.getCode()).isEqualTo(DEFAULT_CODE);
         assertThat(testProductHistory.getBrand()).isEqualTo(DEFAULT_BRAND);
@@ -163,14 +160,11 @@ public class ProductHistoryResourceIntTest {
         assertThat(testProductHistory.getStatus()).isEqualTo(DEFAULT_STATUS);
         assertThat(testProductHistory.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
         assertThat(testProductHistory.getCreatedDate()).isEqualTo(DEFAULT_CREATED_DATE);
-        assertThat(testProductHistory.getLastModifiedBy()).isEqualTo(DEFAULT_LAST_MODIFIED_BY);
-        assertThat(testProductHistory.getLastModifiedDate()).isEqualTo(DEFAULT_LAST_MODIFIED_DATE);
 
         // Validate the ProductHistory in Elasticsearch
         ProductHistory productHistoryEs = productHistorySearchRepository.findOne(testProductHistory.getId());
         assertThat(testProductHistory.getCreatedDate()).isEqualTo(testProductHistory.getCreatedDate());
-        assertThat(testProductHistory.getLastModifiedDate()).isEqualTo(testProductHistory.getLastModifiedDate());
-        assertThat(productHistoryEs).isEqualToIgnoringGivenFields(testProductHistory, "createdDate", "lastModifiedDate");
+        assertThat(productHistoryEs).isEqualToIgnoringGivenFields(testProductHistory, "createdDate");
     }
 
     @Test
@@ -221,6 +215,7 @@ public class ProductHistoryResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(productHistory.getId().intValue())))
+            .andExpect(jsonPath("$.[*].productId").value(hasItem(DEFAULT_PRODUCT_ID.intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
             .andExpect(jsonPath("$.[*].brand").value(hasItem(DEFAULT_BRAND.toString())))
@@ -229,9 +224,7 @@ public class ProductHistoryResourceIntTest {
             .andExpect(jsonPath("$.[*].remark").value(hasItem(DEFAULT_REMARK.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY.toString())))
-            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
-            .andExpect(jsonPath("$.[*].lastModifiedBy").value(hasItem(DEFAULT_LAST_MODIFIED_BY.toString())))
-            .andExpect(jsonPath("$.[*].lastModifiedDate").value(hasItem(sameInstant(DEFAULT_LAST_MODIFIED_DATE))));
+            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))));
     }
 
     @Test
@@ -245,6 +238,7 @@ public class ProductHistoryResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(productHistory.getId().intValue()))
+            .andExpect(jsonPath("$.productId").value(DEFAULT_PRODUCT_ID.intValue()))
             .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
             .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()))
             .andExpect(jsonPath("$.brand").value(DEFAULT_BRAND.toString()))
@@ -253,9 +247,7 @@ public class ProductHistoryResourceIntTest {
             .andExpect(jsonPath("$.remark").value(DEFAULT_REMARK.toString()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()))
             .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY.toString()))
-            .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
-            .andExpect(jsonPath("$.lastModifiedBy").value(DEFAULT_LAST_MODIFIED_BY.toString()))
-            .andExpect(jsonPath("$.lastModifiedDate").value(sameInstant(DEFAULT_LAST_MODIFIED_DATE)));
+            .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)));
     }
 
     @Test
@@ -279,6 +271,7 @@ public class ProductHistoryResourceIntTest {
         // Disconnect from session so that the updates on updatedProductHistory are not directly saved in db
         em.detach(updatedProductHistory);
         updatedProductHistory
+            .productId(UPDATED_PRODUCT_ID)
             .name(UPDATED_NAME)
             .code(UPDATED_CODE)
             .brand(UPDATED_BRAND)
@@ -287,9 +280,7 @@ public class ProductHistoryResourceIntTest {
             .remark(UPDATED_REMARK)
             .status(UPDATED_STATUS)
             .createdBy(UPDATED_CREATED_BY)
-            .createdDate(UPDATED_CREATED_DATE)
-            .lastModifiedBy(UPDATED_LAST_MODIFIED_BY)
-            .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE);
+            .createdDate(UPDATED_CREATED_DATE);
 
         restProductHistoryMockMvc.perform(put("/api/product-histories")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -300,6 +291,7 @@ public class ProductHistoryResourceIntTest {
         List<ProductHistory> productHistoryList = productHistoryRepository.findAll();
         assertThat(productHistoryList).hasSize(databaseSizeBeforeUpdate);
         ProductHistory testProductHistory = productHistoryList.get(productHistoryList.size() - 1);
+        assertThat(testProductHistory.getProductId()).isEqualTo(UPDATED_PRODUCT_ID);
         assertThat(testProductHistory.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testProductHistory.getCode()).isEqualTo(UPDATED_CODE);
         assertThat(testProductHistory.getBrand()).isEqualTo(UPDATED_BRAND);
@@ -309,14 +301,11 @@ public class ProductHistoryResourceIntTest {
         assertThat(testProductHistory.getStatus()).isEqualTo(UPDATED_STATUS);
         assertThat(testProductHistory.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
         assertThat(testProductHistory.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);
-        assertThat(testProductHistory.getLastModifiedBy()).isEqualTo(UPDATED_LAST_MODIFIED_BY);
-        assertThat(testProductHistory.getLastModifiedDate()).isEqualTo(UPDATED_LAST_MODIFIED_DATE);
 
         // Validate the ProductHistory in Elasticsearch
         ProductHistory productHistoryEs = productHistorySearchRepository.findOne(testProductHistory.getId());
         assertThat(testProductHistory.getCreatedDate()).isEqualTo(testProductHistory.getCreatedDate());
-        assertThat(testProductHistory.getLastModifiedDate()).isEqualTo(testProductHistory.getLastModifiedDate());
-        assertThat(productHistoryEs).isEqualToIgnoringGivenFields(testProductHistory, "createdDate", "lastModifiedDate");
+        assertThat(productHistoryEs).isEqualToIgnoringGivenFields(testProductHistory, "createdDate");
     }
 
     @Test
@@ -371,6 +360,7 @@ public class ProductHistoryResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(productHistory.getId().intValue())))
+            .andExpect(jsonPath("$.[*].productId").value(hasItem(DEFAULT_PRODUCT_ID.intValue())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
             .andExpect(jsonPath("$.[*].brand").value(hasItem(DEFAULT_BRAND.toString())))
@@ -379,9 +369,7 @@ public class ProductHistoryResourceIntTest {
             .andExpect(jsonPath("$.[*].remark").value(hasItem(DEFAULT_REMARK.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
             .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY.toString())))
-            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
-            .andExpect(jsonPath("$.[*].lastModifiedBy").value(hasItem(DEFAULT_LAST_MODIFIED_BY.toString())))
-            .andExpect(jsonPath("$.[*].lastModifiedDate").value(hasItem(sameInstant(DEFAULT_LAST_MODIFIED_DATE))));
+            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))));
     }
 
     @Test

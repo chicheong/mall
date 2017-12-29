@@ -9,7 +9,6 @@ import javax.persistence.*;
 import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
@@ -31,20 +30,11 @@ public class ProductItem implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
-
     @Column(name = "code")
     private String code;
 
-    @Column(name = "default_item")
-    private Boolean defaultItem;
-
-    @Column(name = "color")
-    private String color;
-
-    @Column(name = "jhi_size")
-    private String size;
+    @Column(name = "is_default")
+    private Boolean isDefault;
 
     @Column(name = "quantity")
     private Integer quantity;
@@ -56,31 +46,18 @@ public class ProductItem implements Serializable {
     @Column(name = "price", precision=10, scale=2)
     private BigDecimal price;
 
-    @Column(name = "created_by")
-    private String createdBy;
+    @OneToOne
+    @JoinColumn(unique = true)
+    private ProductStyle color;
 
-    @Column(name = "created_date")
-    private ZonedDateTime createdDate;
-
-    @Column(name = "last_modified_by")
-    private String lastModifiedBy;
-
-    @Column(name = "last_modified_date")
-    private ZonedDateTime lastModifiedDate;
-
-    @OneToMany(mappedBy = "item")
-    @JsonIgnore
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<ProductItemHistory> histories = new HashSet<>();
+    @OneToOne
+    @JoinColumn(unique = true)
+    private ProductStyle size;
 
     @OneToMany(mappedBy = "item")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Price> prices = new HashSet<>();
-
-    @OneToOne(mappedBy = "productItem")
-    @JsonIgnore
-    private OrderItem orderItem;
 
     @ManyToOne
     private Product product;
@@ -92,19 +69,6 @@ public class ProductItem implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public ProductItem name(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getCode() {
@@ -120,43 +84,17 @@ public class ProductItem implements Serializable {
         this.code = code;
     }
 
-    public Boolean isDefaultItem() {
-        return defaultItem;
+    public Boolean isIsDefault() {
+        return isDefault;
     }
 
-    public ProductItem defaultItem(Boolean defaultItem) {
-        this.defaultItem = defaultItem;
+    public ProductItem isDefault(Boolean isDefault) {
+        this.isDefault = isDefault;
         return this;
     }
 
-    public void setDefaultItem(Boolean defaultItem) {
-        this.defaultItem = defaultItem;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public ProductItem color(String color) {
-        this.color = color;
-        return this;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public String getSize() {
-        return size;
-    }
-
-    public ProductItem size(String size) {
-        this.size = size;
-        return this;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
+    public void setIsDefault(Boolean isDefault) {
+        this.isDefault = isDefault;
     }
 
     public Integer getQuantity() {
@@ -198,81 +136,30 @@ public class ProductItem implements Serializable {
         this.price = price;
     }
 
-    public String getCreatedBy() {
-        return createdBy;
+    public ProductStyle getColor() {
+        return color;
     }
 
-    public ProductItem createdBy(String createdBy) {
-        this.createdBy = createdBy;
+    public ProductItem color(ProductStyle productStyle) {
+        this.color = productStyle;
         return this;
     }
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
+    public void setColor(ProductStyle productStyle) {
+        this.color = productStyle;
     }
 
-    public ZonedDateTime getCreatedDate() {
-        return createdDate;
+    public ProductStyle getSize() {
+        return size;
     }
 
-    public ProductItem createdDate(ZonedDateTime createdDate) {
-        this.createdDate = createdDate;
+    public ProductItem size(ProductStyle productStyle) {
+        this.size = productStyle;
         return this;
     }
 
-    public void setCreatedDate(ZonedDateTime createdDate) {
-        this.createdDate = createdDate;
-    }
-
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public ProductItem lastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-        return this;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
-    public ZonedDateTime getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public ProductItem lastModifiedDate(ZonedDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-        return this;
-    }
-
-    public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public Set<ProductItemHistory> getHistories() {
-        return histories;
-    }
-
-    public ProductItem histories(Set<ProductItemHistory> productItemHistories) {
-        this.histories = productItemHistories;
-        return this;
-    }
-
-    public ProductItem addHistory(ProductItemHistory productItemHistory) {
-        this.histories.add(productItemHistory);
-        productItemHistory.setItem(this);
-        return this;
-    }
-
-    public ProductItem removeHistory(ProductItemHistory productItemHistory) {
-        this.histories.remove(productItemHistory);
-        productItemHistory.setItem(null);
-        return this;
-    }
-
-    public void setHistories(Set<ProductItemHistory> productItemHistories) {
-        this.histories = productItemHistories;
+    public void setSize(ProductStyle productStyle) {
+        this.size = productStyle;
     }
 
     public Set<Price> getPrices() {
@@ -298,19 +185,6 @@ public class ProductItem implements Serializable {
 
     public void setPrices(Set<Price> prices) {
         this.prices = prices;
-    }
-
-    public OrderItem getOrderItem() {
-        return orderItem;
-    }
-
-    public ProductItem orderItem(OrderItem orderItem) {
-        this.orderItem = orderItem;
-        return this;
-    }
-
-    public void setOrderItem(OrderItem orderItem) {
-        this.orderItem = orderItem;
     }
 
     public Product getProduct() {
@@ -351,18 +225,11 @@ public class ProductItem implements Serializable {
     public String toString() {
         return "ProductItem{" +
             "id=" + getId() +
-            ", name='" + getName() + "'" +
             ", code='" + getCode() + "'" +
-            ", defaultItem='" + isDefaultItem() + "'" +
-            ", color='" + getColor() + "'" +
-            ", size='" + getSize() + "'" +
+            ", isDefault='" + isIsDefault() + "'" +
             ", quantity=" + getQuantity() +
             ", currency='" + getCurrency() + "'" +
             ", price=" + getPrice() +
-            ", createdBy='" + getCreatedBy() + "'" +
-            ", createdDate='" + getCreatedDate() + "'" +
-            ", lastModifiedBy='" + getLastModifiedBy() + "'" +
-            ", lastModifiedDate='" + getLastModifiedDate() + "'" +
             "}";
     }
 }

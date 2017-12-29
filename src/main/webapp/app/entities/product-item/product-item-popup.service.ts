@@ -1,7 +1,6 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { DatePipe } from '@angular/common';
 import { ProductItem } from './product-item.model';
 import { ProductItemService } from './product-item.service';
 
@@ -10,7 +9,6 @@ export class ProductItemPopupService {
     private ngbModalRef: NgbModalRef;
 
     constructor(
-        private datePipe: DatePipe,
         private modalService: NgbModal,
         private router: Router,
         private productItemService: ProductItemService
@@ -28,10 +26,6 @@ export class ProductItemPopupService {
 
             if (id) {
                 this.productItemService.find(id).subscribe((productItem) => {
-                    productItem.createdDate = this.datePipe
-                        .transform(productItem.createdDate, 'yyyy-MM-ddTHH:mm:ss');
-                    productItem.lastModifiedDate = this.datePipe
-                        .transform(productItem.lastModifiedDate, 'yyyy-MM-ddTHH:mm:ss');
                     this.ngbModalRef = this.productItemModalRef(component, productItem);
                     resolve(this.ngbModalRef);
                 });

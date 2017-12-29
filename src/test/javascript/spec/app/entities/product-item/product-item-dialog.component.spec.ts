@@ -8,7 +8,7 @@ import { MallTestModule } from '../../../test.module';
 import { ProductItemDialogComponent } from '../../../../../../main/webapp/app/entities/product-item/product-item-dialog.component';
 import { ProductItemService } from '../../../../../../main/webapp/app/entities/product-item/product-item.service';
 import { ProductItem } from '../../../../../../main/webapp/app/entities/product-item/product-item.model';
-import { OrderItemService } from '../../../../../../main/webapp/app/entities/order-item';
+import { ProductStyleService } from '../../../../../../main/webapp/app/entities/product-style';
 import { ProductService } from '../../../../../../main/webapp/app/entities/product';
 
 describe('Component Tests', () => {
@@ -25,7 +25,7 @@ describe('Component Tests', () => {
                 imports: [MallTestModule],
                 declarations: [ProductItemDialogComponent],
                 providers: [
-                    OrderItemService,
+                    ProductStyleService,
                     ProductService,
                     ProductItemService
                 ]

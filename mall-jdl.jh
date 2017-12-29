@@ -114,23 +114,28 @@ enum ProductStatus {
     ACTIVE, RESTRICTED, INACTIVE
 }
 
-entity ProductItem {
+entity ProductStyle {
 	name String,
 	code String,
-	defaultItem Boolean,
-	color String,
-	size String,
+	isDefault Boolean,
+	type ProductStyleType
+}
+
+enum ProductStyleType {
+    COLOR, SIZE
+}
+
+entity ProductItem {
+	code String,
+	isDefault Boolean,
 	quantity Integer,
 	currency CurrencyType,
-	price BigDecimal,
-	createdBy String,
-	createdDate ZonedDateTime,
-	lastModifiedBy String,
-	lastModifiedDate ZonedDateTime
+	price BigDecimal
 }
 
 // Product status before or after is active
 entity ProductHistory {
+	productId Long,
 	name String required,
 	code String,
 	brand String,
@@ -139,25 +144,28 @@ entity ProductHistory {
 	remark String,
 	status ProductStatus,
 	createdBy String,
-	createdDate ZonedDateTime,
-	lastModifiedBy String,
-	lastModifiedDate ZonedDateTime
+	createdDate ZonedDateTime
+}
+
+// Product status before or after is active
+entity ProductStyleHistory {
+	name String,
+	code String,
+	isDefault Boolean,
+	type ProductStyleType,
+	createdBy String,
+	createdDate ZonedDateTime
 }
 
 // Product status before or after is active
 entity ProductItemHistory {
-	name String,
 	code String,
-	defaultItem Boolean,
-	color String,
-	size String,
+	isDefault Boolean,
 	quantity Integer,
 	currency CurrencyType,
 	price BigDecimal,
 	createdBy String,
-	createdDate ZonedDateTime,
-	lastModifiedBy String,
-	lastModifiedDate ZonedDateTime
+	createdDate ZonedDateTime
 }
 
 entity Price {
@@ -205,16 +213,17 @@ relationship OneToOne {
 	UserInfo{user(login)} to User,
 	UserInfo{defaultAccount} to MyAccount,
 	Office{address} to Address,
+	ProductItem{color} to ProductStyle,
+	ProductItem{size} to ProductStyle,
 	OrderItem{productItem} to ProductItem
 }
 
 relationship OneToMany {
 	MyAccount{delegation} to Delegation{account},
+	Product{style} to ProductStyle{product},
 	Product{item} to ProductItem{product},
 	MyOrder{item} to OrderItem{order},
 	MyOrder{statusHistory} to OrderStatusHistory{order},
-	Product{history} to ProductHistory{product},
-	ProductItem{history} to ProductItemHistory{item},
 	ProductItem{price} to Price{item}
 }
 

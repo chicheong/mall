@@ -28,20 +28,11 @@ public class ProductItemHistory implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
-
     @Column(name = "code")
     private String code;
 
-    @Column(name = "default_item")
-    private Boolean defaultItem;
-
-    @Column(name = "color")
-    private String color;
-
-    @Column(name = "jhi_size")
-    private String size;
+    @Column(name = "is_default")
+    private Boolean isDefault;
 
     @Column(name = "quantity")
     private Integer quantity;
@@ -59,15 +50,6 @@ public class ProductItemHistory implements Serializable {
     @Column(name = "created_date")
     private ZonedDateTime createdDate;
 
-    @Column(name = "last_modified_by")
-    private String lastModifiedBy;
-
-    @Column(name = "last_modified_date")
-    private ZonedDateTime lastModifiedDate;
-
-    @ManyToOne
-    private ProductItem item;
-
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -75,19 +57,6 @@ public class ProductItemHistory implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public ProductItemHistory name(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public String getCode() {
@@ -103,43 +72,17 @@ public class ProductItemHistory implements Serializable {
         this.code = code;
     }
 
-    public Boolean isDefaultItem() {
-        return defaultItem;
+    public Boolean isIsDefault() {
+        return isDefault;
     }
 
-    public ProductItemHistory defaultItem(Boolean defaultItem) {
-        this.defaultItem = defaultItem;
+    public ProductItemHistory isDefault(Boolean isDefault) {
+        this.isDefault = isDefault;
         return this;
     }
 
-    public void setDefaultItem(Boolean defaultItem) {
-        this.defaultItem = defaultItem;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public ProductItemHistory color(String color) {
-        this.color = color;
-        return this;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public String getSize() {
-        return size;
-    }
-
-    public ProductItemHistory size(String size) {
-        this.size = size;
-        return this;
-    }
-
-    public void setSize(String size) {
-        this.size = size;
+    public void setIsDefault(Boolean isDefault) {
+        this.isDefault = isDefault;
     }
 
     public Integer getQuantity() {
@@ -206,45 +149,6 @@ public class ProductItemHistory implements Serializable {
     public void setCreatedDate(ZonedDateTime createdDate) {
         this.createdDate = createdDate;
     }
-
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public ProductItemHistory lastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-        return this;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
-    public ZonedDateTime getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public ProductItemHistory lastModifiedDate(ZonedDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-        return this;
-    }
-
-    public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public ProductItem getItem() {
-        return item;
-    }
-
-    public ProductItemHistory item(ProductItem productItem) {
-        this.item = productItem;
-        return this;
-    }
-
-    public void setItem(ProductItem productItem) {
-        this.item = productItem;
-    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
@@ -271,18 +175,13 @@ public class ProductItemHistory implements Serializable {
     public String toString() {
         return "ProductItemHistory{" +
             "id=" + getId() +
-            ", name='" + getName() + "'" +
             ", code='" + getCode() + "'" +
-            ", defaultItem='" + isDefaultItem() + "'" +
-            ", color='" + getColor() + "'" +
-            ", size='" + getSize() + "'" +
+            ", isDefault='" + isIsDefault() + "'" +
             ", quantity=" + getQuantity() +
             ", currency='" + getCurrency() + "'" +
             ", price=" + getPrice() +
             ", createdBy='" + getCreatedBy() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +
-            ", lastModifiedBy='" + getLastModifiedBy() + "'" +
-            ", lastModifiedDate='" + getLastModifiedDate() + "'" +
             "}";
     }
 }

@@ -1,0 +1,27 @@
+{
+    "mallApp": {
+        "productStyleHistory" : {
+            "home": {
+                "title": "Product Style Histories",
+                "createLabel": "Create a new Product Style History",
+                "createOrEditLabel": "Create or edit a Product Style History",
+                "search": "Search for Product Style History"
+            },
+            "created": "A new Product Style History is created with identifier {{ param }}",
+            "updated": "A Product Style History is updated with identifier {{ param }}",
+            "deleted": "A Product Style History is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Product Style History {{ id }}?"
+            },
+            "detail": {
+                "title": "Product Style History"
+            },
+            "name": "Name",
+            "code": "Code",
+            "isDefault": "Is Default",
+            "type": "Type",
+            "createdBy": "Created By",
+            "createdDate": "Created Date"
+        }
+    }
+}

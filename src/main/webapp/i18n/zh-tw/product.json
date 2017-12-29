@@ -27,8 +27,8 @@
             "createdDate": "Created Date",
             "lastModifiedBy": "Last Modified By",
             "lastModifiedDate": "Last Modified Date",
+            "style": "Style",
             "item": "Item",
-            "history": "History",
             "shop": "Shop",
             "category": "Category"
         }

@@ -1,0 +1,46 @@
+
+<div *ngIf="productStyleHistory">
+    <h2><span jhiTranslate="mallApp.productStyleHistory.detail.title">Product Style History</span> {{productStyleHistory.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="mallApp.productStyleHistory.name">Name</span></dt>
+        <dd>
+            <span>{{productStyleHistory.name}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.productStyleHistory.code">Code</span></dt>
+        <dd>
+            <span>{{productStyleHistory.code}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.productStyleHistory.isDefault">Is Default</span></dt>
+        <dd>
+            <span>{{productStyleHistory.isDefault}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.productStyleHistory.type">Type</span></dt>
+        <dd>
+            <span jhiTranslate="{{'mallApp.ProductStyleType.' + productStyleHistory.type}}">{{productStyleHistory.type}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.productStyleHistory.createdBy">Created By</span></dt>
+        <dd>
+            <span>{{productStyleHistory.createdBy}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.productStyleHistory.createdDate">Created Date</span></dt>
+        <dd>
+            <span>{{productStyleHistory.createdDate | date:'medium'}}</span>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'product-style-history/'+ productStyleHistory.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

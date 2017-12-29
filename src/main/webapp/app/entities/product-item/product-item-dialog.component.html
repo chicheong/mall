@@ -13,29 +13,14 @@
                    [(ngModel)]="productItem.id" readonly />
         </div>
         <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.productItem.name" for="field_name">Name</label>
-            <input type="text" class="form-control" name="name" id="field_name"
-                [(ngModel)]="productItem.name" />
-        </div>
-        <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.productItem.code" for="field_code">Code</label>
             <input type="text" class="form-control" name="code" id="field_code"
                 [(ngModel)]="productItem.code" />
         </div>
         <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.productItem.defaultItem" for="field_defaultItem">Default Item</label>
-            <input type="checkbox" class="form-control" name="defaultItem" id="field_defaultItem"
-                [(ngModel)]="productItem.defaultItem" />
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.productItem.color" for="field_color">Color</label>
-            <input type="text" class="form-control" name="color" id="field_color"
-                [(ngModel)]="productItem.color" />
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.productItem.size" for="field_size">Size</label>
-            <input type="text" class="form-control" name="size" id="field_size"
-                [(ngModel)]="productItem.size" />
+            <label class="form-control-label" jhiTranslate="mallApp.productItem.isDefault" for="field_isDefault">Is Default</label>
+            <input type="checkbox" class="form-control" name="isDefault" id="field_isDefault"
+                [(ngModel)]="productItem.isDefault" />
         </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.productItem.quantity" for="field_quantity">Quantity</label>
@@ -59,31 +44,21 @@
             <input type="number" class="form-control" name="price" id="field_price"
                 [(ngModel)]="productItem.price" />
         </div>
-        <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.productItem.createdBy" for="field_createdBy">Created By</label>
-            <input type="text" class="form-control" name="createdBy" id="field_createdBy"
-                [(ngModel)]="productItem.createdBy" />
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.productItem.createdDate" for="field_createdDate">Created Date</label>
-            <div class="d-flex">
-                <input id="field_createdDate" type="datetime-local" class="form-control" name="createdDate" [(ngModel)]="productItem.createdDate"
-                />
-            </div>
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.productItem.lastModifiedBy" for="field_lastModifiedBy">Last Modified By</label>
-            <input type="text" class="form-control" name="lastModifiedBy" id="field_lastModifiedBy"
-                [(ngModel)]="productItem.lastModifiedBy" />
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.productItem.lastModifiedDate" for="field_lastModifiedDate">Last Modified Date</label>
-            <div class="d-flex">
-                <input id="field_lastModifiedDate" type="datetime-local" class="form-control" name="lastModifiedDate" [(ngModel)]="productItem.lastModifiedDate"
-                />
-            </div>
-        </div>
 
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.productItem.color" for="field_color">Color</label>
+            <select class="form-control" id="field_color" name="color" [(ngModel)]="productItem.color">
+                <option [ngValue]="null"></option>
+                <option [ngValue]="productStyleOption.id === productItem.color?.id ? productItem.color : productStyleOption" *ngFor="let productStyleOption of colors; trackBy: trackProductStyleById">{{productStyleOption.id}}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.productItem.size" for="field_size">Size</label>
+            <select class="form-control" id="field_size" name="size" [(ngModel)]="productItem.size">
+                <option [ngValue]="null"></option>
+                <option [ngValue]="productStyleOption.id === productItem.size?.id ? productItem.size : productStyleOption" *ngFor="let productStyleOption of sizes; trackBy: trackProductStyleById">{{productStyleOption.id}}</option>
+            </select>
+        </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.productItem.product" for="field_product">Product</label>
             <select class="form-control" id="field_product" name="product" [(ngModel)]="productItem.product" >

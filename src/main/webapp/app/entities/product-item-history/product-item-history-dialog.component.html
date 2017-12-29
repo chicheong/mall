@@ -13,29 +13,14 @@
                    [(ngModel)]="productItemHistory.id" readonly />
         </div>
         <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.name" for="field_name">Name</label>
-            <input type="text" class="form-control" name="name" id="field_name"
-                [(ngModel)]="productItemHistory.name" />
-        </div>
-        <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.code" for="field_code">Code</label>
             <input type="text" class="form-control" name="code" id="field_code"
                 [(ngModel)]="productItemHistory.code" />
         </div>
         <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.defaultItem" for="field_defaultItem">Default Item</label>
-            <input type="checkbox" class="form-control" name="defaultItem" id="field_defaultItem"
-                [(ngModel)]="productItemHistory.defaultItem" />
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.color" for="field_color">Color</label>
-            <input type="text" class="form-control" name="color" id="field_color"
-                [(ngModel)]="productItemHistory.color" />
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.size" for="field_size">Size</label>
-            <input type="text" class="form-control" name="size" id="field_size"
-                [(ngModel)]="productItemHistory.size" />
+            <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.isDefault" for="field_isDefault">Is Default</label>
+            <input type="checkbox" class="form-control" name="isDefault" id="field_isDefault"
+                [(ngModel)]="productItemHistory.isDefault" />
         </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.quantity" for="field_quantity">Quantity</label>
@@ -71,26 +56,7 @@
                 />
             </div>
         </div>
-        <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.lastModifiedBy" for="field_lastModifiedBy">Last Modified By</label>
-            <input type="text" class="form-control" name="lastModifiedBy" id="field_lastModifiedBy"
-                [(ngModel)]="productItemHistory.lastModifiedBy" />
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.lastModifiedDate" for="field_lastModifiedDate">Last Modified Date</label>
-            <div class="d-flex">
-                <input id="field_lastModifiedDate" type="datetime-local" class="form-control" name="lastModifiedDate" [(ngModel)]="productItemHistory.lastModifiedDate"
-                />
-            </div>
-        </div>
 
-        <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.productItemHistory.item" for="field_item">Item</label>
-            <select class="form-control" id="field_item" name="item" [(ngModel)]="productItemHistory.item" >
-                <option [ngValue]="null"></option>
-                <option [ngValue]="productItemOption.id === productItemHistory.item?.id ? productItemHistory.item : productItemOption" *ngFor="let productItemOption of productitems; trackBy: trackProductItemById">{{productItemOption.id}}</option>
-            </select>
-        </div>
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">

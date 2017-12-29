@@ -4,25 +4,13 @@
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="mallApp.productItemHistory.name">Name</span></dt>
-        <dd>
-            <span>{{productItemHistory.name}}</span>
-        </dd>
         <dt><span jhiTranslate="mallApp.productItemHistory.code">Code</span></dt>
         <dd>
             <span>{{productItemHistory.code}}</span>
         </dd>
-        <dt><span jhiTranslate="mallApp.productItemHistory.defaultItem">Default Item</span></dt>
+        <dt><span jhiTranslate="mallApp.productItemHistory.isDefault">Is Default</span></dt>
         <dd>
-            <span>{{productItemHistory.defaultItem}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productItemHistory.color">Color</span></dt>
-        <dd>
-            <span>{{productItemHistory.color}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productItemHistory.size">Size</span></dt>
-        <dd>
-            <span>{{productItemHistory.size}}</span>
+            <span>{{productItemHistory.isDefault}}</span>
         </dd>
         <dt><span jhiTranslate="mallApp.productItemHistory.quantity">Quantity</span></dt>
         <dd>
@@ -43,20 +31,6 @@
         <dt><span jhiTranslate="mallApp.productItemHistory.createdDate">Created Date</span></dt>
         <dd>
             <span>{{productItemHistory.createdDate | date:'medium'}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productItemHistory.lastModifiedBy">Last Modified By</span></dt>
-        <dd>
-            <span>{{productItemHistory.lastModifiedBy}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productItemHistory.lastModifiedDate">Last Modified Date</span></dt>
-        <dd>
-            <span>{{productItemHistory.lastModifiedDate | date:'medium'}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productItemHistory.item">Item</span></dt>
-        <dd>
-            <div *ngIf="productItemHistory.item">
-                <a [routerLink]="['/product-item', productItemHistory.item?.id]">{{productItemHistory.item?.id}}</a>
-            </div>
         </dd>
     </dl>
 

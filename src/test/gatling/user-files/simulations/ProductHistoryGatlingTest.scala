@@ -68,7 +68,7 @@ class ProductHistoryGatlingTest extends Simulation {
             .exec(http("Create new productHistory")
             .post("/api/product-histories")
             .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null, "name":"SAMPLE_TEXT", "code":"SAMPLE_TEXT", "brand":"SAMPLE_TEXT", "description":"SAMPLE_TEXT", "content":"SAMPLE_TEXT", "remark":"SAMPLE_TEXT", "status":null, "createdBy":"SAMPLE_TEXT", "createdDate":"2020-01-01T00:00:00.000Z", "lastModifiedBy":"SAMPLE_TEXT", "lastModifiedDate":"2020-01-01T00:00:00.000Z"}""")).asJSON
+            .body(StringBody("""{"id":null, "productId":null, "name":"SAMPLE_TEXT", "code":"SAMPLE_TEXT", "brand":"SAMPLE_TEXT", "description":"SAMPLE_TEXT", "content":"SAMPLE_TEXT", "remark":"SAMPLE_TEXT", "status":null, "createdBy":"SAMPLE_TEXT", "createdDate":"2020-01-01T00:00:00.000Z"}""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_productHistory_url"))).exitHereIfFailed
             .pause(10)

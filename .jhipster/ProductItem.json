@@ -2,23 +2,26 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipType": "one-to-many",
-            "relationshipName": "history",
-            "otherEntityName": "productItemHistory",
-            "otherEntityRelationshipName": "item"
+            "relationshipType": "one-to-one",
+            "relationshipName": "color",
+            "otherEntityName": "productStyle",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "productItem"
+        },
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "size",
+            "otherEntityName": "productStyle",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "productItem"
         },
         {
             "relationshipType": "one-to-many",
             "relationshipName": "price",
             "otherEntityName": "price",
             "otherEntityRelationshipName": "item"
-        },
-        {
-            "relationshipType": "one-to-one",
-            "relationshipName": "orderItem",
-            "otherEntityName": "orderItem",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "productItem"
         },
         {
             "relationshipType": "many-to-one",
@@ -29,24 +32,12 @@
     ],
     "fields": [
         {
-            "fieldName": "name",
-            "fieldType": "String"
-        },
-        {
             "fieldName": "code",
             "fieldType": "String"
         },
         {
-            "fieldName": "defaultItem",
+            "fieldName": "isDefault",
             "fieldType": "Boolean"
-        },
-        {
-            "fieldName": "color",
-            "fieldType": "String"
-        },
-        {
-            "fieldName": "size",
-            "fieldType": "String"
         },
         {
             "fieldName": "quantity",
@@ -60,27 +51,12 @@
         {
             "fieldName": "price",
             "fieldType": "BigDecimal"
-        },
-        {
-            "fieldName": "createdBy",
-            "fieldType": "String"
-        },
-        {
-            "fieldName": "createdDate",
-            "fieldType": "ZonedDateTime"
-        },
-        {
-            "fieldName": "lastModifiedBy",
-            "fieldType": "String"
-        },
-        {
-            "fieldName": "lastModifiedDate",
-            "fieldType": "ZonedDateTime"
         }
     ],
     "changelogDate": "20170727090138",
     "entityTableName": "product_item",
     "dto": "no",
     "pagination": "pagination",
-    "service": "no"
+    "service": "no",
+    "jpaMetamodelFiltering": false
 }

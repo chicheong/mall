@@ -4,13 +4,11 @@ import { Response } from '@angular/http';
 
 import { Observable } from 'rxjs/Rx';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
+import { JhiEventManager } from 'ng-jhipster';
 
 import { ProductItemHistory } from './product-item-history.model';
 import { ProductItemHistoryPopupService } from './product-item-history-popup.service';
 import { ProductItemHistoryService } from './product-item-history.service';
-import { ProductItem, ProductItemService } from '../product-item';
-import { ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-product-item-history-dialog',
@@ -21,21 +19,15 @@ export class ProductItemHistoryDialogComponent implements OnInit {
     productItemHistory: ProductItemHistory;
     isSaving: boolean;
 
-    productitems: ProductItem[];
-
     constructor(
         public activeModal: NgbActiveModal,
-        private jhiAlertService: JhiAlertService,
         private productItemHistoryService: ProductItemHistoryService,
-        private productItemService: ProductItemService,
         private eventManager: JhiEventManager
     ) {
     }
 
     ngOnInit() {
         this.isSaving = false;
-        this.productItemService.query()
-            .subscribe((res: ResponseWrapper) => { this.productitems = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
     }
 
     clear() {
@@ -66,14 +58,6 @@ export class ProductItemHistoryDialogComponent implements OnInit {
 
     private onSaveError() {
         this.isSaving = false;
-    }
-
-    private onError(error: any) {
-        this.jhiAlertService.error(error.message, null, null);
-    }
-
-    trackProductItemById(index: number, item: ProductItem) {
-        return item.id;
     }
 }
 

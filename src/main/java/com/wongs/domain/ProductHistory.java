@@ -28,6 +28,9 @@ public class ProductHistory implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "product_id")
+    private Long productId;
+
     @NotNull
     @Column(name = "name", nullable = false)
     private String name;
@@ -57,15 +60,6 @@ public class ProductHistory implements Serializable {
     @Column(name = "created_date")
     private ZonedDateTime createdDate;
 
-    @Column(name = "last_modified_by")
-    private String lastModifiedBy;
-
-    @Column(name = "last_modified_date")
-    private ZonedDateTime lastModifiedDate;
-
-    @ManyToOne
-    private Product product;
-
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -73,6 +67,19 @@ public class ProductHistory implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getProductId() {
+        return productId;
+    }
+
+    public ProductHistory productId(Long productId) {
+        this.productId = productId;
+        return this;
+    }
+
+    public void setProductId(Long productId) {
+        this.productId = productId;
     }
 
     public String getName() {
@@ -191,45 +198,6 @@ public class ProductHistory implements Serializable {
     public void setCreatedDate(ZonedDateTime createdDate) {
         this.createdDate = createdDate;
     }
-
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
-
-    public ProductHistory lastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-        return this;
-    }
-
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
-
-    public ZonedDateTime getLastModifiedDate() {
-        return lastModifiedDate;
-    }
-
-    public ProductHistory lastModifiedDate(ZonedDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-        return this;
-    }
-
-    public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
-
-    public Product getProduct() {
-        return product;
-    }
-
-    public ProductHistory product(Product product) {
-        this.product = product;
-        return this;
-    }
-
-    public void setProduct(Product product) {
-        this.product = product;
-    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
@@ -256,6 +224,7 @@ public class ProductHistory implements Serializable {
     public String toString() {
         return "ProductHistory{" +
             "id=" + getId() +
+            ", productId=" + getProductId() +
             ", name='" + getName() + "'" +
             ", code='" + getCode() + "'" +
             ", brand='" + getBrand() + "'" +
@@ -265,8 +234,6 @@ public class ProductHistory implements Serializable {
             ", status='" + getStatus() + "'" +
             ", createdBy='" + getCreatedBy() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +
-            ", lastModifiedBy='" + getLastModifiedBy() + "'" +
-            ", lastModifiedDate='" + getLastModifiedDate() + "'" +
             "}";
     }
 }

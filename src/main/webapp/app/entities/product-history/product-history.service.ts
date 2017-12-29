@@ -71,8 +71,6 @@ export class ProductHistoryService {
         const entity: ProductHistory = Object.assign(new ProductHistory(), json);
         entity.createdDate = this.dateUtils
             .convertDateTimeFromServer(json.createdDate);
-        entity.lastModifiedDate = this.dateUtils
-            .convertDateTimeFromServer(json.lastModifiedDate);
         return entity;
     }
 
@@ -83,8 +81,6 @@ export class ProductHistoryService {
         const copy: ProductHistory = Object.assign({}, productHistory);
 
         copy.createdDate = this.dateUtils.toDate(productHistory.createdDate);
-
-        copy.lastModifiedDate = this.dateUtils.toDate(productHistory.lastModifiedDate);
         return copy;
     }
 }

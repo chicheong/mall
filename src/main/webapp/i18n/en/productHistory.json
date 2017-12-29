@@ -16,6 +16,7 @@
             "detail": {
                 "title": "Product History"
             },
+            "productId": "Product Id",
             "name": "Name",
             "code": "Code",
             "brand": "Brand",
@@ -24,10 +25,7 @@
             "remark": "Remark",
             "status": "Status",
             "createdBy": "Created By",
-            "createdDate": "Created Date",
-            "lastModifiedBy": "Last Modified By",
-            "lastModifiedDate": "Last Modified Date",
-            "product": "Product"
+            "createdDate": "Created Date"
         }
     }
 }

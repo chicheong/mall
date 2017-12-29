@@ -69,12 +69,12 @@ public class Product implements Serializable {
     @OneToMany(mappedBy = "product")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<ProductItem> items = new HashSet<>();
+    private Set<ProductStyle> styles = new HashSet<>();
 
     @OneToMany(mappedBy = "product")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<ProductHistory> histories = new HashSet<>();
+    private Set<ProductItem> items = new HashSet<>();
 
     @ManyToOne
     private Shop shop;
@@ -236,6 +236,31 @@ public class Product implements Serializable {
         this.lastModifiedDate = lastModifiedDate;
     }
 
+    public Set<ProductStyle> getStyles() {
+        return styles;
+    }
+
+    public Product styles(Set<ProductStyle> productStyles) {
+        this.styles = productStyles;
+        return this;
+    }
+
+    public Product addStyle(ProductStyle productStyle) {
+        this.styles.add(productStyle);
+        productStyle.setProduct(this);
+        return this;
+    }
+
+    public Product removeStyle(ProductStyle productStyle) {
+        this.styles.remove(productStyle);
+        productStyle.setProduct(null);
+        return this;
+    }
+
+    public void setStyles(Set<ProductStyle> productStyles) {
+        this.styles = productStyles;
+    }
+
     public Set<ProductItem> getItems() {
         return items;
     }
@@ -259,31 +284,6 @@ public class Product implements Serializable {
 
     public void setItems(Set<ProductItem> productItems) {
         this.items = productItems;
-    }
-
-    public Set<ProductHistory> getHistories() {
-        return histories;
-    }
-
-    public Product histories(Set<ProductHistory> productHistories) {
-        this.histories = productHistories;
-        return this;
-    }
-
-    public Product addHistory(ProductHistory productHistory) {
-        this.histories.add(productHistory);
-        productHistory.setProduct(this);
-        return this;
-    }
-
-    public Product removeHistory(ProductHistory productHistory) {
-        this.histories.remove(productHistory);
-        productHistory.setProduct(null);
-        return this;
-    }
-
-    public void setHistories(Set<ProductHistory> productHistories) {
-        this.histories = productHistories;
     }
 
     public Shop getShop() {

@@ -23,13 +23,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
-import java.time.ZoneId;
 import java.util.List;
 
-import static com.wongs.web.rest.TestUtil.sameInstant;
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -46,20 +41,11 @@ import com.wongs.domain.enumeration.CurrencyType;
 @SpringBootTest(classes = MallApp.class)
 public class ProductItemResourceIntTest {
 
-    private static final String DEFAULT_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_NAME = "BBBBBBBBBB";
-
     private static final String DEFAULT_CODE = "AAAAAAAAAA";
     private static final String UPDATED_CODE = "BBBBBBBBBB";
 
-    private static final Boolean DEFAULT_DEFAULT_ITEM = false;
-    private static final Boolean UPDATED_DEFAULT_ITEM = true;
-
-    private static final String DEFAULT_COLOR = "AAAAAAAAAA";
-    private static final String UPDATED_COLOR = "BBBBBBBBBB";
-
-    private static final String DEFAULT_SIZE = "AAAAAAAAAA";
-    private static final String UPDATED_SIZE = "BBBBBBBBBB";
+    private static final Boolean DEFAULT_IS_DEFAULT = false;
+    private static final Boolean UPDATED_IS_DEFAULT = true;
 
     private static final Integer DEFAULT_QUANTITY = 1;
     private static final Integer UPDATED_QUANTITY = 2;
@@ -69,18 +55,6 @@ public class ProductItemResourceIntTest {
 
     private static final BigDecimal DEFAULT_PRICE = new BigDecimal(1);
     private static final BigDecimal UPDATED_PRICE = new BigDecimal(2);
-
-    private static final String DEFAULT_CREATED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_CREATED_BY = "BBBBBBBBBB";
-
-    private static final ZonedDateTime DEFAULT_CREATED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_CREATED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
-
-    private static final String DEFAULT_LAST_MODIFIED_BY = "AAAAAAAAAA";
-    private static final String UPDATED_LAST_MODIFIED_BY = "BBBBBBBBBB";
-
-    private static final ZonedDateTime DEFAULT_LAST_MODIFIED_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_LAST_MODIFIED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
     @Autowired
     private ProductItemRepository productItemRepository;
@@ -123,18 +97,11 @@ public class ProductItemResourceIntTest {
      */
     public static ProductItem createEntity(EntityManager em) {
         ProductItem productItem = new ProductItem()
-            .name(DEFAULT_NAME)
             .code(DEFAULT_CODE)
-            .defaultItem(DEFAULT_DEFAULT_ITEM)
-            .color(DEFAULT_COLOR)
-            .size(DEFAULT_SIZE)
+            .isDefault(DEFAULT_IS_DEFAULT)
             .quantity(DEFAULT_QUANTITY)
             .currency(DEFAULT_CURRENCY)
-            .price(DEFAULT_PRICE)
-            .createdBy(DEFAULT_CREATED_BY)
-            .createdDate(DEFAULT_CREATED_DATE)
-            .lastModifiedBy(DEFAULT_LAST_MODIFIED_BY)
-            .lastModifiedDate(DEFAULT_LAST_MODIFIED_DATE);
+            .price(DEFAULT_PRICE);
         return productItem;
     }
 
@@ -159,24 +126,15 @@ public class ProductItemResourceIntTest {
         List<ProductItem> productItemList = productItemRepository.findAll();
         assertThat(productItemList).hasSize(databaseSizeBeforeCreate + 1);
         ProductItem testProductItem = productItemList.get(productItemList.size() - 1);
-        assertThat(testProductItem.getName()).isEqualTo(DEFAULT_NAME);
         assertThat(testProductItem.getCode()).isEqualTo(DEFAULT_CODE);
-        assertThat(testProductItem.isDefaultItem()).isEqualTo(DEFAULT_DEFAULT_ITEM);
-        assertThat(testProductItem.getColor()).isEqualTo(DEFAULT_COLOR);
-        assertThat(testProductItem.getSize()).isEqualTo(DEFAULT_SIZE);
+        assertThat(testProductItem.isIsDefault()).isEqualTo(DEFAULT_IS_DEFAULT);
         assertThat(testProductItem.getQuantity()).isEqualTo(DEFAULT_QUANTITY);
         assertThat(testProductItem.getCurrency()).isEqualTo(DEFAULT_CURRENCY);
         assertThat(testProductItem.getPrice()).isEqualTo(DEFAULT_PRICE);
-        assertThat(testProductItem.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
-        assertThat(testProductItem.getCreatedDate()).isEqualTo(DEFAULT_CREATED_DATE);
-        assertThat(testProductItem.getLastModifiedBy()).isEqualTo(DEFAULT_LAST_MODIFIED_BY);
-        assertThat(testProductItem.getLastModifiedDate()).isEqualTo(DEFAULT_LAST_MODIFIED_DATE);
 
         // Validate the ProductItem in Elasticsearch
         ProductItem productItemEs = productItemSearchRepository.findOne(testProductItem.getId());
-        assertThat(testProductItem.getCreatedDate()).isEqualTo(testProductItem.getCreatedDate());
-        assertThat(testProductItem.getLastModifiedDate()).isEqualTo(testProductItem.getLastModifiedDate());
-        assertThat(productItemEs).isEqualToIgnoringGivenFields(testProductItem, "createdDate", "lastModifiedDate");
+        assertThat(productItemEs).isEqualToIgnoringGivenFields(testProductItem);
     }
 
     @Test
@@ -209,18 +167,11 @@ public class ProductItemResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(productItem.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
-            .andExpect(jsonPath("$.[*].defaultItem").value(hasItem(DEFAULT_DEFAULT_ITEM.booleanValue())))
-            .andExpect(jsonPath("$.[*].color").value(hasItem(DEFAULT_COLOR.toString())))
-            .andExpect(jsonPath("$.[*].size").value(hasItem(DEFAULT_SIZE.toString())))
+            .andExpect(jsonPath("$.[*].isDefault").value(hasItem(DEFAULT_IS_DEFAULT.booleanValue())))
             .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY)))
             .andExpect(jsonPath("$.[*].currency").value(hasItem(DEFAULT_CURRENCY.toString())))
-            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
-            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY.toString())))
-            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
-            .andExpect(jsonPath("$.[*].lastModifiedBy").value(hasItem(DEFAULT_LAST_MODIFIED_BY.toString())))
-            .andExpect(jsonPath("$.[*].lastModifiedDate").value(hasItem(sameInstant(DEFAULT_LAST_MODIFIED_DATE))));
+            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())));
     }
 
     @Test
@@ -234,18 +185,11 @@ public class ProductItemResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(productItem.getId().intValue()))
-            .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
             .andExpect(jsonPath("$.code").value(DEFAULT_CODE.toString()))
-            .andExpect(jsonPath("$.defaultItem").value(DEFAULT_DEFAULT_ITEM.booleanValue()))
-            .andExpect(jsonPath("$.color").value(DEFAULT_COLOR.toString()))
-            .andExpect(jsonPath("$.size").value(DEFAULT_SIZE.toString()))
+            .andExpect(jsonPath("$.isDefault").value(DEFAULT_IS_DEFAULT.booleanValue()))
             .andExpect(jsonPath("$.quantity").value(DEFAULT_QUANTITY))
             .andExpect(jsonPath("$.currency").value(DEFAULT_CURRENCY.toString()))
-            .andExpect(jsonPath("$.price").value(DEFAULT_PRICE.intValue()))
-            .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY.toString()))
-            .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
-            .andExpect(jsonPath("$.lastModifiedBy").value(DEFAULT_LAST_MODIFIED_BY.toString()))
-            .andExpect(jsonPath("$.lastModifiedDate").value(sameInstant(DEFAULT_LAST_MODIFIED_DATE)));
+            .andExpect(jsonPath("$.price").value(DEFAULT_PRICE.intValue()));
     }
 
     @Test
@@ -269,18 +213,11 @@ public class ProductItemResourceIntTest {
         // Disconnect from session so that the updates on updatedProductItem are not directly saved in db
         em.detach(updatedProductItem);
         updatedProductItem
-            .name(UPDATED_NAME)
             .code(UPDATED_CODE)
-            .defaultItem(UPDATED_DEFAULT_ITEM)
-            .color(UPDATED_COLOR)
-            .size(UPDATED_SIZE)
+            .isDefault(UPDATED_IS_DEFAULT)
             .quantity(UPDATED_QUANTITY)
             .currency(UPDATED_CURRENCY)
-            .price(UPDATED_PRICE)
-            .createdBy(UPDATED_CREATED_BY)
-            .createdDate(UPDATED_CREATED_DATE)
-            .lastModifiedBy(UPDATED_LAST_MODIFIED_BY)
-            .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE);
+            .price(UPDATED_PRICE);
 
         restProductItemMockMvc.perform(put("/api/product-items")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -291,24 +228,15 @@ public class ProductItemResourceIntTest {
         List<ProductItem> productItemList = productItemRepository.findAll();
         assertThat(productItemList).hasSize(databaseSizeBeforeUpdate);
         ProductItem testProductItem = productItemList.get(productItemList.size() - 1);
-        assertThat(testProductItem.getName()).isEqualTo(UPDATED_NAME);
         assertThat(testProductItem.getCode()).isEqualTo(UPDATED_CODE);
-        assertThat(testProductItem.isDefaultItem()).isEqualTo(UPDATED_DEFAULT_ITEM);
-        assertThat(testProductItem.getColor()).isEqualTo(UPDATED_COLOR);
-        assertThat(testProductItem.getSize()).isEqualTo(UPDATED_SIZE);
+        assertThat(testProductItem.isIsDefault()).isEqualTo(UPDATED_IS_DEFAULT);
         assertThat(testProductItem.getQuantity()).isEqualTo(UPDATED_QUANTITY);
         assertThat(testProductItem.getCurrency()).isEqualTo(UPDATED_CURRENCY);
         assertThat(testProductItem.getPrice()).isEqualTo(UPDATED_PRICE);
-        assertThat(testProductItem.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
-        assertThat(testProductItem.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);
-        assertThat(testProductItem.getLastModifiedBy()).isEqualTo(UPDATED_LAST_MODIFIED_BY);
-        assertThat(testProductItem.getLastModifiedDate()).isEqualTo(UPDATED_LAST_MODIFIED_DATE);
 
         // Validate the ProductItem in Elasticsearch
         ProductItem productItemEs = productItemSearchRepository.findOne(testProductItem.getId());
-        assertThat(testProductItem.getCreatedDate()).isEqualTo(testProductItem.getCreatedDate());
-        assertThat(testProductItem.getLastModifiedDate()).isEqualTo(testProductItem.getLastModifiedDate());
-        assertThat(productItemEs).isEqualToIgnoringGivenFields(testProductItem, "createdDate", "lastModifiedDate");
+        assertThat(productItemEs).isEqualToIgnoringGivenFields(testProductItem);
     }
 
     @Test
@@ -363,18 +291,11 @@ public class ProductItemResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(productItem.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
             .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
-            .andExpect(jsonPath("$.[*].defaultItem").value(hasItem(DEFAULT_DEFAULT_ITEM.booleanValue())))
-            .andExpect(jsonPath("$.[*].color").value(hasItem(DEFAULT_COLOR.toString())))
-            .andExpect(jsonPath("$.[*].size").value(hasItem(DEFAULT_SIZE.toString())))
+            .andExpect(jsonPath("$.[*].isDefault").value(hasItem(DEFAULT_IS_DEFAULT.booleanValue())))
             .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY)))
             .andExpect(jsonPath("$.[*].currency").value(hasItem(DEFAULT_CURRENCY.toString())))
-            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
-            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY.toString())))
-            .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
-            .andExpect(jsonPath("$.[*].lastModifiedBy").value(hasItem(DEFAULT_LAST_MODIFIED_BY.toString())))
-            .andExpect(jsonPath("$.[*].lastModifiedDate").value(hasItem(sameInstant(DEFAULT_LAST_MODIFIED_DATE))));
+            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())));
     }
 
     @Test

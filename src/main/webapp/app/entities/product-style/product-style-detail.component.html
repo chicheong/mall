@@ -1,0 +1,44 @@
+
+<div *ngIf="productStyle">
+    <h2><span jhiTranslate="mallApp.productStyle.detail.title">Product Style</span> {{productStyle.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="mallApp.productStyle.name">Name</span></dt>
+        <dd>
+            <span>{{productStyle.name}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.productStyle.code">Code</span></dt>
+        <dd>
+            <span>{{productStyle.code}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.productStyle.isDefault">Is Default</span></dt>
+        <dd>
+            <span>{{productStyle.isDefault}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.productStyle.type">Type</span></dt>
+        <dd>
+            <span jhiTranslate="{{'mallApp.ProductStyleType.' + productStyle.type}}">{{productStyle.type}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.productStyle.product">Product</span></dt>
+        <dd>
+            <div *ngIf="productStyle.product">
+                <a [routerLink]="['/product', productStyle.product?.id]">{{productStyle.product?.id}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'product-style/'+ productStyle.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

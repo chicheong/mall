@@ -9,7 +9,7 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { ProductItem } from './product-item.model';
 import { ProductItemPopupService } from './product-item-popup.service';
 import { ProductItemService } from './product-item.service';
-import { OrderItem, OrderItemService } from '../order-item';
+import { ProductStyle, ProductStyleService } from '../product-style';
 import { Product, ProductService } from '../product';
 import { ResponseWrapper } from '../../shared';
 
@@ -22,7 +22,9 @@ export class ProductItemDialogComponent implements OnInit {
     productItem: ProductItem;
     isSaving: boolean;
 
-    orderitems: OrderItem[];
+    colors: ProductStyle[];
+
+    sizes: ProductStyle[];
 
     products: Product[];
 
@@ -30,7 +32,7 @@ export class ProductItemDialogComponent implements OnInit {
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
         private productItemService: ProductItemService,
-        private orderItemService: OrderItemService,
+        private productStyleService: ProductStyleService,
         private productService: ProductService,
         private eventManager: JhiEventManager
     ) {
@@ -38,8 +40,32 @@ export class ProductItemDialogComponent implements OnInit {
 
     ngOnInit() {
         this.isSaving = false;
-        this.orderItemService.query()
-            .subscribe((res: ResponseWrapper) => { this.orderitems = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+        this.productStyleService
+            .query({filter: 'productitem-is-null'})
+            .subscribe((res: ResponseWrapper) => {
+                if (!this.productItem.color || !this.productItem.color.id) {
+                    this.colors = res.json;
+                } else {
+                    this.productStyleService
+                        .find(this.productItem.color.id)
+                        .subscribe((subRes: ProductStyle) => {
+                            this.colors = [subRes].concat(res.json);
+                        }, (subRes: ResponseWrapper) => this.onError(subRes.json));
+                }
+            }, (res: ResponseWrapper) => this.onError(res.json));
+        this.productStyleService
+            .query({filter: 'productitem-is-null'})
+            .subscribe((res: ResponseWrapper) => {
+                if (!this.productItem.size || !this.productItem.size.id) {
+                    this.sizes = res.json;
+                } else {
+                    this.productStyleService
+                        .find(this.productItem.size.id)
+                        .subscribe((subRes: ProductStyle) => {
+                            this.sizes = [subRes].concat(res.json);
+                        }, (subRes: ResponseWrapper) => this.onError(subRes.json));
+                }
+            }, (res: ResponseWrapper) => this.onError(res.json));
         this.productService.query()
             .subscribe((res: ResponseWrapper) => { this.products = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
     }
@@ -78,7 +104,7 @@ export class ProductItemDialogComponent implements OnInit {
         this.jhiAlertService.error(error.message, null, null);
     }
 
-    trackOrderItemById(index: number, item: OrderItem) {
+    trackProductStyleById(index: number, item: ProductStyle) {
         return item.id;
     }
 

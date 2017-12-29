@@ -22,23 +22,11 @@
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-
             <column name="code" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
 
-            <column name="default_item" type="bit">
-                <constraints nullable="true" />
-            </column>
-
-            <column name="color" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-
-            <column name="jhi_size" type="varchar(255)">
+            <column name="is_default" type="bit">
                 <constraints nullable="true" />
             </column>
 
@@ -62,22 +50,9 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="last_modified_by" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-
-            <column name="last_modified_date" type="timestamp">
-                <constraints nullable="true" />
-            </column>
-
-            <column name="item_id" type="bigint">
-                <constraints nullable="true" />
-            </column>
-
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         <dropDefaultValue tableName="product_item_history" columnName="created_date" columnDataType="datetime"/>
-        <dropDefaultValue tableName="product_item_history" columnName="last_modified_date" columnDataType="datetime"/>
         
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->

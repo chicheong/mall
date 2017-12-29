@@ -3,14 +3,14 @@
     "relationships": [
         {
             "relationshipType": "one-to-many",
-            "relationshipName": "item",
-            "otherEntityName": "productItem",
+            "relationshipName": "style",
+            "otherEntityName": "productStyle",
             "otherEntityRelationshipName": "product"
         },
         {
             "relationshipType": "one-to-many",
-            "relationshipName": "history",
-            "otherEntityName": "productHistory",
+            "relationshipName": "item",
+            "otherEntityName": "productItem",
             "otherEntityRelationshipName": "product"
         },
         {

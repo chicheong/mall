@@ -8,7 +8,6 @@ import { MallTestModule } from '../../../test.module';
 import { ProductHistoryDialogComponent } from '../../../../../../main/webapp/app/entities/product-history/product-history-dialog.component';
 import { ProductHistoryService } from '../../../../../../main/webapp/app/entities/product-history/product-history.service';
 import { ProductHistory } from '../../../../../../main/webapp/app/entities/product-history/product-history.model';
-import { ProductService } from '../../../../../../main/webapp/app/entities/product';
 
 describe('Component Tests', () => {
 
@@ -24,7 +23,6 @@ describe('Component Tests', () => {
                 imports: [MallTestModule],
                 declarations: [ProductHistoryDialogComponent],
                 providers: [
-                    ProductService,
                     ProductHistoryService
                 ]
             })

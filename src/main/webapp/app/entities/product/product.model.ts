@@ -21,8 +21,8 @@ export class Product implements BaseEntity {
         public createdDate?: any,
         public lastModifiedBy?: string,
         public lastModifiedDate?: any,
+        public styles?: BaseEntity[],
         public items?: ProductItem[],
-        public histories?: BaseEntity[],
         public shopId?: number,
         public categories?: BaseEntity[],
     ) {

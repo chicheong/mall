@@ -1,0 +1,26 @@
+{
+    "mallApp": {
+        "productStyle" : {
+            "home": {
+                "title": "Product Styles",
+                "createLabel": "Create a new Product Style",
+                "createOrEditLabel": "Create or edit a Product Style",
+                "search": "Search for Product Style"
+            },
+            "created": "A new Product Style is created with identifier {{ param }}",
+            "updated": "A Product Style is updated with identifier {{ param }}",
+            "deleted": "A Product Style is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Product Style {{ id }}?"
+            },
+            "detail": {
+                "title": "Product Style"
+            },
+            "name": "Name",
+            "code": "Code",
+            "isDefault": "Is Default",
+            "type": "Type",
+            "product": "Product"
+        }
+    }
+}

@@ -9,6 +9,7 @@ export const enum ProductStatus {
 export class ProductHistory implements BaseEntity {
     constructor(
         public id?: number,
+        public productId?: number,
         public name?: string,
         public code?: string,
         public brand?: string,
@@ -18,9 +19,6 @@ export class ProductHistory implements BaseEntity {
         public status?: ProductStatus,
         public createdBy?: string,
         public createdDate?: any,
-        public lastModifiedBy?: string,
-        public lastModifiedDate?: any,
-        public product?: BaseEntity,
     ) {
     }
 }

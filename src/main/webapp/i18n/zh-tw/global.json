@@ -27,6 +27,8 @@
                 "orderItem": "Order Item",
                 "orderStatusHistory": "Order Status History",
                 "myOrder": "My Order",
+                "productStyle": "Product Style",
+                "productStyleHistory": "Product Style History",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

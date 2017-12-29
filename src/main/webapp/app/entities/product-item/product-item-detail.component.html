@@ -4,25 +4,13 @@
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="mallApp.productItem.name">Name</span></dt>
-        <dd>
-            <span>{{productItem.name}}</span>
-        </dd>
         <dt><span jhiTranslate="mallApp.productItem.code">Code</span></dt>
         <dd>
             <span>{{productItem.code}}</span>
         </dd>
-        <dt><span jhiTranslate="mallApp.productItem.defaultItem">Default Item</span></dt>
+        <dt><span jhiTranslate="mallApp.productItem.isDefault">Is Default</span></dt>
         <dd>
-            <span>{{productItem.defaultItem}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productItem.color">Color</span></dt>
-        <dd>
-            <span>{{productItem.color}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productItem.size">Size</span></dt>
-        <dd>
-            <span>{{productItem.size}}</span>
+            <span>{{productItem.isDefault}}</span>
         </dd>
         <dt><span jhiTranslate="mallApp.productItem.quantity">Quantity</span></dt>
         <dd>
@@ -36,21 +24,17 @@
         <dd>
             <span>{{productItem.price}}</span>
         </dd>
-        <dt><span jhiTranslate="mallApp.productItem.createdBy">Created By</span></dt>
+        <dt><span jhiTranslate="mallApp.productItem.color">Color</span></dt>
         <dd>
-            <span>{{productItem.createdBy}}</span>
+            <div *ngIf="productItem.color">
+                <a [routerLink]="['/product-style', productItem.color?.id]">{{productItem.color?.id}}</a>
+            </div>
         </dd>
-        <dt><span jhiTranslate="mallApp.productItem.createdDate">Created Date</span></dt>
+        <dt><span jhiTranslate="mallApp.productItem.size">Size</span></dt>
         <dd>
-            <span>{{productItem.createdDate | date:'medium'}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productItem.lastModifiedBy">Last Modified By</span></dt>
-        <dd>
-            <span>{{productItem.lastModifiedBy}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productItem.lastModifiedDate">Last Modified Date</span></dt>
-        <dd>
-            <span>{{productItem.lastModifiedDate | date:'medium'}}</span>
+            <div *ngIf="productItem.size">
+                <a [routerLink]="['/product-style', productItem.size?.id]">{{productItem.size?.id}}</a>
+            </div>
         </dd>
         <dt><span jhiTranslate="mallApp.productItem.product">Product</span></dt>
         <dd>
