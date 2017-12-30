@@ -4,6 +4,8 @@ import com.wongs.domain.*;
 import com.wongs.service.ShopService;
 import com.wongs.service.dto.ProductDTO;
 
+import scala.collection.immutable.Stream;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -47,8 +49,10 @@ public class ProductMapper {
         	product.setLastModifiedBy(productDTO.getLastModifiedBy());
         	product.setLastModifiedDate(productDTO.getLastModifiedDate());
         	
+        	productDTO.getColors().addAll(productDTO.getSizes());
+        	product.setStyles(productDTO.getColors());
+        	
         	product.setItems(productDTO.getItems());
-        	product.setHistories(productDTO.getHistories());
         	product.setCategories(productDTO.getCategories());
         	
         	Shop shop = new Shop();

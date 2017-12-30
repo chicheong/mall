@@ -6,13 +6,17 @@ import javax.validation.constraints.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import java.util.Objects;
 
 import com.wongs.domain.Category;
 import com.wongs.domain.Product;
 import com.wongs.domain.ProductHistory;
 import com.wongs.domain.ProductItem;
+import com.wongs.domain.ProductStyle;
 import com.wongs.domain.enumeration.ProductStatus;
+import com.wongs.domain.enumeration.ProductStyleType;
 
 /**
  * A DTO for the Product entity.
@@ -44,8 +48,9 @@ public class ProductDTO implements Serializable {
 
     private ZonedDateTime lastModifiedDate;
 
+    private Set<ProductStyle> colors = new HashSet<>();
+    private Set<ProductStyle> sizes = new HashSet<>();
     private Set<ProductItem> items = new HashSet<>();
-    private Set<ProductHistory> histories = new HashSet<>();
     private Set<Category> categories = new HashSet<>();
     private Long shopId;
 
@@ -67,8 +72,9 @@ public class ProductDTO implements Serializable {
     	this.lastModifiedBy = product.getLastModifiedBy();
     	this.lastModifiedDate = product.getLastModifiedDate();
     	
+    	this.colors = product.getStyles().stream().filter(style -> ProductStyleType.SIZE.equals(style.getType())).collect(Collectors.toSet());
+    	this.sizes = product.getStyles().stream().filter(style -> ProductStyleType.COLOR.equals(style.getType())).collect(Collectors.toSet());
     	this.items = product.getItems();
-    	this.histories = product.getHistories();
     	this.categories = product.getCategories();
     	this.shopId = product.getShop() != null? product.getShop().getId() : 0L;
     }
@@ -169,21 +175,29 @@ public class ProductDTO implements Serializable {
     public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
-    
-    public Set<ProductItem> getItems() {
+
+	public Set<ProductStyle> getColors() {
+		return colors;
+	}
+
+	public void setColors(Set<ProductStyle> colors) {
+		this.colors = colors;
+	}
+
+	public Set<ProductStyle> getSizes() {
+		return sizes;
+	}
+
+	public void setSizes(Set<ProductStyle> sizes) {
+		this.sizes = sizes;
+	}
+
+	public Set<ProductItem> getItems() {
 		return items;
 	}
 
 	public void setItems(Set<ProductItem> items) {
 		this.items = items;
-	}
-
-	public Set<ProductHistory> getHistories() {
-		return histories;
-	}
-
-	public void setHistories(Set<ProductHistory> histories) {
-		this.histories = histories;
 	}
 
 	public Set<Category> getCategories() {

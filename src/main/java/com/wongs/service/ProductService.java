@@ -3,8 +3,10 @@ package com.wongs.service;
 import com.wongs.domain.Product;
 import com.wongs.domain.ProductItem;
 import com.wongs.repository.ProductRepository;
+import com.wongs.repository.ProductStyleRepository;
 import com.wongs.repository.ProductItemRepository;
 import com.wongs.repository.search.ProductSearchRepository;
+import com.wongs.repository.search.ProductStyleSearchRepository;
 import com.wongs.service.dto.ProductDTO;
 import com.wongs.service.mapper.ProductMapper;
 import org.slf4j.Logger;
@@ -38,14 +40,20 @@ public class ProductService {
     private final ProductItemRepository productItemRepository;
     
     private final ShopService shopService;
+    
+    private final ProductStyleRepository productStyleRepository;
+    private final ProductStyleSearchRepository productStyleSearchRepository;
 
     public ProductService(ProductRepository productRepository, ProductMapper productMapper, ProductSearchRepository productSearchRepository,
-			ProductItemRepository productItemRepository, ShopService shopService) {
+			ProductItemRepository productItemRepository, ShopService shopService, 
+			ProductStyleRepository productStyleRepository, ProductStyleSearchRepository productStyleSearchRepository) {
         this.productRepository = productRepository;
         this.productMapper = productMapper;
         this.productSearchRepository = productSearchRepository;
         this.productItemRepository = productItemRepository;
         this.shopService = shopService;
+        this.productStyleRepository = productStyleRepository;
+        this.productStyleSearchRepository = productStyleSearchRepository;
     }
 
     /**
@@ -61,6 +69,10 @@ public class ProductService {
         	product.setShop(shopService.getOne(productDTO.getShopId()));
         }
         product = productRepository.save(product);
+//        product.getStyles().stream().forEach(style -> 
+//        		productStyleRepository.save(style);
+//        		productStyleSearchRepository.save(style);
+//        		);
         ProductDTO result = productMapper.productToProductDTO(product);
         productSearchRepository.save(product);
         return result;

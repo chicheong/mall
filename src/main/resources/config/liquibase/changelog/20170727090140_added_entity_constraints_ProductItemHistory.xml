@@ -7,12 +7,6 @@
         Added the constraints for entity ProductItemHistory.
     -->
     <changeSet id="20170727090140-2" author="jhipster">
-        
-        <addForeignKeyConstraint baseColumnNames="item_id"
-                                 baseTableName="product_item_history"
-                                 constraintName="fk_product_item_history_item_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="product_item"/>
 
     </changeSet>
 </databaseChangeLog>

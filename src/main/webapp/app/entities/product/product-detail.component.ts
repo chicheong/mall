@@ -8,6 +8,7 @@ import { ProductService } from './product.service';
 import { Principal } from '../../shared';
 
 import { ProductItem } from './../product-item';
+import { ProductStyle, ProductStyleType } from './../product-style';
 
 @Component({
     selector: 'jhi-product-detail',
@@ -42,8 +43,14 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                         entity.shopId = account.shopId;
                     });
                     this.product = entity;
-                    const item: ProductItem = Object.assign(new ProductItem());
-                    this.product.items = [item];
+                    const color: ProductStyle = Object.assign(new ProductStyle());
+                    color.type = ProductStyleType.COLOR;
+                    color.name = 'D';
+                    const size: ProductStyle = Object.assign(new ProductStyle());
+                    size.type = ProductStyleType.SIZE;
+                    size.name = 'D';
+                    this.product.colors = [color];
+                    this.product.sizes = [size];
                     this.isEditing = true;
                 } else {
                     this.load(params['id']);
@@ -53,8 +60,14 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                 const entity: Product = Object.assign(new Product());
                 entity.shopId = (params['shopId']);
                 this.product = entity;
-                const item: ProductItem = Object.assign(new ProductItem());
-                this.product.items = [item];
+                const color: ProductStyle = Object.assign(new ProductStyle());
+                color.type = ProductStyleType.COLOR;
+                color.name = 'D';
+                const size: ProductStyle = Object.assign(new ProductStyle());
+                size.type = ProductStyleType.SIZE;
+                size.name = 'D';
+                this.product.colors = [color];
+                this.product.sizes = [size];
                 this.isEditing = true;
             } else {
 

@@ -254,4 +254,4 @@ paginate UserInfo, MyAccount, Company, Department, Office, Country, State, Shop,
 paginate Address with pager
 paginate Delegation, OrderStatusHistory, ProductHistory, ProductItemHistory with infinite-scroll
 service Product, MyOrder, Shop with serviceClass
-dto Product, MyOrder with mapstruct
+dto Product, MyOrder, Shop with mapstruct

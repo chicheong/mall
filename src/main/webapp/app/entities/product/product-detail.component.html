@@ -51,17 +51,46 @@
 	        </div>
             <div>
 	  			&nbsp;
-	  		</div>	        
-			<div *ngIf="product.items">
-	        	<span *ngFor="let item of product.items">
-	        		<button [disabled]="isSaving" class="btn btn-default" (click)="cancel()">
-	        			<span>{{item.color}}</span>
-	        		</button>
-	        	</span>
-	        	<button [disabled]="isSaving" class="btn btn-default" (click)="cancel()">
-		            <span>+</span>
-		        </button>
-			</div>
+	  		</div>
+	  		<div *ngSwitchCase="true">
+	  			<div *ngIf="product.colors">
+		        	<span *ngFor="let color of product.colors">
+		        		<button [disabled]="isSaving" class="btn btn-default" (click)="cancel()">
+		        			<span>{{color.name}}</span>
+		        		</button>
+		        	</span>
+		        	<button [disabled]="isSaving" class="btn btn-default" (click)="cancel()">
+			            <span>+</span>
+			        </button>
+				</div>
+				<div *ngIf="product.sizes">
+		        	<span *ngFor="let size of product.sizes">
+		        		<button [disabled]="isSaving" class="btn btn-default" (click)="cancel()">
+		        			<span>{{size.name}}</span>
+		        		</button>
+		        	</span>
+		        	<button [disabled]="isSaving" class="btn btn-default" (click)="cancel()">
+			            <span>+</span>
+			        </button>
+				</div>
+	  		</div>
+	  		<div *ngSwitchCase="false">
+	  			<div *ngIf="product.colors">
+		        	<span *ngFor="let color of product.colors">
+		        		<button [disabled]="isSaving" class="btn btn-default" (click)="cancel()">
+		        			<span>{{color.name}}</span>
+		        		</button>
+		        	</span>
+				</div>
+				<div *ngIf="product.sizes">
+		        	<span *ngFor="let size of product.sizes">
+		        		<button [disabled]="isSaving" class="btn btn-default" (click)="cancel()">
+		        			<span>{{size.name}}</span>
+		        		</button>
+		        	</span>
+				</div>
+	  		</div>
+						
             <div>
 	  			&nbsp;
 	  		</div>
