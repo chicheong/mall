@@ -2,6 +2,7 @@ package com.wongs.service;
 
 import com.wongs.domain.Product;
 import com.wongs.domain.ProductItem;
+import com.wongs.domain.ProductStyle;
 import com.wongs.repository.ProductRepository;
 import com.wongs.repository.ProductStyleRepository;
 import com.wongs.repository.ProductItemRepository;
@@ -69,10 +70,11 @@ public class ProductService {
         	product.setShop(shopService.getOne(productDTO.getShopId()));
         }
         product = productRepository.save(product);
-//        product.getStyles().stream().forEach(style -> 
-//        		productStyleRepository.save(style);
-//        		productStyleSearchRepository.save(style);
-//        		);
+        for (ProductStyle productStyle : product.getStyles()) {
+        	productStyle.setProduct(product);
+        	productStyleRepository.save(productStyle);
+        	productStyleSearchRepository.save(productStyle);
+        }
         ProductDTO result = productMapper.productToProductDTO(product);
         productSearchRepository.save(product);
         return result;

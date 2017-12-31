@@ -51,6 +51,10 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                     size.name = 'D';
                     this.product.colors = [color];
                     this.product.sizes = [size];
+                    const item: ProductItem = Object.assign(new ProductItem());
+                    item.color = color;
+                    item.size = size;
+                    this.product.items = [item];
                     this.isEditing = true;
                 } else {
                     this.load(params['id']);

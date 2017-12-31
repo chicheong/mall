@@ -1,4 +1,5 @@
 import { BaseEntity } from './../../shared';
+import { ProductStyle } from './../product-style';
 
 export const enum CurrencyType {
     'HKD',
@@ -18,8 +19,8 @@ export class ProductItem implements BaseEntity {
         public quantity?: number,
         public currency?: CurrencyType,
         public price?: number,
-        public color?: BaseEntity,
-        public size?: BaseEntity,
+        public color?: ProductStyle,
+        public size?: ProductStyle,
         public prices?: BaseEntity[],
         public product?: BaseEntity,
     ) {
