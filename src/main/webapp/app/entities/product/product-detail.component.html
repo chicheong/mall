@@ -54,6 +54,7 @@
 	  		</div>
 	  		<div *ngSwitchCase="true">
 	  			<div *ngIf="product.colors">
+	  				<div>Color</div>
 		        	<span *ngFor="let color of product.colors">
 		        		<button [disabled]="isSaving" class="btn btn-default" (click)="cancel()">
 		        			<span>{{color.name}}</span>
@@ -64,6 +65,7 @@
 			        </button>
 				</div>
 				<div *ngIf="product.sizes">
+					<div>Size</div>
 		        	<span *ngFor="let size of product.sizes">
 		        		<button [disabled]="isSaving" class="btn btn-default" (click)="cancel()">
 		        			<span>{{size.name}}</span>
@@ -88,6 +90,14 @@
 		        			<span>{{size.name}}</span>
 		        		</button>
 		        	</span>
+				</div>
+	  		</div>
+	  		<div *ngSwitchCase="true">
+	  			<div>Item</div>
+	  			<div *ngIf="product.items">
+		        	<button [disabled]="isSaving" class="btn btn-default" [routerLink]="['/', { outlets: { popup: ['product-style'] } }]">
+			            <span>+</span>
+			        </button>
 				</div>
 	  		</div>
 						
