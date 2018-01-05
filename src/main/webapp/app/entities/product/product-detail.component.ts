@@ -10,6 +10,9 @@ import { Principal } from '../../shared';
 import { ProductItem } from './../product-item';
 import { ProductStyle, ProductStyleType } from './../product-style';
 
+import { ProductStylePopupService } from './../product-style/product-style-popup.service';
+import { ProductStyleDialogComponent } from './../product-style/product-style-dialog.component';
+
 @Component({
     selector: 'jhi-product-detail',
     templateUrl: './product-detail.component.html'
@@ -20,11 +23,12 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     isSaving: boolean;
     private subscription: Subscription;
     private eventSubscriber: Subscription;
-    isEditing = false;
+    isEditing: boolean;
 
     constructor(
         private eventManager: JhiEventManager,
         private productService: ProductService,
+        private productStylePopupService: ProductStylePopupService,
         private route: ActivatedRoute,
         private jhiAlertService: JhiAlertService,
         private router: Router,
@@ -34,6 +38,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.isSaving = false;
+        this.isEditing = false;
         this.subscription = this.route.params.subscribe((params) => {
             if ((params['id'])) {
                 if ((params['id']) === 'new') {
@@ -156,5 +161,12 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.route.params.subscribe((params) => {
             this.load(params['id']);
         });
+    }
+
+    editStyle(obj: ProductStyle) {
+        this.productStylePopupService.open(ProductStyleDialogComponent as Component, obj);
+    }
+
+    editItems() {
     }
 }

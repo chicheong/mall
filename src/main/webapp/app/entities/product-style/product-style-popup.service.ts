@@ -25,10 +25,16 @@ export class ProductStylePopupService {
             }
 
             if (id) {
-                this.productStyleService.find(id).subscribe((productStyle) => {
-                    this.ngbModalRef = this.productStyleModalRef(component, productStyle);
+                if (id instanceof ProductStyle) {
+                    console.error('id: ' + id);
+                    this.ngbModalRef = this.productStyleModalRef(component, id);
                     resolve(this.ngbModalRef);
-                });
+                } else {
+                    this.productStyleService.find(id).subscribe((productStyle) => {
+                        this.ngbModalRef = this.productStyleModalRef(component, productStyle);
+                        resolve(this.ngbModalRef);
+                    });
+                }
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {

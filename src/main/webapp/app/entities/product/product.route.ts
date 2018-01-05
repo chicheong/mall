@@ -8,8 +8,6 @@ import { ProductDetailComponent } from './product-detail.component';
 import { ProductPopupComponent } from './product-dialog.component';
 import { ProductDeletePopupComponent } from './product-delete-dialog.component';
 
-import { ProductStylePopupComponent } from './../product-style/product-style-dialog.component';
-
 @Injectable()
 export class ProductResolvePagingParams implements Resolve<any> {
 
@@ -81,16 +79,6 @@ export const productPopupRoute: Routes = [
     {
         path: 'product/:id/delete',
         component: ProductDeletePopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.product.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'product-style',
-        component: ProductStylePopupComponent,
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.product.home.title'
