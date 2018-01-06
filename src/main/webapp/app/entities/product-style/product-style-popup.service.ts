@@ -27,6 +27,7 @@ export class ProductStylePopupService {
             if (id) {
                 if (id instanceof ProductStyle) {
                     console.error('id: ' + id);
+                    console.error('type: ' + id.type);
                     this.ngbModalRef = this.productStyleModalRef(component, id);
                     resolve(this.ngbModalRef);
                 } else {

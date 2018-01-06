@@ -1,8 +1,8 @@
 import { BaseEntity } from './../../shared';
 
 export const enum ProductStyleType {
-    'COLOR',
-    'SIZE'
+    COLOR = 'COLOR',
+    SIZE = 'SIZE'
 }
 
 export class ProductStyle implements BaseEntity {

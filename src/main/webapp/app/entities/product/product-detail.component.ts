@@ -71,6 +71,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                 this.product = entity;
                 const color: ProductStyle = Object.assign(new ProductStyle());
                 color.type = ProductStyleType.COLOR;
+                console.error('ProductStyleType.COLOR: ' + ProductStyleType.COLOR);
                 color.name = 'D';
                 const size: ProductStyle = Object.assign(new ProductStyle());
                 size.type = ProductStyleType.SIZE;
