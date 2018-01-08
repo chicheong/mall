@@ -51,9 +51,11 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                     });
                     this.product = entity;
                     const color: ProductStyle = Object.assign(new ProductStyle());
+                    color.id = this.uuid();
                     color.type = ProductStyleType.COLOR;
                     color.name = 'D';
                     const size: ProductStyle = Object.assign(new ProductStyle());
+                    size.id = this.uuid();
                     size.type = ProductStyleType.SIZE;
                     size.name = 'D';
                     this.product.colors = [color];
@@ -72,10 +74,11 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                 entity.shopId = (params['shopId']);
                 this.product = entity;
                 const color: ProductStyle = Object.assign(new ProductStyle());
+                color.id = this.uuid();
                 color.type = ProductStyleType.COLOR;
-                console.error('ProductStyleType.COLOR: ' + ProductStyleType.COLOR);
                 color.name = 'D';
                 const size: ProductStyle = Object.assign(new ProductStyle());
+                size.id = this.uuid();
                 size.type = ProductStyleType.SIZE;
                 size.name = 'D';
                 this.product.colors = [color];
@@ -174,10 +177,32 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         });
     }
 
+    addColor() {
+        const obj: ProductStyle = Object.assign(new ProductStyle());
+        obj.id = this.uuid();
+        obj.type = ProductStyleType.COLOR;
+        this.editStyle(obj);
+    }
+
+    addSize() {
+        const obj: ProductStyle = Object.assign(new ProductStyle());
+        obj.id = this.uuid();
+        obj.type = ProductStyleType.SIZE;
+        this.editStyle(obj);
+    }
+
     editStyle(obj: ProductStyle) {
         this.productStylePopupService.open(ProductStyleDialogComponent as Component, obj);
     }
 
     editItems() {
+    }
+
+    private uuid() {
+        return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' + this.s4() + this.s4() + this.s4();
+    }
+
+    private s4() {
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
     }
 }

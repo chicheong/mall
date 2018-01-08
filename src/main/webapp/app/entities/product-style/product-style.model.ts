@@ -7,7 +7,7 @@ export const enum ProductStyleType {
 
 export class ProductStyle implements BaseEntity {
     constructor(
-        public id?: number,
+        public id?: any,
         public name?: string,
         public code?: string,
         public isDefault?: boolean,
