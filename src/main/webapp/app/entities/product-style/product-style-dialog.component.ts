@@ -46,20 +46,25 @@ export class ProductStyleDialogComponent implements OnInit {
         this.isSaving = true;
         if (this.productStyle.id !== undefined) {
             this.subscribeToSaveResponse(
-                this.productStyleService.update(this.productStyle));
+                // this.productStyleService.update(this.productStyle)
+                this.productStyle
+            );
         } else {
             this.subscribeToSaveResponse(
-                this.productStyleService.create(this.productStyle));
+                // this.productStyleService.create(this.productStyle)
+                this.productStyle
+            );
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<ProductStyle>) {
-        result.subscribe((res: ProductStyle) =>
-            this.onSaveSuccess(res), (res: Response) => this.onSaveError());
+    private subscribeToSaveResponse(result: ProductStyle) {
+        // result.subscribe((res: ProductStyle) => this.onSaveSuccess(res), (res: Response) => this.onSaveError());
+        this.onSaveSuccess(result);
     }
 
     private onSaveSuccess(result: ProductStyle) {
         this.eventManager.broadcast({ name: 'productStyleListModification', content: 'OK'});
+        this.eventManager.broadcast({ name: 'productStyleModification', content: 'OK', obj: this.productStyle});
         this.isSaving = false;
         this.activeModal.dismiss(result);
     }

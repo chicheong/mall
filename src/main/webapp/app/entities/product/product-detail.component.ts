@@ -13,6 +13,8 @@ import { ProductStyle, ProductStyleType } from './../product-style';
 import { ProductStylePopupService } from './../product-style/product-style-popup.service';
 import { ProductStyleDialogComponent } from './../product-style/product-style-dialog.component';
 
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+
 @Component({
     selector: 'jhi-product-detail',
     templateUrl: './product-detail.component.html'
@@ -88,6 +90,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
             }
         });
         this.registerChangeInProducts();
+        this.registerChangeInProductStyle();
     }
 
     load(id) {
@@ -108,6 +111,13 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.eventSubscriber = this.eventManager.subscribe(
             'productListModification',
             (response) => this.load(this.product.id)
+        );
+    }
+
+    registerChangeInProductStyle() {
+        this.eventSubscriber = this.eventManager.subscribe(
+            'productStyleModification',
+            (response) => console.error(response.obj)
         );
     }
 

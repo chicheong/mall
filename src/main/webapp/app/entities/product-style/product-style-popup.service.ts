@@ -50,6 +50,7 @@ export class ProductStylePopupService {
         const modalRef = this.modalService.open(component, { size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.productStyle = productStyle;
         modalRef.result.then((result) => {
+            console.error('modalRef.result.then: ' + modalRef.result);
             this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true, queryParamsHandling: 'merge' });
             this.ngbModalRef = null;
         }, (reason) => {
