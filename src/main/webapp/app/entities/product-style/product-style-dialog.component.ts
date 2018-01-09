@@ -42,19 +42,11 @@ export class ProductStyleDialogComponent implements OnInit {
         this.activeModal.dismiss('cancel');
     }
 
-    save() {
+    confirm() {
         this.isSaving = true;
-        if (this.productStyle.id !== undefined) {
-            this.subscribeToSaveResponse(
-                // this.productStyleService.update(this.productStyle)
-                this.productStyle
-            );
-        } else {
-            this.subscribeToSaveResponse(
-                // this.productStyleService.create(this.productStyle)
-                this.productStyle
-            );
-        }
+        this.eventManager.broadcast({ name: 'productStyleModification', content: 'OK', obj: this.productStyle});
+        this.isSaving = false;
+        this.activeModal.dismiss(this.productStyle);
     }
 
     private subscribeToSaveResponse(result: ProductStyle) {

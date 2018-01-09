@@ -1,54 +1,43 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { ProductStyle } from './product-style.model';
-import { ProductStyleService } from './product-style.service';
+import { ProductItem } from './../product-item/product-item.model';
 
 @Injectable()
-export class ProductStylePopupService {
+export class ProductItemsPopupService {
     private ngbModalRef: NgbModalRef;
 
     constructor(
         private modalService: NgbModal,
         private router: Router,
-        private productStyleService: ProductStyleService
 
     ) {
         this.ngbModalRef = null;
     }
 
-    open(component: Component, id?: number | any): Promise<NgbModalRef> {
+    open(component: Component, objects?: ProductItem[] | any): Promise<NgbModalRef> {
         return new Promise<NgbModalRef>((resolve, reject) => {
             const isOpen = this.ngbModalRef !== null;
             if (isOpen) {
                 resolve(this.ngbModalRef);
             }
 
-            if (id) {
-                if (id instanceof ProductStyle) {
-                    console.error('id: ' + id);
-                    console.error('type: ' + id.type);
-                    this.ngbModalRef = this.productStyleModalRef(component, id);
-                    resolve(this.ngbModalRef);
-                } else {
-                    this.productStyleService.find(id).subscribe((productStyle) => {
-                        this.ngbModalRef = this.productStyleModalRef(component, productStyle);
-                        resolve(this.ngbModalRef);
-                    });
-                }
+            if (objects) {
+                this.ngbModalRef = this.productItemModalRef(component, objects);
+                resolve(this.ngbModalRef);
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {
-                    this.ngbModalRef = this.productStyleModalRef(component, new ProductStyle());
+                    this.ngbModalRef = this.productItemModalRef(component, null);
                     resolve(this.ngbModalRef);
                 }, 0);
             }
         });
     }
 
-    productStyleModalRef(component: Component, productStyle: ProductStyle): NgbModalRef {
+    productItemModalRef(component: Component, productItems: ProductItem[]): NgbModalRef {
         const modalRef = this.modalService.open(component, { size: 'lg', backdrop: 'static'});
-        modalRef.componentInstance.productStyle = productStyle;
+        modalRef.componentInstance.productItems = productItems;
         modalRef.result.then((result) => {
             this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true, queryParamsHandling: 'merge' });
             this.ngbModalRef = null;

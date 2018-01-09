@@ -12,6 +12,8 @@ import { ProductStyle, ProductStyleType } from './../product-style';
 
 import { ProductStylePopupService } from './../product-style/product-style-popup.service';
 import { ProductStyleDialogComponent } from './../product-style/product-style-dialog.component';
+import { ProductItemsPopupService } from './product-items-popup.service';
+import { ProductItemsDialogComponent } from './product-items-dialog.component';
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
@@ -31,6 +33,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         private eventManager: JhiEventManager,
         private productService: ProductService,
         private productStylePopupService: ProductStylePopupService,
+        private productItemsPopupService: ProductItemsPopupService,
         private route: ActivatedRoute,
         private jhiAlertService: JhiAlertService,
         private router: Router,
@@ -50,43 +53,16 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                         entity.shopId = account.shopId;
                     });
                     this.product = entity;
-                    const color: ProductStyle = Object.assign(new ProductStyle());
-                    color.id = this.uuid();
-                    color.type = ProductStyleType.COLOR;
-                    color.name = 'D';
-                    const size: ProductStyle = Object.assign(new ProductStyle());
-                    size.id = this.uuid();
-                    size.type = ProductStyleType.SIZE;
-                    size.name = 'D';
-                    this.product.colors = [color];
-                    this.product.sizes = [size];
-                    const item: ProductItem = Object.assign(new ProductItem());
-                    item.color = color;
-                    item.size = size;
-                    this.product.items = [item];
+                    this.initObjects();
                     this.isEditing = true;
                 } else {
                     this.load(params['id']);
                 }
             } else if ((params['shopId'])) {
-                console.error((params['shopId']));
                 const entity: Product = Object.assign(new Product());
                 entity.shopId = (params['shopId']);
                 this.product = entity;
-                const color: ProductStyle = Object.assign(new ProductStyle());
-                color.id = this.uuid();
-                color.type = ProductStyleType.COLOR;
-                color.name = 'D';
-                const size: ProductStyle = Object.assign(new ProductStyle());
-                size.id = this.uuid();
-                size.type = ProductStyleType.SIZE;
-                size.name = 'D';
-                this.product.colors = [color];
-                this.product.sizes = [size];
-                const item: ProductItem = Object.assign(new ProductItem());
-                item.color = color;
-                item.size = size;
-                this.product.items = [item];
+                this.initObjects();
                 this.isEditing = true;
             } else {
 
@@ -94,6 +70,23 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         });
         this.registerChangeInProducts();
         this.registerChangeInProductStyle();
+    }
+
+    initObjects() {
+        const color: ProductStyle = Object.assign(new ProductStyle());
+        color.id = this.uuid();
+        color.type = ProductStyleType.COLOR;
+        color.name = 'D';
+        const size: ProductStyle = Object.assign(new ProductStyle());
+        size.id = this.uuid();
+        size.type = ProductStyleType.SIZE;
+        size.name = 'D';
+        this.product.colors = [color];
+        this.product.sizes = [size];
+        const item: ProductItem = Object.assign(new ProductItem());
+        item.color = color;
+        item.size = size;
+        this.product.items = [item];
     }
 
     load(id) {
@@ -120,8 +113,50 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     registerChangeInProductStyle() {
         this.eventSubscriber = this.eventManager.subscribe(
             'productStyleModification',
-            (response) => console.error(response.obj)
+            (response) => this.updateStyle(response.obj)
         );
+    }
+
+    updateStyle(productStyle: ProductStyle) {
+        let index: number;
+        if (productStyle.type === ProductStyleType.COLOR) {
+            this.product.colors.forEach((color) => {
+                if (color.id === productStyle.id) {
+                    console.error('color found');
+                    index = this.product.colors.indexOf(color);
+                    this.product.colors[index] = productStyle;
+                    return;
+                }
+            })
+            if (index === undefined) {
+                this.product.colors.push(productStyle);
+                let item: ProductItem;
+                this.product.sizes.forEach((size) => {
+                    item = Object.assign(new ProductItem());
+                    item.color = productStyle;
+                    item.size = size;
+                    this.product.items.push(item);
+                });
+            }
+        } else if (productStyle.type === ProductStyleType.SIZE) {
+            this.product.sizes.forEach((size) => {
+                if (size.id === productStyle.id) {
+                    index = this.product.sizes.indexOf(size);
+                    this.product.sizes[index] = productStyle;
+                    return;
+                }
+            })
+            if (index === undefined) {
+                this.product.sizes.push(productStyle);
+                let item: ProductItem;
+                this.product.colors.forEach((color) => {
+                    item = Object.assign(new ProductItem());
+                    item.color = color;
+                    item.size = productStyle;
+                    this.product.items.push(item);
+                });
+            }
+        }
     }
 
     save() {
@@ -192,10 +227,12 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     }
 
     editStyle(obj: ProductStyle) {
-        this.productStylePopupService.open(ProductStyleDialogComponent as Component, obj);
+        const copyObj: ProductStyle = Object.assign(new ProductStyle(), obj);
+        this.productStylePopupService.open(ProductStyleDialogComponent as Component, copyObj);
     }
 
-    editItems() {
+    editItems(objects: ProductItem[]) {
+        this.productItemsPopupService.open(ProductItemsDialogComponent as Component, objects);
     }
 
     private uuid() {

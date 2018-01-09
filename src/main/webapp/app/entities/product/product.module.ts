@@ -5,12 +5,14 @@ import { MallSharedModule } from '../../shared';
 import {
     ProductService,
     ProductPopupService,
+    ProductItemsPopupService,
     ProductComponent,
     ProductDetailComponent,
     ProductDialogComponent,
     ProductPopupComponent,
     ProductDeletePopupComponent,
     ProductDeleteDialogComponent,
+    ProductItemsDialogComponent,
     productRoute,
     productPopupRoute,
     ProductResolvePagingParams,
@@ -33,6 +35,7 @@ const ENTITY_STATES = [
         ProductDeleteDialogComponent,
         ProductPopupComponent,
         ProductDeletePopupComponent,
+        ProductItemsDialogComponent,
     ],
     entryComponents: [
         ProductComponent,
@@ -40,11 +43,13 @@ const ENTITY_STATES = [
         ProductPopupComponent,
         ProductDeleteDialogComponent,
         ProductDeletePopupComponent,
+        ProductItemsDialogComponent,
     ],
     providers: [
         ProductService,
         ProductPopupService,
         ProductResolvePagingParams,
+        ProductItemsPopupService,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

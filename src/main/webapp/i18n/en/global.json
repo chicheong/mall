@@ -118,7 +118,8 @@
             "edit": "Edit",
             "open": "Open",
             "save": "Save",
-            "view": "View"
+            "view": "View",
+			"confirm": "Confirm"
         },
         "detail": {
             "field": "Field",

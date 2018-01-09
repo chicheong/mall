@@ -95,7 +95,7 @@
 	  		<div *ngSwitchCase="true">
 	  			<div>Item</div>
 	  			<div *ngIf="product.items">
-		        	<button [disabled]="isSaving" type="button" class="btn btn-default" [routerLink]="['/', { outlets: { popup: ['product-style'] } }]">
+		        	<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editItems(product.items)">
 			            <span>+</span>
 			        </button>
 				</div>
