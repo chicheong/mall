@@ -7,12 +7,15 @@
     </div>
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
-      	<div *ngIf="productItems">
-        	<span *ngFor="let item of productItems">
-        		<input type="text" class="form-control" name="name" 
-                	[(ngModel)]="item.color.name" />
-        	</span>
-		</div>
+      	<span *ngIf="productItems">
+        	<div *ngFor="let size of sizes">
+        		<span *ngFor="let color of colors">
+        			<span *ngFor="let item of productItems | getItemFromColorSize: color:size">
+        				<input type="text" name="{{item.id}}" [(ngModel)]="item.id" />
+        			</span>
+        		</span>
+        	</div>
+		</span>
         
     </div>
     <div class="modal-footer">

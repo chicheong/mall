@@ -16,6 +16,7 @@ import {
     productRoute,
     productPopupRoute,
     ProductResolvePagingParams,
+    GetItemFromColorSizePipe,
 } from './';
 
 const ENTITY_STATES = [
@@ -36,6 +37,7 @@ const ENTITY_STATES = [
         ProductPopupComponent,
         ProductDeletePopupComponent,
         ProductItemsDialogComponent,
+        GetItemFromColorSizePipe,
     ],
     entryComponents: [
         ProductComponent,

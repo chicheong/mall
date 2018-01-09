@@ -84,6 +84,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.product.colors = [color];
         this.product.sizes = [size];
         const item: ProductItem = Object.assign(new ProductItem());
+        item.id = this.uuid();
         item.color = color;
         item.size = size;
         this.product.items = [item];
@@ -133,6 +134,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                 let item: ProductItem;
                 this.product.sizes.forEach((size) => {
                     item = Object.assign(new ProductItem());
+                    item.id = this.uuid();
                     item.color = productStyle;
                     item.size = size;
                     this.product.items.push(item);
@@ -151,6 +153,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                 let item: ProductItem;
                 this.product.colors.forEach((color) => {
                     item = Object.assign(new ProductItem());
+                    item.id = this.uuid();
                     item.color = color;
                     item.size = productStyle;
                     this.product.items.push(item);
@@ -231,8 +234,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.productStylePopupService.open(ProductStyleDialogComponent as Component, copyObj);
     }
 
-    editItems(objects: ProductItem[]) {
-        this.productItemsPopupService.open(ProductItemsDialogComponent as Component, objects);
+    editItems() {
+        this.productItemsPopupService.open(ProductItemsDialogComponent as Component, this.product.items, this.product.colors, this.product.sizes)
     }
 
     private uuid() {

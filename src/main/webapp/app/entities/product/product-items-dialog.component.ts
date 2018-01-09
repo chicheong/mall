@@ -11,6 +11,8 @@ import { ProductStyle } from '../product-style';
 import { Product } from './product.model';
 import { ResponseWrapper } from '../../shared';
 
+import { GetItemFromColorSizePipe } from './get-item-from-color-size.pipe';
+
 @Component({
     selector: 'jhi-product-item-dialog',
     templateUrl: './product-items-dialog.component.html'
@@ -18,6 +20,8 @@ import { ResponseWrapper } from '../../shared';
 export class ProductItemsDialogComponent implements OnInit {
 
     productItems: ProductItem[];
+    colors: ProductStyle[];
+    sizes: ProductStyle[];
     isSaving: boolean;
 
     constructor(
