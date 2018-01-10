@@ -23,6 +23,9 @@
         			<td *ngFor="let color of colors">
         				<span *ngFor="let item of productItems | getItemFromColorSize: color:size">
 	        				<input type="text" size="4" name="{{item.id}}" [(ngModel)]="item.price" />
+	        				<button type="button" class="btn btn-default" (click)="clear()">
+					            <span>+</span>
+					        </button>
 	        			</span>
         			</td>
         		</tr>
@@ -42,7 +45,7 @@
     </div>
     <div class="modal-footer">
         <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
-            <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.confirm">Confirm</span>
+            <span class="fa fa-check-square"></span>&nbsp;<span jhiTranslate="entity.action.confirm">Confirm</span>
         </button>
     </div>
 </form>
