@@ -5,7 +5,10 @@
                 "title": "Product Items",
                 "createLabel": "Create a new Product Item",
                 "createOrEditLabel": "Create or edit a Product Item",
-                "search": "Search for Product Item"
+                "search": "Search for Product Item",
+                "updateCodes": "Update Product Codes",
+                "updatePrices": "Update Product Prices",
+                "updateQuantites": "Update Product Quantities"
             },
             "created": "A new Product Item is created with identifier {{ param }}",
             "updated": "A Product Item is updated with identifier {{ param }}",

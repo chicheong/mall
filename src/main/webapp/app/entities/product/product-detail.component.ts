@@ -81,13 +81,39 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         size.id = this.uuid();
         size.type = ProductStyleType.SIZE;
         size.name = 'D';
-        this.product.colors = [color];
-        this.product.sizes = [size];
+
+        const color1: ProductStyle = Object.assign(new ProductStyle());
+        color1.id = this.uuid();
+        color1.type = ProductStyleType.COLOR;
+        color1.name = 'E';
+        const size1: ProductStyle = Object.assign(new ProductStyle());
+        size1.id = this.uuid();
+        size1.type = ProductStyleType.SIZE;
+        size1.name = 'F';
+
+        this.product.colors = [color, color1];
+        this.product.sizes = [size, size1];
         const item: ProductItem = Object.assign(new ProductItem());
         item.id = this.uuid();
         item.color = color;
         item.size = size;
-        this.product.items = [item];
+
+        const item1: ProductItem = Object.assign(new ProductItem());
+        item1.id = this.uuid();
+        item1.color = color;
+        item1.size = size1;
+
+        const item2: ProductItem = Object.assign(new ProductItem());
+        item2.id = this.uuid();
+        item2.color = color1;
+        item2.size = size;
+
+        const item3: ProductItem = Object.assign(new ProductItem());
+        item3.id = this.uuid();
+        item3.color = color1;
+        item3.size = size1;
+
+        this.product.items = [item, item1, item2, item3];
     }
 
     load(id) {

@@ -3,15 +3,18 @@
         "productItem" : {
             "home": {
                 "title": "Product Items",
-                "createLabel": "å»ºçşıä¸şışışı°çşı Product Item",
-                "createOrEditLabel": "å»ºçşışı–ç·¨è¼şıProduct Item",
-                "search": "şıœåşı Product Item"
+                "createLabel": "å»ºç«‹ä¸€ç­†æ–°çš„ Product Item",
+                "createOrEditLabel": "å»ºç«‹æˆ–ç·¨è¼¯ Product Item",
+                "search": "æœå°‹ Product Item",
+				"updateCodes": "æ›´æ–° Product Codes",
+                "updatePrices": "æ›´æ–° Product Prices",
+                "updateQuantites": "æ›´æ–° Product Quantities"
             },
-            "created": "şı°çşı Product Item å»ºçşışıåşıï¼Œèşışı¥ç¢¼şışı{{ param }}",
-            "updated": "è­˜åˆ¥ç¢¼ç‚º {{ param }} şışıProduct Item şı´æ–°şıåşı",
-            "deleted": "è­˜åˆ¥ç¢¼ç‚º {{ param }} şışıProduct Item şıªé™¤şıåşı",
+            "created": "æ–°çš„ Product Item å»ºç«‹æˆåŠŸï¼Œè­˜åˆ¥ç¢¼ç‚º {{ param }}",
+            "updated": "è­˜åˆ¥ç¢¼ç‚º {{ param }} çš„ Product Item æ›´æ–°æˆåŠŸ",
+            "deleted": "è­˜åˆ¥ç¢¼ç‚º {{ param }} çš„ Product Item åˆªé™¤æˆåŠŸ",
             "delete": {
-                "question": "şı¨ç¢ºå®šèşışıªé™¤ Product Item {{ id }} şışı"
+                "question": "æ‚¨ç¢ºå®šè¦åˆªé™¤ Product Item {{ id }} å—?"
             },
             "detail": {
                 "title": "Product Item"
