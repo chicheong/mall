@@ -26,13 +26,10 @@
         				<span *ngFor="let item of productItems | getItemFromColorSize: color:size">
         					<span *ngSwitchCase="'CODE'">
 	        					<input type="text" size="8" name="{{item.id}}" [(ngModel)]="item.code" />
-		        				<button type="button" class="btn btn-default" (click)="clear()">
-						            <span class="fa fa-clock-o"></span>
-						        </button>
         					</span>
         					<span *ngSwitchCase="'PRICE'">
 	        					<input type="number" size="1" name="{{item.id}}" [(ngModel)]="item.price" />
-		        				<button type="button" class="btn btn-default" (click)="clear()">
+		        				<button type="button" class="btn btn-default" (click)="editPrices(item)">
 						            <span class="fa fa-clock-o"></span>
 						        </button>
         					</span>       

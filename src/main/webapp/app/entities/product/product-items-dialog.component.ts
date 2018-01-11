@@ -11,6 +11,9 @@ import { ProductStyle } from '../product-style';
 import { Product } from './product.model';
 import { ResponseWrapper } from '../../shared';
 
+import { PricesPopupService } from './prices-popup.service';
+import { PricesDialogComponent } from './prices-dialog.component';
+
 import { GetItemFromColorSizePipe } from './get-item-from-color-size.pipe';
 
 export const enum ProductItemsDialogType {
@@ -33,6 +36,7 @@ export class ProductItemsDialogComponent implements OnInit {
 
     constructor(
         public activeModal: NgbActiveModal,
+        private pricesPopupService: PricesPopupService,
         private jhiAlertService: JhiAlertService,
         private eventManager: JhiEventManager
     ) {
@@ -52,6 +56,11 @@ export class ProductItemsDialogComponent implements OnInit {
         this.eventManager.broadcast({ name: 'productItemListModification', content: 'OK'});
         this.isSaving = false;
         this.activeModal.dismiss('OK');
+    }
+
+    editPrices(item: ProductItem) {
+        console.error('item: ' + item);
+        this.pricesPopupService.open(PricesDialogComponent as Component, item);
     }
 
     trackProductStyleById(index: number, item: ProductStyle) {

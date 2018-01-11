@@ -262,7 +262,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     }
 
     editItems(type: ProductItemsDialogType) {
-        this.productItemsPopupService.open(ProductItemsDialogComponent as Component, this.product.items, this.product.colors, this.product.sizes, type)
+        this.productItemsPopupService.open(ProductItemsDialogComponent as Component, this.product.items, this.product.colors, this.product.sizes, type);
     }
 
     private uuid() {
