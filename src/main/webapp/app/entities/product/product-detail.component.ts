@@ -13,7 +13,7 @@ import { ProductStyle, ProductStyleType } from './../product-style';
 import { ProductStylePopupService } from './../product-style/product-style-popup.service';
 import { ProductStyleDialogComponent } from './../product-style/product-style-dialog.component';
 import { ProductItemsPopupService } from './product-items-popup.service';
-import { ProductItemsDialogComponent } from './product-items-dialog.component';
+import { ProductItemsDialogComponent, ProductItemsDialogType } from './product-items-dialog.component';
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
@@ -77,11 +77,12 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         color.id = this.uuid();
         color.type = ProductStyleType.COLOR;
         color.name = 'D';
+        color.isDefault = true;
         const size: ProductStyle = Object.assign(new ProductStyle());
         size.id = this.uuid();
         size.type = ProductStyleType.SIZE;
         size.name = 'D';
-
+        size.isDefault = true;
         const color1: ProductStyle = Object.assign(new ProductStyle());
         color1.id = this.uuid();
         color1.type = ProductStyleType.COLOR;
@@ -97,22 +98,22 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         item.id = this.uuid();
         item.color = color;
         item.size = size;
-
+        item.quantity = 1;
         const item1: ProductItem = Object.assign(new ProductItem());
         item1.id = this.uuid();
         item1.color = color;
         item1.size = size1;
-
+        item1.quantity = 1;
         const item2: ProductItem = Object.assign(new ProductItem());
         item2.id = this.uuid();
         item2.color = color1;
         item2.size = size;
-
+        item2.quantity = 1;
         const item3: ProductItem = Object.assign(new ProductItem());
         item3.id = this.uuid();
         item3.color = color1;
         item3.size = size1;
-
+        item3.quantity = 1;
         this.product.items = [item, item1, item2, item3];
     }
 
@@ -260,8 +261,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.productStylePopupService.open(ProductStyleDialogComponent as Component, copyObj);
     }
 
-    editItems() {
-        this.productItemsPopupService.open(ProductItemsDialogComponent as Component, this.product.items, this.product.colors, this.product.sizes)
+    editItems(type: ProductItemsDialogType) {
+        this.productItemsPopupService.open(ProductItemsDialogComponent as Component, this.product.items, this.product.colors, this.product.sizes, type)
     }
 
     private uuid() {

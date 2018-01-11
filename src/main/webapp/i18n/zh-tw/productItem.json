@@ -8,7 +8,7 @@
                 "search": "搜尋 Product Item",
 				"updateCodes": "更新 Product Codes",
                 "updatePrices": "更新 Product Prices",
-                "updateQuantites": "更新 Product Quantities"
+                "updateQuantities": "更新 Product Quantities"
             },
             "created": "新的 Product Item 建立成功，識別碼為 {{ param }}",
             "updated": "識別碼為 {{ param }} 的 Product Item 更新成功",

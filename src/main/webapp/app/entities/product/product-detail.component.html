@@ -95,9 +95,15 @@
 	  		<div *ngSwitchCase="true">
 	  			<div>Item</div>
 	  			<div *ngIf="product.items">
-		        	<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editItems(product.items)">
-			            <span>+</span>
+		        	<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editItems('CODE')">
+			            <span>CODE</span>
 			        </button>
+			        <button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editItems('PRICE')">
+			            <span>PRICE</span>
+			        </button>
+		        	<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editItems('QUANTITY')">
+			            <span>QUANTITY</span>
+			        </button>			        
 				</div>
 	  		</div>
 

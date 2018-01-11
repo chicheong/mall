@@ -1,7 +1,9 @@
-<form name="editForm" role="form" novalidate (ngSubmit)="confirm()" #editForm="ngForm">
+<form name="editForm" role="form" novalidate (ngSubmit)="confirm()" #editForm="ngForm" [ngSwitch]="type">
 
     <div class="modal-header">
-        <h4 class="modal-title" id="myProductItemLabel" jhiTranslate="mallApp.productItem.home.createOrEditLabel">Create or edit a Product Item</h4>
+        <h4 *ngSwitchCase="'CODE'" class="modal-title" id="myProductItemLabel" jhiTranslate="mallApp.productItem.home.updateCodes">Update Product Codes</h4>
+        <h4 *ngSwitchCase="'PRICE'" class="modal-title" id="myProductItemLabel" jhiTranslate="mallApp.productItem.home.updatePrices">Update Product Prices</h4>
+        <h4 *ngSwitchCase="'QUANTITY'" class="modal-title" id="myProductItemLabel" jhiTranslate="mallApp.productItem.home.updateQuantities">Update Product Quantities</h4>
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true"
                 (click)="clear()">&times;</button>
     </div>
@@ -9,7 +11,7 @@
         <jhi-alert-error></jhi-alert-error>
         
         <div class="table-responsive" *ngIf="productItems">
-	        <table class="table table-striped table-sm">   
+	        <table class="table table-striped table-sm">
 	        	<thead>
 	        	<tr>
 	        		<th>&nbsp;</th>
@@ -22,10 +24,25 @@
         			<th scope="row">{{size.name}}</th>
         			<td *ngFor="let color of colors">
         				<span *ngFor="let item of productItems | getItemFromColorSize: color:size">
-	        				<input type="text" size="4" name="{{item.id}}" [(ngModel)]="item.price" />
-	        				<button type="button" class="btn btn-default" (click)="clear()">
-					            <span>+</span>
-					        </button>
+        					<span *ngSwitchCase="'CODE'">
+	        					<input type="text" size="8" name="{{item.id}}" [(ngModel)]="item.code" />
+		        				<button type="button" class="btn btn-default" (click)="clear()">
+						            <span class="fa fa-clock-o"></span>
+						        </button>
+        					</span>
+        					<span *ngSwitchCase="'PRICE'">
+	        					<input type="number" size="1" name="{{item.id}}" [(ngModel)]="item.price" />
+		        				<button type="button" class="btn btn-default" (click)="clear()">
+						            <span class="fa fa-clock-o"></span>
+						        </button>
+        					</span>       
+        					<span *ngSwitchCase="'QUANTITY'">
+	        					<input type="number" size="1" name="{{item.id}}" [(ngModel)]="item.quantity" />
+		        				<button type="button" class="btn btn-default" (click)="clear()">
+						            <span class="fa fa-clock-o"></span>
+						        </button>
+        					</span>
+
 	        			</span>
         			</td>
         		</tr>

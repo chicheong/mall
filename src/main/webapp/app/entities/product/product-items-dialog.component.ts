@@ -13,6 +13,12 @@ import { ResponseWrapper } from '../../shared';
 
 import { GetItemFromColorSizePipe } from './get-item-from-color-size.pipe';
 
+export const enum ProductItemsDialogType {
+    CODE = 'CODE',
+    PRICE = 'PRICE',
+    QUANTITY = 'QUANTITY'
+}
+
 @Component({
     selector: 'jhi-product-item-dialog',
     templateUrl: './product-items-dialog.component.html'
@@ -23,6 +29,7 @@ export class ProductItemsDialogComponent implements OnInit {
     colors: ProductStyle[];
     sizes: ProductStyle[];
     isSaving: boolean;
+    type: ProductItemsDialogType = ProductItemsDialogType.CODE;
 
     constructor(
         public activeModal: NgbActiveModal,
