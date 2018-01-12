@@ -1,4 +1,4 @@
-<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+<form [formGroup]="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
 
     <div class="modal-header">
         <h4 class="modal-title" id="myPriceLabel" jhiTranslate="mallApp.price.home.createOrEditLabel">Create or edit a Price</h4>
@@ -7,50 +7,25 @@
     </div>
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
-        <div class="form-group" [hidden]="!price.id">
-            <label for="id" jhiTranslate="global.field.id">ID</label>
-            <input type="text" class="form-control" id="id" name="id"
-                   [(ngModel)]="price.id" readonly />
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.price.from" for="field_from">From</label>
-            <div class="d-flex">
-                <input id="field_from" type="datetime-local" class="form-control" name="from" [(ngModel)]="price.from"
-                />
+        
+        <div formArrayName="prices">
+          <div *ngFor="let price of editForm.controls.prices.controls; let i=index" class="panel panel-default">
+            <div class="panel-heading">
+              <span>Price {{i + 1}}</span>
+              <span class="glyphicon glyphicon-remove pull-right" *ngIf="editForm.controls.addresses.controls.length > 1" (click)="removePrice(i)"></span>
             </div>
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.price.to" for="field_to">To</label>
-            <div class="d-flex">
-                <input id="field_to" type="datetime-local" class="form-control" name="to" [(ngModel)]="price.to"
-                />
+            <div class="panel-body" [formGroupName]="i">
+              <address [group]="editForm.controls.prices.controls[i]"></address>
             </div>
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.price.price" for="field_price">Price</label>
-            <input type="number" class="form-control" name="price" id="field_price"
-                [(ngModel)]="price.price" />
-        </div>
-        <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.price.currency" for="field_currency">Currency</label>
-            <select class="form-control" name="currency" [(ngModel)]="price.currency" id="field_currency" >
-                <option value="HKD">{{'mallApp.CurrencyType.HKD' | translate}}</option>
-                <option value="CNY">{{'mallApp.CurrencyType.CNY' | translate}}</option>
-                <option value="USD">{{'mallApp.CurrencyType.USD' | translate}}</option>
-                <option value="EUR">{{'mallApp.CurrencyType.EUR' | translate}}</option>
-                <option value="JPY">{{'mallApp.CurrencyType.JPY' | translate}}</option>
-                <option value="KRW">{{'mallApp.CurrencyType.KRW' | translate}}</option>
-                <option value="TWD">{{'mallApp.CurrencyType.TWD' | translate}}</option>
-            </select>
+          </div>
         </div>
 
-        <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.price.item" for="field_item">Item</label>
-            <select class="form-control" id="field_item" name="item" [(ngModel)]="price.item" >
-                <option [ngValue]="null"></option>
-                <option [ngValue]="productItemOption.id === price.item?.id ? price.item : productItemOption" *ngFor="let productItemOption of productitems; trackBy: trackProductItemById">{{productItemOption.id}}</option>
-            </select>
+        <div class="margin-20">
+          <a (click)="addPrice()" style="cursor: default">
+            Add price +
+          </a>
         </div>
+        
     </div>
     <div class="modal-footer">
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
@@ -59,5 +34,6 @@
         <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
             <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
         </button>
+        <div class="clearfix"></div>
     </div>
 </form>

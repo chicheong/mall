@@ -1,5 +1,6 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { MallSharedModule } from '../../shared';
 import {
@@ -29,6 +30,7 @@ const ENTITY_STATES = [
 @NgModule({
     imports: [
         MallSharedModule,
+        ReactiveFormsModule,
         RouterModule.forChild(ENTITY_STATES)
     ],
     declarations: [
