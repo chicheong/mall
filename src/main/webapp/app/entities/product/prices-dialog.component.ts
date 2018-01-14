@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Response } from '@angular/http';
-import { FormGroup, FormArray, FormBuilder, Validators } from '@angular/forms';
 
 import { Observable } from 'rxjs/Rx';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
@@ -17,8 +16,7 @@ import { ResponseWrapper } from '../../shared';
 })
 export class PricesDialogComponent implements OnInit {
 
-    public editForm: FormGroup;
-    item: ProductItem;
+    productItem: ProductItem;
     isSaving: boolean;
 
     productitems: ProductItem[];
@@ -26,45 +24,23 @@ export class PricesDialogComponent implements OnInit {
     constructor(
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
-        private eventManager: JhiEventManager,
-        private _fb: FormBuilder
+        private eventManager: JhiEventManager
     ) {
     }
 
     ngOnInit() {
         this.isSaving = false;
-        
-        this.editForm = this._fb.group({
-            // name: ['', [Validators.required, Validators.minLength(5)]],
-            prices: this._fb.array([])
-        });
-        
         // add price
         this.addPrice();
     }
-    
+
     initPrice() {
-        return this._fb.group({
-            street: ['', Validators.required],
-            postcode: ['']
-        });
     }
 
     addPrice() {
-        const control = <FormArray>this.myForm.controls['prices'];
-        const addrCtrl = this.initPrice();
-        
-        control.push(addrCtrl);
-        
-        /* subscribe to individual address value changes */
-        // addrCtrl.valueChanges.subscribe(x => {
-        //   console.log(x);
-        // })
     }
 
     removePrice(i: number) {
-        const control = <FormArray>this.myForm.controls['prices'];
-        control.removeAt(i);
     }
 
     clear() {
@@ -80,5 +56,17 @@ export class PricesDialogComponent implements OnInit {
 
     trackProductItemById(index: number, item: ProductItem) {
         return item.id;
+    }
+    
+    private count:number = 1;
+
+    phoneNumberIds:number[] = [1];
+
+    remove(i:number) {
+      this.phoneNumberIds.splice(i, 1);
+    }
+
+    add() {
+      this.phoneNumberIds.push(++this.count);
     }
 }
