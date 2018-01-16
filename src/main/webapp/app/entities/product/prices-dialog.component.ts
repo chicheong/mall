@@ -83,6 +83,11 @@ export class PricesDialogComponent implements OnInit {
         this.activeModal.dismiss('OK');
     }
 
+    confirm() {
+        this.eventManager.broadcast({ name: 'priceListModification', content: 'OK'});
+        this.activeModal.dismiss('OK');
+    }
+
     trackProductItemById(index: number, item: ProductItem) {
         return item.id;
     }
