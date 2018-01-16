@@ -12,7 +12,7 @@ export const enum CurrencyType {
 
 export class Price implements BaseEntity {
     constructor(
-        public id?: number,
+        public id?: any,
         public from?: any,
         public to?: any,
         public price?: number,

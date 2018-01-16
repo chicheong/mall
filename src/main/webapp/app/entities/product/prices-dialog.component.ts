@@ -7,7 +7,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
 import { Price } from '../price';
-import { ProductItem } from '../product-item';
+import { ProductItem, ProductItemService } from '../product-item';
 import { ResponseWrapper } from '../../shared';
 
 @Component({
@@ -17,11 +17,11 @@ import { ResponseWrapper } from '../../shared';
 export class PricesDialogComponent implements OnInit {
 
     productItem: ProductItem;
-    isSaving: boolean;
-
     productitems: ProductItem[];
+    prices: Price[];
 
     constructor(
+        private productItemService: ProductItemService,
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
         private eventManager: JhiEventManager
@@ -29,18 +29,49 @@ export class PricesDialogComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.isSaving = false;
-        // add price
-        this.addPrice();
+        console.error('productItem.prices: ' + this.productItem.prices);
+        if (this.productItem.prices) {
+            // edited before
+            this.prices = this.productItem.prices;
+        } else {
+            const itemId = this.productItem.id;
+            if (itemId instanceof Number) {
+                // load prices from server
+                console.error('itemId: ' + itemId);
+                this.loadItem(itemId);
+            } else {
+                // default a price
+                this.initPrice();
+            }
+        }
+    }
+
+    loadItem(itemId) {
+        this.productItemService.find(itemId).subscribe((productItem) => {
+            this.productItem = productItem;
+            if (productItem.prices.length > 0) {
+                this.prices = productItem.prices;
+            } else {
+                // default a price
+                this.initPrice();
+            }
+        });
     }
 
     initPrice() {
+        const price: Price = Object.assign(new Price());
+        price.id = this.uuid();
+        this.prices = [price];
     }
 
-    addPrice() {
+    add() {
+        const price: Price = Object.assign(new Price());
+        price.id = this.uuid();
+        this.prices.push(price);
     }
 
-    removePrice(i: number) {
+    remove(i: number) {
+        this.prices.splice(i, 1);
     }
 
     clear() {
@@ -48,25 +79,19 @@ export class PricesDialogComponent implements OnInit {
     }
 
     save() {
-        this.isSaving = true;
         this.eventManager.broadcast({ name: 'priceListModification', content: 'OK'});
-        this.isSaving = false;
         this.activeModal.dismiss('OK');
     }
 
     trackProductItemById(index: number, item: ProductItem) {
         return item.id;
     }
-    
-    private count:number = 1;
 
-    phoneNumberIds:number[] = [1];
-
-    remove(i:number) {
-      this.phoneNumberIds.splice(i, 1);
+    private uuid() {
+        return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' + this.s4() + this.s4() + this.s4();
     }
 
-    add() {
-      this.phoneNumberIds.push(++this.count);
+    private s4() {
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
     }
 }

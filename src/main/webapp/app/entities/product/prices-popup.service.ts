@@ -41,7 +41,7 @@ export class PricesPopupService {
     }
 
     priceModalRef(component: Component, item: ProductItem): NgbModalRef {
-        const modalRef = this.modalService.open(component, { size: 'sm', backdrop: 'static'});
+        const modalRef = this.modalService.open(component, { size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.productItem = item;
         modalRef.result.then((result) => {
             this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true, queryParamsHandling: 'merge' });

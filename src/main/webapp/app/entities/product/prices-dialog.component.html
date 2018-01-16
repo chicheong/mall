@@ -7,15 +7,17 @@
     </div>
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
-<div ngModelGroup="phoneNumbers">
-  <h3>Phone numbers</h3>
-  <div *ngFor="let phoneId of phoneNumberIds; let i=index;">
-    <label>Phone number {{i + 1}}</label>
-    <input type="text" name="phoneNumber[{{phoneId}}]" #phoneNumber="ngModel" ngModel required />
-    <button type="button" (click)="remove(i); editForm.control.markAsTouched()">remove</button>
+<div ngModelGroup="prices">
+  <h3>Prices</h3>
+  <div *ngFor="let price of prices; let i=index;">
+    <label>Price {{i + 1}}</label>
+    From <input type="datetime-local" name="from[{{price.id}}]" [(ngModel)]="price.from" /> To
+    <input type="datetime-local" name="to[{{price.id}}]" [(ngModel)]="price.to" />
+    <button type="button" (click)="remove(i);">remove</button>
   </div>
-  <button type="button" (click)="add(); editForm.control.markAsTouched()">Add phone number</button>
-</div>   
+  <button type="button" (click)="add();">Add price</button>
+</div> 
+        
         <div>{{editForm.value | json}}
         </div>
     </div>
@@ -23,7 +25,7 @@
         <button type="button" class="btn btn-secondary" data-dismiss="modal" (click)="clear()">
             <span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
         </button>
-        <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+        <button type="submit" [disabled]="editForm.form.invalid" class="btn btn-primary">
             <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
         </button>
         <div class="clearfix"></div>
