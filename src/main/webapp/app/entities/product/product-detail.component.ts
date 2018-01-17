@@ -153,7 +153,17 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         );
     }
 
-    updateItems(productItems: ProductItem[]) {
+    updateItems(product: Product) {
+        let index: number;
+        this.product.items.forEach((oProduct) => {
+            product.items.forEach((nProduct) => {
+                if (oProduct.id === nProduct.id) {
+                    index = this.product.items.indexOf(oProduct);
+                    this.product.items[index] = nProduct;
+                    return;
+                }
+            })
+        })
     }
 
     updateStyle(productStyle: ProductStyle) {

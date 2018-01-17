@@ -30,7 +30,7 @@ export const enum ProductItemsDialogType {
 export class ProductItemsDialogComponent implements OnInit {
 
     product: Product;
-    productItems: ProductItem[];
+    productItems: ProductItem[] = [];
     colors: ProductStyle[];
     sizes: ProductStyle[];
     type: ProductItemsDialogType = ProductItemsDialogType.CODE;
@@ -46,7 +46,8 @@ export class ProductItemsDialogComponent implements OnInit {
 
     ngOnInit() {
         this.product.items.forEach((item) => {
-            this.productItems.push(item);
+            const productItem: ProductItem = Object.assign(new ProductItem(), item);
+            this.productItems.push(productItem);
         })
         this.colors = this.product.colors;
         this.sizes = this.product.sizes;
@@ -77,7 +78,8 @@ export class ProductItemsDialogComponent implements OnInit {
     }
 
     confirm() {
-        this.eventManager.broadcast({ name: 'productItemsModification', content: 'OK', obj: this.productItems});
+        this.product.items = this.productItems;
+        this.eventManager.broadcast({ name: 'productItemsModification', content: 'OK', obj: this.product});
         this.activeModal.dismiss('OK');
     }
 
