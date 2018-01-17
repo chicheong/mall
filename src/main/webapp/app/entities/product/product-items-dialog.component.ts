@@ -4,6 +4,7 @@ import { Response } from '@angular/http';
 
 import { Observable } from 'rxjs/Rx';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { Subscription } from 'rxjs/Rx';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
 import { ProductItem } from '../product-item';
@@ -28,11 +29,12 @@ export const enum ProductItemsDialogType {
 })
 export class ProductItemsDialogComponent implements OnInit {
 
+    product: Product;
     productItems: ProductItem[];
     colors: ProductStyle[];
     sizes: ProductStyle[];
-    isSaving: boolean;
     type: ProductItemsDialogType = ProductItemsDialogType.CODE;
+    private eventSubscriber: Subscription;
 
     constructor(
         public activeModal: NgbActiveModal,
@@ -43,8 +45,31 @@ export class ProductItemsDialogComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.isSaving = false;
-        console.error(this.productItems);
+        this.product.items.forEach((item) => {
+            this.productItems.push(item);
+        })
+        this.colors = this.product.colors;
+        this.sizes = this.product.sizes;
+
+        this.registerChangeInPrices();
+    }
+
+    registerChangeInPrices() {
+        this.eventSubscriber = this.eventManager.subscribe(
+            'pricesModification',
+            (response) => this.updatePrices(response.obj)
+        );
+    }
+
+    updatePrices(productItem: ProductItem) {
+        console.error('updatePrices');
+        this.productItems.forEach((item) => {
+            if (item.id === productItem.id) {
+                console.error('item found');
+                item.prices = productItem.prices;
+                return;
+            }
+        })
     }
 
     clear() {
@@ -52,9 +77,7 @@ export class ProductItemsDialogComponent implements OnInit {
     }
 
     confirm() {
-        this.isSaving = true;
-        this.eventManager.broadcast({ name: 'productItemListModification', content: 'OK'});
-        this.isSaving = false;
+        this.eventManager.broadcast({ name: 'productItemsModification', content: 'OK', obj: this.productItems});
         this.activeModal.dismiss('OK');
     }
 

@@ -70,6 +70,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         });
         this.registerChangeInProducts();
         this.registerChangeInProductStyle();
+        this.registerChangeInProductItems();
     }
 
     initObjects() {
@@ -138,11 +139,21 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         );
     }
 
+    registerChangeInProductItems() {
+        this.eventSubscriber = this.eventManager.subscribe(
+            'productItemsModification',
+            (response) => this.updateItems(response.obj)
+        );
+    }
+
     registerChangeInProductStyle() {
         this.eventSubscriber = this.eventManager.subscribe(
             'productStyleModification',
             (response) => this.updateStyle(response.obj)
         );
+    }
+
+    updateItems(productItems: ProductItem[]) {
     }
 
     updateStyle(productStyle: ProductStyle) {
@@ -262,7 +273,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     }
 
     editItems(type: ProductItemsDialogType) {
-        this.productItemsPopupService.open(ProductItemsDialogComponent as Component, this.product.items, this.product.colors, this.product.sizes, type);
+        const copyObj: Product = Object.assign(new Product(), this.product);
+        this.productItemsPopupService.open(ProductItemsDialogComponent as Component, copyObj, type);
     }
 
     private uuid() {
