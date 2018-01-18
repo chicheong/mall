@@ -24,6 +24,12 @@
             "otherEntityRelationshipName": "item"
         },
         {
+            "relationshipType": "one-to-many",
+            "relationshipName": "quantity",
+            "otherEntityName": "quantity",
+            "otherEntityRelationshipName": "item"
+        },
+        {
             "relationshipType": "many-to-one",
             "relationshipName": "product",
             "otherEntityName": "product",
@@ -54,9 +60,9 @@
         }
     ],
     "changelogDate": "20170727090138",
-    "entityTableName": "product_item",
     "dto": "no",
-    "pagination": "pagination",
     "service": "no",
-    "jpaMetamodelFiltering": false
+    "entityTableName": "product_item",
+    "jpaMetamodelFiltering": false,
+    "pagination": "pagination"
 }

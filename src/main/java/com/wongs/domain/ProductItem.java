@@ -59,6 +59,11 @@ public class ProductItem implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Price> prices = new HashSet<>();
 
+    @OneToMany(mappedBy = "item")
+    @JsonIgnore
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<Quantity> quantities = new HashSet<>();
+
     @ManyToOne
     private Product product;
 
@@ -185,6 +190,31 @@ public class ProductItem implements Serializable {
 
     public void setPrices(Set<Price> prices) {
         this.prices = prices;
+    }
+
+    public Set<Quantity> getQuantities() {
+        return quantities;
+    }
+
+    public ProductItem quantities(Set<Quantity> quantities) {
+        this.quantities = quantities;
+        return this;
+    }
+
+    public ProductItem addQuantity(Quantity quantity) {
+        this.quantities.add(quantity);
+        quantity.setItem(this);
+        return this;
+    }
+
+    public ProductItem removeQuantity(Quantity quantity) {
+        this.quantities.remove(quantity);
+        quantity.setItem(null);
+        return this;
+    }
+
+    public void setQuantities(Set<Quantity> quantities) {
+        this.quantities = quantities;
     }
 
     public Product getProduct() {

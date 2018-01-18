@@ -14,7 +14,7 @@ import com.wongs.domain.ProductItem;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface ProductItemRepository extends JpaRepository<ProductItem,Long> {
-    
+public interface ProductItemRepository extends JpaRepository<ProductItem, Long> {
+
 	Set<ProductItem> findByProduct(Product product);
 }

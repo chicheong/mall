@@ -22,6 +22,7 @@ import { MallOrderStatusHistoryModule } from './order-status-history/order-statu
 import { MallMyOrderModule } from './my-order/my-order.module';
 import { MallProductStyleModule } from './product-style/product-style.module';
 import { MallProductStyleHistoryModule } from './product-style-history/product-style-history.module';
+import { MallQuantityModule } from './quantity/quantity.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
@@ -48,6 +49,7 @@ import { MallProductStyleHistoryModule } from './product-style-history/product-s
         MallMyOrderModule,
         MallProductStyleModule,
         MallProductStyleHistoryModule,
+        MallQuantityModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],

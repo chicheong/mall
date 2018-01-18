@@ -1,0 +1,30 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "item",
+            "otherEntityName": "productItem",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "from",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "to",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "quantity",
+            "fieldType": "Integer"
+        }
+    ],
+    "changelogDate": "20170727090141",
+    "entityTableName": "quantity",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "no"
+}

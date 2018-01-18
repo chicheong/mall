@@ -27,6 +27,7 @@
     <include file="config/liquibase/changelog/20171214063716_added_entity_MyOrder.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20171229082716_added_entity_ProductStyle.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20171229082719_added_entity_ProductStyleHistory.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20170727090141_added_entity_Quantity.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20170727090126_added_entity_constraints_UserInfo.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20170727090127_added_entity_constraints_MyAccount.xml" relativeToChangelogFile="false"/>
@@ -46,5 +47,6 @@
     <include file="config/liquibase/changelog/20170727090145_added_entity_constraints_OrderStatusHistory.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20171214063716_added_entity_constraints_MyOrder.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20171229082716_added_entity_constraints_ProductStyle.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20170727090141_added_entity_constraints_Quantity.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

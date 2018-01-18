@@ -175,6 +175,12 @@ entity Price {
 	currency CurrencyType
 }
 
+entity Quantity {
+	from ZonedDateTime,
+	to ZonedDateTime,
+	quantity Integer,
+}
+
 enum CurrencyType {
     HKD, CNY, USD, EUR, JPY, KRW, TWD
 }
@@ -225,6 +231,7 @@ relationship OneToMany {
 	MyOrder{item} to OrderItem{order},
 	MyOrder{statusHistory} to OrderStatusHistory{order},
 	ProductItem{price} to Price{item}
+	ProductItem{quantity} to Quantity{item}
 }
 
 relationship ManyToOne {
@@ -250,7 +257,7 @@ relationship ManyToMany {
 	Category{product} to Product{category}
 }
 
-paginate UserInfo, MyAccount, Company, Department, Office, Country, State, Shop, Category, Product, ProductItem, MyOrder, OrderItem, Price with pagination
+paginate UserInfo, MyAccount, Company, Department, Office, Country, State, Shop, Category, Product, ProductItem, MyOrder, OrderItem, Price, Quantity with pagination
 paginate Address with pager
 paginate Delegation, OrderStatusHistory, ProductHistory, ProductItemHistory with infinite-scroll
 service Product, MyOrder, Shop with serviceClass
