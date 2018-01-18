@@ -67,7 +67,7 @@ export class PriceService {
     /**
      * Convert a returned JSON object to Price.
      */
-    private convertItemFromServer(json: any): Price {
+    convertItemFromServer(json: any): Price {
         const entity: Price = Object.assign(new Price(), json);
         entity.from = this.dateUtils
             .convertDateTimeFromServer(json.from);
@@ -79,7 +79,7 @@ export class PriceService {
     /**
      * Convert a Price to a JSON which can be sent to the server.
      */
-    private convert(price: Price): Price {
+    convert(price: Price): Price {
         const copy: Price = Object.assign({}, price);
 
         copy.from = this.dateUtils.toDate(price.from);

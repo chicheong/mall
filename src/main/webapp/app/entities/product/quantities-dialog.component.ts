@@ -8,19 +8,19 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
 import { ProductItemsDialogType } from './product-items-dialog.component';
 
-import { Price } from '../price';
+import { Quantity } from '../quantity';
 import { ProductItem, ProductItemService } from '../product-item';
 import { ResponseWrapper } from '../../shared';
 
 @Component({
-    selector: 'jhi-price-dialog',
-    templateUrl: './prices-dialog.component.html'
+    selector: 'jhi-quantity-dialog',
+    templateUrl: './quantities-dialog.component.html'
 })
-export class PricesDialogComponent implements OnInit {
+export class QuantitiesDialogComponent implements OnInit {
 
     productItem: ProductItem;
     productitems: ProductItem[];
-    prices: Price[];
+    quantities: Quantity[];
 
     constructor(
         public activeModal: NgbActiveModal,
@@ -31,10 +31,10 @@ export class PricesDialogComponent implements OnInit {
     }
 
     ngOnInit() {
-        console.error('productItem.prices: ' + this.productItem.prices);
-        if (this.productItem.prices) {
+        console.error('productItem.quantities: ' + this.productItem.quantities);
+        if (this.productItem.quantities) {
             // edited before
-            this.prices = this.productItem.prices;
+            this.quantities = this.productItem.quantities;
         } else {
             const itemId = this.productItem.id;
             if (itemId instanceof Number) {
@@ -51,8 +51,8 @@ export class PricesDialogComponent implements OnInit {
     loadItem(itemId) {
         this.productItemService.find(itemId).subscribe((productItem) => {
             this.productItem = productItem;
-            if (productItem.prices.length > 0) {
-                this.prices = productItem.prices;
+            if (productItem.quantities.length > 0) {
+                this.quantities = productItem.quantities;
             } else {
                 // default a price
                 this.initPrice();
@@ -61,19 +61,19 @@ export class PricesDialogComponent implements OnInit {
     }
 
     initPrice() {
-        const price: Price = Object.assign(new Price());
-        price.id = this.uuid();
-        this.prices = [price];
+        const quantity: Quantity = Object.assign(new Quantity());
+        quantity.id = this.uuid();
+        this.quantities = [quantity];
     }
 
     add() {
-        const price: Price = Object.assign(new Price());
-        price.id = this.uuid();
-        this.prices.push(price);
+        const quantity: Quantity = Object.assign(new Quantity());
+        quantity.id = this.uuid();
+        this.quantities.push(quantity);
     }
 
     remove(i: number) {
-        this.prices.splice(i, 1);
+        this.quantities.splice(i, 1);
     }
 
     clear() {
@@ -81,19 +81,19 @@ export class PricesDialogComponent implements OnInit {
     }
 
     save() {
-        this.eventManager.broadcast({ name: 'priceListModification', content: 'OK'});
+        this.eventManager.broadcast({ name: 'quantityListModification', content: 'OK'});
         this.activeModal.dismiss('OK');
     }
 
     confirm() {
-        this.productItem.prices = this.prices;
-        this.eventManager.broadcast({ name: 'pricesModification', content: 'OK', obj: this.productItem, type: ProductItemsDialogType.SINGLE});
+        this.productItem.quantities = this.quantities;
+        this.eventManager.broadcast({ name: 'quantitiesModification', content: 'OK', obj: this.productItem, type: ProductItemsDialogType.SINGLE});
         this.activeModal.dismiss('OK');
     }
 
     addAndCopyToAll() {
-        this.productItem.prices = this.prices;
-        this.eventManager.broadcast({ name: 'pricesModification', content: 'OK', obj: this.productItem, type: ProductItemsDialogType.ALL});
+        this.productItem.quantities = this.quantities;
+        this.eventManager.broadcast({ name: 'quantitiesModification', content: 'OK', obj: this.productItem, type: ProductItemsDialogType.ALL});
         this.activeModal.dismiss('OK');
     }
 

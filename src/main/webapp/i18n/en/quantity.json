@@ -5,7 +5,8 @@
                 "title": "Quantities",
                 "createLabel": "Create a new Quantity",
                 "createOrEditLabel": "Create or edit a Quantity",
-                "search": "Search for Quantity"
+                "search": "Search for Quantity",
+                "advanceQuantity": "Advance Quantity"
             },
             "created": "A new Quantity is created with identifier {{ param }}",
             "updated": "A Quantity is updated with identifier {{ param }}",
@@ -19,7 +20,15 @@
             "from": "From",
             "to": "To",
             "quantity": "Quantity",
-            "item": "Item"
+            "item": "Item",
+            "tooltip": {
+            	"quantityField": "Quantity, e.g. 999"
+            },
+            "button": {
+            	"addOneMoreTimeslot": "Add one more Timeslot",
+            	"remove": "Remove",
+            	"addAndCopyToALL": "Add and Copy to All"
+            }
         }
     }
 }

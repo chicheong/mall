@@ -8,6 +8,7 @@ import {
     ProductPopupService,
     ProductItemsPopupService,
     PricesPopupService,
+    QuantitiesPopupService,
     ProductComponent,
     ProductDetailComponent,
     ProductDialogComponent,
@@ -16,6 +17,7 @@ import {
     ProductDeleteDialogComponent,
     ProductItemsDialogComponent,
     PricesDialogComponent,
+    QuantitiesDialogComponent,
     productRoute,
     productPopupRoute,
     ProductResolvePagingParams,
@@ -42,6 +44,7 @@ const ENTITY_STATES = [
         ProductDeletePopupComponent,
         ProductItemsDialogComponent,
         PricesDialogComponent,
+        QuantitiesDialogComponent,
         GetItemFromColorSizePipe,
     ],
     entryComponents: [
@@ -52,6 +55,7 @@ const ENTITY_STATES = [
         ProductDeletePopupComponent,
         ProductItemsDialogComponent,
         PricesDialogComponent,
+        QuantitiesDialogComponent,
     ],
     providers: [
         ProductService,
@@ -59,6 +63,7 @@ const ENTITY_STATES = [
         ProductResolvePagingParams,
         ProductItemsPopupService,
         PricesPopupService,
+        QuantitiesPopupService,
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

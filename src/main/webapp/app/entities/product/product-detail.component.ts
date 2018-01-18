@@ -185,6 +185,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                     item.id = this.uuid();
                     item.color = productStyle;
                     item.size = size;
+                    item.quantity = 1;
                     this.product.items.push(item);
                 });
             }
@@ -204,6 +205,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                     item.id = this.uuid();
                     item.color = color;
                     item.size = productStyle;
+                    item.quantity = 1;
                     this.product.items.push(item);
                 });
             }

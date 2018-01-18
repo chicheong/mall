@@ -14,6 +14,8 @@ import { ResponseWrapper } from '../../shared';
 
 import { PricesPopupService } from './prices-popup.service';
 import { PricesDialogComponent } from './prices-dialog.component';
+import { QuantitiesPopupService } from './quantities-popup.service';
+import { QuantitiesDialogComponent } from './quantities-dialog.component';
 
 import { GetItemFromColorSizePipe } from './get-item-from-color-size.pipe';
 
@@ -41,6 +43,7 @@ export class ProductItemsDialogComponent implements OnInit {
     constructor(
         public activeModal: NgbActiveModal,
         private pricesPopupService: PricesPopupService,
+        private quantitiesPopupService: QuantitiesPopupService,
         private jhiAlertService: JhiAlertService,
         private eventManager: JhiEventManager
     ) {
@@ -55,6 +58,7 @@ export class ProductItemsDialogComponent implements OnInit {
         this.sizes = this.product.sizes;
 
         this.registerChangeInPrices();
+        this.registerChangeInQuantities();
     }
 
     registerChangeInPrices() {
@@ -64,6 +68,18 @@ export class ProductItemsDialogComponent implements OnInit {
                     this.updatePrices(response.obj);
                 } else if (response.type === ProductItemsDialogType.ALL) {
                     this.updatePricesForAll(response.obj);
+                }
+            }
+        );
+    }
+
+    registerChangeInQuantities() {
+        this.eventSubscriber = this.eventManager.subscribe(
+            'quantitiesModification', (response) => {
+                if (response.type === ProductItemsDialogType.SINGLE) {
+                    this.updateQuantities(response.obj);
+                } else if (response.type === ProductItemsDialogType.ALL) {
+                    this.updateQuantitiesForAll(response.obj);
                 }
             }
         );
@@ -87,6 +103,24 @@ export class ProductItemsDialogComponent implements OnInit {
         })
     }
 
+    updateQuantities(productItem: ProductItem) {
+        console.error('updateQuantities');
+        this.productItems.forEach((item) => {
+            if (item.id === productItem.id) {
+                console.error('item found');
+                item.quantities = productItem.quantities;
+                return;
+            }
+        })
+    }
+
+    updateQuantitiesForAll(productItem: ProductItem) {
+        console.error('updateQuantitiesForAll');
+        this.productItems.forEach((item) => {
+            item.quantities = productItem.quantities;
+        })
+    }
+
     clear() {
         this.activeModal.dismiss('cancel');
     }
@@ -100,6 +134,11 @@ export class ProductItemsDialogComponent implements OnInit {
     editPrices(item: ProductItem) {
         console.error('item: ' + item);
         this.pricesPopupService.open(PricesDialogComponent as Component, item);
+    }
+
+    editQuantities(item: ProductItem) {
+        console.error('item: ' + item);
+        this.quantitiesPopupService.open(QuantitiesDialogComponent as Component, item);
     }
 
     trackProductStyleById(index: number, item: ProductStyle) {

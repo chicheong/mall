@@ -67,7 +67,7 @@ export class QuantityService {
     /**
      * Convert a returned JSON object to Quantity.
      */
-    private convertItemFromServer(json: any): Quantity {
+    convertItemFromServer(json: any): Quantity {
         const entity: Quantity = Object.assign(new Quantity(), json);
         entity.from = this.dateUtils
             .convertDateTimeFromServer(json.from);
@@ -79,7 +79,7 @@ export class QuantityService {
     /**
      * Convert a Quantity to a JSON which can be sent to the server.
      */
-    private convert(quantity: Quantity): Quantity {
+    convert(quantity: Quantity): Quantity {
         const copy: Quantity = Object.assign({}, quantity);
 
         copy.from = this.dateUtils.toDate(quantity.from);

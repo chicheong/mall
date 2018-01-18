@@ -35,7 +35,7 @@
         					</span>       
         					<span *ngSwitchCase="'QUANTITY'">
 	        					<input type="number" size="1" name="productItem[{{item.id}}]" [(ngModel)]="item.quantity" />
-		        				<button type="button" class="btn btn-default" (click)="clear()">
+		        				<button type="button" class="btn btn-default" (click)="editQuantities(item)">
 						            <span class="fa fa-clock-o"></span>
 						        </button>
         					</span>

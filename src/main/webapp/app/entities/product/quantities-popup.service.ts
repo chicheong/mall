@@ -2,51 +2,47 @@ import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { DatePipe } from '@angular/common';
-import { Product } from './product.model';
-import { ProductService } from './product.service';
+import { Quantity } from '../quantity';
+import { ProductItem } from '../product-item';
 
 @Injectable()
-export class ProductPopupService {
+export class QuantitiesPopupService {
     private ngbModalRef: NgbModalRef;
 
     constructor(
         private datePipe: DatePipe,
         private modalService: NgbModal,
-        private router: Router,
-        private productService: ProductService
+        private router: Router
+
     ) {
         this.ngbModalRef = null;
     }
 
-    open(component: Component, id?: number | any): Promise<NgbModalRef> {
+    open(component: Component, item?: ProductItem): Promise<NgbModalRef> {
         return new Promise<NgbModalRef>((resolve, reject) => {
             const isOpen = this.ngbModalRef !== null;
             if (isOpen) {
                 resolve(this.ngbModalRef);
             }
 
-            if (id) {
-                this.productService.find(id).subscribe((product) => {
-                    product.createdDate = this.datePipe
-                        .transform(product.createdDate, 'yyyy-MM-ddTHH:mm:ss');
-                    product.lastModifiedDate = this.datePipe
-                        .transform(product.lastModifiedDate, 'yyyy-MM-ddTHH:mm:ss');
-                    this.ngbModalRef = this.productModalRef(component, product);
-                    resolve(this.ngbModalRef);
-                });
+            if (item) {
+                // quantity.from = this.datePipe.transform(quantity.from, 'yyyy-MM-ddTHH:mm:ss');
+                // quantity.to = this.datePipe.transform(quantity.to, 'yyyy-MM-ddTHH:mm:ss');
+                this.ngbModalRef = this.quantityModalRef(component, item);
+                resolve(this.ngbModalRef);
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {
-                    this.ngbModalRef = this.productModalRef(component, new Product());
+                    this.ngbModalRef = this.quantityModalRef(component, new ProductItem());
                     resolve(this.ngbModalRef);
                 }, 0);
             }
         });
     }
 
-    productModalRef(component: Component, product: Product): NgbModalRef {
+    quantityModalRef(component: Component, item: ProductItem): NgbModalRef {
         const modalRef = this.modalService.open(component, { size: 'lg', backdrop: 'static'});
-        modalRef.componentInstance.product = product;
+        modalRef.componentInstance.productItem = item;
         modalRef.result.then((result) => {
             this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true, queryParamsHandling: 'merge' });
             this.ngbModalRef = null;

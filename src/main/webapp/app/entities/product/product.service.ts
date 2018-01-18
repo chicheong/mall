@@ -8,13 +8,24 @@ import { JhiDateUtils } from 'ng-jhipster';
 import { Product } from './product.model';
 import { ResponseWrapper, createRequestOption } from '../../shared';
 
+import { Price } from '../price';
+import { Quantity } from '../quantity';
+
+import { PriceService } from '../price/price.service';
+import { QuantityService } from '../quantity/quantity.service';
+
 @Injectable()
 export class ProductService {
 
     private resourceUrl = SERVER_API_URL + 'api/products';
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/products';
 
-    constructor(private http: Http, private dateUtils: JhiDateUtils) { }
+    constructor(
+            private http: Http,
+            private dateUtils: JhiDateUtils,
+            private priceService: PriceService,
+            private quantityService: QuantityService
+    ) { }
 
     create(product: Product): Observable<Product> {
         const copy = this.convert(product);
@@ -73,6 +84,26 @@ export class ProductService {
             .convertDateTimeFromServer(json.createdDate);
         entity.lastModifiedDate = this.dateUtils
             .convertDateTimeFromServer(json.lastModifiedDate);
+        if (entity.items) {
+            entity.items.forEach((item) => {
+                if (item.prices) {
+                    const prices: Price[] = [];
+                    item.prices.forEach((price) => {
+                        const copyPrice = this.priceService.convertItemFromServer(price);
+                        prices.push(copyPrice);
+                    });
+                    item.prices = prices;
+                }
+                if (item.quantities) {
+                    const quantities: Quantity[] = [];
+                    item.quantities.forEach((quantity) => {
+                        const copyQuantity = this.quantityService.convertItemFromServer(quantity);
+                        quantities.push(copyQuantity);
+                    });
+                    item.quantities = quantities;
+                }
+            })
+        }
         return entity;
     }
 
@@ -87,6 +118,26 @@ export class ProductService {
         console.error('product.id: ' + product.id);
         // copy.createdDate = this.dateUtils.toDate(product.createdDate);
         // copy.lastModifiedDate = this.dateUtils.toDate(product.lastModifiedDate);
+        if (copy.items) {
+            copy.items.forEach((item) => {
+                if (item.prices) {
+                    const prices: Price[] = [];
+                    item.prices.forEach((price) => {
+                        const copyPrice = this.priceService.convert(price);
+                        prices.push(copyPrice);
+                    });
+                    item.prices = prices;
+                }
+                if (item.quantities) {
+                    const quantities: Quantity[] = [];
+                    item.quantities.forEach((quantity) => {
+                        const copyQuantity = this.quantityService.convert(quantity);
+                        quantities.push(copyQuantity);
+                    });
+                    item.quantities = quantities;
+                }
+            })
+        }
         return copy;
     }
 }

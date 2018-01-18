@@ -1,0 +1,36 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="confirm()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myQuantityLabel" jhiTranslate="mallApp.quantity.home.advanceQuantity">Advance Quantity</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="clear()">&times;</button>
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+		<div *ngFor="let quantity of quantities; let i=index;" class="col-md-12">
+			From <input type="datetime-local" name="from[{{quantity.id}}]" [(ngModel)]="quantity.from" />
+			To <input type="datetime-local" name="to[{{quantity.id}}]" [(ngModel)]="quantity.to" />
+			<input type="number" name="quantity[{{quantity.id}}]" [(ngModel)]="quantity.quantity" placeholder="{{'mallApp.quantity.tooltip.quantityField' | translate}}" [ngbTooltip]="addTooltip" />
+			<button type="button" class="btn btn-secondary" (click)="remove(i);">
+				<span class="fa fa-times"></span>&nbsp;<span jhiTranslate="mallApp.quantity.button.remove">remove</span>
+			</button>
+		    <ng-template #addTooltip>
+            	<span jhiTranslate="mallApp.quantity.tooltip.quantityField">Quantity, e.g. 999</span>
+            </ng-template>
+		</div>
+		
+		<br /><br />
+		<button type="button" class="btn btn-secondary" (click)="add();">
+			<span class="fa fa-plus"></span>&nbsp;<span jhiTranslate="mallApp.quantity.button.addOneMoreTimeslot">Add one more Timeslot</span>
+		</button>
+        <div>{{editForm.value | json}}
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" [disabled]="editForm.form.invalid" class="btn btn-warning" (click)="addAndCopyToAll();">
+            <span class="fa fa-copy"></span>&nbsp;<span jhiTranslate="mallApp.quantity.button.addAndCopyToALL">Add and Copy to All</span>
+        </button>&nbsp;&nbsp;
+        <button type="submit" [disabled]="editForm.form.invalid" class="btn btn-primary">
+            <span class="fa fa-check-square"></span>&nbsp;<span jhiTranslate="entity.action.confirm">Confirm</span>
+        </button>
+    </div>
+</form>
