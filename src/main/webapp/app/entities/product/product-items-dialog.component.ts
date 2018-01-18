@@ -20,7 +20,9 @@ import { GetItemFromColorSizePipe } from './get-item-from-color-size.pipe';
 export const enum ProductItemsDialogType {
     CODE = 'CODE',
     PRICE = 'PRICE',
-    QUANTITY = 'QUANTITY'
+    QUANTITY = 'QUANTITY',
+    SINGLE = 'SINGLE',
+    ALL = 'ALL'
 }
 
 @Component({
@@ -57,8 +59,13 @@ export class ProductItemsDialogComponent implements OnInit {
 
     registerChangeInPrices() {
         this.eventSubscriber = this.eventManager.subscribe(
-            'pricesModification',
-            (response) => this.updatePrices(response.obj)
+            'pricesModification', (response) => {
+                if (response.type === ProductItemsDialogType.SINGLE) {
+                    this.updatePrices(response.obj);
+                } else if (response.type === ProductItemsDialogType.ALL) {
+                    this.updatePricesForAll(response.obj);
+                }
+            }
         );
     }
 
@@ -70,6 +77,13 @@ export class ProductItemsDialogComponent implements OnInit {
                 item.prices = productItem.prices;
                 return;
             }
+        })
+    }
+
+    updatePricesForAll(productItem: ProductItem) {
+        console.error('updatePricesForAll');
+        this.productItems.forEach((item) => {
+            item.prices = productItem.prices;
         })
     }
 

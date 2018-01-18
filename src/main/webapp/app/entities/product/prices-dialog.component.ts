@@ -6,6 +6,8 @@ import { Observable } from 'rxjs/Rx';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
+import { ProductItemsDialogType } from './product-items-dialog.component';
+
 import { Price } from '../price';
 import { ProductItem, ProductItemService } from '../product-item';
 import { ResponseWrapper } from '../../shared';
@@ -85,7 +87,13 @@ export class PricesDialogComponent implements OnInit {
 
     confirm() {
         this.productItem.prices = this.prices;
-        this.eventManager.broadcast({ name: 'pricesModification', content: 'OK', obj: this.productItem});
+        this.eventManager.broadcast({ name: 'pricesModification', content: 'OK', obj: this.productItem, type: ProductItemsDialogType.SINGLE});
+        this.activeModal.dismiss('OK');
+    }
+
+    addAndCopyToAll() {
+        this.productItem.prices = this.prices;
+        this.eventManager.broadcast({ name: 'pricesModification', content: 'OK', obj: this.productItem, type: ProductItemsDialogType.ALL});
         this.activeModal.dismiss('OK');
     }
 

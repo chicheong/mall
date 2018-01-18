@@ -27,7 +27,8 @@
             },
             "button": {
             	"addOneMoreTimeslot": "加多一個時段",
-            	"remove": "移除"
+            	"remove": "移除",
+            	"addAndCopyToALL": "新增並複製至全部"
             }
         }
     }

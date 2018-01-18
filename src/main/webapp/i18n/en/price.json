@@ -27,7 +27,8 @@
             },
             "button": {
             	"addOneMoreTimeslot": "Add one more Timeslot",
-            	"remove": "Remove"
+            	"remove": "Remove",
+            	"addAndCopyToALL": "Add and Copy to All"
             }
         }
     }
