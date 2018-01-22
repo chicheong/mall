@@ -1,10 +1,12 @@
 package com.wongs.service;
 
+import com.wongs.domain.Price;
 import com.wongs.domain.Product;
 import com.wongs.domain.ProductItem;
 import com.wongs.domain.ProductStyle;
 import com.wongs.repository.ProductRepository;
 import com.wongs.repository.ProductStyleRepository;
+import com.wongs.repository.PriceRepository;
 import com.wongs.repository.ProductItemRepository;
 import com.wongs.repository.search.ProductSearchRepository;
 import com.wongs.repository.search.ProductStyleSearchRepository;
@@ -70,13 +72,22 @@ public class ProductService {
         	product.setShop(shopService.getOne(productDTO.getShopId()));
         }
         product = productRepository.save(product);
+        productSearchRepository.save(product);
         for (ProductStyle productStyle : product.getStyles()) {
         	productStyle.setProduct(product);
         	productStyleRepository.save(productStyle);
         	productStyleSearchRepository.save(productStyle);
         }
+        for (ProductItem productItem : product.getItems()) {
+        	productItem.setProduct(product);
+        	ProductItem nProductItem = productItemRepository.save(productItem);
+        	if (productItem.getPrices() != null) {
+        		for (Price price : productItem.getPrices()) {
+        			price.setItem(nProductItem);
+        		}
+        	}
+        }
         ProductDTO result = productMapper.productToProductDTO(product);
-        productSearchRepository.save(product);
         return result;
     }
 
