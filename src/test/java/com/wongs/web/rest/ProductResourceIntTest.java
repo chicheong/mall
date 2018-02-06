@@ -154,7 +154,7 @@ public class ProductResourceIntTest {
         int databaseSizeBeforeCreate = productRepository.findAll().size();
 
         // Create the Product
-        ProductDTO productDTO = productMapper.productToProductDTO(product);
+        ProductDTO productDTO = productMapper.toDto(product);
         restProductMockMvc.perform(post("/api/products")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(productDTO)))
@@ -190,7 +190,7 @@ public class ProductResourceIntTest {
 
         // Create the Product with an existing ID
         product.setId(1L);
-        ProductDTO productDTO = productMapper.productToProductDTO(product);
+        ProductDTO productDTO = productMapper.toDto(product);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restProductMockMvc.perform(post("/api/products")
@@ -211,7 +211,7 @@ public class ProductResourceIntTest {
         product.setName(null);
 
         // Create the Product, which fails.
-        ProductDTO productDTO = productMapper.productToProductDTO(product);
+        ProductDTO productDTO = productMapper.toDto(product);
 
         restProductMockMvc.perform(post("/api/products")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -302,7 +302,7 @@ public class ProductResourceIntTest {
             .createdDate(UPDATED_CREATED_DATE)
             .lastModifiedBy(UPDATED_LAST_MODIFIED_BY)
             .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE);
-        ProductDTO productDTO = productMapper.productToProductDTO(updatedProduct);
+        ProductDTO productDTO = productMapper.toDto(updatedProduct);
 
         restProductMockMvc.perform(put("/api/products")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -338,7 +338,7 @@ public class ProductResourceIntTest {
         int databaseSizeBeforeUpdate = productRepository.findAll().size();
 
         // Create the Product
-        ProductDTO productDTO = productMapper.productToProductDTO(product);
+        ProductDTO productDTO = productMapper.toDto(product);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restProductMockMvc.perform(put("/api/products")
@@ -432,7 +432,7 @@ public class ProductResourceIntTest {
     @Test
     @Transactional
     public void testEntityFromId() {
-        assertThat(productMapper.productFromId(42L).getId()).isEqualTo(42);
-        assertThat(productMapper.productFromId(null)).isNull();
+        assertThat(productMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(productMapper.fromId(null)).isNull();
     }
 }

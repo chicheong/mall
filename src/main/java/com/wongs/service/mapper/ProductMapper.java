@@ -20,18 +20,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class ProductMapper {
 	
-	public ProductDTO productToProductDTO(Product product) {
+	public ProductDTO toDto(Product product) {
 		return new ProductDTO(product);
 	}
 
-    public Set<ProductDTO> productsToProductDTOs(Set<Product> products) {
+    public Set<ProductDTO> toDto(Set<Product> products) {
         return products.stream()
             .filter(Objects::nonNull)
-            .map(this::productToProductDTO)
+            .map(this::toDto)
             .collect(Collectors.toSet());
     }
 
-    public Product productDTOToProduct(ProductDTO productDTO) {
+    public Product toEntity(ProductDTO productDTO) {
         if (productDTO == null) {
             return null;
         } else {
@@ -49,10 +49,10 @@ public class ProductMapper {
         	product.setLastModifiedBy(productDTO.getLastModifiedBy());
         	product.setLastModifiedDate(productDTO.getLastModifiedDate());
         	
-        	productDTO.getColors().addAll(productDTO.getSizes());
-        	product.setStyles(productDTO.getColors());
+//        	productDTO.getColors().addAll(productDTO.getSizes());
+//        	product.setStyles(productDTO.getColors());
         	
-        	product.setItems(productDTO.getItems());
+//        	product.setItems(productDTO.getItems());
         	product.setCategories(productDTO.getCategories());
         	
         	Shop shop = new Shop();
@@ -63,14 +63,14 @@ public class ProductMapper {
         }
     }
 
-    public Set<Product> productDTOsToProducts(Set<ProductDTO> productDTOs) {
+    public Set<Product> toEntity(Set<ProductDTO> productDTOs) {
         return productDTOs.stream()
             .filter(Objects::nonNull)
-            .map(this::productDTOToProduct)
+            .map(this::toEntity)
             .collect(Collectors.toSet());
     }
 
-    public Product productFromId(Long id) {
+    public Product fromId(Long id) {
         if (id == null) {
             return null;
         }

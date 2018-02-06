@@ -3,11 +3,15 @@ package com.wongs.service.dto;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
+import com.wongs.domain.Price;
 import com.wongs.domain.Product;
 import com.wongs.domain.ProductItem;
 import com.wongs.domain.ProductStyle;
+import com.wongs.domain.Quantity;
 import com.wongs.domain.enumeration.CurrencyType;
 
 /**
@@ -33,6 +37,9 @@ public class ProductItemDTO implements Serializable {
 
     private Product product;
 
+    private Set<PriceDTO> prices = new HashSet<>();
+    private Set<QuantityDTO> quantities = new HashSet<>();
+    
     public ProductItemDTO() {
         // Empty constructor needed for Jackson.
 	}
@@ -48,9 +55,10 @@ public class ProductItemDTO implements Serializable {
 		this.color = productItem.getColor();
 		this.size = productItem.getSize();
 		this.product = productItem.getProduct();
+		
+//		this.prices = productItem.getPrices();
+//		this.quantities = productItem.getQuantities();
 	}
-
-
 
 	public Long getId() {
         return id;
@@ -122,6 +130,22 @@ public class ProductItemDTO implements Serializable {
 
 	public void setProduct(Product product) {
 		this.product = product;
+	}
+
+	public Set<PriceDTO> getPrices() {
+		return prices;
+	}
+
+	public void setPrices(Set<PriceDTO> prices) {
+		this.prices = prices;
+	}
+
+	public Set<QuantityDTO> getQuantities() {
+		return quantities;
+	}
+
+	public void setQuantities(Set<QuantityDTO> quantities) {
+		this.quantities = quantities;
 	}
 
 	@Override

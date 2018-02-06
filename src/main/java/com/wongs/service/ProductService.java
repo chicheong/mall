@@ -67,7 +67,7 @@ public class ProductService {
      */
     public ProductDTO save(ProductDTO productDTO) {
         log.debug("Request to save Product : {}", productDTO);
-        Product product = productMapper.productDTOToProduct(productDTO);
+        Product product = productMapper.toEntity(productDTO);
         if (productDTO.getShopId() != null) {
         	product.setShop(shopService.getOne(productDTO.getShopId()));
         }
@@ -87,7 +87,7 @@ public class ProductService {
         		}
         	}
         }
-        ProductDTO result = productMapper.productToProductDTO(product);
+        ProductDTO result = productMapper.toDto(product);
         return result;
     }
 
@@ -101,7 +101,7 @@ public class ProductService {
     public Page<ProductDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Products");
         return productRepository.findAll(pageable)
-            .map(productMapper::productToProductDTO);
+            .map(productMapper::toDto);
     }
 
     /**
@@ -114,7 +114,7 @@ public class ProductService {
     public ProductDTO findOne(Long id) {
         log.debug("Request to get Product : {}", id);
         Product product = productRepository.findOne(id);
-        return productMapper.productToProductDTO(product);
+        return productMapper.toDto(product);
     }
 
     
@@ -128,10 +128,10 @@ public class ProductService {
     public ProductDTO findOneWithItems(Long id) {
         log.debug("Request to get Product : {}", id);
         if (id == 0) { //TODO: remove this later
-        	return productMapper.productToProductDTO(new Product());
+        	return productMapper.toDto(new Product());
         }else {
 	        Product product = productRepository.findOne(id);
-	        ProductDTO dto = productMapper.productToProductDTO(product);
+	        ProductDTO dto = productMapper.toDto(product);
 	        return dto;
         }
     }
@@ -159,7 +159,7 @@ public class ProductService {
     public Page<ProductDTO> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Products for query {}", query);
         Page<Product> result = productSearchRepository.search(queryStringQuery(query), pageable);
-        return result.map(productMapper::productToProductDTO);
+        return result.map(productMapper::toDto);
     }
     
     /**
@@ -172,6 +172,6 @@ public class ProductService {
     public Set<ProductDTO> findByShopId(Long id) {
         log.debug("Request to get Products By Shop Id : {}", id);
         Set<Product> products = productRepository.findByShopId(id);
-        return productMapper.productsToProductDTOs(products);
+        return productMapper.toDto(products);
     }
 }

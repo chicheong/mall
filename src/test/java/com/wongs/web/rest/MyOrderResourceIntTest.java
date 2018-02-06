@@ -123,7 +123,7 @@ public class MyOrderResourceIntTest {
         int databaseSizeBeforeCreate = myOrderRepository.findAll().size();
 
         // Create the MyOrder
-        MyOrderDTO myOrderDTO = myOrderMapper.myOrderToMyOrderDTO(myOrder);
+        MyOrderDTO myOrderDTO = myOrderMapper.toDto(myOrder);
         restMyOrderMockMvc.perform(post("/api/my-orders")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(myOrderDTO)))
@@ -150,7 +150,7 @@ public class MyOrderResourceIntTest {
 
         // Create the MyOrder with an existing ID
         myOrder.setId(1L);
-        MyOrderDTO myOrderDTO = myOrderMapper.myOrderToMyOrderDTO(myOrder);
+        MyOrderDTO myOrderDTO = myOrderMapper.toDto(myOrder);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restMyOrderMockMvc.perform(post("/api/my-orders")
@@ -222,7 +222,7 @@ public class MyOrderResourceIntTest {
             .currency(UPDATED_CURRENCY)
             .remark(UPDATED_REMARK)
             .status(UPDATED_STATUS);
-        MyOrderDTO myOrderDTO = myOrderMapper.myOrderToMyOrderDTO(updatedMyOrder);
+        MyOrderDTO myOrderDTO = myOrderMapper.toDto(updatedMyOrder);
 
         restMyOrderMockMvc.perform(put("/api/my-orders")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -249,7 +249,7 @@ public class MyOrderResourceIntTest {
         int databaseSizeBeforeUpdate = myOrderRepository.findAll().size();
 
         // Create the MyOrder
-        MyOrderDTO myOrderDTO = myOrderMapper.myOrderToMyOrderDTO(myOrder);
+        MyOrderDTO myOrderDTO = myOrderMapper.toDto(myOrder);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restMyOrderMockMvc.perform(put("/api/my-orders")
@@ -336,7 +336,7 @@ public class MyOrderResourceIntTest {
     @Test
     @Transactional
     public void testEntityFromId() {
-        assertThat(myOrderMapper.myOrderFromId(42L).getId()).isEqualTo(42);
-        assertThat(myOrderMapper.myOrderFromId(null)).isNull();
+        assertThat(myOrderMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(myOrderMapper.fromId(null)).isNull();
     }
 }

@@ -48,9 +48,9 @@ public class ProductDTO implements Serializable {
 
     private ZonedDateTime lastModifiedDate;
 
-    private Set<ProductStyle> colors = new HashSet<>();
-    private Set<ProductStyle> sizes = new HashSet<>();
-    private Set<ProductItem> items = new HashSet<>();
+    private Set<ProductStyleDTO> colors = new HashSet<>();
+    private Set<ProductStyleDTO> sizes = new HashSet<>();
+    private Set<ProductItemDTO> items = new HashSet<>();
     private Set<Category> categories = new HashSet<>();
     private Long shopId;
 
@@ -72,9 +72,9 @@ public class ProductDTO implements Serializable {
     	this.lastModifiedBy = product.getLastModifiedBy();
     	this.lastModifiedDate = product.getLastModifiedDate();
     	
-    	this.colors = product.getStyles().stream().filter(style -> ProductStyleType.SIZE.equals(style.getType())).collect(Collectors.toSet());
-    	this.sizes = product.getStyles().stream().filter(style -> ProductStyleType.COLOR.equals(style.getType())).collect(Collectors.toSet());
-    	this.items = product.getItems();
+//    	this.colors = product.getStyles().stream().filter(style -> ProductStyleType.SIZE.equals(style.getType())).collect(Collectors.toSet());
+//    	this.sizes = product.getStyles().stream().filter(style -> ProductStyleType.COLOR.equals(style.getType())).collect(Collectors.toSet());
+//    	this.items = product.getItems();
     	this.categories = product.getCategories();
     	this.shopId = product.getShop() != null? product.getShop().getId() : 0L;
     }
@@ -176,27 +176,27 @@ public class ProductDTO implements Serializable {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-	public Set<ProductStyle> getColors() {
+	public Set<ProductStyleDTO> getColors() {
 		return colors;
 	}
 
-	public void setColors(Set<ProductStyle> colors) {
+	public void setColors(Set<ProductStyleDTO> colors) {
 		this.colors = colors;
 	}
 
-	public Set<ProductStyle> getSizes() {
+	public Set<ProductStyleDTO> getSizes() {
 		return sizes;
 	}
 
-	public void setSizes(Set<ProductStyle> sizes) {
+	public void setSizes(Set<ProductStyleDTO> sizes) {
 		this.sizes = sizes;
 	}
 
-	public Set<ProductItem> getItems() {
+	public Set<ProductItemDTO> getItems() {
 		return items;
 	}
 
-	public void setItems(Set<ProductItem> items) {
+	public void setItems(Set<ProductItemDTO> items) {
 		this.items = items;
 	}
 
