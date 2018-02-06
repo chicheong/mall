@@ -44,9 +44,9 @@ public class MyOrderService {
      */
     public MyOrderDTO save(MyOrderDTO myOrderDTO) {
         log.debug("Request to save MyOrder : {}", myOrderDTO);
-        MyOrder myOrder = myOrderMapper.myOrderDTOToMyOrder(myOrderDTO);
+        MyOrder myOrder = myOrderMapper.toEntity(myOrderDTO);
         myOrder = myOrderRepository.save(myOrder);
-        MyOrderDTO result = myOrderMapper.myOrderToMyOrderDTO(myOrder);
+        MyOrderDTO result = myOrderMapper.toDto(myOrder);
         myOrderSearchRepository.save(myOrder);
         return result;
     }
@@ -61,7 +61,7 @@ public class MyOrderService {
     public Page<MyOrderDTO> findAll(Pageable pageable) {
         log.debug("Request to get all MyOrders");
         return myOrderRepository.findAll(pageable)
-            .map(myOrderMapper::myOrderToMyOrderDTO);
+            .map(myOrderMapper::toDto);
     }
 
     /**
@@ -74,7 +74,7 @@ public class MyOrderService {
     public MyOrderDTO findOne(Long id) {
         log.debug("Request to get MyOrder : {}", id);
         MyOrder myOrder = myOrderRepository.findOne(id);
-        return myOrderMapper.myOrderToMyOrderDTO(myOrder);
+        return myOrderMapper.toDto(myOrder);
     }
 
     /**
@@ -99,6 +99,6 @@ public class MyOrderService {
     public Page<MyOrderDTO> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of MyOrders for query {}", query);
         Page<MyOrder> result = myOrderSearchRepository.search(queryStringQuery(query), pageable);
-        return result.map(myOrderMapper::myOrderToMyOrderDTO);
+        return result.map(myOrderMapper::toDto);
     }
 }

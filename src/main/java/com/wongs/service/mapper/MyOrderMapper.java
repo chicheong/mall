@@ -1,14 +1,15 @@
 package com.wongs.service.mapper;
 
-import com.wongs.domain.*;
-import com.wongs.service.dto.MyOrderDTO;
-
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.mapstruct.*;
 import org.springframework.stereotype.Service;
+
+import com.wongs.domain.MyAccount;
+import com.wongs.domain.MyOrder;
+import com.wongs.service.dto.MyOrderDTO;
 
 /**
  * Mapper for the entity MyOrder and its DTO MyOrderDTO.
@@ -16,18 +17,25 @@ import org.springframework.stereotype.Service;
 @Service
 public class MyOrderMapper {
 
-	public MyOrderDTO myOrderToMyOrderDTO(MyOrder myOrder) {
+	public MyOrderDTO toDto(MyOrder myOrder) {
 		return new MyOrderDTO(myOrder);
 	}
 
-    public List<MyOrderDTO> myOrdersToMyOrderDTOs(List<MyOrder> myOrders) {
+    public Set<MyOrderDTO> toDto(Set<MyOrder> myOrders) {
         return myOrders.stream()
             .filter(Objects::nonNull)
-            .map(this::myOrderToMyOrderDTO)
+            .map(this::toDto)
+            .collect(Collectors.toSet());
+    }
+	
+    public List<MyOrderDTO> toDto(List<MyOrder> myOrders) {
+        return myOrders.stream()
+            .filter(Objects::nonNull)
+            .map(this::toDto)
             .collect(Collectors.toList());
     }
 
-    public MyOrder myOrderDTOToMyOrder(MyOrderDTO myOrderDTO) {
+    public MyOrder toEntity(MyOrderDTO myOrderDTO) {
         if (myOrderDTO == null) {
             return null;
         } else {
@@ -46,14 +54,21 @@ public class MyOrderMapper {
         }
     }
 
-    public List<MyOrder> myOrderDTOsToMyOrders(List<MyOrderDTO> myOrderDTOs) {
+    public Set<MyOrder> toEntity(Set<MyOrderDTO> myOrderDTOs) {
         return myOrderDTOs.stream()
             .filter(Objects::nonNull)
-            .map(this::myOrderDTOToMyOrder)
+            .map(this::toEntity)
+            .collect(Collectors.toSet());
+    }
+    
+    public List<MyOrder> toEntity(List<MyOrderDTO> myOrderDTOs) {
+        return myOrderDTOs.stream()
+            .filter(Objects::nonNull)
+            .map(this::toEntity)
             .collect(Collectors.toList());
     }
 
-    public MyOrder myOrderFromId(Long id) {
+    public MyOrder fromId(Long id) {
         if (id == null) {
             return null;
         }

@@ -5,6 +5,8 @@ import com.wongs.MallApp;
 import com.wongs.domain.ProductStyle;
 import com.wongs.repository.ProductStyleRepository;
 import com.wongs.repository.search.ProductStyleSearchRepository;
+import com.wongs.service.dto.ProductStyleDTO;
+import com.wongs.service.mapper.ProductStyleMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -56,6 +58,9 @@ public class ProductStyleResourceIntTest {
     private ProductStyleRepository productStyleRepository;
 
     @Autowired
+    private ProductStyleMapper productStyleMapper;
+
+    @Autowired
     private ProductStyleSearchRepository productStyleSearchRepository;
 
     @Autowired
@@ -77,7 +82,7 @@ public class ProductStyleResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ProductStyleResource productStyleResource = new ProductStyleResource(productStyleRepository, productStyleSearchRepository);
+        final ProductStyleResource productStyleResource = new ProductStyleResource(productStyleRepository, productStyleMapper, productStyleSearchRepository);
         this.restProductStyleMockMvc = MockMvcBuilders.standaloneSetup(productStyleResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -112,9 +117,10 @@ public class ProductStyleResourceIntTest {
         int databaseSizeBeforeCreate = productStyleRepository.findAll().size();
 
         // Create the ProductStyle
+        ProductStyleDTO productStyleDTO = productStyleMapper.toDto(productStyle);
         restProductStyleMockMvc.perform(post("/api/product-styles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(productStyle)))
+            .content(TestUtil.convertObjectToJsonBytes(productStyleDTO)))
             .andExpect(status().isCreated());
 
         // Validate the ProductStyle in the database
@@ -138,11 +144,12 @@ public class ProductStyleResourceIntTest {
 
         // Create the ProductStyle with an existing ID
         productStyle.setId(1L);
+        ProductStyleDTO productStyleDTO = productStyleMapper.toDto(productStyle);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restProductStyleMockMvc.perform(post("/api/product-styles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(productStyle)))
+            .content(TestUtil.convertObjectToJsonBytes(productStyleDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the ProductStyle in the database
@@ -209,10 +216,11 @@ public class ProductStyleResourceIntTest {
             .code(UPDATED_CODE)
             .isDefault(UPDATED_IS_DEFAULT)
             .type(UPDATED_TYPE);
+        ProductStyleDTO productStyleDTO = productStyleMapper.toDto(updatedProductStyle);
 
         restProductStyleMockMvc.perform(put("/api/product-styles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedProductStyle)))
+            .content(TestUtil.convertObjectToJsonBytes(productStyleDTO)))
             .andExpect(status().isOk());
 
         // Validate the ProductStyle in the database
@@ -235,11 +243,12 @@ public class ProductStyleResourceIntTest {
         int databaseSizeBeforeUpdate = productStyleRepository.findAll().size();
 
         // Create the ProductStyle
+        ProductStyleDTO productStyleDTO = productStyleMapper.toDto(productStyle);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restProductStyleMockMvc.perform(put("/api/product-styles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(productStyle)))
+            .content(TestUtil.convertObjectToJsonBytes(productStyleDTO)))
             .andExpect(status().isCreated());
 
         // Validate the ProductStyle in the database
@@ -300,5 +309,28 @@ public class ProductStyleResourceIntTest {
         assertThat(productStyle1).isNotEqualTo(productStyle2);
         productStyle1.setId(null);
         assertThat(productStyle1).isNotEqualTo(productStyle2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(ProductStyleDTO.class);
+        ProductStyleDTO productStyleDTO1 = new ProductStyleDTO();
+        productStyleDTO1.setId(1L);
+        ProductStyleDTO productStyleDTO2 = new ProductStyleDTO();
+        assertThat(productStyleDTO1).isNotEqualTo(productStyleDTO2);
+        productStyleDTO2.setId(productStyleDTO1.getId());
+        assertThat(productStyleDTO1).isEqualTo(productStyleDTO2);
+        productStyleDTO2.setId(2L);
+        assertThat(productStyleDTO1).isNotEqualTo(productStyleDTO2);
+        productStyleDTO1.setId(null);
+        assertThat(productStyleDTO1).isNotEqualTo(productStyleDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(productStyleMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(productStyleMapper.fromId(null)).isNull();
     }
 }

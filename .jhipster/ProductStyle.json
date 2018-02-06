@@ -29,7 +29,7 @@
     ],
     "changelogDate": "20171229082716",
     "entityTableName": "product_style",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "no",
     "service": "no",
     "jpaMetamodelFiltering": false

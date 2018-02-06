@@ -8,6 +8,8 @@ import com.wongs.repository.search.QuantitySearchRepository;
 import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
+import com.wongs.service.dto.QuantityDTO;
+import com.wongs.service.mapper.QuantityMapper;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,29 +43,34 @@ public class QuantityResource {
 
     private final QuantityRepository quantityRepository;
 
+    private final QuantityMapper quantityMapper;
+
     private final QuantitySearchRepository quantitySearchRepository;
 
-    public QuantityResource(QuantityRepository quantityRepository, QuantitySearchRepository quantitySearchRepository) {
+    public QuantityResource(QuantityRepository quantityRepository, QuantityMapper quantityMapper, QuantitySearchRepository quantitySearchRepository) {
         this.quantityRepository = quantityRepository;
+        this.quantityMapper = quantityMapper;
         this.quantitySearchRepository = quantitySearchRepository;
     }
 
     /**
      * POST  /quantities : Create a new quantity.
      *
-     * @param quantity the quantity to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new quantity, or with status 400 (Bad Request) if the quantity has already an ID
+     * @param quantityDTO the quantityDTO to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new quantityDTO, or with status 400 (Bad Request) if the quantity has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/quantities")
     @Timed
-    public ResponseEntity<Quantity> createQuantity(@RequestBody Quantity quantity) throws URISyntaxException {
-        log.debug("REST request to save Quantity : {}", quantity);
-        if (quantity.getId() != null) {
+    public ResponseEntity<QuantityDTO> createQuantity(@RequestBody QuantityDTO quantityDTO) throws URISyntaxException {
+        log.debug("REST request to save Quantity : {}", quantityDTO);
+        if (quantityDTO.getId() != null) {
             throw new BadRequestAlertException("A new quantity cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Quantity result = quantityRepository.save(quantity);
-        quantitySearchRepository.save(result);
+        Quantity quantity = quantityMapper.toEntity(quantityDTO);
+        quantity = quantityRepository.save(quantity);
+        QuantityDTO result = quantityMapper.toDto(quantity);
+        quantitySearchRepository.save(quantity);
         return ResponseEntity.created(new URI("/api/quantities/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -72,23 +79,25 @@ public class QuantityResource {
     /**
      * PUT  /quantities : Updates an existing quantity.
      *
-     * @param quantity the quantity to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated quantity,
-     * or with status 400 (Bad Request) if the quantity is not valid,
-     * or with status 500 (Internal Server Error) if the quantity couldn't be updated
+     * @param quantityDTO the quantityDTO to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated quantityDTO,
+     * or with status 400 (Bad Request) if the quantityDTO is not valid,
+     * or with status 500 (Internal Server Error) if the quantityDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/quantities")
     @Timed
-    public ResponseEntity<Quantity> updateQuantity(@RequestBody Quantity quantity) throws URISyntaxException {
-        log.debug("REST request to update Quantity : {}", quantity);
-        if (quantity.getId() == null) {
-            return createQuantity(quantity);
+    public ResponseEntity<QuantityDTO> updateQuantity(@RequestBody QuantityDTO quantityDTO) throws URISyntaxException {
+        log.debug("REST request to update Quantity : {}", quantityDTO);
+        if (quantityDTO.getId() == null) {
+            return createQuantity(quantityDTO);
         }
-        Quantity result = quantityRepository.save(quantity);
-        quantitySearchRepository.save(result);
+        Quantity quantity = quantityMapper.toEntity(quantityDTO);
+        quantity = quantityRepository.save(quantity);
+        QuantityDTO result = quantityMapper.toDto(quantity);
+        quantitySearchRepository.save(quantity);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, quantity.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, quantityDTO.getId().toString()))
             .body(result);
     }
 
@@ -100,31 +109,32 @@ public class QuantityResource {
      */
     @GetMapping("/quantities")
     @Timed
-    public ResponseEntity<List<Quantity>> getAllQuantities(Pageable pageable) {
+    public ResponseEntity<List<QuantityDTO>> getAllQuantities(Pageable pageable) {
         log.debug("REST request to get a page of Quantities");
         Page<Quantity> page = quantityRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/quantities");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(quantityMapper.toDto(page.getContent()), headers, HttpStatus.OK);
     }
 
     /**
      * GET  /quantities/:id : get the "id" quantity.
      *
-     * @param id the id of the quantity to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the quantity, or with status 404 (Not Found)
+     * @param id the id of the quantityDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the quantityDTO, or with status 404 (Not Found)
      */
     @GetMapping("/quantities/{id}")
     @Timed
-    public ResponseEntity<Quantity> getQuantity(@PathVariable Long id) {
+    public ResponseEntity<QuantityDTO> getQuantity(@PathVariable Long id) {
         log.debug("REST request to get Quantity : {}", id);
         Quantity quantity = quantityRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(quantity));
+        QuantityDTO quantityDTO = quantityMapper.toDto(quantity);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(quantityDTO));
     }
 
     /**
      * DELETE  /quantities/:id : delete the "id" quantity.
      *
-     * @param id the id of the quantity to delete
+     * @param id the id of the quantityDTO to delete
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/quantities/{id}")
@@ -146,11 +156,11 @@ public class QuantityResource {
      */
     @GetMapping("/_search/quantities")
     @Timed
-    public ResponseEntity<List<Quantity>> searchQuantities(@RequestParam String query, Pageable pageable) {
+    public ResponseEntity<List<QuantityDTO>> searchQuantities(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Quantities for query {}", query);
         Page<Quantity> page = quantitySearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/quantities");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(quantityMapper.toDto(page.getContent()), headers, HttpStatus.OK);
     }
 
 }

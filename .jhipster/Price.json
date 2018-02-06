@@ -29,7 +29,7 @@
     ],
     "changelogDate": "20170727090141",
     "entityTableName": "price",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pagination",
     "service": "no"
 }

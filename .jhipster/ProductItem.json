@@ -60,7 +60,7 @@
         }
     ],
     "changelogDate": "20170727090138",
-    "dto": "no",
+    "dto": "mapstruct",
     "service": "no",
     "entityTableName": "product_item",
     "jpaMetamodelFiltering": false,

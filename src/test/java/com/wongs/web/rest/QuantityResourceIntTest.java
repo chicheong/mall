@@ -5,6 +5,8 @@ import com.wongs.MallApp;
 import com.wongs.domain.Quantity;
 import com.wongs.repository.QuantityRepository;
 import com.wongs.repository.search.QuantitySearchRepository;
+import com.wongs.service.dto.QuantityDTO;
+import com.wongs.service.mapper.QuantityMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -57,6 +59,9 @@ public class QuantityResourceIntTest {
     private QuantityRepository quantityRepository;
 
     @Autowired
+    private QuantityMapper quantityMapper;
+
+    @Autowired
     private QuantitySearchRepository quantitySearchRepository;
 
     @Autowired
@@ -78,7 +83,7 @@ public class QuantityResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final QuantityResource quantityResource = new QuantityResource(quantityRepository, quantitySearchRepository);
+        final QuantityResource quantityResource = new QuantityResource(quantityRepository, quantityMapper, quantitySearchRepository);
         this.restQuantityMockMvc = MockMvcBuilders.standaloneSetup(quantityResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -112,9 +117,10 @@ public class QuantityResourceIntTest {
         int databaseSizeBeforeCreate = quantityRepository.findAll().size();
 
         // Create the Quantity
+        QuantityDTO quantityDTO = quantityMapper.toDto(quantity);
         restQuantityMockMvc.perform(post("/api/quantities")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(quantity)))
+            .content(TestUtil.convertObjectToJsonBytes(quantityDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Quantity in the database
@@ -139,11 +145,12 @@ public class QuantityResourceIntTest {
 
         // Create the Quantity with an existing ID
         quantity.setId(1L);
+        QuantityDTO quantityDTO = quantityMapper.toDto(quantity);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restQuantityMockMvc.perform(post("/api/quantities")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(quantity)))
+            .content(TestUtil.convertObjectToJsonBytes(quantityDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Quantity in the database
@@ -207,10 +214,11 @@ public class QuantityResourceIntTest {
             .from(UPDATED_FROM)
             .to(UPDATED_TO)
             .quantity(UPDATED_QUANTITY);
+        QuantityDTO quantityDTO = quantityMapper.toDto(updatedQuantity);
 
         restQuantityMockMvc.perform(put("/api/quantities")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedQuantity)))
+            .content(TestUtil.convertObjectToJsonBytes(quantityDTO)))
             .andExpect(status().isOk());
 
         // Validate the Quantity in the database
@@ -234,11 +242,12 @@ public class QuantityResourceIntTest {
         int databaseSizeBeforeUpdate = quantityRepository.findAll().size();
 
         // Create the Quantity
+        QuantityDTO quantityDTO = quantityMapper.toDto(quantity);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restQuantityMockMvc.perform(put("/api/quantities")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(quantity)))
+            .content(TestUtil.convertObjectToJsonBytes(quantityDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Quantity in the database
@@ -298,5 +307,28 @@ public class QuantityResourceIntTest {
         assertThat(quantity1).isNotEqualTo(quantity2);
         quantity1.setId(null);
         assertThat(quantity1).isNotEqualTo(quantity2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(QuantityDTO.class);
+        QuantityDTO quantityDTO1 = new QuantityDTO();
+        quantityDTO1.setId(1L);
+        QuantityDTO quantityDTO2 = new QuantityDTO();
+        assertThat(quantityDTO1).isNotEqualTo(quantityDTO2);
+        quantityDTO2.setId(quantityDTO1.getId());
+        assertThat(quantityDTO1).isEqualTo(quantityDTO2);
+        quantityDTO2.setId(2L);
+        assertThat(quantityDTO1).isNotEqualTo(quantityDTO2);
+        quantityDTO1.setId(null);
+        assertThat(quantityDTO1).isNotEqualTo(quantityDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(quantityMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(quantityMapper.fromId(null)).isNull();
     }
 }

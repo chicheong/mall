@@ -5,6 +5,8 @@ import com.wongs.MallApp;
 import com.wongs.domain.Price;
 import com.wongs.repository.PriceRepository;
 import com.wongs.repository.search.PriceSearchRepository;
+import com.wongs.service.dto.PriceDTO;
+import com.wongs.service.mapper.PriceMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -62,6 +64,9 @@ public class PriceResourceIntTest {
     private PriceRepository priceRepository;
 
     @Autowired
+    private PriceMapper priceMapper;
+
+    @Autowired
     private PriceSearchRepository priceSearchRepository;
 
     @Autowired
@@ -83,7 +88,7 @@ public class PriceResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final PriceResource priceResource = new PriceResource(priceRepository, priceSearchRepository);
+        final PriceResource priceResource = new PriceResource(priceRepository, priceMapper, priceSearchRepository);
         this.restPriceMockMvc = MockMvcBuilders.standaloneSetup(priceResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -118,9 +123,10 @@ public class PriceResourceIntTest {
         int databaseSizeBeforeCreate = priceRepository.findAll().size();
 
         // Create the Price
+        PriceDTO priceDTO = priceMapper.toDto(price);
         restPriceMockMvc.perform(post("/api/prices")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(price)))
+            .content(TestUtil.convertObjectToJsonBytes(priceDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Price in the database
@@ -146,11 +152,12 @@ public class PriceResourceIntTest {
 
         // Create the Price with an existing ID
         price.setId(1L);
+        PriceDTO priceDTO = priceMapper.toDto(price);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restPriceMockMvc.perform(post("/api/prices")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(price)))
+            .content(TestUtil.convertObjectToJsonBytes(priceDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Price in the database
@@ -217,10 +224,11 @@ public class PriceResourceIntTest {
             .to(UPDATED_TO)
             .price(UPDATED_PRICE)
             .currency(UPDATED_CURRENCY);
+        PriceDTO priceDTO = priceMapper.toDto(updatedPrice);
 
         restPriceMockMvc.perform(put("/api/prices")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedPrice)))
+            .content(TestUtil.convertObjectToJsonBytes(priceDTO)))
             .andExpect(status().isOk());
 
         // Validate the Price in the database
@@ -245,11 +253,12 @@ public class PriceResourceIntTest {
         int databaseSizeBeforeUpdate = priceRepository.findAll().size();
 
         // Create the Price
+        PriceDTO priceDTO = priceMapper.toDto(price);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restPriceMockMvc.perform(put("/api/prices")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(price)))
+            .content(TestUtil.convertObjectToJsonBytes(priceDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Price in the database
@@ -310,5 +319,28 @@ public class PriceResourceIntTest {
         assertThat(price1).isNotEqualTo(price2);
         price1.setId(null);
         assertThat(price1).isNotEqualTo(price2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(PriceDTO.class);
+        PriceDTO priceDTO1 = new PriceDTO();
+        priceDTO1.setId(1L);
+        PriceDTO priceDTO2 = new PriceDTO();
+        assertThat(priceDTO1).isNotEqualTo(priceDTO2);
+        priceDTO2.setId(priceDTO1.getId());
+        assertThat(priceDTO1).isEqualTo(priceDTO2);
+        priceDTO2.setId(2L);
+        assertThat(priceDTO1).isNotEqualTo(priceDTO2);
+        priceDTO1.setId(null);
+        assertThat(priceDTO1).isNotEqualTo(priceDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(priceMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(priceMapper.fromId(null)).isNull();
     }
 }
