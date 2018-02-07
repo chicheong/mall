@@ -101,7 +101,6 @@ public class ShopService {
     public ShopDTO findByCode(String code) {
         log.debug("Request to get Shop : {}", code);
         Shop shop = shopRepository.findByCode(code);
-        
         ShopDTO shopDTO = shopMapper.toDto(shop);
         return shopDTO;
     }

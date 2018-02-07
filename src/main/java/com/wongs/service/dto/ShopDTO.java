@@ -43,6 +43,8 @@ public class ShopDTO implements Serializable {
     }
 
     public ShopDTO(Shop shop) {
+    	if (shop == null)
+    		return;
         this.id = shop.getId();
     	this.name = shop.getName();
     	this.code = shop.getCode();

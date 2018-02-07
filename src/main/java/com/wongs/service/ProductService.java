@@ -107,18 +107,18 @@ public class ProductService {
         for (ProductItemDTO productItemDTO : productDTO.getItems()) {
         	ProductItem productItem = productItemMapper.toEntity(productItemDTO);
         	productItem.setProduct(product);
-//        	productItem.setColor(productStyleRepository.findOne(productDTO.getColors().stream().filter(styleDTO -> {
-//        		if (productItemDTO.getColor().getId() != null) {
-//        			return styleDTO.getId().equals(productItemDTO.getColor().getId());
-//        		}else 
-//        			return styleDTO.getTempId().equals(productItemDTO.getColor().getTempId());
-//        	}).findFirst().get().getId()));
-//        	productItem.setSize(productStyleRepository.findOne(productDTO.getSizes().stream().filter(styleDTO -> {
-//        		if (productItemDTO.getSize().getId() != null) {
-//        			return styleDTO.getId().equals(productItemDTO.getSize().getId());
-//        		}else 
-//        			return styleDTO.getTempId().equals(productItemDTO.getSize().getTempId());
-//        	}).findFirst().get().getId()));
+        	productItem.setColor(productStyleRepository.findOne(productDTO.getColors().stream().filter(styleDTO -> {
+        		if (productItemDTO.getColor().getId() != null) {
+        			return styleDTO.getId().equals(productItemDTO.getColor().getId());
+        		}else 
+        			return styleDTO.getTempId().equals(productItemDTO.getColor().getTempId());
+        	}).findFirst().get().getId()));
+        	productItem.setSize(productStyleRepository.findOne(productDTO.getSizes().stream().filter(styleDTO -> {
+        		if (productItemDTO.getSize().getId() != null) {
+        			return styleDTO.getId().equals(productItemDTO.getSize().getId());
+        		}else 
+        			return styleDTO.getTempId().equals(productItemDTO.getSize().getTempId());
+        	}).findFirst().get().getId()));
         	ProductItem nProductItem = productItemRepository.save(productItem);
         	productItemSearchRepository.save(productItem);
 //        	if (productItem.getPrices() != null) {
@@ -127,8 +127,7 @@ public class ProductService {
 //        		}
 //        	}
         }
-        ProductDTO result = productMapper.toDto(product);
-        return result;
+        return findOneWithLists(product.getId());
     }
 
     /**
@@ -174,7 +173,12 @@ public class ProductService {
 	        ProductDTO dto = productMapper.toDto(product);
 	        product.getStyles().stream().filter(style -> ProductStyleType.COLOR.equals(style.getType())).forEach(style -> dto.getColors().add(productStyleMapper.toDto(style)));
 	        product.getStyles().stream().filter(style -> ProductStyleType.SIZE.equals(style.getType())).forEach(style -> dto.getSizes().add(productStyleMapper.toDto(style)));
-	        product.getItems().forEach(item -> dto.getItems().add(productItemMapper.toDto(item)));
+	        product.getItems().forEach(item -> {
+	        	ProductItemDTO productItemDTO = productItemMapper.toDto(item);
+	        	productItemDTO.setColor(productStyleMapper.toDto(item.getColor()));
+	        	productItemDTO.setSize(productStyleMapper.toDto(item.getSize()));
+	        	dto.getItems().add(productItemDTO);
+	        });
 	        return dto;
         }
     }

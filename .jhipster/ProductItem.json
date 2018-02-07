@@ -6,7 +6,7 @@
             "relationshipName": "color",
             "otherEntityName": "productStyle",
             "otherEntityField": "id",
-            "ownerSide": true,
+            "ownerSide": false,
             "otherEntityRelationshipName": "productItem"
         },
         {
@@ -14,7 +14,7 @@
             "relationshipName": "size",
             "otherEntityName": "productStyle",
             "otherEntityField": "id",
-            "ownerSide": true,
+            "ownerSide": false,
             "otherEntityRelationshipName": "productItem"
         },
         {

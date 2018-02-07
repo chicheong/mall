@@ -121,7 +121,8 @@ public class ShopResource {
         	shopDTO = shopService.findOne(Long.valueOf(code));
         else
         	shopDTO = shopService.findByCode(code);
-        shopDTO.setProducts(productService.findByShopId(shopDTO.getId()));
+        if (shopDTO != null)
+        	shopDTO.setProducts(productService.findByShopId(shopDTO.getId()));
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(shopDTO));
     }
     
