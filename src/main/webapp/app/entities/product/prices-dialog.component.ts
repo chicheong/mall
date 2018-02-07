@@ -36,11 +36,10 @@ export class PricesDialogComponent implements OnInit {
             // edited before
             this.prices = this.productItem.prices;
         } else {
-            const itemId = this.productItem.id;
-            if (itemId instanceof Number) {
+            if (this.productItem.id) {
                 // load prices from server
-                console.error('itemId: ' + itemId);
-                this.loadItem(itemId);
+                console.error('this.productItem.id: ' + this.productItem.id);
+                this.loadItem(this.productItem.id);
             } else {
                 // default a price
                 this.initPrice();
@@ -62,13 +61,13 @@ export class PricesDialogComponent implements OnInit {
 
     initPrice() {
         const price: Price = Object.assign(new Price());
-        price.id = this.uuid();
+        price.tempId = this.uuid();
         this.prices = [price];
     }
 
     add() {
         const price: Price = Object.assign(new Price());
-        price.id = this.uuid();
+        price.tempId = this.uuid();
         this.prices.push(price);
     }
 

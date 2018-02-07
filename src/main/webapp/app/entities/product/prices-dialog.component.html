@@ -7,9 +7,9 @@
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
 		<div *ngFor="let price of prices; let i=index;" class="col-md-12">
-			From <input type="datetime-local" name="from[{{price.id}}]" [(ngModel)]="price.from" />
-			To <input type="datetime-local" name="to[{{price.id}}]" [(ngModel)]="price.to" />
-			<input type="number" name="price[{{price.id}}]" [(ngModel)]="price.price" placeholder="{{'mallApp.price.tooltip.priceField' | translate}}" [ngbTooltip]="addTooltip" />
+			From <input type="datetime-local" name="from[{{price.id?price.id:price.tempId}}]" [(ngModel)]="price.from" />
+			To <input type="datetime-local" name="to[{{price.id?price.id:price.tempId}}]" [(ngModel)]="price.to" />
+			<input type="number" name="price[{{price.id?price.id:price.tempId}}]" [(ngModel)]="price.price" placeholder="{{'mallApp.price.tooltip.priceField' | translate}}" [ngbTooltip]="addTooltip" />
 			<button type="button" class="btn btn-secondary" (click)="remove(i);">
 				<span class="fa fa-times"></span>&nbsp;<span jhiTranslate="mallApp.price.button.remove">remove</span>
 			</button>

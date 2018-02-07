@@ -118,25 +118,8 @@ export class ProductService {
         console.error('product.id: ' + product.id);
         // copy.createdDate = this.dateUtils.toDate(product.createdDate);
         // copy.lastModifiedDate = this.dateUtils.toDate(product.lastModifiedDate);
-        if (copy.colors) {
-            copy.colors.forEach((color) => {
-                if (!(color.id instanceof Number)) {
-                    color.id = '';
-                }
-            })
-        }
-        if (copy.sizes) {
-            copy.sizes.forEach((size) => {
-                if (!(size.id instanceof Number)) {
-                    size.id = '';
-                }
-            })
-        }
         if (copy.items) {
             copy.items.forEach((item) => {
-                if (!(item.id instanceof Number)) {
-                    item.id = '';
-                }
                 if (item.prices) {
                     const prices: Price[] = [];
                     item.prices.forEach((price) => {

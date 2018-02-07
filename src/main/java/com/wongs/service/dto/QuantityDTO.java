@@ -14,6 +14,8 @@ import com.wongs.domain.Quantity;
 public class QuantityDTO implements Serializable {
 
     private Long id;
+    
+    private String tempId;
 
     private ZonedDateTime from;
 
@@ -41,9 +43,17 @@ public class QuantityDTO implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
+    }    
 
-    public ZonedDateTime getFrom() {
+    public String getTempId() {
+		return tempId;
+	}
+
+	public void setTempId(String tempId) {
+		this.tempId = tempId;
+	}
+
+	public ZonedDateTime getFrom() {
         return from;
     }
 

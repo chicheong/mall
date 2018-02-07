@@ -14,6 +14,8 @@ import com.wongs.domain.enumeration.ProductStyleType;
 public class ProductStyleDTO implements Serializable {
 
     private Long id;
+    
+    private String tempId;
 
     private String name;
 
@@ -46,7 +48,15 @@ public class ProductStyleDTO implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
+    public String getTempId() {
+		return tempId;
+	}
+
+	public void setTempId(String tempId) {
+		this.tempId = tempId;
+	}
+
+	public String getName() {
         return name;
     }
 

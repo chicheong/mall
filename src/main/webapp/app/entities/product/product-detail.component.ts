@@ -75,43 +75,43 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
     initObjects() {
         const color: ProductStyle = Object.assign(new ProductStyle());
-        color.id = this.uuid();
+        color.tempId = this.uuid();
         color.type = ProductStyleType.COLOR;
         color.name = 'D';
         color.isDefault = true;
         const size: ProductStyle = Object.assign(new ProductStyle());
-        size.id = this.uuid();
+        size.tempId = this.uuid();
         size.type = ProductStyleType.SIZE;
         size.name = 'D';
         size.isDefault = true;
         const color1: ProductStyle = Object.assign(new ProductStyle());
-        color1.id = this.uuid();
+        color1.tempId = this.uuid();
         color1.type = ProductStyleType.COLOR;
         color1.name = 'E';
         const size1: ProductStyle = Object.assign(new ProductStyle());
-        size1.id = this.uuid();
+        size1.tempId = this.uuid();
         size1.type = ProductStyleType.SIZE;
         size1.name = 'F';
 
         this.product.colors = [color, color1];
         this.product.sizes = [size, size1];
         const item: ProductItem = Object.assign(new ProductItem());
-        item.id = this.uuid();
+        item.tempId = this.uuid();
         item.color = color;
         item.size = size;
         item.quantity = 1;
         const item1: ProductItem = Object.assign(new ProductItem());
-        item1.id = this.uuid();
+        item1.tempId = this.uuid();
         item1.color = color;
         item1.size = size1;
         item1.quantity = 1;
         const item2: ProductItem = Object.assign(new ProductItem());
-        item2.id = this.uuid();
+        item2.tempId = this.uuid();
         item2.color = color1;
         item2.size = size;
         item2.quantity = 1;
         const item3: ProductItem = Object.assign(new ProductItem());
-        item3.id = this.uuid();
+        item3.tempId = this.uuid();
         item3.color = color1;
         item3.size = size1;
         item3.quantity = 1;
@@ -123,6 +123,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
             this.product = product;
         });
     }
+
     previousState() {
         window.history.back();
     }
@@ -155,11 +156,15 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
     updateItems(product: Product) {
         let index: number;
-        this.product.items.forEach((oProduct) => {
-            product.items.forEach((nProduct) => {
-                if (oProduct.id === nProduct.id) {
-                    index = this.product.items.indexOf(oProduct);
-                    this.product.items[index] = nProduct;
+        this.product.items.forEach((oProductItem) => {
+            product.items.forEach((nProductItem) => {
+                if (oProductItem.id && oProductItem.id === nProductItem.id) {
+                    index = this.product.items.indexOf(oProductItem);
+                    this.product.items[index] = nProductItem;
+                    return;
+                } else if (oProductItem.tempId && oProductItem.tempId === nProductItem.tempId) {
+                    index = this.product.items.indexOf(oProductItem);
+                    this.product.items[index] = nProductItem;
                     return;
                 }
             })
@@ -170,7 +175,12 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         let index: number;
         if (productStyle.type === ProductStyleType.COLOR) {
             this.product.colors.forEach((color) => {
-                if (color.id === productStyle.id) {
+                if (color.id && color.id === productStyle.id) {
+                    console.error('color found');
+                    index = this.product.colors.indexOf(color);
+                    this.product.colors[index] = productStyle;
+                    return;
+                } else if (color.tempId && color.tempId === productStyle.tempId) {
                     console.error('color found');
                     index = this.product.colors.indexOf(color);
                     this.product.colors[index] = productStyle;
@@ -182,7 +192,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                 let item: ProductItem;
                 this.product.sizes.forEach((size) => {
                     item = Object.assign(new ProductItem());
-                    item.id = this.uuid();
+                    item.tempId = this.uuid();
                     item.color = productStyle;
                     item.size = size;
                     item.quantity = 1;
@@ -191,7 +201,11 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
             }
         } else if (productStyle.type === ProductStyleType.SIZE) {
             this.product.sizes.forEach((size) => {
-                if (size.id === productStyle.id) {
+                if (size.id && size.id === productStyle.id) {
+                    index = this.product.sizes.indexOf(size);
+                    this.product.sizes[index] = productStyle;
+                    return;
+                } else if (size.tempId && size.tempId === productStyle.tempId) {
                     index = this.product.sizes.indexOf(size);
                     this.product.sizes[index] = productStyle;
                     return;
@@ -202,7 +216,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                 let item: ProductItem;
                 this.product.colors.forEach((color) => {
                     item = Object.assign(new ProductItem());
-                    item.id = this.uuid();
+                    item.tempId = this.uuid();
                     item.color = color;
                     item.size = productStyle;
                     item.quantity = 1;
@@ -267,14 +281,14 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
     addColor() {
         const obj: ProductStyle = Object.assign(new ProductStyle());
-        obj.id = this.uuid();
+        obj.tempId = this.uuid();
         obj.type = ProductStyleType.COLOR;
         this.editStyle(obj);
     }
 
     addSize() {
         const obj: ProductStyle = Object.assign(new ProductStyle());
-        obj.id = this.uuid();
+        obj.tempId = this.uuid();
         obj.type = ProductStyleType.SIZE;
         this.editStyle(obj);
     }

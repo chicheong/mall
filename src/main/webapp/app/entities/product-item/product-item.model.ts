@@ -15,7 +15,8 @@ export const enum CurrencyType {
 
 export class ProductItem implements BaseEntity {
     constructor(
-        public id?: any,
+        public id?: number,
+        public tempId?: any,
         public code?: string,
         public isDefault?: boolean,
         public quantity?: number,

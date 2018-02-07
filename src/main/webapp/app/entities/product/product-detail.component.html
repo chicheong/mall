@@ -110,8 +110,8 @@
             <div>
 	  			&nbsp;
 	  		</div>
-	  		<div>
-	  			Price:	<span>{{product.items?product.items[0].currency : 'Fuck you'}} {{product.items?product.items[0].price : 'asshole'}}</span>
+	  		<div *ngIf="product.items">
+	  			Price:	<span>{{product.items[0]?product.items[0].currency : 'Fuck you'}} {{product.items[0]?product.items[0].price : 'asshole'}}</span>
 	  		</div>
 	  		<div>
 	  			You Save: $5.90 (28%)

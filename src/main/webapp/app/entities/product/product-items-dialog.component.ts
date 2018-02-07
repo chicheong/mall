@@ -9,6 +9,8 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
 import { ProductItem } from '../product-item';
 import { ProductStyle } from '../product-style';
+import { Price } from '../price';
+import { Quantity } from '../quantity';
 import { Product } from './product.model';
 import { ResponseWrapper } from '../../shared';
 
@@ -88,7 +90,11 @@ export class ProductItemsDialogComponent implements OnInit {
     updatePrices(productItem: ProductItem) {
         console.error('updatePrices');
         this.productItems.forEach((item) => {
-            if (item.id === productItem.id) {
+            if (item.id && item.id === productItem.id) {
+                console.error('item found');
+                item.prices = productItem.prices;
+                return;
+            } else if (item.tempId && item.tempId === productItem.tempId) {
                 console.error('item found');
                 item.prices = productItem.prices;
                 return;
@@ -99,15 +105,31 @@ export class ProductItemsDialogComponent implements OnInit {
     updatePricesForAll(productItem: ProductItem) {
         console.error('updatePricesForAll');
         this.productItems.forEach((item) => {
-            item.prices = productItem.prices;
+            if (item.id && item.id === productItem.id) {
+                item.prices = productItem.prices;
+            } else if (item.tempId && item.tempId === productItem.tempId) {
+                item.prices = productItem.prices;
+            } else {
+                item.prices = [];
+                productItem.prices.forEach((price) => {
+                    const obj: Price = Object.assign(new Price(), price);
+                    obj.id = undefined;
+                    obj.tempId = this.uuid();
+                    item.prices.push(obj);
+                })
+            }
         })
     }
 
     updateQuantities(productItem: ProductItem) {
         console.error('updateQuantities');
         this.productItems.forEach((item) => {
-            if (item.id === productItem.id) {
-                console.error('item found');
+            if (item.id && item.id === productItem.id) {
+                console.error('item found with id');
+                item.quantities = productItem.quantities;
+                return;
+            } else if (item.tempId && item.tempId === productItem.tempId) {
+                console.error('item found with tempId');
                 item.quantities = productItem.quantities;
                 return;
             }
@@ -118,6 +140,22 @@ export class ProductItemsDialogComponent implements OnInit {
         console.error('updateQuantitiesForAll');
         this.productItems.forEach((item) => {
             item.quantities = productItem.quantities;
+        })
+        this.productItems.forEach((item) => {
+            if (item.id && item.id === productItem.id) {
+                item.quantities = productItem.quantities;
+            } else if (item.tempId && item.tempId === productItem.tempId) {
+                console.error('else if');
+                item.quantities = productItem.quantities;
+            } else {
+                item.quantities = [];
+                productItem.quantities.forEach((quantity) => {
+                    const obj: Quantity = Object.assign(new Quantity(), quantity);
+                    obj.id = undefined;
+                    obj.tempId = this.uuid();
+                    item.quantities.push(obj);
+                })
+            }
         })
     }
 
@@ -147,5 +185,13 @@ export class ProductItemsDialogComponent implements OnInit {
 
     trackProductById(index: number, item: Product) {
         return item.id;
+    }
+
+    private uuid() {
+        return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' + this.s4() + this.s4() + this.s4();
+    }
+
+    private s4() {
+        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
     }
 }

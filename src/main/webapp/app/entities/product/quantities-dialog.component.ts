@@ -36,14 +36,13 @@ export class QuantitiesDialogComponent implements OnInit {
             // edited before
             this.quantities = this.productItem.quantities;
         } else {
-            const itemId = this.productItem.id;
-            if (itemId instanceof Number) {
+            if (this.productItem.id) {
                 // load prices from server
-                console.error('itemId: ' + itemId);
-                this.loadItem(itemId);
+                console.error('this.productItem.id: ' + this.productItem.id);
+                this.loadItem(this.productItem.id);
             } else {
                 // default a price
-                this.initPrice();
+                this.initQuantity();
             }
         }
     }
@@ -55,20 +54,20 @@ export class QuantitiesDialogComponent implements OnInit {
                 this.quantities = productItem.quantities;
             } else {
                 // default a price
-                this.initPrice();
+                this.initQuantity();
             }
         });
     }
 
-    initPrice() {
+    initQuantity() {
         const quantity: Quantity = Object.assign(new Quantity());
-        quantity.id = this.uuid();
+        quantity.tempId = this.uuid();
         this.quantities = [quantity];
     }
 
     add() {
         const quantity: Quantity = Object.assign(new Quantity());
-        quantity.id = this.uuid();
+        quantity.tempId = this.uuid();
         this.quantities.push(quantity);
     }
 

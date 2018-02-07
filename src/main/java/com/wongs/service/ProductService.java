@@ -1,17 +1,9 @@
 package com.wongs.service;
 
-import com.wongs.domain.Price;
-import com.wongs.domain.Product;
-import com.wongs.domain.ProductItem;
-import com.wongs.domain.ProductStyle;
-import com.wongs.repository.ProductRepository;
-import com.wongs.repository.ProductStyleRepository;
-import com.wongs.repository.PriceRepository;
-import com.wongs.repository.ProductItemRepository;
-import com.wongs.repository.search.ProductSearchRepository;
-import com.wongs.repository.search.ProductStyleSearchRepository;
-import com.wongs.service.dto.ProductDTO;
-import com.wongs.service.mapper.ProductMapper;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -19,11 +11,24 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
-
-import java.util.List;
-import java.util.Set;
+import com.wongs.domain.Product;
+import com.wongs.domain.ProductItem;
+import com.wongs.domain.ProductStyle;
+import com.wongs.domain.enumeration.ProductStyleType;
+import com.wongs.repository.ProductItemRepository;
+import com.wongs.repository.ProductRepository;
+import com.wongs.repository.ProductStyleRepository;
+import com.wongs.repository.search.ProductItemSearchRepository;
+import com.wongs.repository.search.ProductSearchRepository;
+import com.wongs.repository.search.ProductStyleSearchRepository;
+import com.wongs.service.dto.ProductDTO;
+import com.wongs.service.dto.ProductItemDTO;
+import com.wongs.service.dto.ProductStyleDTO;
+import com.wongs.service.mapper.PriceMapper;
+import com.wongs.service.mapper.ProductItemMapper;
+import com.wongs.service.mapper.ProductMapper;
+import com.wongs.service.mapper.ProductStyleMapper;
+import com.wongs.service.mapper.QuantityMapper;
 
 /**
  * Service Implementation for managing Product.
@@ -37,23 +42,35 @@ public class ProductService {
     private final ProductRepository productRepository;
 
     private final ProductMapper productMapper;
+    private final ProductStyleMapper productStyleMapper;
+    private final ProductItemMapper productItemMapper;
+    private final PriceMapper priceMapper;
+    private final QuantityMapper quantityMapper;
 
     private final ProductSearchRepository productSearchRepository;
     
     private final ProductItemRepository productItemRepository;
+    private final ProductItemSearchRepository productItemSearchRepository;
     
     private final ShopService shopService;
     
     private final ProductStyleRepository productStyleRepository;
     private final ProductStyleSearchRepository productStyleSearchRepository;
 
-    public ProductService(ProductRepository productRepository, ProductMapper productMapper, ProductSearchRepository productSearchRepository,
-			ProductItemRepository productItemRepository, ShopService shopService, 
+    public ProductService(ProductMapper productMapper, ProductStyleMapper productStyleMapper, ProductItemMapper productItemMapper,
+    		PriceMapper priceMapper, QuantityMapper quantityMapper, ProductRepository productRepository, 
+    		ProductSearchRepository productSearchRepository,
+			ProductItemRepository productItemRepository, ProductItemSearchRepository productItemSearchRepository, ShopService shopService, 
 			ProductStyleRepository productStyleRepository, ProductStyleSearchRepository productStyleSearchRepository) {
-        this.productRepository = productRepository;
-        this.productMapper = productMapper;
+    	this.productMapper = productMapper;
+    	this.productStyleMapper = productStyleMapper;
+    	this.productItemMapper = productItemMapper;
+    	this.priceMapper = priceMapper;
+    	this.quantityMapper = quantityMapper;
+    	this.productRepository = productRepository;
         this.productSearchRepository = productSearchRepository;
         this.productItemRepository = productItemRepository;
+        this.productItemSearchRepository = productItemSearchRepository;
         this.shopService = shopService;
         this.productStyleRepository = productStyleRepository;
         this.productStyleSearchRepository = productStyleSearchRepository;
@@ -73,19 +90,42 @@ public class ProductService {
         }
         product = productRepository.save(product);
         productSearchRepository.save(product);
-        for (ProductStyle productStyle : product.getStyles()) {
+        for (ProductStyleDTO productStyleDTO : productDTO.getColors()) {
+        	ProductStyle productStyle = productStyleMapper.toEntity(productStyleDTO);
         	productStyle.setProduct(product);
-        	productStyleRepository.save(productStyle);
+        	productStyle = productStyleRepository.save(productStyle);
         	productStyleSearchRepository.save(productStyle);
+        	productStyleDTO.setId(productStyle.getId());
         }
-        for (ProductItem productItem : product.getItems()) {
+        for (ProductStyleDTO productStyleDTO : productDTO.getSizes()) {
+        	ProductStyle productStyle = productStyleMapper.toEntity(productStyleDTO);
+        	productStyle.setProduct(product);
+        	productStyle = productStyleRepository.save(productStyle);
+        	productStyleSearchRepository.save(productStyle);
+        	productStyleDTO.setId(productStyle.getId());
+        }
+        for (ProductItemDTO productItemDTO : productDTO.getItems()) {
+        	ProductItem productItem = productItemMapper.toEntity(productItemDTO);
         	productItem.setProduct(product);
+//        	productItem.setColor(productStyleRepository.findOne(productDTO.getColors().stream().filter(styleDTO -> {
+//        		if (productItemDTO.getColor().getId() != null) {
+//        			return styleDTO.getId().equals(productItemDTO.getColor().getId());
+//        		}else 
+//        			return styleDTO.getTempId().equals(productItemDTO.getColor().getTempId());
+//        	}).findFirst().get().getId()));
+//        	productItem.setSize(productStyleRepository.findOne(productDTO.getSizes().stream().filter(styleDTO -> {
+//        		if (productItemDTO.getSize().getId() != null) {
+//        			return styleDTO.getId().equals(productItemDTO.getSize().getId());
+//        		}else 
+//        			return styleDTO.getTempId().equals(productItemDTO.getSize().getTempId());
+//        	}).findFirst().get().getId()));
         	ProductItem nProductItem = productItemRepository.save(productItem);
-        	if (productItem.getPrices() != null) {
-        		for (Price price : productItem.getPrices()) {
-        			price.setItem(nProductItem);
-        		}
-        	}
+        	productItemSearchRepository.save(productItem);
+//        	if (productItem.getPrices() != null) {
+//        		for (Price price : productItem.getPrices()) {
+//        			price.setItem(nProductItem);
+//        		}
+//        	}
         }
         ProductDTO result = productMapper.toDto(product);
         return result;
@@ -125,13 +165,16 @@ public class ProductService {
      *  @return the entity with productItem
      */
     @Transactional(readOnly = true)
-    public ProductDTO findOneWithItems(Long id) {
+    public ProductDTO findOneWithLists(Long id) {
         log.debug("Request to get Product : {}", id);
         if (id == 0) { //TODO: remove this later
         	return productMapper.toDto(new Product());
         }else {
 	        Product product = productRepository.findOne(id);
 	        ProductDTO dto = productMapper.toDto(product);
+	        product.getStyles().stream().filter(style -> ProductStyleType.COLOR.equals(style.getType())).forEach(style -> dto.getColors().add(productStyleMapper.toDto(style)));
+	        product.getStyles().stream().filter(style -> ProductStyleType.SIZE.equals(style.getType())).forEach(style -> dto.getSizes().add(productStyleMapper.toDto(style)));
+	        product.getItems().forEach(item -> dto.getItems().add(productItemMapper.toDto(item)));
 	        return dto;
         }
     }

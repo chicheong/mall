@@ -128,7 +128,7 @@ public class ProductResource {
     @Timed
     public ResponseEntity<ProductDTO> getProduct(@PathVariable Long id) {
         log.debug("REST request to get Product : {}", id);
-        ProductDTO productDTO = productService.findOneWithItems(id);
+        ProductDTO productDTO = productService.findOneWithLists(id);
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(productDTO));
     }
 

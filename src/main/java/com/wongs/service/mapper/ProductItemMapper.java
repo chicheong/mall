@@ -45,8 +45,8 @@ public class ProductItemMapper {
         	productItem.setQuantity(productItemDTO.getQuantity());
         	productItem.setCurrency(productItemDTO.getCurrency());
         	productItem.setPrice(productItemDTO.getPrice());
-        	productItem.setColor(productItemDTO.getColor());
-        	productItem.setSize(productItemDTO.getSize());
+//        	productItem.setColor(productItemDTO.getColor());
+//        	productItem.setSize(productItemDTO.getSize());
     		productItem.setProduct(productItemDTO.getProduct());
             return productItem;
         }

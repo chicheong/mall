@@ -16,6 +16,8 @@ import com.wongs.domain.enumeration.CurrencyType;
 public class PriceDTO implements Serializable {
 
     private Long id;
+    
+    private String tempId;
 
     private ZonedDateTime from;
 
@@ -47,6 +49,14 @@ public class PriceDTO implements Serializable {
     public void setId(Long id) {
         this.id = id;
     }
+
+	public String getTempId() {
+		return tempId;
+	}
+
+	public void setTempId(String tempId) {
+		this.tempId = tempId;
+	}
 
 	public ZonedDateTime getFrom() {
         return from;

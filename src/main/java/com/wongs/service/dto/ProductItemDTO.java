@@ -20,6 +20,8 @@ import com.wongs.domain.enumeration.CurrencyType;
 public class ProductItemDTO implements Serializable {
 
     private Long id;
+    
+    private String tempId;
 
     private String code;
 
@@ -31,9 +33,9 @@ public class ProductItemDTO implements Serializable {
 
     private BigDecimal price;
 
-    private ProductStyle color;
+    private ProductStyleDTO color;
 
-    private ProductStyle size;
+    private ProductStyleDTO size;
 
     private Product product;
 
@@ -52,8 +54,8 @@ public class ProductItemDTO implements Serializable {
 		this.quantity = productItem.getQuantity();
 		this.currency = productItem.getCurrency();
 		this.price = productItem.getPrice();
-		this.color = productItem.getColor();
-		this.size = productItem.getSize();
+//		this.color = productItem.getColor();
+//		this.size = productItem.getSize();
 		this.product = productItem.getProduct();
 		
 //		this.prices = productItem.getPrices();
@@ -68,7 +70,15 @@ public class ProductItemDTO implements Serializable {
         this.id = id;
     }
 
-    public String getCode() {
+    public String getTempId() {
+		return tempId;
+	}
+
+	public void setTempId(String tempId) {
+		this.tempId = tempId;
+	}
+
+	public String getCode() {
         return code;
     }
 
@@ -108,19 +118,19 @@ public class ProductItemDTO implements Serializable {
         this.price = price;
     }
 
-    public ProductStyle getColor() {
+	public ProductStyleDTO getColor() {
 		return color;
 	}
 
-	public void setColor(ProductStyle color) {
+	public void setColor(ProductStyleDTO color) {
 		this.color = color;
 	}
 
-	public ProductStyle getSize() {
+	public ProductStyleDTO getSize() {
 		return size;
 	}
 
-	public void setSize(ProductStyle size) {
+	public void setSize(ProductStyleDTO size) {
 		this.size = size;
 	}
 
