@@ -68,6 +68,7 @@ public class ProductResource {
         productDTO.setLastModifiedDate(ZonedDateTime.ofInstant(today.toInstant(), ZoneId.systemDefault()));
         
         ProductDTO result = productService.save(productDTO);
+        result = productService.findOneWithLists(result.getId());
         log.error(ResponseEntity.created(new URI("/api/products/" + result.getId()))
         .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
         .body(result).toString());
@@ -98,6 +99,7 @@ public class ProductResource {
             return createProduct(productDTO);
         }
         ProductDTO result = productService.save(productDTO);
+        result = productService.findOneWithLists(result.getId());
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, productDTO.getId().toString()))
             .body(result);

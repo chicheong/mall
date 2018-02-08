@@ -42,6 +42,9 @@ public class ProductItemDTO implements Serializable {
     private Set<PriceDTO> prices = new HashSet<>();
     private Set<QuantityDTO> quantities = new HashSet<>();
     
+    private boolean dirtyPrices = false;
+    private boolean dirtyQuantities = false;
+    
     public ProductItemDTO() {
         // Empty constructor needed for Jackson.
 	}
@@ -156,6 +159,22 @@ public class ProductItemDTO implements Serializable {
 
 	public void setQuantities(Set<QuantityDTO> quantities) {
 		this.quantities = quantities;
+	}
+
+	public boolean isDirtyPrices() {
+		return dirtyPrices;
+	}
+
+	public void setDirtyPrices(boolean dirtyPrices) {
+		this.dirtyPrices = dirtyPrices;
+	}
+
+	public boolean isDirtyQuantities() {
+		return dirtyQuantities;
+	}
+
+	public void setDirtyQuantities(boolean dirtyQuantities) {
+		this.dirtyQuantities = dirtyQuantities;
 	}
 
 	@Override

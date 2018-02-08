@@ -1,16 +1,12 @@
 package com.wongs.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import com.wongs.domain.ProductItem;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
-import com.wongs.repository.ProductItemRepository;
-import com.wongs.repository.search.ProductItemSearchRepository;
-import com.wongs.web.rest.errors.BadRequestAlertException;
-import com.wongs.web.rest.util.HeaderUtil;
-import com.wongs.web.rest.util.PaginationUtil;
-import com.wongs.service.dto.ProductItemDTO;
-import com.wongs.service.mapper.ProductItemMapper;
-import io.github.jhipster.web.util.ResponseUtil;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -18,17 +14,29 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.codahale.metrics.annotation.Timed;
+import com.wongs.domain.ProductItem;
+import com.wongs.repository.ProductItemRepository;
+import com.wongs.repository.search.ProductItemSearchRepository;
+import com.wongs.service.dto.ProductItemDTO;
+import com.wongs.service.mapper.PriceMapper;
+import com.wongs.service.mapper.ProductItemMapper;
+import com.wongs.service.mapper.QuantityMapper;
+import com.wongs.web.rest.errors.BadRequestAlertException;
+import com.wongs.web.rest.util.HeaderUtil;
+import com.wongs.web.rest.util.PaginationUtil;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import io.github.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing ProductItem.
@@ -44,12 +52,17 @@ public class ProductItemResource {
     private final ProductItemRepository productItemRepository;
 
     private final ProductItemMapper productItemMapper;
-
+    private final PriceMapper priceMapper;
+    private final QuantityMapper quantityMapper;
+    
     private final ProductItemSearchRepository productItemSearchRepository;
 
-    public ProductItemResource(ProductItemRepository productItemRepository, ProductItemMapper productItemMapper, ProductItemSearchRepository productItemSearchRepository) {
-        this.productItemRepository = productItemRepository;
-        this.productItemMapper = productItemMapper;
+    public ProductItemResource(ProductItemMapper productItemMapper, PriceMapper priceMapper, QuantityMapper quantityMapper,
+    		ProductItemRepository productItemRepository, ProductItemSearchRepository productItemSearchRepository) {
+    	this.productItemMapper = productItemMapper;
+    	this.priceMapper = priceMapper;
+        this.quantityMapper = quantityMapper;
+    	this.productItemRepository = productItemRepository;
         this.productItemSearchRepository = productItemSearchRepository;
     }
 
@@ -126,8 +139,10 @@ public class ProductItemResource {
     @Timed
     public ResponseEntity<ProductItemDTO> getProductItem(@PathVariable Long id) {
         log.debug("REST request to get ProductItem : {}", id);
-        ProductItem productItem = productItemRepository.findOne(id);
+        ProductItem productItem = productItemRepository.findOneWithEagerRelationships(id);
         ProductItemDTO productItemDTO = productItemMapper.toDto(productItem);
+        productItemDTO.setPrices(priceMapper.toDto(productItem.getPrices()));
+        productItemDTO.setQuantities(quantityMapper.toDto(productItem.getQuantities()));
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(productItemDTO));
     }
 

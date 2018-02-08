@@ -93,10 +93,12 @@ export class ProductItemsDialogComponent implements OnInit {
             if (item.id && item.id === productItem.id) {
                 console.error('item found');
                 item.prices = productItem.prices;
+                item.dirtyPrices = true;
                 return;
             } else if (item.tempId && item.tempId === productItem.tempId) {
                 console.error('item found');
                 item.prices = productItem.prices;
+                item.dirtyPrices = true;
                 return;
             }
         })
@@ -118,6 +120,7 @@ export class ProductItemsDialogComponent implements OnInit {
                     item.prices.push(obj);
                 })
             }
+            item.dirtyPrices = true;
         })
     }
 
@@ -127,10 +130,12 @@ export class ProductItemsDialogComponent implements OnInit {
             if (item.id && item.id === productItem.id) {
                 console.error('item found with id');
                 item.quantities = productItem.quantities;
+                item.dirtyQuantities = true;
                 return;
             } else if (item.tempId && item.tempId === productItem.tempId) {
                 console.error('item found with tempId');
                 item.quantities = productItem.quantities;
+                item.dirtyQuantities = true;
                 return;
             }
         })
@@ -156,6 +161,7 @@ export class ProductItemsDialogComponent implements OnInit {
                     item.quantities.push(obj);
                 })
             }
+            item.dirtyQuantities = true;
         })
     }
 

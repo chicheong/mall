@@ -2,7 +2,10 @@ package com.wongs.service;
 
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,16 +14,22 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.wongs.domain.Price;
 import com.wongs.domain.Product;
 import com.wongs.domain.ProductItem;
 import com.wongs.domain.ProductStyle;
+import com.wongs.domain.Quantity;
 import com.wongs.domain.enumeration.ProductStyleType;
+import com.wongs.repository.PriceRepository;
 import com.wongs.repository.ProductItemRepository;
 import com.wongs.repository.ProductRepository;
 import com.wongs.repository.ProductStyleRepository;
+import com.wongs.repository.QuantityRepository;
+import com.wongs.repository.search.PriceSearchRepository;
 import com.wongs.repository.search.ProductItemSearchRepository;
 import com.wongs.repository.search.ProductSearchRepository;
 import com.wongs.repository.search.ProductStyleSearchRepository;
+import com.wongs.repository.search.QuantitySearchRepository;
 import com.wongs.service.dto.ProductDTO;
 import com.wongs.service.dto.ProductItemDTO;
 import com.wongs.service.dto.ProductStyleDTO;
@@ -56,12 +65,19 @@ public class ProductService {
     
     private final ProductStyleRepository productStyleRepository;
     private final ProductStyleSearchRepository productStyleSearchRepository;
+    
+    private final PriceRepository priceRepository;
+    private final PriceSearchRepository priceSearchRepository;
+    private final QuantityRepository quantityRepository;
+    private final QuantitySearchRepository quantitySearchRepository;
 
     public ProductService(ProductMapper productMapper, ProductStyleMapper productStyleMapper, ProductItemMapper productItemMapper,
     		PriceMapper priceMapper, QuantityMapper quantityMapper, ProductRepository productRepository, 
     		ProductSearchRepository productSearchRepository,
 			ProductItemRepository productItemRepository, ProductItemSearchRepository productItemSearchRepository, ShopService shopService, 
-			ProductStyleRepository productStyleRepository, ProductStyleSearchRepository productStyleSearchRepository) {
+			ProductStyleRepository productStyleRepository, ProductStyleSearchRepository productStyleSearchRepository, 
+			PriceRepository priceRepository, PriceSearchRepository priceSearchRepository, 
+			QuantityRepository quantityRepository, QuantitySearchRepository quantitySearchRepository) {
     	this.productMapper = productMapper;
     	this.productStyleMapper = productStyleMapper;
     	this.productItemMapper = productItemMapper;
@@ -74,6 +90,10 @@ public class ProductService {
         this.shopService = shopService;
         this.productStyleRepository = productStyleRepository;
         this.productStyleSearchRepository = productStyleSearchRepository;
+        this.priceRepository = priceRepository;
+        this.priceSearchRepository = priceSearchRepository;
+        this.quantityRepository = quantityRepository;
+        this.quantitySearchRepository = quantitySearchRepository;
     }
 
     /**
@@ -84,18 +104,30 @@ public class ProductService {
      */
     public ProductDTO save(ProductDTO productDTO) {
         log.debug("Request to save Product : {}", productDTO);
+        Product oProduct = productDTO.getId() == null? new Product():productRepository.findOneWithEagerRelationships(productDTO.getId());
+        //Original item and style lists for delete
+        List<ProductItem> oProductItems = new ArrayList<ProductItem>();
+        List<ProductStyle> oProductStyles = new ArrayList<ProductStyle>();
+        oProduct.getStyles().forEach(style -> oProductStyles.add(style));
+        oProduct.getItems().forEach(item -> {
+        	oProductItems.add(item);
+        });
+        
         Product product = productMapper.toEntity(productDTO);
         if (productDTO.getShopId() != null) {
         	product.setShop(shopService.getOne(productDTO.getShopId()));
         }
         product = productRepository.save(product);
         productSearchRepository.save(product);
+        List<Long> productStyleIds = new ArrayList<Long>();
+        List<Long> productItemIds = new ArrayList<Long>();
         for (ProductStyleDTO productStyleDTO : productDTO.getColors()) {
         	ProductStyle productStyle = productStyleMapper.toEntity(productStyleDTO);
         	productStyle.setProduct(product);
         	productStyle = productStyleRepository.save(productStyle);
         	productStyleSearchRepository.save(productStyle);
         	productStyleDTO.setId(productStyle.getId());
+        	productStyleIds.add(productStyle.getId());
         }
         for (ProductStyleDTO productStyleDTO : productDTO.getSizes()) {
         	ProductStyle productStyle = productStyleMapper.toEntity(productStyleDTO);
@@ -103,8 +135,25 @@ public class ProductService {
         	productStyle = productStyleRepository.save(productStyle);
         	productStyleSearchRepository.save(productStyle);
         	productStyleDTO.setId(productStyle.getId());
+        	productStyleIds.add(productStyle.getId());
         }
+        oProductStyles.stream().filter(style -> !productStyleIds.contains(style.getId())).forEach(style -> productStyleRepository.delete(style));
         for (ProductItemDTO productItemDTO : productDTO.getItems()) {
+//        	ProductItem oProductItem = productItemDTO.getId() == null? new ProductItem():productItemRepository.findOneWithEagerRelationships(productItemDTO.getId());
+        	ProductItem oProductItem = productItemDTO.getId() == null? new ProductItem():oProductItems.stream().filter(item -> item.getId().equals(productItemDTO.getId())).findFirst().get();
+        		
+        	for (ProductItem item: oProduct.getItems()) {
+        		log.error("item: " + item.getId());
+        		if (item.getId().equals(productItemDTO.getId())) {
+        			oProductItem = item;
+        		}
+          	}
+        		
+//        	
+        	Set<Price> prices = ConcurrentHashMap.newKeySet();
+//        	oProductItem.getPrices()
+        	Set<Quantity> quantities = oProductItem.getQuantities();
+        	log.error("Sizesssss: " + prices.size() + " " + quantities.size());
         	ProductItem productItem = productItemMapper.toEntity(productItemDTO);
         	productItem.setProduct(product);
         	productItem.setColor(productStyleRepository.findOne(productDTO.getColors().stream().filter(styleDTO -> {
@@ -121,14 +170,42 @@ public class ProductService {
         	}).findFirst().get().getId()));
         	ProductItem nProductItem = productItemRepository.save(productItem);
         	productItemSearchRepository.save(productItem);
-//        	if (productItem.getPrices() != null) {
-//        		for (Price price : productItem.getPrices()) {
-//        			price.setItem(nProductItem);
-//        		}
-//        	}
+        	productItemIds.add(nProductItem.getId());
+        	if (productItemDTO.isDirtyPrices()) {
+        		List<Long> priceIds = new ArrayList<Long>();
+	        	productItemDTO.getPrices().forEach(priceDTO -> {
+	        		Price price = priceMapper.toEntity(priceDTO);
+	        		price.setItem(nProductItem);
+	        		price = priceRepository.save(price);
+	            	priceSearchRepository.save(price);
+	            	priceIds.add(price.getId());
+	        	});
+	        	for (Price price : oProductItem.getPrices()) {
+	        		if (!(priceIds.contains(price.getId()))){
+		            	log.error("Price.getId(): " + price.getId());
+		            	priceRepository.delete(price);
+	        		}
+	        	}
+//	        	oProductItem.getPrices().stream().filter(price -> !priceIds.contains(price.getId())).forEach(price -> {
+//	            	log.error("Price.getId(): " + price.getId());
+//	            	priceRepository.delete(price);
+//	        	});
+        	}
+        	if (productItemDTO.isDirtyQuantities()) {
+        		List<Long> quantityIds = new ArrayList<Long>();
+	        	productItemDTO.getQuantities().forEach(quantityDTO -> {
+	        		Quantity quantity = quantityMapper.toEntity(quantityDTO);
+	        		quantity.setItem(nProductItem);
+	        		quantity = quantityRepository.save(quantity);
+	        		quantitySearchRepository.save(quantity);
+	        		quantityIds.add(quantity.getId());
+	        	});
+//	        	oProductItem.getQuantities().stream().filter(quantity -> !quantityIds.contains(quantity.getId())).forEach(quantity -> quantityRepository.delete(quantity));
+        	}
         }
-        return findOneWithLists(product.getId());
+        return productMapper.toDto(product);
     }
+    
 
     /**
      * Get all the products.

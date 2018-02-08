@@ -32,16 +32,20 @@ export class QuantitiesDialogComponent implements OnInit {
 
     ngOnInit() {
         console.error('productItem.quantities: ' + this.productItem.quantities);
-        if (this.productItem.quantities) {
+        if (this.productItem.dirtyQuantities) {
             // edited before
-            this.quantities = this.productItem.quantities;
+            this.quantities = [];
+            this.productItem.quantities.forEach((quantity) => {
+                const nQuantity: Quantity = Object.assign(new Quantity(), quantity);
+                this.quantities.push(nQuantity);
+            })
         } else {
             if (this.productItem.id) {
-                // load prices from server
+                // load quantities from server
                 console.error('this.productItem.id: ' + this.productItem.id);
                 this.loadItem(this.productItem.id);
             } else {
-                // default a price
+                // default a Quantity
                 this.initQuantity();
             }
         }

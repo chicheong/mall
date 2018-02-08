@@ -32,9 +32,13 @@ export class PricesDialogComponent implements OnInit {
 
     ngOnInit() {
         console.error('productItem.prices: ' + this.productItem.prices);
-        if (this.productItem.prices) {
+        if (this.productItem.dirtyPrices) {
             // edited before
-            this.prices = this.productItem.prices;
+            this.prices = [];
+            this.productItem.prices.forEach((price) => {
+                const nPrice: Price = Object.assign(new Price(), price);
+                this.prices.push(nPrice);
+            })
         } else {
             if (this.productItem.id) {
                 // load prices from server

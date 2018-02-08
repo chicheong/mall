@@ -27,6 +27,8 @@ export class ProductItem implements BaseEntity {
         public prices?: Price[],
         public quantities?: Quantity[],
         public product?: BaseEntity,
+        public dirtyPrices?: boolean,
+        public dirtyQuantities?: boolean,
     ) {
         this.isDefault = false;
     }
