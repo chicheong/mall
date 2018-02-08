@@ -110,7 +110,10 @@ public class ProductService {
         List<ProductStyle> oProductStyles = new ArrayList<ProductStyle>();
         oProduct.getStyles().forEach(style -> oProductStyles.add(style));
         oProduct.getItems().forEach(item -> {
-        	oProductItems.add(item);
+        	ProductItem productItem = item;
+        	item.getPrices().forEach(price -> productItem.getPrices().add(price));
+        	item.getQuantities().forEach(quantity -> productItem.getQuantities().add(quantity));
+        	oProductItems.add(productItem);
         });
         
         Product product = productMapper.toEntity(productDTO);
@@ -139,20 +142,13 @@ public class ProductService {
         }
         oProductStyles.stream().filter(style -> !productStyleIds.contains(style.getId())).forEach(style -> productStyleRepository.delete(style));
         for (ProductItemDTO productItemDTO : productDTO.getItems()) {
-//        	ProductItem oProductItem = productItemDTO.getId() == null? new ProductItem():productItemRepository.findOneWithEagerRelationships(productItemDTO.getId());
         	ProductItem oProductItem = productItemDTO.getId() == null? new ProductItem():oProductItems.stream().filter(item -> item.getId().equals(productItemDTO.getId())).findFirst().get();
-        		
-        	for (ProductItem item: oProduct.getItems()) {
-        		log.error("item: " + item.getId());
-        		if (item.getId().equals(productItemDTO.getId())) {
-        			oProductItem = item;
-        		}
-          	}
-        		
-//        	
-        	Set<Price> prices = ConcurrentHashMap.newKeySet();
-//        	oProductItem.getPrices()
-        	Set<Quantity> quantities = oProductItem.getQuantities();
+        	
+        	List<Price> prices = new ArrayList<Price>();
+        	List<Quantity> quantities = new ArrayList<Quantity>();
+        	oProductItem.getPrices().stream().forEach(price -> prices.add(price));
+        	oProductItem.getQuantities().stream().forEach(quantity -> quantities.add(quantity));
+
         	log.error("Sizesssss: " + prices.size() + " " + quantities.size());
         	ProductItem productItem = productItemMapper.toEntity(productItemDTO);
         	productItem.setProduct(product);
@@ -180,16 +176,13 @@ public class ProductService {
 	            	priceSearchRepository.save(price);
 	            	priceIds.add(price.getId());
 	        	});
-	        	for (Price price : oProductItem.getPrices()) {
+	        	for (Price price : prices) {
 	        		if (!(priceIds.contains(price.getId()))){
 		            	log.error("Price.getId(): " + price.getId());
 		            	priceRepository.delete(price);
 	        		}
 	        	}
-//	        	oProductItem.getPrices().stream().filter(price -> !priceIds.contains(price.getId())).forEach(price -> {
-//	            	log.error("Price.getId(): " + price.getId());
-//	            	priceRepository.delete(price);
-//	        	});
+	        	prices.stream().filter(price -> !priceIds.contains(price.getId())).forEach(price -> priceRepository.delete(price));
         	}
         	if (productItemDTO.isDirtyQuantities()) {
         		List<Long> quantityIds = new ArrayList<Long>();
@@ -200,9 +193,16 @@ public class ProductService {
 	        		quantitySearchRepository.save(quantity);
 	        		quantityIds.add(quantity.getId());
 	        	});
-//	        	oProductItem.getQuantities().stream().filter(quantity -> !quantityIds.contains(quantity.getId())).forEach(quantity -> quantityRepository.delete(quantity));
+	        	for (Quantity quantity : quantities) {
+	        		if (!(quantityIds.contains(quantity.getId()))){
+		            	log.error("Quantity.getId(): " + quantity.getId());
+		            	quantityRepository.delete(quantity);
+	        		}
+	        	}
+	        	quantities.stream().filter(quantity -> !quantityIds.contains(quantity.getId())).forEach(quantity -> quantityRepository.delete(quantity));
         	}
         }
+        oProductItems.stream().filter(item -> !productItemIds.contains(item.getId())).forEach(item -> productItemRepository.delete(item));
         return productMapper.toDto(product);
     }
     

@@ -6,7 +6,9 @@ import com.wongs.domain.ProductItem;
 import com.wongs.repository.ProductItemRepository;
 import com.wongs.repository.search.ProductItemSearchRepository;
 import com.wongs.service.dto.ProductItemDTO;
+import com.wongs.service.mapper.PriceMapper;
 import com.wongs.service.mapper.ProductItemMapper;
+import com.wongs.service.mapper.QuantityMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -63,6 +65,12 @@ public class ProductItemResourceIntTest {
 
     @Autowired
     private ProductItemMapper productItemMapper;
+    
+    @Autowired
+    private PriceMapper priceMapper;
+    
+    @Autowired
+    private QuantityMapper quantityMapper;
 
     @Autowired
     private ProductItemSearchRepository productItemSearchRepository;
@@ -86,7 +94,7 @@ public class ProductItemResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ProductItemResource productItemResource = new ProductItemResource(productItemRepository, productItemMapper, productItemSearchRepository);
+        final ProductItemResource productItemResource = new ProductItemResource(productItemMapper, priceMapper, quantityMapper, productItemRepository, productItemSearchRepository);
         this.restProductItemMockMvc = MockMvcBuilders.standaloneSetup(productItemResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
