@@ -140,7 +140,6 @@ public class ProductService {
         	productStyleDTO.setId(productStyle.getId());
         	productStyleIds.add(productStyle.getId());
         }
-        oProductStyles.stream().filter(style -> !productStyleIds.contains(style.getId())).forEach(style -> productStyleRepository.delete(style));
         for (ProductItemDTO productItemDTO : productDTO.getItems()) {
         	ProductItem oProductItem = productItemDTO.getId() == null? new ProductItem():oProductItems.stream().filter(item -> item.getId().equals(productItemDTO.getId())).findFirst().get();
         	
@@ -176,12 +175,6 @@ public class ProductService {
 	            	priceSearchRepository.save(price);
 	            	priceIds.add(price.getId());
 	        	});
-	        	for (Price price : prices) {
-	        		if (!(priceIds.contains(price.getId()))){
-		            	log.error("Price.getId(): " + price.getId());
-		            	priceRepository.delete(price);
-	        		}
-	        	}
 	        	prices.stream().filter(price -> !priceIds.contains(price.getId())).forEach(price -> priceRepository.delete(price));
         	}
         	if (productItemDTO.isDirtyQuantities()) {
@@ -193,16 +186,11 @@ public class ProductService {
 	        		quantitySearchRepository.save(quantity);
 	        		quantityIds.add(quantity.getId());
 	        	});
-	        	for (Quantity quantity : quantities) {
-	        		if (!(quantityIds.contains(quantity.getId()))){
-		            	log.error("Quantity.getId(): " + quantity.getId());
-		            	quantityRepository.delete(quantity);
-	        		}
-	        	}
 	        	quantities.stream().filter(quantity -> !quantityIds.contains(quantity.getId())).forEach(quantity -> quantityRepository.delete(quantity));
         	}
         }
         oProductItems.stream().filter(item -> !productItemIds.contains(item.getId())).forEach(item -> productItemRepository.delete(item));
+        oProductStyles.stream().filter(style -> !productStyleIds.contains(style.getId())).forEach(style -> productStyleRepository.delete(style));
         return productMapper.toDto(product);
     }
     

@@ -14,7 +14,9 @@ export class ProductStyle implements BaseEntity {
         public isDefault?: boolean,
         public type?: ProductStyleType,
         public product?: BaseEntity,
+        public disabled?: boolean,
     ) {
         this.isDefault = false;
+        this.disabled = false;
     }
 }

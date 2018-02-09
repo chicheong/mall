@@ -43,7 +43,10 @@
             </select>
         </div>
     </div>
-    <div class="modal-footer">
+    <div class="modal-footer">   
+	    <button *ngIf="productStyle.id" type="button" [disabled]="editForm.form.invalid || isSaving" class="btn btn-danger" (click)="delete()">
+	         <span class="fa fa-remove"></span>&nbsp;<span jhiTranslate="entity.action.delete">Delete</span>
+	    </button>    
         <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
             <span class="fa fa-check-square"></span>&nbsp;<span jhiTranslate="entity.action.confirm">Confirm</span>
         </button>

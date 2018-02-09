@@ -3,7 +3,7 @@
 	<div class="row">
 		<jhi-alert-error></jhi-alert-error>
 	</div>
-	<div class="row">
+	<div class="row" *jhiHasAnyAuthority="'ROLE_USER'">
 		<div class="col-md-1"></div>
 		<div class="col-md-3"></div>
 		<div class="col-md-8" [ngSwitch]="isEditing">
@@ -79,16 +79,12 @@
 	  		<div *ngSwitchCase="false">
 	  			<div *ngIf="product.colors">
 		        	<span *ngFor="let color of product.colors">
-		        		<button [disabled]="isSaving" class="btn btn-default" (click)="cancel()">
-		        			<span>{{color.name}}</span>
-		        		</button>
+		        		<button type="button" [disabled]="color.disabled" (click)="changeStyle(color)" [ngClass]="(this.selectedColor == color) ? 'btn-success' : 'btn-light'" class="btn btn-sm">{{color.name}}</button>
 		        	</span>
 				</div>
 				<div *ngIf="product.sizes">
 		        	<span *ngFor="let size of product.sizes">
-		        		<button [disabled]="isSaving" class="btn btn-default" (click)="cancel()">
-		        			<span>{{size.name}}</span>
-		        		</button>
+						<button type="button" [disabled]="size.disabled" (click)="changeStyle(size)" [ngClass]="(this.selectedSize == size) ? 'btn-success' : 'btn-light'" class="btn btn-sm">{{size.name}}</button>
 		        	</span>
 				</div>
 	  		</div>
@@ -110,8 +106,8 @@
             <div>
 	  			&nbsp;
 	  		</div>
-	  		<div *ngIf="product.items">
-	  			Price:	<span>{{product.items[0]?product.items[0].currency : 'Fuck you'}} {{product.items[0]?product.items[0].price : 'asshole'}}</span>
+	  		<div *ngIf="selectedItem.id">
+	  			Price:	<span>{{selectedItem?selectedItem.currency : 'Fuck you'}} {{selectedItem?selectedItem.price : 'asshole'}}</span>
 	  		</div>
 	  		<div>
 	  			You Save: $5.90 (28%)

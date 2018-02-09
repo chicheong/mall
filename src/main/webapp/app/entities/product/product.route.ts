@@ -40,7 +40,7 @@ export const productRoute: Routes = [
         path: 'product/:id',
         component: ProductDetailComponent,
         data: {
-            authorities: ['ROLE_USER'],
+            authorities: [],
             pageTitle: 'mallApp.product.home.title'
         },
         canActivate: [UserRouteAccessService]

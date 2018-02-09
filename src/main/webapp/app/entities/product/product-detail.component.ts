@@ -17,6 +17,10 @@ import { ProductItemsDialogComponent, ProductItemsDialogType } from './product-i
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
+export const enum ProductDetailComponentType {
+    CONFIRM = 'CONFIRM',
+    DELETE = 'DELETE',
+}
 @Component({
     selector: 'jhi-product-detail',
     templateUrl: './product-detail.component.html'
@@ -28,6 +32,9 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     private subscription: Subscription;
     private eventSubscriber: Subscription;
     isEditing: boolean;
+    selectedColor: ProductStyle = {};
+    selectedSize: ProductStyle = {};
+    selectedItem: ProductItem = {};
 
     constructor(
         private eventManager: JhiEventManager,
@@ -122,6 +129,9 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.productService.find(id).subscribe((product) => {
             this.product = product;
         });
+        this.selectedColor = {};
+        this.selectedSize = {};
+        this.selectedItem = {};
     }
 
     previousState() {
@@ -150,7 +160,13 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     registerChangeInProductStyle() {
         this.eventSubscriber = this.eventManager.subscribe(
             'productStyleModification',
-            (response) => this.updateStyle(response.obj)
+            (response) => {
+                if (response.type === ProductDetailComponentType.CONFIRM) {
+                    this.updateStyle(response.obj)
+                } else if (response.type === ProductDetailComponentType.DELETE) {
+                    this.deleteStyle(response.obj)
+                }
+            }
         );
     }
 
@@ -224,6 +240,58 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                 });
             }
         }
+    }
+
+    deleteStyle(productStyle: ProductStyle) {
+        let index: number;
+        if (productStyle.type === ProductStyleType.COLOR) {
+            this.product.colors.forEach((color) => {
+                if (color.id && color.id === productStyle.id) {
+                    index = this.product.colors.indexOf(color);
+                    this.product.colors.splice(index, 1);
+                    return;
+                } else if (color.tempId && color.tempId === productStyle.tempId) {
+                    index = this.product.colors.indexOf(color);
+                    this.product.colors.splice(index, 1);
+                    return;
+                }
+            })
+        } else if (productStyle.type === ProductStyleType.SIZE) {
+            this.product.sizes.forEach((size) => {
+                if (size.id && size.id === productStyle.id) {
+                    index = this.product.sizes.indexOf(size);
+                    this.product.colors.splice(index, 1);
+                    return;
+                } else if (size.tempId && size.tempId === productStyle.tempId) {
+                    index = this.product.sizes.indexOf(size);
+                    this.product.colors.splice(index, 1);
+                    return;
+                }
+            })
+        }
+        this.deleteItems(productStyle);
+    }
+
+    deleteItems(productStyle: ProductStyle) {
+        const productItems: ProductItem[] = [];
+        if (productStyle.type === ProductStyleType.COLOR) {
+            this.product.items.forEach((item) => {
+                if (item.color.id && item.color.id === productStyle.id) {
+                    productItems.push(item);
+                } else if (item.color.tempId && item.color.tempId === productStyle.tempId) {
+                    productItems.push(item);
+                }
+            })
+        } else if (productStyle.type === ProductStyleType.SIZE) {
+            this.product.items.forEach((item) => {
+                if (item.size.id && item.size.id === productStyle.id) {
+                    productItems.push(item);
+                } else if (item.size.tempId && item.size.tempId === productStyle.tempId) {
+                    productItems.push(item);
+                }
+            })
+        }
+        this.product.items = this.product.items.filter((item) => productItems.indexOf(item) === -1);
     }
 
     save() {
@@ -301,6 +369,67 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     editItems(type: ProductItemsDialogType) {
         const copyObj: Product = Object.assign(new Product(), this.product);
         this.productItemsPopupService.open(ProductItemsDialogComponent as Component, copyObj, type);
+    }
+
+    changeStyle(productStyle: ProductStyle) {
+        if (productStyle.type === ProductStyleType.COLOR) {
+            if (this.selectedColor === productStyle) {
+                this.selectedColor = {};
+            } else {
+                this.selectedColor = productStyle;
+            }
+        } else if (productStyle.type === ProductStyleType.SIZE) {
+            if (this.selectedSize === productStyle) {
+                this.selectedSize = {};
+            } else {
+                this.selectedSize = productStyle;
+            }
+        }
+        console.error('selectedColor: ' + this.selectedColor.name);
+        console.error('selectedSize: ' + this.selectedSize.name);
+        this.updateSelectedItem();
+    }
+
+    updateSelectedItem() {
+        if (this.selectedColor.id && this.selectedSize.id) {
+            this.selectedItem = this.product.items.find((item) => item.color.id === this.selectedColor.id && item.size.id === this.selectedSize.id);
+            this.product.items.filter((item) => item.color.id === this.selectedColor.id).forEach((item) => {
+                if (item.quantity <= 0) {
+                    this.product.sizes.find((size) => size.id === item.size.id).disabled = true;
+                } else {
+                    this.product.sizes.find((size) => size.id === item.size.id).disabled = false;
+                }
+            })
+            this.product.items.filter((item) => item.size.id === this.selectedSize.id).forEach((item) => {
+                if (item.quantity <= 0) {
+                    this.product.colors.find((color) => color.id === item.color.id).disabled = true;
+                } else {
+                    this.product.colors.find((color) => color.id === item.color.id).disabled = false;
+                }
+            })
+        } else if (this.selectedColor.id) {
+            this.selectedItem = {};
+            this.product.items.filter((item) => item.color.id === this.selectedColor.id).forEach((item) => {
+                if (item.quantity <= 0) {
+                    this.product.sizes.find((size) => size.id === item.size.id).disabled = true;
+                } else {
+                    this.product.sizes.find((size) => size.id === item.size.id).disabled = false;
+                }
+            })
+        } else if (this.selectedSize.id) {
+            this.selectedItem = {};
+            this.product.items.filter((item) => item.size.id === this.selectedSize.id).forEach((item) => {
+                if (item.quantity <= 0) {
+                    this.product.colors.find((color) => color.id === item.color.id).disabled = true;
+                } else {
+                    this.product.colors.find((color) => color.id === item.color.id).disabled = false;
+                }
+            })
+        } else {
+            this.selectedItem = {};
+            this.product.colors.forEach((color) => color.disabled = false);
+            this.product.sizes.forEach((size) => size.disabled = false);
+        }
     }
 
     private uuid() {
