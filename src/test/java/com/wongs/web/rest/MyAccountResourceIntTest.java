@@ -4,7 +4,10 @@ import com.wongs.MallApp;
 
 import com.wongs.domain.MyAccount;
 import com.wongs.repository.MyAccountRepository;
+import com.wongs.service.MyAccountService;
 import com.wongs.repository.search.MyAccountSearchRepository;
+import com.wongs.service.dto.MyAccountDTO;
+import com.wongs.service.mapper.MyAccountMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -47,6 +50,12 @@ public class MyAccountResourceIntTest {
     private MyAccountRepository myAccountRepository;
 
     @Autowired
+    private MyAccountMapper myAccountMapper;
+
+    @Autowired
+    private MyAccountService myAccountService;
+
+    @Autowired
     private MyAccountSearchRepository myAccountSearchRepository;
 
     @Autowired
@@ -68,7 +77,7 @@ public class MyAccountResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final MyAccountResource myAccountResource = new MyAccountResource(myAccountRepository, myAccountSearchRepository);
+        final MyAccountResource myAccountResource = new MyAccountResource(myAccountService);
         this.restMyAccountMockMvc = MockMvcBuilders.standaloneSetup(myAccountResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -100,9 +109,10 @@ public class MyAccountResourceIntTest {
         int databaseSizeBeforeCreate = myAccountRepository.findAll().size();
 
         // Create the MyAccount
+        MyAccountDTO myAccountDTO = myAccountMapper.toDto(myAccount);
         restMyAccountMockMvc.perform(post("/api/my-accounts")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(myAccount)))
+            .content(TestUtil.convertObjectToJsonBytes(myAccountDTO)))
             .andExpect(status().isCreated());
 
         // Validate the MyAccount in the database
@@ -123,11 +133,12 @@ public class MyAccountResourceIntTest {
 
         // Create the MyAccount with an existing ID
         myAccount.setId(1L);
+        MyAccountDTO myAccountDTO = myAccountMapper.toDto(myAccount);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restMyAccountMockMvc.perform(post("/api/my-accounts")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(myAccount)))
+            .content(TestUtil.convertObjectToJsonBytes(myAccountDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the MyAccount in the database
@@ -185,10 +196,11 @@ public class MyAccountResourceIntTest {
         em.detach(updatedMyAccount);
         updatedMyAccount
             .type(UPDATED_TYPE);
+        MyAccountDTO myAccountDTO = myAccountMapper.toDto(updatedMyAccount);
 
         restMyAccountMockMvc.perform(put("/api/my-accounts")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedMyAccount)))
+            .content(TestUtil.convertObjectToJsonBytes(myAccountDTO)))
             .andExpect(status().isOk());
 
         // Validate the MyAccount in the database
@@ -208,11 +220,12 @@ public class MyAccountResourceIntTest {
         int databaseSizeBeforeUpdate = myAccountRepository.findAll().size();
 
         // Create the MyAccount
+        MyAccountDTO myAccountDTO = myAccountMapper.toDto(myAccount);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restMyAccountMockMvc.perform(put("/api/my-accounts")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(myAccount)))
+            .content(TestUtil.convertObjectToJsonBytes(myAccountDTO)))
             .andExpect(status().isCreated());
 
         // Validate the MyAccount in the database
@@ -270,5 +283,28 @@ public class MyAccountResourceIntTest {
         assertThat(myAccount1).isNotEqualTo(myAccount2);
         myAccount1.setId(null);
         assertThat(myAccount1).isNotEqualTo(myAccount2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(MyAccountDTO.class);
+        MyAccountDTO myAccountDTO1 = new MyAccountDTO();
+        myAccountDTO1.setId(1L);
+        MyAccountDTO myAccountDTO2 = new MyAccountDTO();
+        assertThat(myAccountDTO1).isNotEqualTo(myAccountDTO2);
+        myAccountDTO2.setId(myAccountDTO1.getId());
+        assertThat(myAccountDTO1).isEqualTo(myAccountDTO2);
+        myAccountDTO2.setId(2L);
+        assertThat(myAccountDTO1).isNotEqualTo(myAccountDTO2);
+        myAccountDTO1.setId(null);
+        assertThat(myAccountDTO1).isNotEqualTo(myAccountDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(myAccountMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(myAccountMapper.fromId(null)).isNull();
     }
 }
