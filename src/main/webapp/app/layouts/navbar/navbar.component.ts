@@ -4,7 +4,7 @@ import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService, JhiEventManager } from 'ng-jhipster';
 
 import { ProfileService } from '../profiles/profile.service';
-import { JhiLanguageHelper, Principal, LoginModalService, LoginService } from '../../shared';
+import { JhiLanguageHelper, Principal, LoginModalService, LoginService, User } from '../../shared';
 
 import { Subscription } from 'rxjs/Rx';
 import { VERSION } from '../../app.constants';
@@ -24,8 +24,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
     modalRef: NgbModalRef;
     version: string;
     eventSubscriber: Subscription;
+    user: User;
     accounts: any[];
-    shops: any[];
 
     constructor(
         private loginService: LoginService,
@@ -51,21 +51,22 @@ export class NavbarComponent implements OnInit, OnDestroy {
             this.swaggerEnabled = profileInfo.swaggerEnabled;
         });
         // this.registerChangeInAccount();
-        this.principal.identity().then((account) => {
-            if (account) {
-                if (account.shops) {
-                    this.shops = account.shops;
+
+        if (this.principal.isAuthenticated) {
+            this.principal.identity().then((account) => {
+                if (account) {
+                    this.user = account;
                 }
-            }
-        });
+            });
+        };
         this.registerAuthenticationSuccess();
     }
 
     registerAuthenticationSuccess() {
         this.eventManager.subscribe('authenticationSuccess', (message) => {
             this.principal.identity().then((account) => {
-                if (account.shops) {
-                    this.shops = account.shops;
+                if (account) {
+                    this.user = account;
                 }
             });
         });
@@ -93,9 +94,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
             console.error('Account.email: ' + account.email);
             console.error('Account.userInfo: ' + account.userInfo);
             console.error('Account.shops: ' + account.shops);
-            if (account.shops) {
-                this.shops = account.shops;
-            }
         });
     }
 

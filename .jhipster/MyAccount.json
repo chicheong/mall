@@ -50,7 +50,7 @@
     ],
     "changelogDate": "20170727090127",
     "entityTableName": "my_account",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pagination",
-    "service": "no"
+    "service": "serviceClass"
 }

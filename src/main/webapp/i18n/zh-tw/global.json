@@ -54,7 +54,8 @@
                 "database": "資料庫",
                 "jhipster-needle-menu-add-admin-element": "JHipster will add additional menu entries here (do not translate!)"
             },
-            "language": "語言"
+            "language": "語言",
+            "cart": "購物車"
         },
         "form": {
             "username": "帳號",

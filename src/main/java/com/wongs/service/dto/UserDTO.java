@@ -1,21 +1,22 @@
 package com.wongs.service.dto;
 
-import com.wongs.config.Constants;
-
-import com.wongs.domain.Authority;
-import com.wongs.domain.MyAccount;
-import com.wongs.domain.Shop;
-import com.wongs.domain.User;
-import com.wongs.domain.UserInfo;
-
-import org.hibernate.Hibernate;
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.NotBlank;
-
-import javax.validation.constraints.*;
 import java.time.Instant;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
+
+import com.wongs.config.Constants;
+import com.wongs.domain.Authority;
+import com.wongs.domain.MyAccount;
+import com.wongs.domain.MyOrder;
+import com.wongs.domain.Shop;
+import com.wongs.domain.User;
+import com.wongs.domain.UserInfo;
 
 /**
  * A DTO representing a user, with his authorities.
@@ -66,6 +67,8 @@ public class UserDTO {
     private Set<Shop> shops = null;
     
     private Long shopId;
+    
+    private MyOrder myOrder = null;
 
     public UserDTO() {
         // Empty constructor needed for Jackson.
@@ -240,6 +243,14 @@ public class UserDTO {
 
 	public void setShopId(Long shopId) {
 		this.shopId = shopId;
+	}
+
+	public MyOrder getMyOrder() {
+		return myOrder;
+	}
+
+	public void setMyOrder(MyOrder myOrder) {
+		this.myOrder = myOrder;
 	}
 
 	@Override
