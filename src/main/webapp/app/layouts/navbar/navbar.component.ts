@@ -9,6 +9,10 @@ import { JhiLanguageHelper, Principal, LoginModalService, LoginService, User } f
 import { Subscription } from 'rxjs/Rx';
 import { VERSION } from '../../app.constants';
 
+import { MyAccount, MyAccountService } from '../../entities/my-account';
+import { Shop } from '../../entities/shop';
+import { MyOrder } from '../../entities/my-order';
+
 @Component({
     selector: 'jhi-navbar',
     templateUrl: './navbar.component.html',
@@ -24,7 +28,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     modalRef: NgbModalRef;
     version: string;
     eventSubscriber: Subscription;
-    user: User;
+    myAccount: MyAccount;
     accounts: any[];
 
     constructor(
@@ -35,7 +39,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
         private loginModalService: LoginModalService,
         private profileService: ProfileService,
         private router: Router,
-        private eventManager: JhiEventManager
+        private eventManager: JhiEventManager,
+        private myAccountService: MyAccountService
     ) {
         this.version = VERSION ? 'v' + VERSION : '';
         this.isNavbarCollapsed = true;
@@ -54,8 +59,10 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
         if (this.principal.isAuthenticated) {
             this.principal.identity().then((account) => {
-                if (account) {
-                    this.user = account;
+                if (account && account.myAccount) {
+                    this.myAccountService.find(account.myAccount.id).subscribe((myAccount) => {
+                        this.myAccount = myAccount;
+                    });
                 }
             });
         };
@@ -65,8 +72,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
     registerAuthenticationSuccess() {
         this.eventManager.subscribe('authenticationSuccess', (message) => {
             this.principal.identity().then((account) => {
-                if (account) {
-                    this.user = account;
+                if (account && account.myAccount) {
+                    // this.user = account;
+                    this.myAccountService.find(account.myAccount.id).subscribe((myAccount) => {
+                        this.myAccount = myAccount;
+                    });
                 }
             });
         });

@@ -1,6 +1,5 @@
 import { UserInfo } from './../../entities/user-info';
 import { MyAccount } from './../../entities/my-account';
-import { Shop } from './../../entities/shop';
 
 export class User {
     public id?: any;
@@ -17,8 +16,8 @@ export class User {
     public lastModifiedDate?: Date;
     public password?: string;
     public userInfo?: UserInfo;
+    public myAccount?: MyAccount;
     public myAccounts?: MyAccount[];
-    public shops?: Shop[];
     public shopId?: any;
 
     constructor(
@@ -36,8 +35,8 @@ export class User {
         lastModifiedDate?: Date,
         password?: string,
         userInfo?: UserInfo,
+        myAccount?: MyAccount,
         myAccounts?: MyAccount[],
-        shops?: Shop[],
         shopId?: any
     ) {
         this.id = id ? id : null;
@@ -54,8 +53,8 @@ export class User {
         this.lastModifiedDate = lastModifiedDate ? lastModifiedDate : null;
         this.password = password ? password : null;
         this.userInfo = userInfo ? userInfo : null;
+        this.myAccount = myAccount ? myAccount : null;
         this.myAccounts = myAccounts ? myAccounts : null;
-        this.shops = shops ? shops : null;
         this.shopId = shopId ? shopId : null;
     }
 }

@@ -1,10 +1,7 @@
 package com.wongs.service;
 
-import com.wongs.domain.MyAccount;
-import com.wongs.repository.MyAccountRepository;
-import com.wongs.repository.search.MyAccountSearchRepository;
-import com.wongs.service.dto.MyAccountDTO;
-import com.wongs.service.mapper.MyAccountMapper;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -12,8 +9,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.wongs.domain.MyAccount;
+import com.wongs.repository.MyAccountRepository;
+import com.wongs.repository.search.MyAccountSearchRepository;
+import com.wongs.service.dto.MyAccountDTO;
+import com.wongs.service.mapper.MyAccountMapper;
+import com.wongs.service.mapper.ShopMapper;
 
 /**
  * Service Implementation for managing MyAccount.
@@ -30,10 +31,14 @@ public class MyAccountService {
 
     private final MyAccountSearchRepository myAccountSearchRepository;
 
-    public MyAccountService(MyAccountRepository myAccountRepository, MyAccountMapper myAccountMapper, MyAccountSearchRepository myAccountSearchRepository) {
+    private final ShopMapper shopMapper;
+    
+    public MyAccountService(MyAccountRepository myAccountRepository, MyAccountMapper myAccountMapper, MyAccountSearchRepository myAccountSearchRepository,
+    		ShopMapper shopMapper) {
         this.myAccountRepository = myAccountRepository;
         this.myAccountMapper = myAccountMapper;
         this.myAccountSearchRepository = myAccountSearchRepository;
+        this.shopMapper = shopMapper;
     }
 
     /**
@@ -74,7 +79,10 @@ public class MyAccountService {
     public MyAccountDTO findOne(Long id) {
         log.debug("Request to get MyAccount : {}", id);
         MyAccount myAccount = myAccountRepository.findOneWithEagerRelationships(id);
-        return myAccountMapper.toDto(myAccount);
+        MyAccountDTO myAccountDTO = myAccountMapper.toDto(myAccount);
+        myAccountDTO.setShops(shopMapper.toDto(myAccount.getShops()));
+        myAccountDTO.setMyOrder(null);//TODO: get myOrder with status pending
+        return myAccountDTO;
     }
 
     /**

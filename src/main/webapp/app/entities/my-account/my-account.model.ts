@@ -1,4 +1,5 @@
 import { BaseEntity } from './../../shared';
+import { Shop } from './../shop';
 
 export const enum AccountType {
     'PERSONAL',
@@ -13,7 +14,7 @@ export class MyAccount implements BaseEntity {
         public company?: BaseEntity,
         public department?: BaseEntity,
         public office?: BaseEntity,
-        public shops?: BaseEntity[],
+        public shops?: Shop[],
         public userInfos?: BaseEntity[],
     ) {
     }

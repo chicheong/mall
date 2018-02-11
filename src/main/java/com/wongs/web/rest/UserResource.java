@@ -183,7 +183,7 @@ public class UserResource {
                 .map(user -> {
                 	UserDTO userDTO = new UserDTO(user);
     				userDTO.setUserInfo(userService.getUserInfo(user.getLogin()));
-    				userDTO.setMyAccount(userDTO.getUserInfo() != null? userService.getMyAccountWithShops(userDTO.getUserInfo().getDefaultAccount().getId()) : null);
+    				userDTO.setMyAccount(userDTO.getUserInfo() != null? userService.getMyAccountWithShops(userDTO.getUserInfo().getDefaultAccount().getId()) : null); //TODO: no need with shops
     				return userDTO;
         		})
             );

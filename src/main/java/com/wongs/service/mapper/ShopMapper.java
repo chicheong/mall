@@ -1,14 +1,14 @@
 package com.wongs.service.mapper;
 
-import com.wongs.domain.*;
-import com.wongs.service.dto.ShopDTO;
-
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.mapstruct.*;
 import org.springframework.stereotype.Service;
+
+import com.wongs.domain.Shop;
+import com.wongs.service.dto.ShopDTO;
 
 /**
  * Mapper for the entity Shop and its DTO ShopDTO.
@@ -19,8 +19,15 @@ public class ShopMapper {
     public ShopDTO toDto(Shop shop) {
 		return new ShopDTO(shop);
 	}
+    
+    public Set<ShopDTO> toDto(Set<Shop> shops) {
+        return shops.stream()
+            .filter(Objects::nonNull)
+            .map(this::toDto)
+            .collect(Collectors.toSet());
+    }
 
-    public List<ShopDTO> toDtos(List<Shop> shops) {
+    public List<ShopDTO> toDto(List<Shop> shops) {
         return shops.stream()
             .filter(Objects::nonNull)
             .map(this::toDto)
@@ -46,11 +53,18 @@ public class ShopMapper {
         }
     }
 
-    public List<Shop> toShops(List<ShopDTO> shopDTOs) {
+    public List<Shop> toEntity(List<ShopDTO> shopDTOs) {
         return shopDTOs.stream()
             .filter(Objects::nonNull)
             .map(this::toEntity)
             .collect(Collectors.toList());
+    }
+    
+    public Set<Shop> toEntity(Set<ShopDTO> shopDTOs) {
+        return shopDTOs.stream()
+            .filter(Objects::nonNull)
+            .map(this::toEntity)
+            .collect(Collectors.toSet());
     }
 
     public Shop fromId(Long id) {

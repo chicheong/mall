@@ -1,32 +1,66 @@
 package com.wongs.service.mapper;
 
-import com.wongs.domain.*;
-import com.wongs.service.dto.MyAccountDTO;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.mapstruct.*;
+import org.springframework.stereotype.Service;
+
+import com.wongs.domain.MyAccount;
+import com.wongs.service.dto.MyAccountDTO;
 
 /**
  * Mapper for the entity MyAccount and its DTO MyAccountDTO.
  */
-@Mapper(componentModel = "spring", uses = {CompanyMapper.class, DepartmentMapper.class, OfficeMapper.class, ShopMapper.class})
-public interface MyAccountMapper extends EntityMapper<MyAccountDTO, MyAccount> {
+@Service
+public class MyAccountMapper {
 
-    @Mapping(source = "company.id", target = "companyId")
-    @Mapping(source = "company.code", target = "companyCode")
-    @Mapping(source = "department.id", target = "departmentId")
-    @Mapping(source = "department.code", target = "departmentCode")
-    @Mapping(source = "office.id", target = "officeId")
-    @Mapping(source = "office.code", target = "officeCode")
-    MyAccountDTO toDto(MyAccount myAccount); 
+	public MyAccountDTO toDto(MyAccount myAccount) {
+		return new MyAccountDTO(myAccount);
+	}
 
-    @Mapping(target = "delegations", ignore = true)
-    @Mapping(source = "companyId", target = "company")
-    @Mapping(source = "departmentId", target = "department")
-    @Mapping(source = "officeId", target = "office")
-    @Mapping(target = "userInfos", ignore = true)
-    MyAccount toEntity(MyAccountDTO myAccountDTO);
+    public Set<MyAccountDTO> toDto(Set<MyAccount> myAccounts) {
+        return myAccounts.stream()
+            .filter(Objects::nonNull)
+            .map(this::toDto)
+            .collect(Collectors.toSet());
+    }
+    
+    public List<MyAccountDTO> toDto(List<MyAccount> myAccounts) {
+        return myAccounts.stream()
+            .filter(Objects::nonNull)
+            .map(this::toDto)
+            .collect(Collectors.toList());
+    }
 
-    default MyAccount fromId(Long id) {
+    public MyAccount toEntity(MyAccountDTO myAccountDTO) {
+        if (myAccountDTO == null) {
+            return null;
+        } else {
+        	MyAccount myAccount = new MyAccount();
+        	myAccount.setId(myAccountDTO.getId());
+        	myAccount.setType(myAccountDTO.getType());
+        	
+            return myAccount;
+        }
+    }
+
+    public Set<MyAccount> toEntity(Set<MyAccountDTO> myAccountDTOs) {
+        return myAccountDTOs.stream()
+            .filter(Objects::nonNull)
+            .map(this::toEntity)
+            .collect(Collectors.toSet());	
+    }
+    
+    public List<MyAccount> toEntity(List<MyAccountDTO> myAccountDTOs) {
+        return myAccountDTOs.stream()
+            .filter(Objects::nonNull)
+            .map(this::toEntity)
+            .collect(Collectors.toList());	
+    }
+
+    public MyAccount fromId(Long id) {
         if (id == null) {
             return null;
         }

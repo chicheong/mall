@@ -3,8 +3,15 @@ package com.wongs.service.dto;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
+import java.util.Set;
+
+import com.wongs.domain.Company;
+import com.wongs.domain.Department;
+import com.wongs.domain.MyAccount;
+import com.wongs.domain.MyOrder;
+import com.wongs.domain.Office;
+import com.wongs.domain.Shop;
 import com.wongs.domain.enumeration.AccountType;
 
 /**
@@ -16,20 +23,27 @@ public class MyAccountDTO implements Serializable {
 
     private AccountType type;
 
-    private Long companyId;
+    private Company company;
 
-    private String companyCode;
+//    private String companyCode;
 
-    private Long departmentId;
+    private Department department;
 
-    private String departmentCode;
-
-    private Long officeId;
-
-    private String officeCode;
+    private Office office;
 
     private Set<ShopDTO> shops = new HashSet<>();
-
+    
+    private MyOrder myOrder = null;
+    
+    public MyAccountDTO() {
+        // Empty constructor needed for Jackson.
+	}
+    
+    public MyAccountDTO(MyAccount myAccount) {
+		this.id = myAccount.getId();
+		this.type = myAccount.getType();
+	}
+    
     public Long getId() {
         return id;
     }
@@ -46,55 +60,31 @@ public class MyAccountDTO implements Serializable {
         this.type = type;
     }
 
-    public Long getCompanyId() {
-        return companyId;
-    }
+    public Company getCompany() {
+		return company;
+	}
 
-    public void setCompanyId(Long companyId) {
-        this.companyId = companyId;
-    }
+	public void setCompany(Company company) {
+		this.company = company;
+	}
 
-    public String getCompanyCode() {
-        return companyCode;
-    }
+	public Department getDepartment() {
+		return department;
+	}
 
-    public void setCompanyCode(String companyCode) {
-        this.companyCode = companyCode;
-    }
+	public void setDepartment(Department department) {
+		this.department = department;
+	}
 
-    public Long getDepartmentId() {
-        return departmentId;
-    }
+	public Office getOffice() {
+		return office;
+	}
 
-    public void setDepartmentId(Long departmentId) {
-        this.departmentId = departmentId;
-    }
+	public void setOffice(Office office) {
+		this.office = office;
+	}
 
-    public String getDepartmentCode() {
-        return departmentCode;
-    }
-
-    public void setDepartmentCode(String departmentCode) {
-        this.departmentCode = departmentCode;
-    }
-
-    public Long getOfficeId() {
-        return officeId;
-    }
-
-    public void setOfficeId(Long officeId) {
-        this.officeId = officeId;
-    }
-
-    public String getOfficeCode() {
-        return officeCode;
-    }
-
-    public void setOfficeCode(String officeCode) {
-        this.officeCode = officeCode;
-    }
-
-    public Set<ShopDTO> getShops() {
+	public Set<ShopDTO> getShops() {
         return shops;
     }
 
@@ -102,6 +92,14 @@ public class MyAccountDTO implements Serializable {
         this.shops = shops;
     }
 
+	public MyOrder getMyOrder() {
+		return myOrder;
+	}
+
+	public void setMyOrder(MyOrder myOrder) {
+		this.myOrder = myOrder;
+	}
+    
     @Override
     public boolean equals(Object o) {
         if (this == o) {
