@@ -7,6 +7,7 @@ import javax.persistence.*;
 
 import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.Objects;
 
 import com.wongs.domain.enumeration.CurrencyType;
@@ -29,8 +30,8 @@ public class OrderItem implements Serializable {
     @Column(name = "quantity")
     private Integer quantity;
 
-    @Column(name = "price")
-    private String price;
+    @Column(name = "price", precision=10, scale=2)
+    private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "currency")
@@ -65,16 +66,16 @@ public class OrderItem implements Serializable {
         this.quantity = quantity;
     }
 
-    public String getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public OrderItem price(String price) {
+    public OrderItem price(BigDecimal price) {
         this.price = price;
         return this;
     }
 
-    public void setPrice(String price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
@@ -143,7 +144,7 @@ public class OrderItem implements Serializable {
         return "OrderItem{" +
             "id=" + getId() +
             ", quantity=" + getQuantity() +
-            ", price='" + getPrice() + "'" +
+            ", price=" + getPrice() +
             ", currency='" + getCurrency() + "'" +
             "}";
     }

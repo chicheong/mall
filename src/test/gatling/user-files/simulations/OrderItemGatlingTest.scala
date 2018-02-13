@@ -68,7 +68,7 @@ class OrderItemGatlingTest extends Simulation {
             .exec(http("Create new orderItem")
             .post("/api/order-items")
             .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null, "quantity":"0", "price":"SAMPLE_TEXT", "currency":null}""")).asJSON
+            .body(StringBody("""{"id":null, "quantity":"0", "price":"0", "currency":null}""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_orderItem_url"))).exitHereIfFailed
             .pause(10)

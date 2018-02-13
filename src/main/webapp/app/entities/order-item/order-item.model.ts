@@ -15,7 +15,7 @@ export class OrderItem implements BaseEntity {
     constructor(
         public id?: number,
         public quantity?: number,
-        public price?: string,
+        public price?: number,
         public currency?: CurrencyType,
         public productItem?: ProductItem,
         public order?: BaseEntity,
