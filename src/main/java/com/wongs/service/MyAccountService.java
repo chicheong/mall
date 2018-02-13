@@ -10,10 +10,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.wongs.domain.MyAccount;
+import com.wongs.domain.enumeration.OrderStatus;
 import com.wongs.repository.MyAccountRepository;
 import com.wongs.repository.search.MyAccountSearchRepository;
 import com.wongs.service.dto.MyAccountDTO;
 import com.wongs.service.mapper.MyAccountMapper;
+import com.wongs.service.mapper.MyOrderMapper;
 import com.wongs.service.mapper.ShopMapper;
 
 /**
@@ -33,12 +35,15 @@ public class MyAccountService {
 
     private final ShopMapper shopMapper;
     
+    private final MyOrderService myOrderService;
+    
     public MyAccountService(MyAccountRepository myAccountRepository, MyAccountMapper myAccountMapper, MyAccountSearchRepository myAccountSearchRepository,
-    		ShopMapper shopMapper) {
+    		ShopMapper shopMapper, MyOrderService myOrderService) {
         this.myAccountRepository = myAccountRepository;
         this.myAccountMapper = myAccountMapper;
         this.myAccountSearchRepository = myAccountSearchRepository;
         this.shopMapper = shopMapper;
+        this.myOrderService = myOrderService;
     }
 
     /**
@@ -81,7 +86,7 @@ public class MyAccountService {
         MyAccount myAccount = myAccountRepository.findOneWithEagerRelationships(id);
         MyAccountDTO myAccountDTO = myAccountMapper.toDto(myAccount);
         myAccountDTO.setShops(shopMapper.toDto(myAccount.getShops()));
-        myAccountDTO.setMyOrder(null);//TODO: get myOrder with status pending
+        myAccountDTO.setMyOrder(myOrderService.findByAccountAndStatus(myAccount, OrderStatus.PENDING));
         return myAccountDTO;
     }
 

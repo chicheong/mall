@@ -13,6 +13,7 @@ import { MyOrderService } from './my-order.service';
 export class MyOrderDetailComponent implements OnInit, OnDestroy {
 
     myOrder: MyOrder;
+    isSaving: boolean;
     private subscription: Subscription;
     private eventSubscriber: Subscription;
 
@@ -24,6 +25,7 @@ export class MyOrderDetailComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        this.isSaving = false;
         this.subscription = this.route.params.subscribe((params) => {
             this.load(params['id']);
         });
@@ -35,6 +37,12 @@ export class MyOrderDetailComponent implements OnInit, OnDestroy {
             this.myOrder = myOrder;
         });
     }
+
+    save() {
+        this.isSaving = true;
+        this.isSaving = false;
+    }
+
     previousState() {
         window.history.back();
     }
@@ -49,5 +57,13 @@ export class MyOrderDetailComponent implements OnInit, OnDestroy {
             'myOrderListModification',
             (response) => this.load(this.myOrder.id)
         );
+    }
+
+    canCheckout() {
+        if (this.myOrder && this.myOrder.items && this.myOrder.items.length > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

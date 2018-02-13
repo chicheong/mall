@@ -23,7 +23,7 @@
         },
         {
             "fieldName": "price",
-            "fieldType": "String"
+            "fieldType": "BigDecimal"
         },
         {
             "fieldName": "currency",

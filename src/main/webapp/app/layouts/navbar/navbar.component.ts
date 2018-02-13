@@ -57,12 +57,14 @@ export class NavbarComponent implements OnInit, OnDestroy {
         });
         // this.registerChangeInAccount();
 
-        if (this.principal.isAuthenticated) {
+        if (this.isAuthenticated()) {
             this.principal.identity().then((account) => {
                 if (account && account.myAccount) {
                     this.myAccountService.find(account.myAccount.id).subscribe((myAccount) => {
                         this.myAccount = myAccount;
                     });
+                } else {
+                    this.myAccount = undefined;
                 }
             });
         };
@@ -73,10 +75,11 @@ export class NavbarComponent implements OnInit, OnDestroy {
         this.eventManager.subscribe('authenticationSuccess', (message) => {
             this.principal.identity().then((account) => {
                 if (account && account.myAccount) {
-                    // this.user = account;
                     this.myAccountService.find(account.myAccount.id).subscribe((myAccount) => {
                         this.myAccount = myAccount;
                     });
+                } else {
+                    this.myAccount = undefined;
                 }
             });
         });

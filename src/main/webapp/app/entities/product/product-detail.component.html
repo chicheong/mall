@@ -6,7 +6,7 @@
 	<div class="row" *jhiHasAnyAuthority="'ROLE_USER'">
 		<div class="col-md-1"></div>
 		<div class="col-md-3"></div>
-		<div class="col-md-8" [ngSwitch]="isEditing">
+		<div class="col-md-5" [ngSwitch]="isEditing">
 		    <button type="button" [disabled]="isSaving" class="btn btn-info" (click)="previousState()">
 		        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
 		    </button>

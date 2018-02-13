@@ -206,7 +206,7 @@ enum OrderStatus {
 
 entity OrderItem {
 	quantity Integer,
-	price String,
+	price BigDecimal,
 	currency CurrencyType
 }
 

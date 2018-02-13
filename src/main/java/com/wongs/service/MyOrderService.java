@@ -1,10 +1,10 @@
 package com.wongs.service;
 
-import com.wongs.domain.MyOrder;
-import com.wongs.repository.MyOrderRepository;
-import com.wongs.repository.search.MyOrderSearchRepository;
-import com.wongs.service.dto.MyOrderDTO;
-import com.wongs.service.mapper.MyOrderMapper;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import java.util.Optional;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -12,8 +12,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.wongs.domain.MyAccount;
+import com.wongs.domain.MyOrder;
+import com.wongs.domain.enumeration.OrderStatus;
+import com.wongs.repository.MyOrderRepository;
+import com.wongs.repository.search.MyOrderSearchRepository;
+import com.wongs.service.dto.MyOrderDTO;
+import com.wongs.service.mapper.MyOrderMapper;
 
 /**
  * Service Implementation for managing MyOrder.
@@ -75,6 +80,19 @@ public class MyOrderService {
         log.debug("Request to get MyOrder : {}", id);
         MyOrder myOrder = myOrderRepository.findOne(id);
         return myOrderMapper.toDto(myOrder);
+    }
+    
+    /**
+     * Get one myOrder by id.
+     *
+     * @param id the id of the entity
+     * @return the entity
+     */
+    @Transactional(readOnly = true)
+    public MyOrderDTO findByAccountAndStatus(MyAccount account, OrderStatus status) {
+        log.debug("Request to get MyOrder : {}", account, status);
+        Set<MyOrder> myOrders = myOrderRepository.findByAccountAndStatus(account, status);
+        return myOrderMapper.toDto(myOrders.stream().findFirst().get());
     }
 
     /**

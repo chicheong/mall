@@ -1,0 +1,44 @@
+
+<div *ngIf="myOrder">
+    <h2><span jhiTranslate="mallApp.myOrder.detail.title">My Order</span> {{myOrder.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="mallApp.myOrder.total">Total</span></dt>
+        <dd>
+            <span>{{myOrder.total}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.myOrder.currency">Currency</span></dt>
+        <dd>
+            <span jhiTranslate="{{'mallApp.CurrencyType.' + myOrder.currency}}">{{myOrder.currency}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.myOrder.remark">Remark</span></dt>
+        <dd>
+            <span>{{myOrder.remark}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.myOrder.status">Status</span></dt>
+        <dd>
+            <span jhiTranslate="{{'mallApp.OrderStatus.' + myOrder.status}}">{{myOrder.status}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.myOrder.account">Account</span></dt>
+        <dd>
+            <div *ngIf="myOrder.accountId">
+                <a [routerLink]="['/my-account', myOrder.accountId]">{{myOrder.accountId}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'my-order/'+ myOrder.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

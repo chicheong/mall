@@ -33,7 +33,7 @@ public class MyAccountDTO implements Serializable {
 
     private Set<ShopDTO> shops = new HashSet<>();
     
-    private MyOrder myOrder = null;
+    private MyOrderDTO myOrder = null;
     
     public MyAccountDTO() {
         // Empty constructor needed for Jackson.
@@ -91,16 +91,16 @@ public class MyAccountDTO implements Serializable {
     public void setShops(Set<ShopDTO> shops) {
         this.shops = shops;
     }
-
-	public MyOrder getMyOrder() {
+    
+    public MyOrderDTO getMyOrder() {
 		return myOrder;
 	}
 
-	public void setMyOrder(MyOrder myOrder) {
+	public void setMyOrder(MyOrderDTO myOrder) {
 		this.myOrder = myOrder;
 	}
-    
-    @Override
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
