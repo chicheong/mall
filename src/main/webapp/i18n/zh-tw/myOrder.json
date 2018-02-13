@@ -14,7 +14,7 @@
                 "question": "您確定要刪除 My Order {{ id }} 嗎?"
             },
             "detail": {
-                "title": "My Order"
+                "title": "我的購物車"
             },
             "total": "Total",
             "currency": "Currency",

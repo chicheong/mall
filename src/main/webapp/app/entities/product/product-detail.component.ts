@@ -5,7 +5,7 @@ import { JhiEventManager, JhiAlertService  } from 'ng-jhipster';
 
 import { Product } from './product.model';
 import { ProductService } from './product.service';
-import { Principal } from '../../shared';
+import { LoginModalService, Principal } from '../../shared';
 
 import { ProductItem } from './../product-item';
 import { ProductStyle, ProductStyleType } from './../product-style';
@@ -36,6 +36,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     selectedSize: ProductStyle = {};
     selectedItem: ProductItem = {};
 
+    modalRef: NgbModalRef;
+
     constructor(
         private eventManager: JhiEventManager,
         private productService: ProductService,
@@ -44,7 +46,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         private route: ActivatedRoute,
         private jhiAlertService: JhiAlertService,
         private router: Router,
-        private principal: Principal
+        private principal: Principal,
+        private loginModalService: LoginModalService,
     ) {
     }
 
@@ -78,6 +81,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.registerChangeInProducts();
         this.registerChangeInProductStyle();
         this.registerChangeInProductItems();
+        this.registerAuthenticationSuccess();
     }
 
     initObjects() {
@@ -429,6 +433,29 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
             this.selectedItem = {};
             this.product.colors.forEach((color) => color.disabled = false);
             this.product.sizes.forEach((size) => size.disabled = false);
+        }
+    }
+
+    registerAuthenticationSuccess() {
+        this.eventManager.subscribe('authenticationSuccess', (message) => {
+            this.principal.identity().then((account) => {
+//                this.account = account;
+            });
+        });
+    }
+
+    isAuthenticated() {
+        return this.principal.isAuthenticated();
+    }
+
+    login() {
+        this.modalRef = this.loginModalService.open();
+    }
+
+    addToCart() {
+        if (this.isAuthenticated()) {
+        } else {
+            this.login();
         }
     }
 

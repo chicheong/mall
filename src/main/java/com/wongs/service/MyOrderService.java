@@ -92,7 +92,11 @@ public class MyOrderService {
     public MyOrderDTO findByAccountAndStatus(MyAccount account, OrderStatus status) {
         log.debug("Request to get MyOrder : {}", account, status);
         Set<MyOrder> myOrders = myOrderRepository.findByAccountAndStatus(account, status);
-        return myOrderMapper.toDto(myOrders.stream().findFirst().get());
+        Optional<MyOrder> myOrder = myOrders.stream().findFirst();
+        if (myOrder.isPresent())
+        	return myOrderMapper.toDto(myOrder.get());
+        else
+        	return null;
     }
 
     /**

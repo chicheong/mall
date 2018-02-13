@@ -14,7 +14,7 @@
                 "question": "Are you sure you want to delete My Order {{ id }}?"
             },
             "detail": {
-                "title": "My Order"
+                "title": "My Shopping Cart"
             },
             "total": "Total",
             "currency": "Currency",

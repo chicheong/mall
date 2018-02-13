@@ -1,6 +1,7 @@
 package com.wongs.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wongs.security.SecurityUtils;
 import com.wongs.service.MyAccountService;
 import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
