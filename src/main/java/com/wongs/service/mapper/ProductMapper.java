@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 public class ProductMapper {
 	
 	public ProductDTO toDto(Product product) {
+		if (product == null) return null;
 		return new ProductDTO(product);
 	}
 

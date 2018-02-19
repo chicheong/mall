@@ -5,12 +5,15 @@ import { SERVER_API_URL } from '../../app.constants';
 
 import { MyOrder } from './my-order.model';
 import { ResponseWrapper, createRequestOption } from '../../shared';
+import { ProductItem } from './../product-item';
+import { OrderItem } from './../order-item';
 
 @Injectable()
 export class MyOrderService {
 
     private resourceUrl = SERVER_API_URL + 'api/my-orders';
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/my-orders';
+    private resourceCartUrl = SERVER_API_URL + 'api/my-cart';
 
     constructor(private http: Http) { }
 
@@ -76,5 +79,19 @@ export class MyOrderService {
     private convert(myOrder: MyOrder): MyOrder {
         const copy: MyOrder = Object.assign({}, myOrder);
         return copy;
+    }
+
+    addToCart(productItem: ProductItem, quantity: number): Observable<MyOrder> {
+        const copy: ProductItem = Object.assign({}, productItem);
+        const orderItem: OrderItem = Object.assign({});
+        orderItem.productItem = copy;
+        orderItem.quantity = quantity;
+        orderItem.currency = copy.currency;
+        console.error('copy.currency: ' + copy.currency);
+        orderItem.price = copy.price;
+        return this.http.post(this.resourceCartUrl, orderItem).map((res: Response) => {
+            const jsonResponse = res.json();
+            return this.convertItemFromServer(jsonResponse);
+        });
     }
 }

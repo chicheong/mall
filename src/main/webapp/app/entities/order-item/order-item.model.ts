@@ -1,15 +1,5 @@
 import { BaseEntity } from './../../shared';
-import { ProductItem } from './../product-item';
-
-export const enum CurrencyType {
-    'HKD',
-    'CNY',
-    'USD',
-    'EUR',
-    'JPY',
-    'KRW',
-    'TWD'
-}
+import { ProductItem, CurrencyType } from './../product-item';
 
 export class OrderItem implements BaseEntity {
     constructor(

@@ -4,13 +4,13 @@ import { Price } from './../price';
 import { Quantity } from './../quantity';
 
 export const enum CurrencyType {
-    'HKD',
-    'CNY',
-    'USD',
-    'EUR',
-    'JPY',
-    'KRW',
-    'TWD'
+    HKD = 'HKD',
+    CNY = 'CNY',
+    USD = 'USD',
+    EUR = 'EUR',
+    JPY = 'JPY',
+    KRW = 'KRW',
+    TWD = 'TWD'
 }
 
 export class ProductItem implements BaseEntity {

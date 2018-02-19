@@ -18,6 +18,7 @@ import com.wongs.service.dto.MyOrderDTO;
 public class MyOrderMapper {
 
 	public MyOrderDTO toDto(MyOrder myOrder) {
+		if (myOrder == null) return null;
 		return new MyOrderDTO(myOrder);
 	}
 

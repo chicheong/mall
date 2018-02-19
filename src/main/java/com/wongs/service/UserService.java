@@ -370,6 +370,12 @@ public class UserService {
     }
     
     @Transactional(readOnly = true)
+    public MyAccount getCurrentMyAccount(String login) {
+    	MyAccount test = userInfoRepository.findCurrentMyAccountByUserLogin(login);
+        return test;
+    }
+    
+    @Transactional(readOnly = true)
     public MyAccount getMyAccountWithShops(long id) {
     	MyAccount test = myAccountRepository.findOneWithEagerRelationships(id);
         return test;

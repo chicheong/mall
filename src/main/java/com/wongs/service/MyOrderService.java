@@ -14,9 +14,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.wongs.domain.MyAccount;
 import com.wongs.domain.MyOrder;
+import com.wongs.domain.OrderItem;
+import com.wongs.domain.enumeration.CurrencyType;
 import com.wongs.domain.enumeration.OrderStatus;
 import com.wongs.repository.MyOrderRepository;
+import com.wongs.repository.OrderItemRepository;
 import com.wongs.repository.search.MyOrderSearchRepository;
+import com.wongs.repository.search.OrderItemSearchRepository;
 import com.wongs.service.dto.MyOrderDTO;
 import com.wongs.service.mapper.MyOrderMapper;
 
@@ -34,11 +38,17 @@ public class MyOrderService {
     private final MyOrderMapper myOrderMapper;
 
     private final MyOrderSearchRepository myOrderSearchRepository;
+    
+    private final OrderItemRepository orderItemRepository;
+    private final OrderItemSearchRepository orderItemSearchRepository;
 
-    public MyOrderService(MyOrderRepository myOrderRepository, MyOrderMapper myOrderMapper, MyOrderSearchRepository myOrderSearchRepository) {
+    public MyOrderService(MyOrderRepository myOrderRepository, MyOrderMapper myOrderMapper, MyOrderSearchRepository myOrderSearchRepository,
+    						OrderItemRepository orderItemRepository, OrderItemSearchRepository orderItemSearchRepository) {
         this.myOrderRepository = myOrderRepository;
         this.myOrderMapper = myOrderMapper;
         this.myOrderSearchRepository = myOrderSearchRepository;
+        this.orderItemRepository = orderItemRepository;
+        this.orderItemSearchRepository = orderItemSearchRepository;
     }
 
     /**
@@ -54,6 +64,58 @@ public class MyOrderService {
         MyOrderDTO result = myOrderMapper.toDto(myOrder);
         myOrderSearchRepository.save(myOrder);
         return result;
+    }
+    
+    /**
+     * Add a productItem to a Pending MyOrder.
+     *
+     * @param myOrderDTO the entity to save
+     * @return the persisted entity
+     */
+    public MyOrderDTO addToCart(MyAccount myAccount, final OrderItem orderItem) {
+        log.debug("Request to add ProductItem : {} ", orderItem);
+        MyOrder myOrder = this.findEntityByAccountAndStatus(myAccount, OrderStatus.PENDING).orElseGet(() -> this.createPendingOrder(myAccount));
+//        myOrder.getItems().stream().filter(item -> orderItem.getProductItem().equals(item.getProductItem())).findFirst().map(item -> {
+//        	item.setQuantity(item.getQuantity() + orderItem.getQuantity());
+//        	orderItemRepository.save(item);
+//        	return item; 
+//        }).map(item -> {
+//        	orderItem.setOrder(myOrder);
+////        	orderItem.setCurrency(CurrencyType.HKD);
+//        	orderItemRepository.save(orderItem);
+//        	myOrder.getItems().add(orderItem);
+//            myOrderRepository.save(myOrder);
+//            myOrderSearchRepository.save(myOrder);     
+//        	return orderItem;
+//        });
+        boolean itemFound = false;
+        for (OrderItem item : myOrder.getItems()){
+        	if (orderItem.getProductItem().equals(item.getProductItem())) {
+        		item.setQuantity(item.getQuantity() + orderItem.getQuantity());
+            	orderItemRepository.save(item);
+        		itemFound = true;
+        		break;
+        	}
+        }
+        if (!itemFound){
+        	orderItem.setOrder(myOrder);
+        	orderItemRepository.save(orderItem);
+        	myOrder.getItems().add(orderItem);
+        	myOrderRepository.save(myOrder);
+        	myOrderSearchRepository.save(myOrder); 
+        }
+        
+        MyOrderDTO result = myOrderMapper.toDto(myOrder);
+        return result;
+    }
+
+    public MyOrder createPendingOrder(MyAccount myAccount) {
+    	MyOrder myOrder = new MyOrder();
+    	myOrder.setAccount(myAccount);
+    	myOrder.setStatus(OrderStatus.PENDING);
+        myOrder = myOrderRepository.save(myOrder);
+        myOrderSearchRepository.save(myOrder);
+    	return myOrder;
     }
 
     /**
@@ -75,7 +137,7 @@ public class MyOrderService {
      * @param id the id of the entity
      * @return the entity
      */
-    @Transactional(readOnly = true)
+ @Transactional(readOnly = true)
     public MyOrderDTO findOne(Long id) {
         log.debug("Request to get MyOrder : {}", id);
         MyOrder myOrder = myOrderRepository.findOne(id);
@@ -83,21 +145,31 @@ public class MyOrderService {
     }
     
     /**
-     * Get one myOrder by id.
+     * Get one myOrder by MyAccount and OrderStatus.
      *
-     * @param id the id of the entity
+     * @param MyAccount and OrderStatus
      * @return the entity
      */
     @Transactional(readOnly = true)
     public MyOrderDTO findByAccountAndStatus(MyAccount account, OrderStatus status) {
         log.debug("Request to get MyOrder : {}", account, status);
         Set<MyOrder> myOrders = myOrderRepository.findByAccountAndStatus(account, status);
-        Optional<MyOrder> myOrder = myOrders.stream().findFirst();
-        if (myOrder.isPresent())
-        	return myOrderMapper.toDto(myOrder.get());
-        else
-        	return null;
+        return myOrderMapper.toDto(myOrders.stream().findFirst().orElse(null));
     }
+    
+    /**
+     * Get one myOrder by MyAccount and OrderStatus.
+     *
+     * @param MyAccount and OrderStatus
+     * @return the entity
+     */
+    @Transactional(readOnly = true)
+    public Optional<MyOrder> findEntityByAccountAndStatus(MyAccount account, OrderStatus status) {
+        log.debug("Request to get MyOrder : {}", account, status);
+        Set<MyOrder> myOrders = myOrderRepository.findByAccountAndStatus(account, status);
+        return myOrders.stream().findFirst();
+    }
+
 
     /**
      * Delete the myOrder by id.

@@ -17,6 +17,7 @@ import com.wongs.service.dto.QuantityDTO;
 public class QuantityMapper {
 
 	public QuantityDTO toDto(Quantity quantity) {
+		if (quantity == null) return null;
 		return new QuantityDTO(quantity);
 	}
 

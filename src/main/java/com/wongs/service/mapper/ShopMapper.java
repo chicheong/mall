@@ -17,6 +17,7 @@ import com.wongs.service.dto.ShopDTO;
 public class ShopMapper {
     
     public ShopDTO toDto(Shop shop) {
+    	if (shop == null) return null;
 		return new ShopDTO(shop);
 	}
     

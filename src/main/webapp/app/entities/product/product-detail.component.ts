@@ -7,13 +7,15 @@ import { Product } from './product.model';
 import { ProductService } from './product.service';
 import { LoginModalService, Principal } from '../../shared';
 
-import { ProductItem } from './../product-item';
+import { ProductItem, CurrencyType } from './../product-item';
 import { ProductStyle, ProductStyleType } from './../product-style';
 
 import { ProductStylePopupService } from './../product-style/product-style-popup.service';
 import { ProductStyleDialogComponent } from './../product-style/product-style-dialog.component';
 import { ProductItemsPopupService } from './product-items-popup.service';
 import { ProductItemsDialogComponent, ProductItemsDialogType } from './product-items-dialog.component';
+
+import { MyOrderService, MyOrder } from './../my-order';
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
@@ -48,6 +50,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         private router: Router,
         private principal: Principal,
         private loginModalService: LoginModalService,
+        private myOrderService: MyOrderService,
     ) {
     }
 
@@ -111,21 +114,25 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         item.color = color;
         item.size = size;
         item.quantity = 1;
+        item.currency = CurrencyType.HKD;
         const item1: ProductItem = Object.assign(new ProductItem());
         item1.tempId = this.uuid();
         item1.color = color;
         item1.size = size1;
         item1.quantity = 1;
+        item1.currency = CurrencyType.HKD;
         const item2: ProductItem = Object.assign(new ProductItem());
         item2.tempId = this.uuid();
         item2.color = color1;
         item2.size = size;
         item2.quantity = 1;
+        item2.currency = CurrencyType.HKD;
         const item3: ProductItem = Object.assign(new ProductItem());
         item3.tempId = this.uuid();
         item3.color = color1;
         item3.size = size1;
         item3.quantity = 1;
+        item3.currency = CurrencyType.HKD;
         this.product.items = [item, item1, item2, item3];
     }
 
@@ -216,6 +223,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                     item.color = productStyle;
                     item.size = size;
                     item.quantity = 1;
+                    item.currency = CurrencyType.HKD;
                     this.product.items.push(item);
                 });
             }
@@ -240,6 +248,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                     item.color = color;
                     item.size = productStyle;
                     item.quantity = 1;
+                    item.currency = CurrencyType.HKD;
                     this.product.items.push(item);
                 });
             }
@@ -342,6 +351,9 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
     edit() {
         this.isEditing = true;
+        this.selectedItem = {};
+        this.selectedColor = {};
+        this.selectedSize = {};
     }
 
     cancel() {
@@ -453,10 +465,24 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     }
 
     addToCart() {
+        this.subscribeToAddToCartResponse(
+            this.myOrderService.addToCart(this.selectedItem, 1));
         if (this.isAuthenticated()) {
         } else {
             this.login();
         }
+    }
+
+    private subscribeToAddToCartResponse(result: Observable<MyOrder>) {
+        result.subscribe((res: MyOrder) =>
+            this.onAddToCartSuccess(res), (res: Response) => this.onSaveError(res));
+    }
+
+    private onAddToCartSuccess(result: MyOrder) {
+        // this.eventManager.broadcast({ name: 'productListModification', content: 'OK'});
+        this.isSaving = false;
+        this.isEditing = false;
+        console.error('result.id=' + result.id);
     }
 
     private uuid() {

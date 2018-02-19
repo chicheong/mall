@@ -113,7 +113,7 @@
 	  			You Save: $5.90 (28%)
 	  		</div>	  		  
 			<div>
-			    <button type="button" [disabled]="isSaving" class="btn btn-default" (click)="addToCart()">
+			    <button type="button" [disabled]="isSaving || !(selectedItem && selectedItem.price)" class="btn btn-default" (click)="addToCart()">
 		            <span>Add to Cart</span>
 		        </button>
 			</div>

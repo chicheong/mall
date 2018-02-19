@@ -17,6 +17,7 @@ import com.wongs.service.dto.ProductItemDTO;
 public class ProductItemMapper {
 
 	public ProductItemDTO toDto(ProductItem productItem) {
+		if (productItem == null) return null;
 		return new ProductItemDTO(productItem);
 	}
 

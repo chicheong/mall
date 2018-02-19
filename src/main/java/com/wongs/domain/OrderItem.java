@@ -38,7 +38,7 @@ public class OrderItem implements Serializable {
     private CurrencyType currency;
 
     @OneToOne
-    @JoinColumn(unique = true)
+    @JoinColumn(unique = false)
     private ProductItem productItem;
 
     @ManyToOne

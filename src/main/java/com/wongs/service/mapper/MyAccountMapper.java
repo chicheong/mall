@@ -17,6 +17,7 @@ import com.wongs.service.dto.MyAccountDTO;
 public class MyAccountMapper {
 
 	public MyAccountDTO toDto(MyAccount myAccount) {
+		if (myAccount == null) return null;
 		return new MyAccountDTO(myAccount);
 	}
 

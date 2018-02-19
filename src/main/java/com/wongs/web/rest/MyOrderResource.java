@@ -1,12 +1,10 @@
 package com.wongs.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import com.wongs.service.MyOrderService;
-import com.wongs.web.rest.errors.BadRequestAlertException;
-import com.wongs.web.rest.util.HeaderUtil;
-import com.wongs.web.rest.util.PaginationUtil;
-import com.wongs.service.dto.MyOrderDTO;
-import io.github.jhipster.web.util.ResponseUtil;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -14,16 +12,28 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.codahale.metrics.annotation.Timed;
+import com.wongs.domain.MyAccount;
+import com.wongs.domain.OrderItem;
+import com.wongs.security.SecurityUtils;
+import com.wongs.service.MyOrderService;
+import com.wongs.service.UserService;
+import com.wongs.service.dto.MyOrderDTO;
+import com.wongs.web.rest.errors.BadRequestAlertException;
+import com.wongs.web.rest.util.HeaderUtil;
+import com.wongs.web.rest.util.PaginationUtil;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import io.github.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing MyOrder.
@@ -37,9 +47,12 @@ public class MyOrderResource {
     private static final String ENTITY_NAME = "myOrder";
 
     private final MyOrderService myOrderService;
+    
+    private final UserService userService;
 
-    public MyOrderResource(MyOrderService myOrderService) {
+    public MyOrderResource(MyOrderService myOrderService, UserService userService) {
         this.myOrderService = myOrderService;
+        this.userService = userService;
     }
 
     /**
@@ -144,4 +157,25 @@ public class MyOrderResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+    /**
+     * POST  /my-cart : Creates or Updates an existing cart.
+     *
+     * @param productItem the ProductItem to add to cart
+     * @return the ResponseEntity with status 200 (OK) and with body the updated myOrderDTO,
+     * or with status 400 (Bad Request) if the myOrderDTO is not valid,
+     * or with status 500 (Internal Server Error) if the myOrderDTO couldn't be updated
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @PostMapping("/my-cart")
+    @Timed
+    public ResponseEntity<MyOrderDTO> addToCart(@RequestBody OrderItem orderItem) throws URISyntaxException {
+        log.debug("REST request to update OrderItem : {}", orderItem);
+        
+        MyAccount myAccount = userService.getCurrentMyAccount(SecurityUtils.getCurrentUserLogin().get());
+        MyOrderDTO myOrderDTO  = myOrderService.addToCart(myAccount, orderItem);
+
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, "0"))
+            .body(myOrderDTO);
+    }
 }

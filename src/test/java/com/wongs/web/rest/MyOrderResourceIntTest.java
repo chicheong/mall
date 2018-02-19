@@ -1,14 +1,20 @@
 package com.wongs.web.rest;
 
-import com.wongs.MallApp;
+import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import com.wongs.domain.MyOrder;
-import com.wongs.repository.MyOrderRepository;
-import com.wongs.service.MyOrderService;
-import com.wongs.repository.search.MyOrderSearchRepository;
-import com.wongs.service.dto.MyOrderDTO;
-import com.wongs.service.mapper.MyOrderMapper;
-import com.wongs.web.rest.errors.ExceptionTranslator;
+import java.math.BigDecimal;
+import java.util.List;
+
+import javax.persistence.EntityManager;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -24,18 +30,17 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import java.math.BigDecimal;
-import java.util.List;
-
-import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-
+import com.wongs.MallApp;
+import com.wongs.domain.MyOrder;
 import com.wongs.domain.enumeration.CurrencyType;
 import com.wongs.domain.enumeration.OrderStatus;
+import com.wongs.repository.MyOrderRepository;
+import com.wongs.repository.search.MyOrderSearchRepository;
+import com.wongs.service.MyOrderService;
+import com.wongs.service.UserService;
+import com.wongs.service.dto.MyOrderDTO;
+import com.wongs.service.mapper.MyOrderMapper;
+import com.wongs.web.rest.errors.ExceptionTranslator;
 /**
  * Test class for the MyOrderResource REST controller.
  *
@@ -65,6 +70,9 @@ public class MyOrderResourceIntTest {
 
     @Autowired
     private MyOrderService myOrderService;
+    
+    @Autowired
+    private UserService userService;
 
     @Autowired
     private MyOrderSearchRepository myOrderSearchRepository;
@@ -88,7 +96,7 @@ public class MyOrderResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final MyOrderResource myOrderResource = new MyOrderResource(myOrderService);
+        final MyOrderResource myOrderResource = new MyOrderResource(myOrderService, userService);
         this.restMyOrderMockMvc = MockMvcBuilders.standaloneSetup(myOrderResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

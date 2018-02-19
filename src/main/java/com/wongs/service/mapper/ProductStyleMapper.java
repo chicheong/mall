@@ -17,6 +17,7 @@ import com.wongs.service.dto.ProductStyleDTO;
 public class ProductStyleMapper {
 
 	public ProductStyleDTO toDto(ProductStyle productStyle) {
+		if (productStyle == null) return null;
 		return new ProductStyleDTO(productStyle);
 	}
 

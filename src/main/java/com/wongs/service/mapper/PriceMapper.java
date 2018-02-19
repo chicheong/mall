@@ -17,6 +17,7 @@ import com.wongs.service.dto.PriceDTO;
 public class PriceMapper {
 
 	public PriceDTO toDto(Price price) {
+		if (price == null) return null;
 		return new PriceDTO(price);
 	}
 
