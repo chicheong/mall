@@ -70,8 +70,10 @@ export class Principal {
                 this.authenticated = false;
             }
             this.authenticationState.next(this.userIdentity);
+            console.error('this.account.get().toPromise()');
             return this.userIdentity;
         }).catch((err) => {
+            console.error('identity error!!');
             this.userIdentity = null;
             this.authenticated = false;
             this.authenticationState.next(this.userIdentity);

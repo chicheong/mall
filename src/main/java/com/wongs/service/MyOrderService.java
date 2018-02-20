@@ -75,35 +75,34 @@ public class MyOrderService {
     public MyOrderDTO addToCart(MyAccount myAccount, final OrderItem orderItem) {
         log.debug("Request to add ProductItem : {} ", orderItem);
         MyOrder myOrder = this.findEntityByAccountAndStatus(myAccount, OrderStatus.PENDING).orElseGet(() -> this.createPendingOrder(myAccount));
-//        myOrder.getItems().stream().filter(item -> orderItem.getProductItem().equals(item.getProductItem())).findFirst().map(item -> {
-//        	item.setQuantity(item.getQuantity() + orderItem.getQuantity());
-//        	orderItemRepository.save(item);
-//        	return item; 
-//        }).map(item -> {
-//        	orderItem.setOrder(myOrder);
-////        	orderItem.setCurrency(CurrencyType.HKD);
-//        	orderItemRepository.save(orderItem);
-//        	myOrder.getItems().add(orderItem);
-//            myOrderRepository.save(myOrder);
-//            myOrderSearchRepository.save(myOrder);     
-//        	return orderItem;
-//        });
-        boolean itemFound = false;
-        for (OrderItem item : myOrder.getItems()){
-        	if (orderItem.getProductItem().equals(item.getProductItem())) {
-        		item.setQuantity(item.getQuantity() + orderItem.getQuantity());
-            	orderItemRepository.save(item);
-        		itemFound = true;
-        		break;
-        	}
-        }
-        if (!itemFound){
+        myOrder.getItems().stream().filter(item -> orderItem.getProductItem().equals(item.getProductItem())).findFirst().map(item -> {
+        	item.setQuantity(item.getQuantity() + orderItem.getQuantity());
+        	orderItemRepository.save(item);
+        	return item; 
+        }).orElseGet(() -> {
         	orderItem.setOrder(myOrder);
         	orderItemRepository.save(orderItem);
         	myOrder.getItems().add(orderItem);
-        	myOrderRepository.save(myOrder);
-        	myOrderSearchRepository.save(myOrder); 
-        }
+            myOrderRepository.save(myOrder);
+            myOrderSearchRepository.save(myOrder);     
+        	return orderItem;
+        });
+//        boolean itemFound = false;
+//        for (OrderItem item : myOrder.getItems()){
+//        	if (orderItem.getProductItem().equals(item.getProductItem())) {
+//        		item.setQuantity(item.getQuantity() + orderItem.getQuantity());
+//            	orderItemRepository.save(item);
+//        		itemFound = true;
+//        		break;
+//        	}
+//        }
+//        if (!itemFound){
+//        	orderItem.setOrder(myOrder);
+//        	orderItemRepository.save(orderItem);
+//        	myOrder.getItems().add(orderItem);
+//        	myOrderRepository.save(myOrder);
+//        	myOrderSearchRepository.save(myOrder); 
+//        }
         
         MyOrderDTO result = myOrderMapper.toDto(myOrder);
         return result;

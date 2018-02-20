@@ -55,6 +55,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        console.error('ngOnInit');
         this.isSaving = false;
         this.isEditing = false;
         this.subscription = this.route.params.subscribe((params) => {
@@ -451,6 +452,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     registerAuthenticationSuccess() {
         this.eventManager.subscribe('authenticationSuccess', (message) => {
             this.principal.identity().then((account) => {
+                console.error('Product Detail registerAuthenticationSuccess');
 //                this.account = account;
             });
         });

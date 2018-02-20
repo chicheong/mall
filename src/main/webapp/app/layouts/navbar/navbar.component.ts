@@ -47,6 +47,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
+        console.error('navbar ngOnInit');
         this.languageHelper.getAll().then((languages) => {
             this.languages = languages;
         });
@@ -57,8 +58,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
         });
         // this.registerChangeInAccount();
 
-        if (this.isAuthenticated()) {
-            console.error('navbar is Authenticated');
+//        if (this.isAuthenticated()) {
+            console.error('check navbar Authenticated?');
             this.principal.identity().then((account) => {
                 if (account && account.myAccount) {
                     this.myAccountService.find(account.myAccount.id).subscribe((myAccount) => {
@@ -68,14 +69,15 @@ export class NavbarComponent implements OnInit, OnDestroy {
                     this.myAccount = undefined;
                 }
             });
-        } else {
-            console.error('navbar is not Authenticated');
-        };
+//        } else {
+//            console.error('navbar is not Authenticated');
+//        };
         this.registerAuthenticationSuccess();
     }
 
     registerAuthenticationSuccess() {
         this.eventManager.subscribe('authenticationSuccess', (message) => {
+            console.error('navbar registerAuthenticationSuccess');
             this.principal.identity().then((account) => {
                 if (account && account.myAccount) {
                     this.myAccountService.find(account.myAccount.id).subscribe((myAccount) => {
