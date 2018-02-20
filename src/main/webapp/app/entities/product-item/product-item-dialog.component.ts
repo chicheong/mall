@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Response } from '@angular/http';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
@@ -11,7 +11,6 @@ import { ProductItemPopupService } from './product-item-popup.service';
 import { ProductItemService } from './product-item.service';
 import { ProductStyle, ProductStyleService } from '../product-style';
 import { Product, ProductService } from '../product';
-import { ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-product-item-dialog',
@@ -66,8 +65,10 @@ export class ProductItemDialogComponent implements OnInit {
                         }, (subRes: ResponseWrapper) => this.onError(subRes.json));
                 }
             }, (res: ResponseWrapper) => this.onError(res.json));
+        //this.orderItemService.query()
+        //    .subscribe((res: HttpResponse<OrderItem[]>) => { this.orderitems = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
         this.productService.query()
-            .subscribe((res: ResponseWrapper) => { this.products = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<Product[]>) => { this.products = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -85,9 +86,9 @@ export class ProductItemDialogComponent implements OnInit {
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<ProductItem>) {
-        result.subscribe((res: ProductItem) =>
-            this.onSaveSuccess(res), (res: Response) => this.onSaveError());
+    private subscribeToSaveResponse(result: Observable<HttpResponse<ProductItem>>) {
+        result.subscribe((res: HttpResponse<ProductItem>) =>
+            this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
     private onSaveSuccess(result: ProductItem) {

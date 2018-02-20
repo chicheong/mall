@@ -1,6 +1,7 @@
 /* tslint:disable max-line-length */
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { Observable } from 'rxjs/Rx';
+import { HttpResponse } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
 
 import { MallTestModule } from '../../../test.module';
 import { DelegationDetailComponent } from '../../../../../../main/webapp/app/entities/delegation/delegation-detail.component';
@@ -36,7 +37,9 @@ describe('Component Tests', () => {
             it('Should call load all on init', () => {
                 // GIVEN
 
-                spyOn(service, 'find').and.returnValue(Observable.of(new Delegation(123)));
+                spyOn(service, 'find').and.returnValue(Observable.of(new HttpResponse({
+                    body: new Delegation(123)
+                })));
 
                 // WHEN
                 comp.ngOnInit();

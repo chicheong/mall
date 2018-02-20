@@ -18,14 +18,16 @@ describe('OrderStatusHistory e2e test', () => {
     it('should load OrderStatusHistories', () => {
         navBarPage.goToEntity('order-status-history');
         orderStatusHistoryComponentsPage = new OrderStatusHistoryComponentsPage();
-        expect(orderStatusHistoryComponentsPage.getTitle()).toMatch(/mallApp.orderStatusHistory.home.title/);
+        expect(orderStatusHistoryComponentsPage.getTitle())
+            .toMatch(/mallApp.orderStatusHistory.home.title/);
 
     });
 
     it('should load create OrderStatusHistory dialog', () => {
         orderStatusHistoryComponentsPage.clickOnCreateButton();
         orderStatusHistoryDialogPage = new OrderStatusHistoryDialogPage();
-        expect(orderStatusHistoryDialogPage.getModalTitle()).toMatch(/mallApp.orderStatusHistory.home.createOrEditLabel/);
+        expect(orderStatusHistoryDialogPage.getModalTitle())
+            .toMatch(/mallApp.orderStatusHistory.home.createOrEditLabel/);
         orderStatusHistoryDialogPage.close();
     });
 
@@ -71,38 +73,38 @@ export class OrderStatusHistoryDialogPage {
 
     setEffectiveDateInput = function(effectiveDate) {
         this.effectiveDateInput.sendKeys(effectiveDate);
-    }
+    };
 
     getEffectiveDateInput = function() {
         return this.effectiveDateInput.getAttribute('value');
-    }
+    };
 
     setStatusSelect = function(status) {
         this.statusSelect.sendKeys(status);
-    }
+    };
 
     getStatusSelect = function() {
         return this.statusSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     statusSelectLastOption = function() {
         this.statusSelect.all(by.tagName('option')).last().click();
-    }
+    };
     orderSelectLastOption = function() {
         this.orderSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     orderSelectOption = function(option) {
         this.orderSelect.sendKeys(option);
-    }
+    };
 
     getOrderSelect = function() {
         return this.orderSelect;
-    }
+    };
 
     getOrderSelectedOption = function() {
         return this.orderSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     save() {
         this.saveButton.click();

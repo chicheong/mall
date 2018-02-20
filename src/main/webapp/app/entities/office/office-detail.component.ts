@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Rx';
+import { HttpResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs/Subscription';
 import { JhiEventManager } from 'ng-jhipster';
 
 import { Office } from './office.model';
@@ -31,9 +32,10 @@ export class OfficeDetailComponent implements OnInit, OnDestroy {
     }
 
     load(id) {
-        this.officeService.find(id).subscribe((office) => {
-            this.office = office;
-        });
+        this.officeService.find(id)
+            .subscribe((officeResponse: HttpResponse<Office>) => {
+                this.office = officeResponse.body;
+            });
     }
     previousState() {
         window.history.back();

@@ -1,6 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { HttpResponse } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { OrderStatusHistory } from './order-status-history.model';
 import { OrderStatusHistoryService } from './order-status-history.service';
@@ -27,12 +28,14 @@ export class OrderStatusHistoryPopupService {
             }
 
             if (id) {
-                this.orderStatusHistoryService.find(id).subscribe((orderStatusHistory) => {
-                    orderStatusHistory.effectiveDate = this.datePipe
-                        .transform(orderStatusHistory.effectiveDate, 'yyyy-MM-ddTHH:mm:ss');
-                    this.ngbModalRef = this.orderStatusHistoryModalRef(component, orderStatusHistory);
-                    resolve(this.ngbModalRef);
-                });
+                this.orderStatusHistoryService.find(id)
+                    .subscribe((orderStatusHistoryResponse: HttpResponse<OrderStatusHistory>) => {
+                        const orderStatusHistory: OrderStatusHistory = orderStatusHistoryResponse.body;
+                        orderStatusHistory.effectiveDate = this.datePipe
+                            .transform(orderStatusHistory.effectiveDate, 'yyyy-MM-ddTHH:mm:ss');
+                        this.ngbModalRef = this.orderStatusHistoryModalRef(component, orderStatusHistory);
+                        resolve(this.ngbModalRef);
+                    });
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {

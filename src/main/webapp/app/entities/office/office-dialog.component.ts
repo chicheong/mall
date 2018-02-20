@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Response } from '@angular/http';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
@@ -12,7 +12,6 @@ import { OfficeService } from './office.service';
 import { Address, AddressService } from '../address';
 import { Company, CompanyService } from '../company';
 import { Department, DepartmentService } from '../department';
-import { ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-office-dialog',
@@ -44,21 +43,21 @@ export class OfficeDialogComponent implements OnInit {
         this.isSaving = false;
         this.addressService
             .query({filter: 'office-is-null'})
-            .subscribe((res: ResponseWrapper) => {
+            .subscribe((res: HttpResponse<Address[]>) => {
                 if (!this.office.address || !this.office.address.id) {
-                    this.addresses = res.json;
+                    this.addresses = res.body;
                 } else {
                     this.addressService
                         .find(this.office.address.id)
-                        .subscribe((subRes: Address) => {
-                            this.addresses = [subRes].concat(res.json);
-                        }, (subRes: ResponseWrapper) => this.onError(subRes.json));
+                        .subscribe((subRes: HttpResponse<Address>) => {
+                            this.addresses = [subRes.body].concat(res.body);
+                        }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
                 }
-            }, (res: ResponseWrapper) => this.onError(res.json));
+            }, (res: HttpErrorResponse) => this.onError(res.message));
         this.companyService.query()
-            .subscribe((res: ResponseWrapper) => { this.companies = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<Company[]>) => { this.companies = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
         this.departmentService.query()
-            .subscribe((res: ResponseWrapper) => { this.departments = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<Department[]>) => { this.departments = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -76,9 +75,9 @@ export class OfficeDialogComponent implements OnInit {
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<Office>) {
-        result.subscribe((res: Office) =>
-            this.onSaveSuccess(res), (res: Response) => this.onSaveError());
+    private subscribeToSaveResponse(result: Observable<HttpResponse<Office>>) {
+        result.subscribe((res: HttpResponse<Office>) =>
+            this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
     private onSaveSuccess(result: Office) {

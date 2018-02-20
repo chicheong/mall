@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Response } from '@angular/http';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
@@ -11,7 +11,6 @@ import { ProductPopupService } from './product-popup.service';
 import { ProductService } from './product.service';
 import { Shop, ShopService } from '../shop';
 import { Category, CategoryService } from '../category';
-import { ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-product-dialog',
@@ -39,9 +38,9 @@ export class ProductDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.shopService.query()
-            .subscribe((res: ResponseWrapper) => { this.shops = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<Shop[]>) => { this.shops = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
         this.categoryService.query()
-            .subscribe((res: ResponseWrapper) => { this.categories = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<Category[]>) => { this.categories = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -59,9 +58,9 @@ export class ProductDialogComponent implements OnInit {
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<Product>) {
-        result.subscribe((res: Product) =>
-            this.onSaveSuccess(res), (res: Response) => this.onSaveError());
+    private subscribeToSaveResponse(result: Observable<HttpResponse<Product>>) {
+        result.subscribe((res: HttpResponse<Product>) =>
+            this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
     private onSaveSuccess(result: Product) {

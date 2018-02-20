@@ -18,14 +18,16 @@ describe('OrderItem e2e test', () => {
     it('should load OrderItems', () => {
         navBarPage.goToEntity('order-item');
         orderItemComponentsPage = new OrderItemComponentsPage();
-        expect(orderItemComponentsPage.getTitle()).toMatch(/mallApp.orderItem.home.title/);
+        expect(orderItemComponentsPage.getTitle())
+            .toMatch(/mallApp.orderItem.home.title/);
 
     });
 
     it('should load create OrderItem dialog', () => {
         orderItemComponentsPage.clickOnCreateButton();
         orderItemDialogPage = new OrderItemDialogPage();
-        expect(orderItemDialogPage.getModalTitle()).toMatch(/mallApp.orderItem.home.createOrEditLabel/);
+        expect(orderItemDialogPage.getModalTitle())
+            .toMatch(/mallApp.orderItem.home.createOrEditLabel/);
         orderItemDialogPage.close();
     });
 
@@ -76,62 +78,62 @@ export class OrderItemDialogPage {
 
     setQuantityInput = function(quantity) {
         this.quantityInput.sendKeys(quantity);
-    }
+    };
 
     getQuantityInput = function() {
         return this.quantityInput.getAttribute('value');
-    }
+    };
 
     setPriceInput = function(price) {
         this.priceInput.sendKeys(price);
-    }
+    };
 
     getPriceInput = function() {
         return this.priceInput.getAttribute('value');
-    }
+    };
 
     setCurrencySelect = function(currency) {
         this.currencySelect.sendKeys(currency);
-    }
+    };
 
     getCurrencySelect = function() {
         return this.currencySelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     currencySelectLastOption = function() {
         this.currencySelect.all(by.tagName('option')).last().click();
-    }
+    };
     productItemSelectLastOption = function() {
         this.productItemSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     productItemSelectOption = function(option) {
         this.productItemSelect.sendKeys(option);
-    }
+    };
 
     getProductItemSelect = function() {
         return this.productItemSelect;
-    }
+    };
 
     getProductItemSelectedOption = function() {
         return this.productItemSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     orderSelectLastOption = function() {
         this.orderSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     orderSelectOption = function(option) {
         this.orderSelect.sendKeys(option);
-    }
+    };
 
     getOrderSelect = function() {
         return this.orderSelect;
-    }
+    };
 
     getOrderSelectedOption = function() {
         return this.orderSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     save() {
         this.saveButton.click();

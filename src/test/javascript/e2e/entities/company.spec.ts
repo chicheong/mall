@@ -18,14 +18,16 @@ describe('Company e2e test', () => {
     it('should load Companies', () => {
         navBarPage.goToEntity('company');
         companyComponentsPage = new CompanyComponentsPage();
-        expect(companyComponentsPage.getTitle()).toMatch(/mallApp.company.home.title/);
+        expect(companyComponentsPage.getTitle())
+            .toMatch(/mallApp.company.home.title/);
 
     });
 
     it('should load create Company dialog', () => {
         companyComponentsPage.clickOnCreateButton();
         companyDialogPage = new CompanyDialogPage();
-        expect(companyDialogPage.getModalTitle()).toMatch(/mallApp.company.home.createOrEditLabel/);
+        expect(companyDialogPage.getModalTitle())
+            .toMatch(/mallApp.company.home.createOrEditLabel/);
         companyDialogPage.close();
     });
 
@@ -78,78 +80,78 @@ export class CompanyDialogPage {
 
     setCodeInput = function(code) {
         this.codeInput.sendKeys(code);
-    }
+    };
 
     getCodeInput = function() {
         return this.codeInput.getAttribute('value');
-    }
+    };
 
     setNameInput = function(name) {
         this.nameInput.sendKeys(name);
-    }
+    };
 
     getNameInput = function() {
         return this.nameInput.getAttribute('value');
-    }
+    };
 
     setStatusSelect = function(status) {
         this.statusSelect.sendKeys(status);
-    }
+    };
 
     getStatusSelect = function() {
         return this.statusSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     statusSelectLastOption = function() {
         this.statusSelect.all(by.tagName('option')).last().click();
-    }
+    };
     parentSelectLastOption = function() {
         this.parentSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     parentSelectOption = function(option) {
         this.parentSelect.sendKeys(option);
-    }
+    };
 
     getParentSelect = function() {
         return this.parentSelect;
-    }
+    };
 
     getParentSelectedOption = function() {
         return this.parentSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     departmentSelectLastOption = function() {
         this.departmentSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     departmentSelectOption = function(option) {
         this.departmentSelect.sendKeys(option);
-    }
+    };
 
     getDepartmentSelect = function() {
         return this.departmentSelect;
-    }
+    };
 
     getDepartmentSelectedOption = function() {
         return this.departmentSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     officeSelectLastOption = function() {
         this.officeSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     officeSelectOption = function(option) {
         this.officeSelect.sendKeys(option);
-    }
+    };
 
     getOfficeSelect = function() {
         return this.officeSelect;
-    }
+    };
 
     getOfficeSelectedOption = function() {
         return this.officeSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     save() {
         this.saveButton.click();

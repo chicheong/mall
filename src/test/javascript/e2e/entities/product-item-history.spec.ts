@@ -18,14 +18,16 @@ describe('ProductItemHistory e2e test', () => {
     it('should load ProductItemHistories', () => {
         navBarPage.goToEntity('product-item-history');
         productItemHistoryComponentsPage = new ProductItemHistoryComponentsPage();
-        expect(productItemHistoryComponentsPage.getTitle()).toMatch(/mallApp.productItemHistory.home.title/);
+        expect(productItemHistoryComponentsPage.getTitle())
+            .toMatch(/mallApp.productItemHistory.home.title/);
 
     });
 
     it('should load create ProductItemHistory dialog', () => {
         productItemHistoryComponentsPage.clickOnCreateButton();
         productItemHistoryDialogPage = new ProductItemHistoryDialogPage();
-        expect(productItemHistoryDialogPage.getModalTitle()).toMatch(/mallApp.productItemHistory.home.createOrEditLabel/);
+        expect(productItemHistoryDialogPage.getModalTitle())
+            .toMatch(/mallApp.productItemHistory.home.createOrEditLabel/);
         productItemHistoryDialogPage.close();
     });
 
@@ -91,58 +93,57 @@ export class ProductItemHistoryDialogPage {
 
     setCodeInput = function(code) {
         this.codeInput.sendKeys(code);
-    }
+    };
 
     getCodeInput = function() {
         return this.codeInput.getAttribute('value');
-    }
-
+    };
     getIsDefaultInput = function() {
         return this.isDefaultInput;
     }
     setQuantityInput = function(quantity) {
         this.quantityInput.sendKeys(quantity);
-    }
+    };
 
     getQuantityInput = function() {
         return this.quantityInput.getAttribute('value');
-    }
+    };
 
     setCurrencySelect = function(currency) {
         this.currencySelect.sendKeys(currency);
-    }
+    };
 
     getCurrencySelect = function() {
         return this.currencySelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     currencySelectLastOption = function() {
         this.currencySelect.all(by.tagName('option')).last().click();
-    }
+    };
     setPriceInput = function(price) {
         this.priceInput.sendKeys(price);
-    }
+    };
 
     getPriceInput = function() {
         return this.priceInput.getAttribute('value');
-    }
+    };
 
     setCreatedByInput = function(createdBy) {
         this.createdByInput.sendKeys(createdBy);
-    }
+    };
 
     getCreatedByInput = function() {
         return this.createdByInput.getAttribute('value');
-    }
+    };
 
     setCreatedDateInput = function(createdDate) {
         this.createdDateInput.sendKeys(createdDate);
-    }
+    };
 
     getCreatedDateInput = function() {
         return this.createdDateInput.getAttribute('value');
-    }
-
+    };
+    
     save() {
         this.saveButton.click();
     }

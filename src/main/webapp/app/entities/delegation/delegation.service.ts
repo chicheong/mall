@@ -1,83 +1,84 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
 import { SERVER_API_URL } from '../../app.constants';
 
 import { JhiDateUtils } from 'ng-jhipster';
 
 import { Delegation } from './delegation.model';
-import { ResponseWrapper, createRequestOption } from '../../shared';
+import { createRequestOption } from '../../shared';
+
+export type EntityResponseType = HttpResponse<Delegation>;
 
 @Injectable()
 export class DelegationService {
 
-    private resourceUrl = SERVER_API_URL + 'api/delegations';
+    private resourceUrl =  SERVER_API_URL + 'api/delegations';
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/delegations';
 
-    constructor(private http: Http, private dateUtils: JhiDateUtils) { }
+    constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }
 
-    create(delegation: Delegation): Observable<Delegation> {
+    create(delegation: Delegation): Observable<EntityResponseType> {
         const copy = this.convert(delegation);
-        return this.http.post(this.resourceUrl, copy).map((res: Response) => {
-            const jsonResponse = res.json();
-            return this.convertItemFromServer(jsonResponse);
-        });
+        return this.http.post<Delegation>(this.resourceUrl, copy, { observe: 'response' })
+            .map((res: EntityResponseType) => this.convertResponse(res));
     }
 
-    update(delegation: Delegation): Observable<Delegation> {
+    update(delegation: Delegation): Observable<EntityResponseType> {
         const copy = this.convert(delegation);
-        return this.http.put(this.resourceUrl, copy).map((res: Response) => {
-            const jsonResponse = res.json();
-            return this.convertItemFromServer(jsonResponse);
-        });
+        return this.http.put<Delegation>(this.resourceUrl, copy, { observe: 'response' })
+            .map((res: EntityResponseType) => this.convertResponse(res));
     }
 
-    find(id: number): Observable<Delegation> {
-        return this.http.get(`${this.resourceUrl}/${id}`).map((res: Response) => {
-            const jsonResponse = res.json();
-            return this.convertItemFromServer(jsonResponse);
-        });
+    find(id: number): Observable<EntityResponseType> {
+        return this.http.get<Delegation>(`${this.resourceUrl}/${id}`, { observe: 'response'})
+            .map((res: EntityResponseType) => this.convertResponse(res));
     }
 
-    query(req?: any): Observable<ResponseWrapper> {
+    query(req?: any): Observable<HttpResponse<Delegation[]>> {
         const options = createRequestOption(req);
-        return this.http.get(this.resourceUrl, options)
-            .map((res: Response) => this.convertResponse(res));
+        return this.http.get<Delegation[]>(this.resourceUrl, { params: options, observe: 'response' })
+            .map((res: HttpResponse<Delegation[]>) => this.convertArrayResponse(res));
     }
 
-    delete(id: number): Observable<Response> {
-        return this.http.delete(`${this.resourceUrl}/${id}`);
+    delete(id: number): Observable<HttpResponse<any>> {
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
     }
 
-    search(req?: any): Observable<ResponseWrapper> {
+    search(req?: any): Observable<HttpResponse<Delegation[]>> {
         const options = createRequestOption(req);
-        return this.http.get(this.resourceSearchUrl, options)
-            .map((res: any) => this.convertResponse(res));
+        return this.http.get<Delegation[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
+            .map((res: HttpResponse<Delegation[]>) => this.convertArrayResponse(res));
     }
 
-    private convertResponse(res: Response): ResponseWrapper {
-        const jsonResponse = res.json();
-        const result = [];
+    private convertResponse(res: EntityResponseType): EntityResponseType {
+        const body: Delegation = this.convertItemFromServer(res.body);
+        return res.clone({body});
+    }
+
+    private convertArrayResponse(res: HttpResponse<Delegation[]>): HttpResponse<Delegation[]> {
+        const jsonResponse: Delegation[] = res.body;
+        const body: Delegation[] = [];
         for (let i = 0; i < jsonResponse.length; i++) {
-            result.push(this.convertItemFromServer(jsonResponse[i]));
+            body.push(this.convertItemFromServer(jsonResponse[i]));
         }
-        return new ResponseWrapper(res.headers, result, res.status);
+        return res.clone({body});
     }
 
     /**
      * Convert a returned JSON object to Delegation.
      */
-    private convertItemFromServer(json: any): Delegation {
-        const entity: Delegation = Object.assign(new Delegation(), json);
-        entity.from = this.dateUtils
-            .convertDateTimeFromServer(json.from);
-        entity.to = this.dateUtils
-            .convertDateTimeFromServer(json.to);
-        entity.createdDate = this.dateUtils
-            .convertDateTimeFromServer(json.createdDate);
-        entity.lastModifiedDate = this.dateUtils
-            .convertDateTimeFromServer(json.lastModifiedDate);
-        return entity;
+    private convertItemFromServer(delegation: Delegation): Delegation {
+        const copy: Delegation = Object.assign({}, delegation);
+        copy.from = this.dateUtils
+            .convertDateTimeFromServer(delegation.from);
+        copy.to = this.dateUtils
+            .convertDateTimeFromServer(delegation.to);
+        copy.createdDate = this.dateUtils
+            .convertDateTimeFromServer(delegation.createdDate);
+        copy.lastModifiedDate = this.dateUtils
+            .convertDateTimeFromServer(delegation.lastModifiedDate);
+        return copy;
     }
 
     /**

@@ -1,6 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { HttpResponse } from '@angular/common/http';
 import { Address } from './address.model';
 import { AddressService } from './address.service';
 
@@ -25,10 +26,12 @@ export class AddressPopupService {
             }
 
             if (id) {
-                this.addressService.find(id).subscribe((address) => {
-                    this.ngbModalRef = this.addressModalRef(component, address);
-                    resolve(this.ngbModalRef);
-                });
+                this.addressService.find(id)
+                    .subscribe((addressResponse: HttpResponse<Address>) => {
+                        const address: Address = addressResponse.body;
+                        this.ngbModalRef = this.addressModalRef(component, address);
+                        resolve(this.ngbModalRef);
+                    });
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {

@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Response } from '@angular/http';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
@@ -14,7 +14,6 @@ import { Department, DepartmentService } from '../department';
 import { Office, OfficeService } from '../office';
 import { Shop, ShopService } from '../shop';
 import { UserInfo, UserInfoService } from '../user-info';
-import { ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-my-account-dialog',
@@ -51,15 +50,15 @@ export class MyAccountDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.companyService.query()
-            .subscribe((res: ResponseWrapper) => { this.companies = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<Company[]>) => { this.companies = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
         this.departmentService.query()
-            .subscribe((res: ResponseWrapper) => { this.departments = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<Department[]>) => { this.departments = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
         this.officeService.query()
-            .subscribe((res: ResponseWrapper) => { this.offices = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<Office[]>) => { this.offices = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
         this.shopService.query()
-            .subscribe((res: ResponseWrapper) => { this.shops = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<Shop[]>) => { this.shops = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
         this.userInfoService.query()
-            .subscribe((res: ResponseWrapper) => { this.userinfos = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<UserInfo[]>) => { this.userinfos = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -77,9 +76,9 @@ export class MyAccountDialogComponent implements OnInit {
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<MyAccount>) {
-        result.subscribe((res: MyAccount) =>
-            this.onSaveSuccess(res), (res: Response) => this.onSaveError());
+    private subscribeToSaveResponse(result: Observable<HttpResponse<MyAccount>>) {
+        result.subscribe((res: HttpResponse<MyAccount>) =>
+            this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
     private onSaveSuccess(result: MyAccount) {

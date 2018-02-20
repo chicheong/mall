@@ -1,6 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { HttpResponse } from '@angular/common/http';
 import { UserInfo } from './user-info.model';
 import { UserInfoService } from './user-info.service';
 
@@ -25,10 +26,12 @@ export class UserInfoPopupService {
             }
 
             if (id) {
-                this.userInfoService.find(id).subscribe((userInfo) => {
-                    this.ngbModalRef = this.userInfoModalRef(component, userInfo);
-                    resolve(this.ngbModalRef);
-                });
+                this.userInfoService.find(id)
+                    .subscribe((userInfoResponse: HttpResponse<UserInfo>) => {
+                        const userInfo: UserInfo = userInfoResponse.body;
+                        this.ngbModalRef = this.userInfoModalRef(component, userInfo);
+                        resolve(this.ngbModalRef);
+                    });
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {

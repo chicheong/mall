@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Response } from '@angular/http';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
@@ -11,7 +11,6 @@ import { DepartmentPopupService } from './department-popup.service';
 import { DepartmentService } from './department.service';
 import { Office, OfficeService } from '../office';
 import { Company, CompanyService } from '../company';
-import { ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-department-dialog',
@@ -41,11 +40,11 @@ export class DepartmentDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.departmentService.query()
-            .subscribe((res: ResponseWrapper) => { this.departments = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<Department[]>) => { this.departments = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
         this.officeService.query()
-            .subscribe((res: ResponseWrapper) => { this.offices = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<Office[]>) => { this.offices = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
         this.companyService.query()
-            .subscribe((res: ResponseWrapper) => { this.companies = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<Company[]>) => { this.companies = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -63,9 +62,9 @@ export class DepartmentDialogComponent implements OnInit {
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<Department>) {
-        result.subscribe((res: Department) =>
-            this.onSaveSuccess(res), (res: Response) => this.onSaveError());
+    private subscribeToSaveResponse(result: Observable<HttpResponse<Department>>) {
+        result.subscribe((res: HttpResponse<Department>) =>
+            this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
     private onSaveSuccess(result: Department) {

@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Response } from '@angular/http';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
@@ -10,7 +10,6 @@ import { Category } from './category.model';
 import { CategoryPopupService } from './category-popup.service';
 import { CategoryService } from './category.service';
 import { Product, ProductService } from '../product';
-import { ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-category-dialog',
@@ -37,9 +36,9 @@ export class CategoryDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.categoryService.query()
-            .subscribe((res: ResponseWrapper) => { this.categories = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<Category[]>) => { this.categories = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
         this.productService.query()
-            .subscribe((res: ResponseWrapper) => { this.products = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<Product[]>) => { this.products = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -57,9 +56,9 @@ export class CategoryDialogComponent implements OnInit {
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<Category>) {
-        result.subscribe((res: Category) =>
-            this.onSaveSuccess(res), (res: Response) => this.onSaveError());
+    private subscribeToSaveResponse(result: Observable<HttpResponse<Category>>) {
+        result.subscribe((res: HttpResponse<Category>) =>
+            this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
     private onSaveSuccess(result: Category) {

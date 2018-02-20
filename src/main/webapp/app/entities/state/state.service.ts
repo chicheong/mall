@@ -1,73 +1,74 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
 import { SERVER_API_URL } from '../../app.constants';
 
 import { State } from './state.model';
-import { ResponseWrapper, createRequestOption } from '../../shared';
+import { createRequestOption } from '../../shared';
+
+export type EntityResponseType = HttpResponse<State>;
 
 @Injectable()
 export class StateService {
 
-    private resourceUrl = SERVER_API_URL + 'api/states';
+    private resourceUrl =  SERVER_API_URL + 'api/states';
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/states';
 
-    constructor(private http: Http) { }
+    constructor(private http: HttpClient) { }
 
-    create(state: State): Observable<State> {
+    create(state: State): Observable<EntityResponseType> {
         const copy = this.convert(state);
-        return this.http.post(this.resourceUrl, copy).map((res: Response) => {
-            const jsonResponse = res.json();
-            return this.convertItemFromServer(jsonResponse);
-        });
+        return this.http.post<State>(this.resourceUrl, copy, { observe: 'response' })
+            .map((res: EntityResponseType) => this.convertResponse(res));
     }
 
-    update(state: State): Observable<State> {
+    update(state: State): Observable<EntityResponseType> {
         const copy = this.convert(state);
-        return this.http.put(this.resourceUrl, copy).map((res: Response) => {
-            const jsonResponse = res.json();
-            return this.convertItemFromServer(jsonResponse);
-        });
+        return this.http.put<State>(this.resourceUrl, copy, { observe: 'response' })
+            .map((res: EntityResponseType) => this.convertResponse(res));
     }
 
-    find(id: number): Observable<State> {
-        return this.http.get(`${this.resourceUrl}/${id}`).map((res: Response) => {
-            const jsonResponse = res.json();
-            return this.convertItemFromServer(jsonResponse);
-        });
+    find(id: number): Observable<EntityResponseType> {
+        return this.http.get<State>(`${this.resourceUrl}/${id}`, { observe: 'response'})
+            .map((res: EntityResponseType) => this.convertResponse(res));
     }
 
-    query(req?: any): Observable<ResponseWrapper> {
+    query(req?: any): Observable<HttpResponse<State[]>> {
         const options = createRequestOption(req);
-        return this.http.get(this.resourceUrl, options)
-            .map((res: Response) => this.convertResponse(res));
+        return this.http.get<State[]>(this.resourceUrl, { params: options, observe: 'response' })
+            .map((res: HttpResponse<State[]>) => this.convertArrayResponse(res));
     }
 
-    delete(id: number): Observable<Response> {
-        return this.http.delete(`${this.resourceUrl}/${id}`);
+    delete(id: number): Observable<HttpResponse<any>> {
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
     }
 
-    search(req?: any): Observable<ResponseWrapper> {
+    search(req?: any): Observable<HttpResponse<State[]>> {
         const options = createRequestOption(req);
-        return this.http.get(this.resourceSearchUrl, options)
-            .map((res: any) => this.convertResponse(res));
+        return this.http.get<State[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
+            .map((res: HttpResponse<State[]>) => this.convertArrayResponse(res));
     }
 
-    private convertResponse(res: Response): ResponseWrapper {
-        const jsonResponse = res.json();
-        const result = [];
+    private convertResponse(res: EntityResponseType): EntityResponseType {
+        const body: State = this.convertItemFromServer(res.body);
+        return res.clone({body});
+    }
+
+    private convertArrayResponse(res: HttpResponse<State[]>): HttpResponse<State[]> {
+        const jsonResponse: State[] = res.body;
+        const body: State[] = [];
         for (let i = 0; i < jsonResponse.length; i++) {
-            result.push(this.convertItemFromServer(jsonResponse[i]));
+            body.push(this.convertItemFromServer(jsonResponse[i]));
         }
-        return new ResponseWrapper(res.headers, result, res.status);
+        return res.clone({body});
     }
 
     /**
      * Convert a returned JSON object to State.
      */
-    private convertItemFromServer(json: any): State {
-        const entity: State = Object.assign(new State(), json);
-        return entity;
+    private convertItemFromServer(state: State): State {
+        const copy: State = Object.assign({}, state);
+        return copy;
     }
 
     /**

@@ -18,14 +18,16 @@ describe('ProductHistory e2e test', () => {
     it('should load ProductHistories', () => {
         navBarPage.goToEntity('product-history');
         productHistoryComponentsPage = new ProductHistoryComponentsPage();
-        expect(productHistoryComponentsPage.getTitle()).toMatch(/mallApp.productHistory.home.title/);
+        expect(productHistoryComponentsPage.getTitle())
+            .toMatch(/mallApp.productHistory.home.title/);
 
     });
 
     it('should load create ProductHistory dialog', () => {
         productHistoryComponentsPage.clickOnCreateButton();
         productHistoryDialogPage = new ProductHistoryDialogPage();
-        expect(productHistoryDialogPage.getModalTitle()).toMatch(/mallApp.productHistory.home.createOrEditLabel/);
+        expect(productHistoryDialogPage.getModalTitle())
+            .toMatch(/mallApp.productHistory.home.createOrEditLabel/);
         productHistoryDialogPage.close();
     });
 
@@ -101,78 +103,110 @@ export class ProductHistoryDialogPage {
 
     setNameInput = function(name) {
         this.nameInput.sendKeys(name);
-    }
+    };
 
     getNameInput = function() {
         return this.nameInput.getAttribute('value');
-    }
+    };
 
     setCodeInput = function(code) {
         this.codeInput.sendKeys(code);
-    }
+    };
 
     getCodeInput = function() {
         return this.codeInput.getAttribute('value');
-    }
+    };
 
     setBrandInput = function(brand) {
         this.brandInput.sendKeys(brand);
-    }
+    };
 
     getBrandInput = function() {
         return this.brandInput.getAttribute('value');
-    }
+    };
 
     setDescriptionInput = function(description) {
         this.descriptionInput.sendKeys(description);
-    }
+    };
 
     getDescriptionInput = function() {
         return this.descriptionInput.getAttribute('value');
-    }
+    };
 
     setContentInput = function(content) {
         this.contentInput.sendKeys(content);
-    }
+    };
 
     getContentInput = function() {
         return this.contentInput.getAttribute('value');
-    }
+    };
 
     setRemarkInput = function(remark) {
         this.remarkInput.sendKeys(remark);
-    }
+    };
 
     getRemarkInput = function() {
         return this.remarkInput.getAttribute('value');
-    }
+    };
 
     setStatusSelect = function(status) {
         this.statusSelect.sendKeys(status);
-    }
+    };
 
     getStatusSelect = function() {
         return this.statusSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     statusSelectLastOption = function() {
         this.statusSelect.all(by.tagName('option')).last().click();
-    }
+    };
     setCreatedByInput = function(createdBy) {
         this.createdByInput.sendKeys(createdBy);
-    }
+    };
 
     getCreatedByInput = function() {
         return this.createdByInput.getAttribute('value');
-    }
+    };
 
     setCreatedDateInput = function(createdDate) {
         this.createdDateInput.sendKeys(createdDate);
-    }
+    };
 
     getCreatedDateInput = function() {
         return this.createdDateInput.getAttribute('value');
-    }
+    };
+
+    setLastModifiedByInput = function(lastModifiedBy) {
+        this.lastModifiedByInput.sendKeys(lastModifiedBy);
+    };
+
+    getLastModifiedByInput = function() {
+        return this.lastModifiedByInput.getAttribute('value');
+    };
+
+    setLastModifiedDateInput = function(lastModifiedDate) {
+        this.lastModifiedDateInput.sendKeys(lastModifiedDate);
+    };
+
+    getLastModifiedDateInput = function() {
+        return this.lastModifiedDateInput.getAttribute('value');
+    };
+
+    productSelectLastOption = function() {
+        this.productSelect.all(by.tagName('option')).last().click();
+    };
+
+    productSelectOption = function(option) {
+        this.productSelect.sendKeys(option);
+    };
+
+    getProductSelect = function() {
+        return this.productSelect;
+    };
+
+    getProductSelectedOption = function() {
+        return this.productSelect.element(by.css('option:checked')).getText();
+    };
 
     save() {
         this.saveButton.click();

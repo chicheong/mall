@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Rx';
+import { HttpResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs/Subscription';
 import { JhiEventManager } from 'ng-jhipster';
 
 import { MyAccount } from './my-account.model';
@@ -31,9 +32,10 @@ export class MyAccountDetailComponent implements OnInit, OnDestroy {
     }
 
     load(id) {
-        this.myAccountService.find(id).subscribe((myAccount) => {
-            this.myAccount = myAccount;
-        });
+        this.myAccountService.find(id)
+            .subscribe((myAccountResponse: HttpResponse<MyAccount>) => {
+                this.myAccount = myAccountResponse.body;
+            });
     }
     previousState() {
         window.history.back();

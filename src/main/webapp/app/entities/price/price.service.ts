@@ -1,79 +1,80 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { HttpClient, HttpResponse } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
 import { SERVER_API_URL } from '../../app.constants';
 
 import { JhiDateUtils } from 'ng-jhipster';
 
 import { Price } from './price.model';
-import { ResponseWrapper, createRequestOption } from '../../shared';
+import { createRequestOption } from '../../shared';
+
+export type EntityResponseType = HttpResponse<Price>;
 
 @Injectable()
 export class PriceService {
 
-    private resourceUrl = SERVER_API_URL + 'api/prices';
+    private resourceUrl =  SERVER_API_URL + 'api/prices';
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/prices';
 
-    constructor(private http: Http, private dateUtils: JhiDateUtils) { }
+    constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }
 
-    create(price: Price): Observable<Price> {
+    create(price: Price): Observable<EntityResponseType> {
         const copy = this.convert(price);
-        return this.http.post(this.resourceUrl, copy).map((res: Response) => {
-            const jsonResponse = res.json();
-            return this.convertItemFromServer(jsonResponse);
-        });
+        return this.http.post<Price>(this.resourceUrl, copy, { observe: 'response' })
+            .map((res: EntityResponseType) => this.convertResponse(res));
     }
 
-    update(price: Price): Observable<Price> {
+    update(price: Price): Observable<EntityResponseType> {
         const copy = this.convert(price);
-        return this.http.put(this.resourceUrl, copy).map((res: Response) => {
-            const jsonResponse = res.json();
-            return this.convertItemFromServer(jsonResponse);
-        });
+        return this.http.put<Price>(this.resourceUrl, copy, { observe: 'response' })
+            .map((res: EntityResponseType) => this.convertResponse(res));
     }
 
-    find(id: number): Observable<Price> {
-        return this.http.get(`${this.resourceUrl}/${id}`).map((res: Response) => {
-            const jsonResponse = res.json();
-            return this.convertItemFromServer(jsonResponse);
-        });
+    find(id: number): Observable<EntityResponseType> {
+        return this.http.get<Price>(`${this.resourceUrl}/${id}`, { observe: 'response'})
+            .map((res: EntityResponseType) => this.convertResponse(res));
     }
 
-    query(req?: any): Observable<ResponseWrapper> {
+    query(req?: any): Observable<HttpResponse<Price[]>> {
         const options = createRequestOption(req);
-        return this.http.get(this.resourceUrl, options)
-            .map((res: Response) => this.convertResponse(res));
+        return this.http.get<Price[]>(this.resourceUrl, { params: options, observe: 'response' })
+            .map((res: HttpResponse<Price[]>) => this.convertArrayResponse(res));
     }
 
-    delete(id: number): Observable<Response> {
-        return this.http.delete(`${this.resourceUrl}/${id}`);
+    delete(id: number): Observable<HttpResponse<any>> {
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
     }
 
-    search(req?: any): Observable<ResponseWrapper> {
+    search(req?: any): Observable<HttpResponse<Price[]>> {
         const options = createRequestOption(req);
-        return this.http.get(this.resourceSearchUrl, options)
-            .map((res: any) => this.convertResponse(res));
+        return this.http.get<Price[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
+            .map((res: HttpResponse<Price[]>) => this.convertArrayResponse(res));
     }
 
-    private convertResponse(res: Response): ResponseWrapper {
-        const jsonResponse = res.json();
-        const result = [];
+    private convertResponse(res: EntityResponseType): EntityResponseType {
+        const body: Price = this.convertItemFromServer(res.body);
+        return res.clone({body});
+    }
+
+    private convertArrayResponse(res: HttpResponse<Price[]>): HttpResponse<Price[]> {
+        const jsonResponse: Price[] = res.body;
+        const body: Price[] = [];
         for (let i = 0; i < jsonResponse.length; i++) {
-            result.push(this.convertItemFromServer(jsonResponse[i]));
+            body.push(this.convertItemFromServer(jsonResponse[i]));
         }
-        return new ResponseWrapper(res.headers, result, res.status);
+        return res.clone({body});
     }
 
     /**
      * Convert a returned JSON object to Price.
      */
-    convertItemFromServer(json: any): Price {
-        const entity: Price = Object.assign(new Price(), json);
-        entity.from = this.dateUtils
-            .convertDateTimeFromServer(json.from);
-        entity.to = this.dateUtils
-            .convertDateTimeFromServer(json.to);
-        return entity;
+    convertItemFromServer(price: Price): Price {
+        const copy: Price = Object.assign({}, price);
+        copy.from = this.dateUtils
+            .convertDateTimeFromServer(price.from);
+        copy.to = this.dateUtils
+            .convertDateTimeFromServer(price.to);
+        return copy;
     }
 
     /**

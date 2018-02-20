@@ -1,6 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { HttpResponse } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { Category } from './category.model';
 import { CategoryService } from './category.service';
@@ -27,14 +28,16 @@ export class CategoryPopupService {
             }
 
             if (id) {
-                this.categoryService.find(id).subscribe((category) => {
-                    category.createdDate = this.datePipe
-                        .transform(category.createdDate, 'yyyy-MM-ddTHH:mm:ss');
-                    category.lastModifiedDate = this.datePipe
-                        .transform(category.lastModifiedDate, 'yyyy-MM-ddTHH:mm:ss');
-                    this.ngbModalRef = this.categoryModalRef(component, category);
-                    resolve(this.ngbModalRef);
-                });
+                this.categoryService.find(id)
+                    .subscribe((categoryResponse: HttpResponse<Category>) => {
+                        const category: Category = categoryResponse.body;
+                        category.createdDate = this.datePipe
+                            .transform(category.createdDate, 'yyyy-MM-ddTHH:mm:ss');
+                        category.lastModifiedDate = this.datePipe
+                            .transform(category.lastModifiedDate, 'yyyy-MM-ddTHH:mm:ss');
+                        this.ngbModalRef = this.categoryModalRef(component, category);
+                        resolve(this.ngbModalRef);
+                    });
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {

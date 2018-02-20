@@ -1,6 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { HttpResponse } from '@angular/common/http';
 import { OrderItem } from './order-item.model';
 import { OrderItemService } from './order-item.service';
 
@@ -25,10 +26,12 @@ export class OrderItemPopupService {
             }
 
             if (id) {
-                this.orderItemService.find(id).subscribe((orderItem) => {
-                    this.ngbModalRef = this.orderItemModalRef(component, orderItem);
-                    resolve(this.ngbModalRef);
-                });
+                this.orderItemService.find(id)
+                    .subscribe((orderItemResponse: HttpResponse<OrderItem>) => {
+                        const orderItem: OrderItem = orderItemResponse.body;
+                        this.ngbModalRef = this.orderItemModalRef(component, orderItem);
+                        resolve(this.ngbModalRef);
+                    });
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {

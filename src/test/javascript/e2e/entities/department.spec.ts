@@ -18,14 +18,16 @@ describe('Department e2e test', () => {
     it('should load Departments', () => {
         navBarPage.goToEntity('department');
         departmentComponentsPage = new DepartmentComponentsPage();
-        expect(departmentComponentsPage.getTitle()).toMatch(/mallApp.department.home.title/);
+        expect(departmentComponentsPage.getTitle())
+            .toMatch(/mallApp.department.home.title/);
 
     });
 
     it('should load create Department dialog', () => {
         departmentComponentsPage.clickOnCreateButton();
         departmentDialogPage = new DepartmentDialogPage();
-        expect(departmentDialogPage.getModalTitle()).toMatch(/mallApp.department.home.createOrEditLabel/);
+        expect(departmentDialogPage.getModalTitle())
+            .toMatch(/mallApp.department.home.createOrEditLabel/);
         departmentDialogPage.close();
     });
 
@@ -76,62 +78,62 @@ export class DepartmentDialogPage {
 
     setCodeInput = function(code) {
         this.codeInput.sendKeys(code);
-    }
+    };
 
     getCodeInput = function() {
         return this.codeInput.getAttribute('value');
-    }
+    };
 
     setNameInput = function(name) {
         this.nameInput.sendKeys(name);
-    }
+    };
 
     getNameInput = function() {
         return this.nameInput.getAttribute('value');
-    }
+    };
 
     setStatusSelect = function(status) {
         this.statusSelect.sendKeys(status);
-    }
+    };
 
     getStatusSelect = function() {
         return this.statusSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     statusSelectLastOption = function() {
         this.statusSelect.all(by.tagName('option')).last().click();
-    }
+    };
     parentSelectLastOption = function() {
         this.parentSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     parentSelectOption = function(option) {
         this.parentSelect.sendKeys(option);
-    }
+    };
 
     getParentSelect = function() {
         return this.parentSelect;
-    }
+    };
 
     getParentSelectedOption = function() {
         return this.parentSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     officeSelectLastOption = function() {
         this.officeSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     officeSelectOption = function(option) {
         this.officeSelect.sendKeys(option);
-    }
+    };
 
     getOfficeSelect = function() {
         return this.officeSelect;
-    }
+    };
 
     getOfficeSelectedOption = function() {
         return this.officeSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     save() {
         this.saveButton.click();

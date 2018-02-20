@@ -18,14 +18,16 @@ describe('Price e2e test', () => {
     it('should load Prices', () => {
         navBarPage.goToEntity('price');
         priceComponentsPage = new PriceComponentsPage();
-        expect(priceComponentsPage.getTitle()).toMatch(/mallApp.price.home.title/);
+        expect(priceComponentsPage.getTitle())
+            .toMatch(/mallApp.price.home.title/);
 
     });
 
     it('should load create Price dialog', () => {
         priceComponentsPage.clickOnCreateButton();
         priceDialogPage = new PriceDialogPage();
-        expect(priceDialogPage.getModalTitle()).toMatch(/mallApp.price.home.createOrEditLabel/);
+        expect(priceDialogPage.getModalTitle())
+            .toMatch(/mallApp.price.home.createOrEditLabel/);
         priceDialogPage.close();
     });
 
@@ -77,54 +79,54 @@ export class PriceDialogPage {
 
     setFromInput = function(from) {
         this.fromInput.sendKeys(from);
-    }
+    };
 
     getFromInput = function() {
         return this.fromInput.getAttribute('value');
-    }
+    };
 
     setToInput = function(to) {
         this.toInput.sendKeys(to);
-    }
+    };
 
     getToInput = function() {
         return this.toInput.getAttribute('value');
-    }
+    };
 
     setPriceInput = function(price) {
         this.priceInput.sendKeys(price);
-    }
+    };
 
     getPriceInput = function() {
         return this.priceInput.getAttribute('value');
-    }
+    };
 
     setCurrencySelect = function(currency) {
         this.currencySelect.sendKeys(currency);
-    }
+    };
 
     getCurrencySelect = function() {
         return this.currencySelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     currencySelectLastOption = function() {
         this.currencySelect.all(by.tagName('option')).last().click();
-    }
+    };
     itemSelectLastOption = function() {
         this.itemSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     itemSelectOption = function(option) {
         this.itemSelect.sendKeys(option);
-    }
+    };
 
     getItemSelect = function() {
         return this.itemSelect;
-    }
+    };
 
     getItemSelectedOption = function() {
         return this.itemSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     save() {
         this.saveButton.click();

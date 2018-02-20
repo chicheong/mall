@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Http, Response } from '@angular/http';
-import { Observable } from 'rxjs/Rx';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
 import { SERVER_API_URL } from '../../app.constants';
 
 @Injectable()
@@ -8,12 +8,12 @@ export class JhiHealthService {
 
     separator: string;
 
-    constructor(private http: Http) {
+    constructor(private http: HttpClient) {
         this.separator = '.';
     }
 
     checkHealth(): Observable<any> {
-        return this.http.get(SERVER_API_URL + 'management/health').map((res: Response) => res.json());
+        return this.http.get(SERVER_API_URL + 'management/health');
     }
 
     transformHealthData(data): any {

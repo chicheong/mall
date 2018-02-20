@@ -18,14 +18,16 @@ describe('Category e2e test', () => {
     it('should load Categories', () => {
         navBarPage.goToEntity('category');
         categoryComponentsPage = new CategoryComponentsPage();
-        expect(categoryComponentsPage.getTitle()).toMatch(/mallApp.category.home.title/);
+        expect(categoryComponentsPage.getTitle())
+            .toMatch(/mallApp.category.home.title/);
 
     });
 
     it('should load create Category dialog', () => {
         categoryComponentsPage.clickOnCreateButton();
         categoryDialogPage = new CategoryDialogPage();
-        expect(categoryDialogPage.getModalTitle()).toMatch(/mallApp.category.home.createOrEditLabel/);
+        expect(categoryDialogPage.getModalTitle())
+            .toMatch(/mallApp.category.home.createOrEditLabel/);
         categoryDialogPage.close();
     });
 
@@ -88,94 +90,94 @@ export class CategoryDialogPage {
 
     setNameInput = function(name) {
         this.nameInput.sendKeys(name);
-    }
+    };
 
     getNameInput = function() {
         return this.nameInput.getAttribute('value');
-    }
+    };
 
     setDescriptionInput = function(description) {
         this.descriptionInput.sendKeys(description);
-    }
+    };
 
     getDescriptionInput = function() {
         return this.descriptionInput.getAttribute('value');
-    }
+    };
 
     setStatusSelect = function(status) {
         this.statusSelect.sendKeys(status);
-    }
+    };
 
     getStatusSelect = function() {
         return this.statusSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     statusSelectLastOption = function() {
         this.statusSelect.all(by.tagName('option')).last().click();
-    }
+    };
     setCreatedByInput = function(createdBy) {
         this.createdByInput.sendKeys(createdBy);
-    }
+    };
 
     getCreatedByInput = function() {
         return this.createdByInput.getAttribute('value');
-    }
+    };
 
     setCreatedDateInput = function(createdDate) {
         this.createdDateInput.sendKeys(createdDate);
-    }
+    };
 
     getCreatedDateInput = function() {
         return this.createdDateInput.getAttribute('value');
-    }
+    };
 
     setLastModifiedByInput = function(lastModifiedBy) {
         this.lastModifiedByInput.sendKeys(lastModifiedBy);
-    }
+    };
 
     getLastModifiedByInput = function() {
         return this.lastModifiedByInput.getAttribute('value');
-    }
+    };
 
     setLastModifiedDateInput = function(lastModifiedDate) {
         this.lastModifiedDateInput.sendKeys(lastModifiedDate);
-    }
+    };
 
     getLastModifiedDateInput = function() {
         return this.lastModifiedDateInput.getAttribute('value');
-    }
+    };
 
     parentSelectLastOption = function() {
         this.parentSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     parentSelectOption = function(option) {
         this.parentSelect.sendKeys(option);
-    }
+    };
 
     getParentSelect = function() {
         return this.parentSelect;
-    }
+    };
 
     getParentSelectedOption = function() {
         return this.parentSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     productSelectLastOption = function() {
         this.productSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     productSelectOption = function(option) {
         this.productSelect.sendKeys(option);
-    }
+    };
 
     getProductSelect = function() {
         return this.productSelect;
-    }
+    };
 
     getProductSelectedOption = function() {
         return this.productSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     save() {
         this.saveButton.click();

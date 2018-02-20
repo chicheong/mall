@@ -1,6 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subscription, Observable } from 'rxjs/Rx';
+import { HttpResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs/Subscription';
+import { Observable } from 'rxjs/Observable';
 import { JhiEventManager, JhiAlertService  } from 'ng-jhipster';
 
 import { Product } from './product.model';
@@ -138,12 +141,13 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     }
 
     load(id) {
-        this.productService.find(id).subscribe((product) => {
-            this.product = product;
-        });
+        this.productService.find(id)
+            .subscribe((productResponse: HttpResponse<Product>) => {
+                this.product = productResponse.body;
+            });
         this.selectedColor = {};
         this.selectedSize = {};
-        this.selectedItem = {};
+        this.selectedItem = {};            
     }
 
     previousState() {

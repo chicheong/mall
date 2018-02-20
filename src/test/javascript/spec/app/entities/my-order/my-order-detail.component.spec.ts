@@ -1,6 +1,7 @@
 /* tslint:disable max-line-length */
 import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { Observable } from 'rxjs/Rx';
+import { HttpResponse } from '@angular/common/http';
+import { Observable } from 'rxjs/Observable';
 
 import { MallTestModule } from '../../../test.module';
 import { MyOrderDetailComponent } from '../../../../../../main/webapp/app/entities/my-order/my-order-detail.component';
@@ -36,7 +37,9 @@ describe('Component Tests', () => {
             it('Should call load all on init', () => {
                 // GIVEN
 
-                spyOn(service, 'find').and.returnValue(Observable.of(new MyOrder(123)));
+                spyOn(service, 'find').and.returnValue(Observable.of(new HttpResponse({
+                    body: new MyOrder(123)
+                })));
 
                 // WHEN
                 comp.ngOnInit();

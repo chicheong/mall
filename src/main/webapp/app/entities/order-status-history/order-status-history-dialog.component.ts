@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Response } from '@angular/http';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
@@ -10,7 +10,6 @@ import { OrderStatusHistory } from './order-status-history.model';
 import { OrderStatusHistoryPopupService } from './order-status-history-popup.service';
 import { OrderStatusHistoryService } from './order-status-history.service';
 import { MyOrder, MyOrderService } from '../my-order';
-import { ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-order-status-history-dialog',
@@ -35,7 +34,7 @@ export class OrderStatusHistoryDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.myOrderService.query()
-            .subscribe((res: ResponseWrapper) => { this.myorders = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<MyOrder[]>) => { this.myorders = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -53,9 +52,9 @@ export class OrderStatusHistoryDialogComponent implements OnInit {
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<OrderStatusHistory>) {
-        result.subscribe((res: OrderStatusHistory) =>
-            this.onSaveSuccess(res), (res: Response) => this.onSaveError());
+    private subscribeToSaveResponse(result: Observable<HttpResponse<OrderStatusHistory>>) {
+        result.subscribe((res: HttpResponse<OrderStatusHistory>) =>
+            this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
     private onSaveSuccess(result: OrderStatusHistory) {

@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Rx';
+import { Subscription } from 'rxjs/Subscription';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
 import { CurrencyRate } from './currency-rate.model';
 import { CurrencyRateService } from './currency-rate.service';
-import { Principal, ResponseWrapper } from '../../shared';
+import { Principal } from '../../shared';
 
 @Component({
     selector: 'jhi-currency-rate',
@@ -33,17 +34,17 @@ currencyRates: CurrencyRate[];
             this.currencyRateService.search({
                 query: this.currentSearch,
                 }).subscribe(
-                    (res: ResponseWrapper) => this.currencyRates = res.json,
-                    (res: ResponseWrapper) => this.onError(res.json)
+                    (res: HttpResponse<CurrencyRate[]>) => this.currencyRates = res.body,
+                    (res: HttpErrorResponse) => this.onError(res.message)
                 );
             return;
        }
         this.currencyRateService.query().subscribe(
-            (res: ResponseWrapper) => {
-                this.currencyRates = res.json;
+            (res: HttpResponse<CurrencyRate[]>) => {
+                this.currencyRates = res.body;
                 this.currentSearch = '';
             },
-            (res: ResponseWrapper) => this.onError(res.json)
+            (res: HttpErrorResponse) => this.onError(res.message)
         );
     }
 

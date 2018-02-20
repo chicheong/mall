@@ -1,6 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { HttpResponse } from '@angular/common/http';
 import { Company } from './company.model';
 import { CompanyService } from './company.service';
 
@@ -25,10 +26,12 @@ export class CompanyPopupService {
             }
 
             if (id) {
-                this.companyService.find(id).subscribe((company) => {
-                    this.ngbModalRef = this.companyModalRef(component, company);
-                    resolve(this.ngbModalRef);
-                });
+                this.companyService.find(id)
+                    .subscribe((companyResponse: HttpResponse<Company>) => {
+                        const company: Company = companyResponse.body;
+                        this.ngbModalRef = this.companyModalRef(component, company);
+                        resolve(this.ngbModalRef);
+                    });
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {

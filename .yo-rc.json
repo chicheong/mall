@@ -4,7 +4,7 @@
       "packageName": "com.wongs",
       "nativeLanguage": "en"
     },
-    "jhipsterVersion": "4.13.0",
+    "jhipsterVersion": "4.14.0",
     "baseName": "mall",
     "packageName": "com.wongs",
     "packageFolder": "com/wongs",
@@ -36,6 +36,8 @@
     "languages": [
       "en",
       "zh-tw"
-    ]
+    ],
+    "cacheProvider": "ehcache",
+    "enableHibernateCache": true
   }
 }

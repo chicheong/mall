@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Rx';
+import { HttpResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs/Subscription';
 import { JhiEventManager } from 'ng-jhipster';
 
 import { MyOrder } from './my-order.model';
@@ -33,9 +34,10 @@ export class MyOrderDetailComponent implements OnInit, OnDestroy {
     }
 
     load(id) {
-        this.myOrderService.find(id).subscribe((myOrder) => {
-            this.myOrder = myOrder;
-        });
+        this.myOrderService.find(id)
+            .subscribe((myOrderResponse: HttpResponse<MyOrder>) => {
+                this.myOrder = myOrderResponse.body;
+            });
     }
 
     save() {

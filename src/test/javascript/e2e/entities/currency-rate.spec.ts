@@ -18,14 +18,16 @@ describe('CurrencyRate e2e test', () => {
     it('should load CurrencyRates', () => {
         navBarPage.goToEntity('currency-rate');
         currencyRateComponentsPage = new CurrencyRateComponentsPage();
-        expect(currencyRateComponentsPage.getTitle()).toMatch(/mallApp.currencyRate.home.title/);
+        expect(currencyRateComponentsPage.getTitle())
+            .toMatch(/mallApp.currencyRate.home.title/);
 
     });
 
     it('should load create CurrencyRate dialog', () => {
         currencyRateComponentsPage.clickOnCreateButton();
         currencyRateDialogPage = new CurrencyRateDialogPage();
-        expect(currencyRateDialogPage.getModalTitle()).toMatch(/mallApp.currencyRate.home.createOrEditLabel/);
+        expect(currencyRateDialogPage.getModalTitle())
+            .toMatch(/mallApp.currencyRate.home.createOrEditLabel/);
         currencyRateDialogPage.close();
     });
 
@@ -77,50 +79,50 @@ export class CurrencyRateDialogPage {
 
     setFromInput = function(from) {
         this.fromInput.sendKeys(from);
-    }
+    };
 
     getFromInput = function() {
         return this.fromInput.getAttribute('value');
-    }
+    };
 
     setToInput = function(to) {
         this.toInput.sendKeys(to);
-    }
+    };
 
     getToInput = function() {
         return this.toInput.getAttribute('value');
-    }
+    };
 
     setRateInput = function(rate) {
         this.rateInput.sendKeys(rate);
-    }
+    };
 
     getRateInput = function() {
         return this.rateInput.getAttribute('value');
-    }
+    };
 
     setSourceCurrencySelect = function(sourceCurrency) {
         this.sourceCurrencySelect.sendKeys(sourceCurrency);
-    }
+    };
 
     getSourceCurrencySelect = function() {
         return this.sourceCurrencySelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     sourceCurrencySelectLastOption = function() {
         this.sourceCurrencySelect.all(by.tagName('option')).last().click();
-    }
+    };
     setTargetCurrencySelect = function(targetCurrency) {
         this.targetCurrencySelect.sendKeys(targetCurrency);
-    }
+    };
 
     getTargetCurrencySelect = function() {
         return this.targetCurrencySelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     targetCurrencySelectLastOption = function() {
         this.targetCurrencySelect.all(by.tagName('option')).last().click();
-    }
+    };
     save() {
         this.saveButton.click();
     }
