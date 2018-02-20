@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Rx';
+import { HttpResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs/Subscription';
 import { JhiEventManager } from 'ng-jhipster';
 
 import { CurrencyRate } from './currency-rate.model';
@@ -31,9 +32,10 @@ export class CurrencyRateDetailComponent implements OnInit, OnDestroy {
     }
 
     load(id) {
-        this.currencyRateService.find(id).subscribe((currencyRate) => {
-            this.currencyRate = currencyRate;
-        });
+        this.currencyRateService.find(id)
+            .subscribe((currencyRateResponse: HttpResponse<CurrencyRate>) => {
+                this.currencyRate = currencyRateResponse.body;
+            });
     }
     previousState() {
         window.history.back();

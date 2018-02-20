@@ -18,14 +18,16 @@ describe('Delegation e2e test', () => {
     it('should load Delegations', () => {
         navBarPage.goToEntity('delegation');
         delegationComponentsPage = new DelegationComponentsPage();
-        expect(delegationComponentsPage.getTitle()).toMatch(/mallApp.delegation.home.title/);
+        expect(delegationComponentsPage.getTitle())
+            .toMatch(/mallApp.delegation.home.title/);
 
     });
 
     it('should load create Delegation dialog', () => {
         delegationComponentsPage.clickOnCreateButton();
         delegationDialogPage = new DelegationDialogPage();
-        expect(delegationDialogPage.getModalTitle()).toMatch(/mallApp.delegation.home.createOrEditLabel/);
+        expect(delegationDialogPage.getModalTitle())
+            .toMatch(/mallApp.delegation.home.createOrEditLabel/);
         delegationDialogPage.close();
     });
 
@@ -91,97 +93,97 @@ export class DelegationDialogPage {
 
     setFromInput = function(from) {
         this.fromInput.sendKeys(from);
-    }
+    };
 
     getFromInput = function() {
         return this.fromInput.getAttribute('value');
-    }
+    };
 
     setToInput = function(to) {
         this.toInput.sendKeys(to);
-    }
+    };
 
     getToInput = function() {
         return this.toInput.getAttribute('value');
-    }
+    };
 
     setTypeSelect = function(type) {
         this.typeSelect.sendKeys(type);
-    }
+    };
 
     getTypeSelect = function() {
         return this.typeSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     typeSelectLastOption = function() {
         this.typeSelect.all(by.tagName('option')).last().click();
-    }
+    };
     setDelegateIdInput = function(delegateId) {
         this.delegateIdInput.sendKeys(delegateId);
-    }
+    };
 
     getDelegateIdInput = function() {
         return this.delegateIdInput.getAttribute('value');
-    }
+    };
 
     setStatusSelect = function(status) {
         this.statusSelect.sendKeys(status);
-    }
+    };
 
     getStatusSelect = function() {
         return this.statusSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     statusSelectLastOption = function() {
         this.statusSelect.all(by.tagName('option')).last().click();
-    }
+    };
     setCreatedByInput = function(createdBy) {
         this.createdByInput.sendKeys(createdBy);
-    }
+    };
 
     getCreatedByInput = function() {
         return this.createdByInput.getAttribute('value');
-    }
+    };
 
     setCreatedDateInput = function(createdDate) {
         this.createdDateInput.sendKeys(createdDate);
-    }
+    };
 
     getCreatedDateInput = function() {
         return this.createdDateInput.getAttribute('value');
-    }
+    };
 
     setLastModifiedByInput = function(lastModifiedBy) {
         this.lastModifiedByInput.sendKeys(lastModifiedBy);
-    }
+    };
 
     getLastModifiedByInput = function() {
         return this.lastModifiedByInput.getAttribute('value');
-    }
+    };
 
     setLastModifiedDateInput = function(lastModifiedDate) {
         this.lastModifiedDateInput.sendKeys(lastModifiedDate);
-    }
+    };
 
     getLastModifiedDateInput = function() {
         return this.lastModifiedDateInput.getAttribute('value');
-    }
+    };
 
     accountSelectLastOption = function() {
         this.accountSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     accountSelectOption = function(option) {
         this.accountSelect.sendKeys(option);
-    }
+    };
 
     getAccountSelect = function() {
         return this.accountSelect;
-    }
+    };
 
     getAccountSelectedOption = function() {
         return this.accountSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     save() {
         this.saveButton.click();

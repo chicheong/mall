@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Rx';
+import { HttpResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs/Subscription';
 import { JhiEventManager } from 'ng-jhipster';
 
 import { Department } from './department.model';
@@ -31,9 +32,10 @@ export class DepartmentDetailComponent implements OnInit, OnDestroy {
     }
 
     load(id) {
-        this.departmentService.find(id).subscribe((department) => {
-            this.department = department;
-        });
+        this.departmentService.find(id)
+            .subscribe((departmentResponse: HttpResponse<Department>) => {
+                this.department = departmentResponse.body;
+            });
     }
     previousState() {
         window.history.back();

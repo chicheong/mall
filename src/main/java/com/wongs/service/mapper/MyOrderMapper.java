@@ -12,7 +12,7 @@ import org.mapstruct.*;
 public interface MyOrderMapper extends EntityMapper<MyOrderDTO, MyOrder> {
 
     @Mapping(source = "account.id", target = "accountId")
-    MyOrderDTO toDto(MyOrder myOrder); 
+    MyOrderDTO toDto(MyOrder myOrder);
 
     @Mapping(target = "items", ignore = true)
     @Mapping(target = "statusHistories", ignore = true)

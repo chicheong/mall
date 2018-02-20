@@ -18,14 +18,16 @@ describe('Product e2e test', () => {
     it('should load Products', () => {
         navBarPage.goToEntity('product');
         productComponentsPage = new ProductComponentsPage();
-        expect(productComponentsPage.getTitle()).toMatch(/mallApp.product.home.title/);
+        expect(productComponentsPage.getTitle())
+            .toMatch(/mallApp.product.home.title/);
 
     });
 
     it('should load create Product dialog', () => {
         productComponentsPage.clickOnCreateButton();
         productDialogPage = new ProductDialogPage();
-        expect(productDialogPage.getModalTitle()).toMatch(/mallApp.product.home.createOrEditLabel/);
+        expect(productDialogPage.getModalTitle())
+            .toMatch(/mallApp.product.home.createOrEditLabel/);
         productDialogPage.close();
     });
 
@@ -98,110 +100,110 @@ export class ProductDialogPage {
 
     setNameInput = function(name) {
         this.nameInput.sendKeys(name);
-    }
+    };
 
     getNameInput = function() {
         return this.nameInput.getAttribute('value');
-    }
+    };
 
     setCodeInput = function(code) {
         this.codeInput.sendKeys(code);
-    }
+    };
 
     getCodeInput = function() {
         return this.codeInput.getAttribute('value');
-    }
+    };
 
     setBrandInput = function(brand) {
         this.brandInput.sendKeys(brand);
-    }
+    };
 
     getBrandInput = function() {
         return this.brandInput.getAttribute('value');
-    }
+    };
 
     setDescriptionInput = function(description) {
         this.descriptionInput.sendKeys(description);
-    }
+    };
 
     getDescriptionInput = function() {
         return this.descriptionInput.getAttribute('value');
-    }
+    };
 
     setContentInput = function(content) {
         this.contentInput.sendKeys(content);
-    }
+    };
 
     getContentInput = function() {
         return this.contentInput.getAttribute('value');
-    }
+    };
 
     setRemarkInput = function(remark) {
         this.remarkInput.sendKeys(remark);
-    }
+    };
 
     getRemarkInput = function() {
         return this.remarkInput.getAttribute('value');
-    }
+    };
 
     setStatusSelect = function(status) {
         this.statusSelect.sendKeys(status);
-    }
+    };
 
     getStatusSelect = function() {
         return this.statusSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     statusSelectLastOption = function() {
         this.statusSelect.all(by.tagName('option')).last().click();
-    }
+    };
     setCreatedByInput = function(createdBy) {
         this.createdByInput.sendKeys(createdBy);
-    }
+    };
 
     getCreatedByInput = function() {
         return this.createdByInput.getAttribute('value');
-    }
+    };
 
     setCreatedDateInput = function(createdDate) {
         this.createdDateInput.sendKeys(createdDate);
-    }
+    };
 
     getCreatedDateInput = function() {
         return this.createdDateInput.getAttribute('value');
-    }
+    };
 
     setLastModifiedByInput = function(lastModifiedBy) {
         this.lastModifiedByInput.sendKeys(lastModifiedBy);
-    }
+    };
 
     getLastModifiedByInput = function() {
         return this.lastModifiedByInput.getAttribute('value');
-    }
+    };
 
     setLastModifiedDateInput = function(lastModifiedDate) {
         this.lastModifiedDateInput.sendKeys(lastModifiedDate);
-    }
+    };
 
     getLastModifiedDateInput = function() {
         return this.lastModifiedDateInput.getAttribute('value');
-    }
+    };
 
     shopSelectLastOption = function() {
         this.shopSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     shopSelectOption = function(option) {
         this.shopSelect.sendKeys(option);
-    }
+    };
 
     getShopSelect = function() {
         return this.shopSelect;
-    }
+    };
 
     getShopSelectedOption = function() {
         return this.shopSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     save() {
         this.saveButton.click();

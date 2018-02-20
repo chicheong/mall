@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed, inject } from '@angular/core/testing';
 import { Renderer, ElementRef } from '@angular/core';
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 
 import { MallTestModule } from '../../../../test.module';
 import { PasswordResetInitComponent } from '../../../../../../../main/webapp/app/account/password-reset/init/password-reset-init.component';
@@ -81,7 +81,7 @@ describe('Component Tests', () => {
                 spyOn(service, 'save').and.returnValue(Observable.throw({
                     status: 400,
                     json() {
-                        return {type : EMAIL_NOT_FOUND_TYPE}
+                        return {type : EMAIL_NOT_FOUND_TYPE};
                     }
                 }));
                 comp.resetAccount.email = 'user@domain.com';

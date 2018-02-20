@@ -1,6 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { HttpResponse } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { Delegation } from './delegation.model';
 import { DelegationService } from './delegation.service';
@@ -27,18 +28,20 @@ export class DelegationPopupService {
             }
 
             if (id) {
-                this.delegationService.find(id).subscribe((delegation) => {
-                    delegation.from = this.datePipe
-                        .transform(delegation.from, 'yyyy-MM-ddTHH:mm:ss');
-                    delegation.to = this.datePipe
-                        .transform(delegation.to, 'yyyy-MM-ddTHH:mm:ss');
-                    delegation.createdDate = this.datePipe
-                        .transform(delegation.createdDate, 'yyyy-MM-ddTHH:mm:ss');
-                    delegation.lastModifiedDate = this.datePipe
-                        .transform(delegation.lastModifiedDate, 'yyyy-MM-ddTHH:mm:ss');
-                    this.ngbModalRef = this.delegationModalRef(component, delegation);
-                    resolve(this.ngbModalRef);
-                });
+                this.delegationService.find(id)
+                    .subscribe((delegationResponse: HttpResponse<Delegation>) => {
+                        const delegation: Delegation = delegationResponse.body;
+                        delegation.from = this.datePipe
+                            .transform(delegation.from, 'yyyy-MM-ddTHH:mm:ss');
+                        delegation.to = this.datePipe
+                            .transform(delegation.to, 'yyyy-MM-ddTHH:mm:ss');
+                        delegation.createdDate = this.datePipe
+                            .transform(delegation.createdDate, 'yyyy-MM-ddTHH:mm:ss');
+                        delegation.lastModifiedDate = this.datePipe
+                            .transform(delegation.lastModifiedDate, 'yyyy-MM-ddTHH:mm:ss');
+                        this.ngbModalRef = this.delegationModalRef(component, delegation);
+                        resolve(this.ngbModalRef);
+                    });
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {

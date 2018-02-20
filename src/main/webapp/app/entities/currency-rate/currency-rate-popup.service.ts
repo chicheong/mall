@@ -1,6 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { HttpResponse } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { CurrencyRate } from './currency-rate.model';
 import { CurrencyRateService } from './currency-rate.service';
@@ -27,14 +28,16 @@ export class CurrencyRatePopupService {
             }
 
             if (id) {
-                this.currencyRateService.find(id).subscribe((currencyRate) => {
-                    currencyRate.from = this.datePipe
-                        .transform(currencyRate.from, 'yyyy-MM-ddTHH:mm:ss');
-                    currencyRate.to = this.datePipe
-                        .transform(currencyRate.to, 'yyyy-MM-ddTHH:mm:ss');
-                    this.ngbModalRef = this.currencyRateModalRef(component, currencyRate);
-                    resolve(this.ngbModalRef);
-                });
+                this.currencyRateService.find(id)
+                    .subscribe((currencyRateResponse: HttpResponse<CurrencyRate>) => {
+                        const currencyRate: CurrencyRate = currencyRateResponse.body;
+                        currencyRate.from = this.datePipe
+                            .transform(currencyRate.from, 'yyyy-MM-ddTHH:mm:ss');
+                        currencyRate.to = this.datePipe
+                            .transform(currencyRate.to, 'yyyy-MM-ddTHH:mm:ss');
+                        this.ngbModalRef = this.currencyRateModalRef(component, currencyRate);
+                        resolve(this.ngbModalRef);
+                    });
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {

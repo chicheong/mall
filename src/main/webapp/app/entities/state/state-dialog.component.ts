@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Response } from '@angular/http';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
@@ -10,7 +10,6 @@ import { State } from './state.model';
 import { StatePopupService } from './state-popup.service';
 import { StateService } from './state.service';
 import { Country, CountryService } from '../country';
-import { ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-state-dialog',
@@ -35,7 +34,7 @@ export class StateDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.countryService.query()
-            .subscribe((res: ResponseWrapper) => { this.countries = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<Country[]>) => { this.countries = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -53,9 +52,9 @@ export class StateDialogComponent implements OnInit {
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<State>) {
-        result.subscribe((res: State) =>
-            this.onSaveSuccess(res), (res: Response) => this.onSaveError());
+    private subscribeToSaveResponse(result: Observable<HttpResponse<State>>) {
+        result.subscribe((res: HttpResponse<State>) =>
+            this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
     private onSaveSuccess(result: State) {

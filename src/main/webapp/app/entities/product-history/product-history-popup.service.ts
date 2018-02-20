@@ -1,6 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { HttpResponse } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { ProductHistory } from './product-history.model';
 import { ProductHistoryService } from './product-history.service';
@@ -27,14 +28,16 @@ export class ProductHistoryPopupService {
             }
 
             if (id) {
-                this.productHistoryService.find(id).subscribe((productHistory) => {
-                    productHistory.createdDate = this.datePipe
-                        .transform(productHistory.createdDate, 'yyyy-MM-ddTHH:mm:ss');
-                    productHistory.lastModifiedDate = this.datePipe
-                        .transform(productHistory.lastModifiedDate, 'yyyy-MM-ddTHH:mm:ss');
-                    this.ngbModalRef = this.productHistoryModalRef(component, productHistory);
-                    resolve(this.ngbModalRef);
-                });
+                this.productHistoryService.find(id)
+                    .subscribe((productHistoryResponse: HttpResponse<ProductHistory>) => {
+                        const productHistory: ProductHistory = productHistoryResponse.body;
+                        productHistory.createdDate = this.datePipe
+                            .transform(productHistory.createdDate, 'yyyy-MM-ddTHH:mm:ss');
+                        productHistory.lastModifiedDate = this.datePipe
+                            .transform(productHistory.lastModifiedDate, 'yyyy-MM-ddTHH:mm:ss');
+                        this.ngbModalRef = this.productHistoryModalRef(component, productHistory);
+                        resolve(this.ngbModalRef);
+                    });
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {

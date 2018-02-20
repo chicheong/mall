@@ -18,14 +18,16 @@ describe('MyOrder e2e test', () => {
     it('should load MyOrders', () => {
         navBarPage.goToEntity('my-order');
         myOrderComponentsPage = new MyOrderComponentsPage();
-        expect(myOrderComponentsPage.getTitle()).toMatch(/mallApp.myOrder.home.title/);
+        expect(myOrderComponentsPage.getTitle())
+            .toMatch(/mallApp.myOrder.home.title/);
 
     });
 
     it('should load create MyOrder dialog', () => {
         myOrderComponentsPage.clickOnCreateButton();
         myOrderDialogPage = new MyOrderDialogPage();
-        expect(myOrderDialogPage.getModalTitle()).toMatch(/mallApp.myOrder.home.createOrEditLabel/);
+        expect(myOrderDialogPage.getModalTitle())
+            .toMatch(/mallApp.myOrder.home.createOrEditLabel/);
         myOrderDialogPage.close();
     });
 
@@ -76,57 +78,57 @@ export class MyOrderDialogPage {
 
     setTotalInput = function(total) {
         this.totalInput.sendKeys(total);
-    }
+    };
 
     getTotalInput = function() {
         return this.totalInput.getAttribute('value');
-    }
+    };
 
     setCurrencySelect = function(currency) {
         this.currencySelect.sendKeys(currency);
-    }
+    };
 
     getCurrencySelect = function() {
         return this.currencySelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     currencySelectLastOption = function() {
         this.currencySelect.all(by.tagName('option')).last().click();
-    }
+    };
     setRemarkInput = function(remark) {
         this.remarkInput.sendKeys(remark);
-    }
+    };
 
     getRemarkInput = function() {
         return this.remarkInput.getAttribute('value');
-    }
+    };
 
     setStatusSelect = function(status) {
         this.statusSelect.sendKeys(status);
-    }
+    };
 
     getStatusSelect = function() {
         return this.statusSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     statusSelectLastOption = function() {
         this.statusSelect.all(by.tagName('option')).last().click();
-    }
+    };
     accountSelectLastOption = function() {
         this.accountSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     accountSelectOption = function(option) {
         this.accountSelect.sendKeys(option);
-    }
+    };
 
     getAccountSelect = function() {
         return this.accountSelect;
-    }
+    };
 
     getAccountSelectedOption = function() {
         return this.accountSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     save() {
         this.saveButton.click();

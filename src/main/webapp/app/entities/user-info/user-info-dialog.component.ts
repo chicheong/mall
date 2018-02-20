@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Response } from '@angular/http';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
@@ -11,7 +11,6 @@ import { UserInfoPopupService } from './user-info-popup.service';
 import { UserInfoService } from './user-info.service';
 import { User, UserService } from '../../shared';
 import { MyAccount, MyAccountService } from '../my-account';
-import { ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-user-info-dialog',
@@ -39,9 +38,9 @@ export class UserInfoDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.userService.query()
-            .subscribe((res: ResponseWrapper) => { this.users = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<User[]>) => { this.users = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
         this.myAccountService.query()
-            .subscribe((res: ResponseWrapper) => { this.myaccounts = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<MyAccount[]>) => { this.myaccounts = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -59,9 +58,9 @@ export class UserInfoDialogComponent implements OnInit {
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<UserInfo>) {
-        result.subscribe((res: UserInfo) =>
-            this.onSaveSuccess(res), (res: Response) => this.onSaveError());
+    private subscribeToSaveResponse(result: Observable<HttpResponse<UserInfo>>) {
+        result.subscribe((res: HttpResponse<UserInfo>) =>
+            this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
     private onSaveSuccess(result: UserInfo) {

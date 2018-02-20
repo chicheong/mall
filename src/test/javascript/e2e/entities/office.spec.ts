@@ -18,14 +18,16 @@ describe('Office e2e test', () => {
     it('should load Offices', () => {
         navBarPage.goToEntity('office');
         officeComponentsPage = new OfficeComponentsPage();
-        expect(officeComponentsPage.getTitle()).toMatch(/mallApp.office.home.title/);
+        expect(officeComponentsPage.getTitle())
+            .toMatch(/mallApp.office.home.title/);
 
     });
 
     it('should load create Office dialog', () => {
         officeComponentsPage.clickOnCreateButton();
         officeDialogPage = new OfficeDialogPage();
-        expect(officeDialogPage.getModalTitle()).toMatch(/mallApp.office.home.createOrEditLabel/);
+        expect(officeDialogPage.getModalTitle())
+            .toMatch(/mallApp.office.home.createOrEditLabel/);
         officeDialogPage.close();
     });
 
@@ -74,46 +76,46 @@ export class OfficeDialogPage {
 
     setCodeInput = function(code) {
         this.codeInput.sendKeys(code);
-    }
+    };
 
     getCodeInput = function() {
         return this.codeInput.getAttribute('value');
-    }
+    };
 
     setNameInput = function(name) {
         this.nameInput.sendKeys(name);
-    }
+    };
 
     getNameInput = function() {
         return this.nameInput.getAttribute('value');
-    }
+    };
 
     setStatusSelect = function(status) {
         this.statusSelect.sendKeys(status);
-    }
+    };
 
     getStatusSelect = function() {
         return this.statusSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     statusSelectLastOption = function() {
         this.statusSelect.all(by.tagName('option')).last().click();
-    }
+    };
     addressSelectLastOption = function() {
         this.addressSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     addressSelectOption = function(option) {
         this.addressSelect.sendKeys(option);
-    }
+    };
 
     getAddressSelect = function() {
         return this.addressSelect;
-    }
+    };
 
     getAddressSelectedOption = function() {
         return this.addressSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     save() {
         this.saveButton.click();

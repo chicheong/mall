@@ -18,14 +18,16 @@ describe('UserInfo e2e test', () => {
     it('should load UserInfos', () => {
         navBarPage.goToEntity('user-info');
         userInfoComponentsPage = new UserInfoComponentsPage();
-        expect(userInfoComponentsPage.getTitle()).toMatch(/mallApp.userInfo.home.title/);
+        expect(userInfoComponentsPage.getTitle())
+            .toMatch(/mallApp.userInfo.home.title/);
 
     });
 
     it('should load create UserInfo dialog', () => {
         userInfoComponentsPage.clickOnCreateButton();
         userInfoDialogPage = new UserInfoDialogPage();
-        expect(userInfoDialogPage.getModalTitle()).toMatch(/mallApp.userInfo.home.createOrEditLabel/);
+        expect(userInfoDialogPage.getModalTitle())
+            .toMatch(/mallApp.userInfo.home.createOrEditLabel/);
         userInfoDialogPage.close();
     });
 
@@ -68,35 +70,35 @@ export class UserInfoDialogPage {
 
     userSelectLastOption = function() {
         this.userSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     userSelectOption = function(option) {
         this.userSelect.sendKeys(option);
-    }
+    };
 
     getUserSelect = function() {
         return this.userSelect;
-    }
+    };
 
     getUserSelectedOption = function() {
         return this.userSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     accountSelectLastOption = function() {
         this.accountSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     accountSelectOption = function(option) {
         this.accountSelect.sendKeys(option);
-    }
+    };
 
     getAccountSelect = function() {
         return this.accountSelect;
-    }
+    };
 
     getAccountSelectedOption = function() {
         return this.accountSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     save() {
         this.saveButton.click();

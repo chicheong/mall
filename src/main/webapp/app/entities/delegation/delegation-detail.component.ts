@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Rx';
+import { HttpResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs/Subscription';
 import { JhiEventManager } from 'ng-jhipster';
 
 import { Delegation } from './delegation.model';
@@ -31,9 +32,10 @@ export class DelegationDetailComponent implements OnInit, OnDestroy {
     }
 
     load(id) {
-        this.delegationService.find(id).subscribe((delegation) => {
-            this.delegation = delegation;
-        });
+        this.delegationService.find(id)
+            .subscribe((delegationResponse: HttpResponse<Delegation>) => {
+                this.delegation = delegationResponse.body;
+            });
     }
     previousState() {
         window.history.back();

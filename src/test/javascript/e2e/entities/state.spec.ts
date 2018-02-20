@@ -18,14 +18,16 @@ describe('State e2e test', () => {
     it('should load States', () => {
         navBarPage.goToEntity('state');
         stateComponentsPage = new StateComponentsPage();
-        expect(stateComponentsPage.getTitle()).toMatch(/mallApp.state.home.title/);
+        expect(stateComponentsPage.getTitle())
+            .toMatch(/mallApp.state.home.title/);
 
     });
 
     it('should load create State dialog', () => {
         stateComponentsPage.clickOnCreateButton();
         stateDialogPage = new StateDialogPage();
-        expect(stateDialogPage.getModalTitle()).toMatch(/mallApp.state.home.createOrEditLabel/);
+        expect(stateDialogPage.getModalTitle())
+            .toMatch(/mallApp.state.home.createOrEditLabel/);
         stateDialogPage.close();
     });
 
@@ -75,43 +77,43 @@ export class StateDialogPage {
 
     setCodeInput = function(code) {
         this.codeInput.sendKeys(code);
-    }
+    };
 
     getCodeInput = function() {
         return this.codeInput.getAttribute('value');
-    }
+    };
 
     setLabelInput = function(label) {
         this.labelInput.sendKeys(label);
-    }
+    };
 
     getLabelInput = function() {
         return this.labelInput.getAttribute('value');
-    }
+    };
 
     setNameInput = function(name) {
         this.nameInput.sendKeys(name);
-    }
+    };
 
     getNameInput = function() {
         return this.nameInput.getAttribute('value');
-    }
+    };
 
     countrySelectLastOption = function() {
         this.countrySelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     countrySelectOption = function(option) {
         this.countrySelect.sendKeys(option);
-    }
+    };
 
     getCountrySelect = function() {
         return this.countrySelect;
-    }
+    };
 
     getCountrySelectedOption = function() {
         return this.countrySelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     save() {
         this.saveButton.click();

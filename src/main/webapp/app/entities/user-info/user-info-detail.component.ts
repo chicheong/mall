@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Rx';
+import { HttpResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs/Subscription';
 import { JhiEventManager } from 'ng-jhipster';
 
 import { UserInfo } from './user-info.model';
@@ -31,9 +32,10 @@ export class UserInfoDetailComponent implements OnInit, OnDestroy {
     }
 
     load(id) {
-        this.userInfoService.find(id).subscribe((userInfo) => {
-            this.userInfo = userInfo;
-        });
+        this.userInfoService.find(id)
+            .subscribe((userInfoResponse: HttpResponse<UserInfo>) => {
+                this.userInfo = userInfoResponse.body;
+            });
     }
     previousState() {
         window.history.back();

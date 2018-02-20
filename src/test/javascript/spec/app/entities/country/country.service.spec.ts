@@ -1,79 +1,70 @@
 /* tslint:disable max-line-length */
-import { TestBed, async } from '@angular/core/testing';
-import { MockBackend } from '@angular/http/testing';
-import { ConnectionBackend, RequestOptions, BaseRequestOptions, Http, Response, ResponseOptions } from '@angular/http';
+import { TestBed, getTestBed } from '@angular/core/testing';
+import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 import { JhiDateUtils } from 'ng-jhipster';
 
 import { CountryService } from '../../../../../../main/webapp/app/entities/country/country.service';
-import { Country } from '../../../../../../main/webapp/app/entities/country/country.model';
+import { SERVER_API_URL } from '../../../../../../main/webapp/app/app.constants';
 
 describe('Service Tests', () => {
 
     describe('Country Service', () => {
+        let injector: TestBed;
         let service: CountryService;
+        let httpMock: HttpTestingController;
 
-        beforeEach(async(() => {
+        beforeEach(() => {
             TestBed.configureTestingModule({
+                imports: [
+                    HttpClientTestingModule
+                ],
                 providers: [
-                    {
-                        provide: ConnectionBackend,
-                        useClass: MockBackend
-                    },
-                    {
-                        provide: RequestOptions,
-                        useClass: BaseRequestOptions
-                    },
-                    Http,
                     JhiDateUtils,
                     CountryService
                 ]
             });
-
-            service = TestBed.get(CountryService);
-
-            this.backend = TestBed.get(ConnectionBackend) as MockBackend;
-            this.backend.connections.subscribe((connection: any) => {
-                this.lastConnection = connection;
-            });
-        }));
+            injector = getTestBed();
+            service = injector.get(CountryService);
+            httpMock = injector.get(HttpTestingController);
+        });
 
         describe('Service methods', () => {
             it('should call correct URL', () => {
                 service.find(123).subscribe(() => {});
 
-                expect(this.lastConnection).toBeDefined();
-                expect(this.lastConnection.request.url).toEqual('api/countries/' + 123);
+                const req  = httpMock.expectOne({ method: 'GET' });
+
+                const resourceUrl = SERVER_API_URL + 'api/countries';
+                expect(req.request.url).toEqual(resourceUrl + '/' + 123);
             });
             it('should return Country', () => {
 
-                let entity: Country;
-                service.find(123).subscribe((_entity: Country) => {
-                    entity = _entity;
+                service.find(123).subscribe((received) => {
+                    expect(received.body.id).toEqual(123);
                 });
 
-                this.lastConnection.mockRespond(new Response(new ResponseOptions({
-                    body: JSON.stringify({id: 123}),
-                })));
-
-                expect(entity).toBeDefined();
-                expect(entity.id).toEqual(123);
+                const req = httpMock.expectOne({ method: 'GET' });
+                req.flush({id: 123});
             });
 
             it('should propagate not found response', () => {
 
-                let error: any;
                 service.find(123).subscribe(null, (_error: any) => {
-                    error = _error;
+                    expect(_error.status).toEqual(404);
                 });
 
-                this.lastConnection.mockError(new Response(new ResponseOptions({
-                    status: 404,
-                })));
+                const req  = httpMock.expectOne({ method: 'GET' });
+                req.flush('Invalid request parameters', {
+                    status: 404, statusText: 'Bad Request'
+                });
 
-                expect(error).toBeDefined();
-                expect(error.status).toEqual(404);
             });
         });
+
+        afterEach(() => {
+            httpMock.verify();
+        });
+
     });
 
 });

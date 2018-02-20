@@ -1,6 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { HttpResponse } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { Price } from './price.model';
 import { PriceService } from './price.service';
@@ -27,14 +28,16 @@ export class PricePopupService {
             }
 
             if (id) {
-                this.priceService.find(id).subscribe((price) => {
-                    price.from = this.datePipe
-                        .transform(price.from, 'yyyy-MM-ddTHH:mm:ss');
-                    price.to = this.datePipe
-                        .transform(price.to, 'yyyy-MM-ddTHH:mm:ss');
-                    this.ngbModalRef = this.priceModalRef(component, price);
-                    resolve(this.ngbModalRef);
-                });
+                this.priceService.find(id)
+                    .subscribe((priceResponse: HttpResponse<Price>) => {
+                        const price: Price = priceResponse.body;
+                        price.from = this.datePipe
+                            .transform(price.from, 'yyyy-MM-ddTHH:mm:ss');
+                        price.to = this.datePipe
+                            .transform(price.to, 'yyyy-MM-ddTHH:mm:ss');
+                        this.ngbModalRef = this.priceModalRef(component, price);
+                        resolve(this.ngbModalRef);
+                    });
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {

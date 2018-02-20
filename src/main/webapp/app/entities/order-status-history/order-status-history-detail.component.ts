@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Rx';
+import { HttpResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs/Subscription';
 import { JhiEventManager } from 'ng-jhipster';
 
 import { OrderStatusHistory } from './order-status-history.model';
@@ -31,9 +32,10 @@ export class OrderStatusHistoryDetailComponent implements OnInit, OnDestroy {
     }
 
     load(id) {
-        this.orderStatusHistoryService.find(id).subscribe((orderStatusHistory) => {
-            this.orderStatusHistory = orderStatusHistory;
-        });
+        this.orderStatusHistoryService.find(id)
+            .subscribe((orderStatusHistoryResponse: HttpResponse<OrderStatusHistory>) => {
+                this.orderStatusHistory = orderStatusHistoryResponse.body;
+            });
     }
     previousState() {
         window.history.back();

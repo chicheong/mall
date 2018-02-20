@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Response } from '@angular/http';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
@@ -10,7 +10,6 @@ import { Delegation } from './delegation.model';
 import { DelegationPopupService } from './delegation-popup.service';
 import { DelegationService } from './delegation.service';
 import { MyAccount, MyAccountService } from '../my-account';
-import { ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-delegation-dialog',
@@ -35,7 +34,7 @@ export class DelegationDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.myAccountService.query()
-            .subscribe((res: ResponseWrapper) => { this.myaccounts = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<MyAccount[]>) => { this.myaccounts = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -53,9 +52,9 @@ export class DelegationDialogComponent implements OnInit {
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<Delegation>) {
-        result.subscribe((res: Delegation) =>
-            this.onSaveSuccess(res), (res: Response) => this.onSaveError());
+    private subscribeToSaveResponse(result: Observable<HttpResponse<Delegation>>) {
+        result.subscribe((res: HttpResponse<Delegation>) =>
+            this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
     private onSaveSuccess(result: Delegation) {

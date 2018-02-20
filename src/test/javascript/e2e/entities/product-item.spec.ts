@@ -18,14 +18,16 @@ describe('ProductItem e2e test', () => {
     it('should load ProductItems', () => {
         navBarPage.goToEntity('product-item');
         productItemComponentsPage = new ProductItemComponentsPage();
-        expect(productItemComponentsPage.getTitle()).toMatch(/mallApp.productItem.home.title/);
+        expect(productItemComponentsPage.getTitle())
+            .toMatch(/mallApp.productItem.home.title/);
 
     });
 
     it('should load create ProductItem dialog', () => {
         productItemComponentsPage.clickOnCreateButton();
         productItemDialogPage = new ProductItemDialogPage();
-        expect(productItemDialogPage.getModalTitle()).toMatch(/mallApp.productItem.home.createOrEditLabel/);
+        expect(productItemDialogPage.getModalTitle())
+            .toMatch(/mallApp.productItem.home.createOrEditLabel/);
         productItemDialogPage.close();
     });
 
@@ -108,113 +110,113 @@ export class ProductItemDialogPage {
 
     setNameInput = function(name) {
         this.nameInput.sendKeys(name);
-    }
+    };
 
     getNameInput = function() {
         return this.nameInput.getAttribute('value');
-    }
+    };
 
     setCodeInput = function(code) {
         this.codeInput.sendKeys(code);
-    }
+    };
 
     getCodeInput = function() {
         return this.codeInput.getAttribute('value');
-    }
+    };
 
     getDefaultItemInput = function() {
         return this.defaultItemInput;
-    }
+    };
     setColorInput = function(color) {
         this.colorInput.sendKeys(color);
-    }
+    };
 
     getColorInput = function() {
         return this.colorInput.getAttribute('value');
-    }
+    };
 
     setSizeInput = function(size) {
         this.sizeInput.sendKeys(size);
-    }
+    };
 
     getSizeInput = function() {
         return this.sizeInput.getAttribute('value');
-    }
+    };
 
     setQuantityInput = function(quantity) {
         this.quantityInput.sendKeys(quantity);
-    }
+    };
 
     getQuantityInput = function() {
         return this.quantityInput.getAttribute('value');
-    }
+    };
 
     setCurrencySelect = function(currency) {
         this.currencySelect.sendKeys(currency);
-    }
+    };
 
     getCurrencySelect = function() {
         return this.currencySelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     currencySelectLastOption = function() {
         this.currencySelect.all(by.tagName('option')).last().click();
-    }
+    };
     setPriceInput = function(price) {
         this.priceInput.sendKeys(price);
-    }
+    };
 
     getPriceInput = function() {
         return this.priceInput.getAttribute('value');
-    }
+    };
 
     setCreatedByInput = function(createdBy) {
         this.createdByInput.sendKeys(createdBy);
-    }
+    };
 
     getCreatedByInput = function() {
         return this.createdByInput.getAttribute('value');
-    }
+    };
 
     setCreatedDateInput = function(createdDate) {
         this.createdDateInput.sendKeys(createdDate);
-    }
+    };
 
     getCreatedDateInput = function() {
         return this.createdDateInput.getAttribute('value');
-    }
+    };
 
     setLastModifiedByInput = function(lastModifiedBy) {
         this.lastModifiedByInput.sendKeys(lastModifiedBy);
-    }
+    };
 
     getLastModifiedByInput = function() {
         return this.lastModifiedByInput.getAttribute('value');
-    }
+    };
 
     setLastModifiedDateInput = function(lastModifiedDate) {
         this.lastModifiedDateInput.sendKeys(lastModifiedDate);
-    }
+    };
 
     getLastModifiedDateInput = function() {
         return this.lastModifiedDateInput.getAttribute('value');
-    }
+    };
 
     productSelectLastOption = function() {
         this.productSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     productSelectOption = function(option) {
         this.productSelect.sendKeys(option);
-    }
+    };
 
     getProductSelect = function() {
         return this.productSelect;
-    }
+    };
 
     getProductSelectedOption = function() {
         return this.productSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     save() {
         this.saveButton.click();

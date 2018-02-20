@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Response } from '@angular/http';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
@@ -11,7 +11,6 @@ import { OrderItemPopupService } from './order-item-popup.service';
 import { OrderItemService } from './order-item.service';
 import { ProductItem, ProductItemService } from '../product-item';
 import { MyOrder, MyOrderService } from '../my-order';
-import { ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-order-item-dialog',
@@ -40,19 +39,19 @@ export class OrderItemDialogComponent implements OnInit {
         this.isSaving = false;
         this.productItemService
             .query({filter: 'orderitem-is-null'})
-            .subscribe((res: ResponseWrapper) => {
+            .subscribe((res: HttpResponse<ProductItem[]>) => {
                 if (!this.orderItem.productItem || !this.orderItem.productItem.id) {
-                    this.productitems = res.json;
+                    this.productitems = res.body;
                 } else {
                     this.productItemService
                         .find(this.orderItem.productItem.id)
-                        .subscribe((subRes: ProductItem) => {
-                            this.productitems = [subRes].concat(res.json);
-                        }, (subRes: ResponseWrapper) => this.onError(subRes.json));
+                        .subscribe((subRes: HttpResponse<ProductItem>) => {
+                            this.productitems = [subRes.body].concat(res.body);
+                        }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
                 }
-            }, (res: ResponseWrapper) => this.onError(res.json));
+            }, (res: HttpErrorResponse) => this.onError(res.message));
         this.myOrderService.query()
-            .subscribe((res: ResponseWrapper) => { this.myorders = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<MyOrder[]>) => { this.myorders = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -70,9 +69,9 @@ export class OrderItemDialogComponent implements OnInit {
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<OrderItem>) {
-        result.subscribe((res: OrderItem) =>
-            this.onSaveSuccess(res), (res: Response) => this.onSaveError());
+    private subscribeToSaveResponse(result: Observable<HttpResponse<OrderItem>>) {
+        result.subscribe((res: HttpResponse<OrderItem>) =>
+            this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
     private onSaveSuccess(result: OrderItem) {

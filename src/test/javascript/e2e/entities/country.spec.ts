@@ -18,14 +18,16 @@ describe('Country e2e test', () => {
     it('should load Countries', () => {
         navBarPage.goToEntity('country');
         countryComponentsPage = new CountryComponentsPage();
-        expect(countryComponentsPage.getTitle()).toMatch(/mallApp.country.home.title/);
+        expect(countryComponentsPage.getTitle())
+            .toMatch(/mallApp.country.home.title/);
 
     });
 
     it('should load create Country dialog', () => {
         countryComponentsPage.clickOnCreateButton();
         countryDialogPage = new CountryDialogPage();
-        expect(countryDialogPage.getModalTitle()).toMatch(/mallApp.country.home.createOrEditLabel/);
+        expect(countryDialogPage.getModalTitle())
+            .toMatch(/mallApp.country.home.createOrEditLabel/);
         countryDialogPage.close();
     });
 
@@ -76,35 +78,35 @@ export class CountryDialogPage {
 
     setCodeInput = function(code) {
         this.codeInput.sendKeys(code);
-    }
+    };
 
     getCodeInput = function() {
         return this.codeInput.getAttribute('value');
-    }
+    };
 
     setLabelInput = function(label) {
         this.labelInput.sendKeys(label);
-    }
+    };
 
     getLabelInput = function() {
         return this.labelInput.getAttribute('value');
-    }
+    };
 
     setNumInput = function(num) {
         this.numInput.sendKeys(num);
-    }
+    };
 
     getNumInput = function() {
         return this.numInput.getAttribute('value');
-    }
+    };
 
     setNameInput = function(name) {
         this.nameInput.sendKeys(name);
-    }
+    };
 
     getNameInput = function() {
         return this.nameInput.getAttribute('value');
-    }
+    };
 
     save() {
         this.saveButton.click();

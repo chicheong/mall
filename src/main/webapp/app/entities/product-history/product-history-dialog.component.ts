@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Response } from '@angular/http';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
@@ -10,7 +10,6 @@ import { ProductHistory } from './product-history.model';
 import { ProductHistoryPopupService } from './product-history-popup.service';
 import { ProductHistoryService } from './product-history.service';
 import { Product, ProductService } from '../product';
-import { ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-product-history-dialog',
@@ -35,7 +34,7 @@ export class ProductHistoryDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.productService.query()
-            .subscribe((res: ResponseWrapper) => { this.products = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<Product[]>) => { this.products = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -53,9 +52,9 @@ export class ProductHistoryDialogComponent implements OnInit {
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<ProductHistory>) {
-        result.subscribe((res: ProductHistory) =>
-            this.onSaveSuccess(res), (res: Response) => this.onSaveError());
+    private subscribeToSaveResponse(result: Observable<HttpResponse<ProductHistory>>) {
+        result.subscribe((res: HttpResponse<ProductHistory>) =>
+            this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
     private onSaveSuccess(result: ProductHistory) {

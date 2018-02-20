@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Response } from '@angular/http';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
@@ -10,7 +10,6 @@ import { Price } from './price.model';
 import { PricePopupService } from './price-popup.service';
 import { PriceService } from './price.service';
 import { ProductItem, ProductItemService } from '../product-item';
-import { ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-price-dialog',
@@ -35,7 +34,7 @@ export class PriceDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.productItemService.query()
-            .subscribe((res: ResponseWrapper) => { this.productitems = res.json; }, (res: ResponseWrapper) => this.onError(res.json));
+            .subscribe((res: HttpResponse<ProductItem[]>) => { this.productitems = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -53,9 +52,9 @@ export class PriceDialogComponent implements OnInit {
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<Price>) {
-        result.subscribe((res: Price) =>
-            this.onSaveSuccess(res), (res: Response) => this.onSaveError());
+    private subscribeToSaveResponse(result: Observable<HttpResponse<Price>>) {
+        result.subscribe((res: HttpResponse<Price>) =>
+            this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
     private onSaveSuccess(result: Price) {

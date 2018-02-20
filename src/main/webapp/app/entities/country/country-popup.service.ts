@@ -1,6 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { HttpResponse } from '@angular/common/http';
 import { Country } from './country.model';
 import { CountryService } from './country.service';
 
@@ -25,10 +26,12 @@ export class CountryPopupService {
             }
 
             if (id) {
-                this.countryService.find(id).subscribe((country) => {
-                    this.ngbModalRef = this.countryModalRef(component, country);
-                    resolve(this.ngbModalRef);
-                });
+                this.countryService.find(id)
+                    .subscribe((countryResponse: HttpResponse<Country>) => {
+                        const country: Country = countryResponse.body;
+                        this.ngbModalRef = this.countryModalRef(component, country);
+                        resolve(this.ngbModalRef);
+                    });
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {

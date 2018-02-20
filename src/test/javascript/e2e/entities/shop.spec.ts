@@ -18,14 +18,16 @@ describe('Shop e2e test', () => {
     it('should load Shops', () => {
         navBarPage.goToEntity('shop');
         shopComponentsPage = new ShopComponentsPage();
-        expect(shopComponentsPage.getTitle()).toMatch(/mallApp.shop.home.title/);
+        expect(shopComponentsPage.getTitle())
+            .toMatch(/mallApp.shop.home.title/);
 
     });
 
     it('should load create Shop dialog', () => {
         shopComponentsPage.clickOnCreateButton();
         shopDialogPage = new ShopDialogPage();
-        expect(shopDialogPage.getModalTitle()).toMatch(/mallApp.shop.home.createOrEditLabel/);
+        expect(shopDialogPage.getModalTitle())
+            .toMatch(/mallApp.shop.home.createOrEditLabel/);
         shopDialogPage.close();
     });
 
@@ -87,70 +89,70 @@ export class ShopDialogPage {
 
     setCodeInput = function(code) {
         this.codeInput.sendKeys(code);
-    }
+    };
 
     getCodeInput = function() {
         return this.codeInput.getAttribute('value');
-    }
+    };
 
     setNameInput = function(name) {
         this.nameInput.sendKeys(name);
-    }
+    };
 
     getNameInput = function() {
         return this.nameInput.getAttribute('value');
-    }
+    };
 
     setDescriptionInput = function(description) {
         this.descriptionInput.sendKeys(description);
-    }
+    };
 
     getDescriptionInput = function() {
         return this.descriptionInput.getAttribute('value');
-    }
+    };
 
     setStatusSelect = function(status) {
         this.statusSelect.sendKeys(status);
-    }
+    };
 
     getStatusSelect = function() {
         return this.statusSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     statusSelectLastOption = function() {
         this.statusSelect.all(by.tagName('option')).last().click();
-    }
+    };
     setCreatedByInput = function(createdBy) {
         this.createdByInput.sendKeys(createdBy);
-    }
+    };
 
     getCreatedByInput = function() {
         return this.createdByInput.getAttribute('value');
-    }
+    };
 
     setCreatedDateInput = function(createdDate) {
         this.createdDateInput.sendKeys(createdDate);
-    }
+    };
 
     getCreatedDateInput = function() {
         return this.createdDateInput.getAttribute('value');
-    }
+    };
 
     setLastModifiedByInput = function(lastModifiedBy) {
         this.lastModifiedByInput.sendKeys(lastModifiedBy);
-    }
+    };
 
     getLastModifiedByInput = function() {
         return this.lastModifiedByInput.getAttribute('value');
-    }
+    };
 
     setLastModifiedDateInput = function(lastModifiedDate) {
         this.lastModifiedDateInput.sendKeys(lastModifiedDate);
-    }
+    };
 
     getLastModifiedDateInput = function() {
         return this.lastModifiedDateInput.getAttribute('value');
-    }
+    };
 
     save() {
         this.saveButton.click();
