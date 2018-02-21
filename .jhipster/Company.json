@@ -48,9 +48,10 @@
             "fieldValues": "ACTIVE,INACTIVE"
         }
     ],
-    "changelogDate": "20170727090128",
+    "changelogDate": "20180221114425",
     "entityTableName": "company",
     "dto": "no",
     "pagination": "pagination",
-    "service": "no"
+    "service": "no",
+    "jpaMetamodelFiltering": false
 }

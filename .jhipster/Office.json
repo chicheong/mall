@@ -48,9 +48,10 @@
             "fieldValues": "ACTIVE,INACTIVE"
         }
     ],
-    "changelogDate": "20170727090130",
+    "changelogDate": "20180221114427",
     "entityTableName": "office",
     "dto": "no",
     "pagination": "pagination",
-    "service": "no"
+    "service": "no",
+    "jpaMetamodelFiltering": false
 }

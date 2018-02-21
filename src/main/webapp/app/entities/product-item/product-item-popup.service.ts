@@ -30,10 +30,6 @@ export class ProductItemPopupService {
                 this.productItemService.find(id)
                     .subscribe((productItemResponse: HttpResponse<ProductItem>) => {
                         const productItem: ProductItem = productItemResponse.body;
-                        productItem.createdDate = this.datePipe
-                            .transform(productItem.createdDate, 'yyyy-MM-ddTHH:mm:ss');
-                        productItem.lastModifiedDate = this.datePipe
-                            .transform(productItem.lastModifiedDate, 'yyyy-MM-ddTHH:mm:ss');
                         this.ngbModalRef = this.productItemModalRef(component, productItem);
                         resolve(this.ngbModalRef);
                     });

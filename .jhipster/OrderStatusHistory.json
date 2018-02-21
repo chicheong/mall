@@ -19,7 +19,7 @@
             "fieldValues": "PENDING,COMFIRMED,COMPLETED,CANCELLED"
         }
     ],
-    "changelogDate": "20170727090145",
+    "changelogDate": "20180221114445",
     "entityTableName": "order_status_history",
     "dto": "no",
     "pagination": "infinite-scroll",

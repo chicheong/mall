@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Rx';
+import { HttpResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs/Subscription';
 import { JhiEventManager } from 'ng-jhipster';
 
 import { ProductStyle } from './product-style.model';
@@ -31,9 +32,10 @@ export class ProductStyleDetailComponent implements OnInit, OnDestroy {
     }
 
     load(id) {
-        this.productStyleService.find(id).subscribe((productStyle) => {
-            this.productStyle = productStyle;
-        });
+        this.productStyleService.find(id)
+            .subscribe((productStyleResponse: HttpResponse<ProductStyle>) => {
+                this.productStyle = productStyleResponse.body;
+            });
     }
     previousState() {
         window.history.back();

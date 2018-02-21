@@ -1,8 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Response } from '@angular/http';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { Subscription } from 'rxjs/Rx';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
@@ -12,7 +11,6 @@ import { ProductStyle } from '../product-style';
 import { Price } from '../price';
 import { Quantity } from '../quantity';
 import { Product } from './product.model';
-import { ResponseWrapper } from '../../shared';
 
 import { PricesPopupService } from './prices-popup.service';
 import { PricesDialogComponent } from './prices-dialog.component';
@@ -55,7 +53,7 @@ export class ProductItemsDialogComponent implements OnInit {
         this.product.items.forEach((item) => {
             const productItem: ProductItem = Object.assign(new ProductItem(), item);
             this.productItems.push(productItem);
-        })
+        });
         this.colors = this.product.colors;
         this.sizes = this.product.sizes;
 
@@ -101,7 +99,7 @@ export class ProductItemsDialogComponent implements OnInit {
                 item.dirtyPrices = true;
                 return;
             }
-        })
+        });
     }
 
     updatePricesForAll(productItem: ProductItem) {
@@ -118,10 +116,10 @@ export class ProductItemsDialogComponent implements OnInit {
                     obj.id = undefined;
                     obj.tempId = this.uuid();
                     item.prices.push(obj);
-                })
+                });
             }
             item.dirtyPrices = true;
-        })
+        });
     }
 
     updateQuantities(productItem: ProductItem) {
@@ -138,14 +136,14 @@ export class ProductItemsDialogComponent implements OnInit {
                 item.dirtyQuantities = true;
                 return;
             }
-        })
+        });
     }
 
     updateQuantitiesForAll(productItem: ProductItem) {
         console.error('updateQuantitiesForAll');
         this.productItems.forEach((item) => {
             item.quantities = productItem.quantities;
-        })
+        });
         this.productItems.forEach((item) => {
             if (item.id && item.id === productItem.id) {
                 item.quantities = productItem.quantities;
@@ -159,10 +157,10 @@ export class ProductItemsDialogComponent implements OnInit {
                     obj.id = undefined;
                     obj.tempId = this.uuid();
                     item.quantities.push(obj);
-                })
+                });
             }
             item.dirtyQuantities = true;
-        })
+        });
     }
 
     clear() {

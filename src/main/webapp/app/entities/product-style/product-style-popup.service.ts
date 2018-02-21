@@ -1,5 +1,6 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
+import { HttpResponse } from '@angular/common/http';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { ProductStyle } from './product-style.model';
 import { ProductStyleService } from './product-style.service';
@@ -31,8 +32,8 @@ export class ProductStylePopupService {
                     this.ngbModalRef = this.productStyleModalRef(component, id);
                     resolve(this.ngbModalRef);
                 } else {
-                    this.productStyleService.find(id).subscribe((productStyle) => {
-                        this.ngbModalRef = this.productStyleModalRef(component, productStyle);
+                    this.productStyleService.find(id).subscribe((productStyleResponse: HttpResponse<ProductStyle>) => {
+                        this.ngbModalRef = this.productStyleModalRef(component, productStyleResponse.body);
                         resolve(this.ngbModalRef);
                     });
                 }

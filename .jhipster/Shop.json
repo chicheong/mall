@@ -47,7 +47,7 @@
             "fieldType": "ZonedDateTime"
         }
     ],
-    "changelogDate": "20170727090134",
+    "changelogDate": "20180221114431",
     "entityTableName": "shop",
     "dto": "mapstruct",
     "pagination": "pagination",

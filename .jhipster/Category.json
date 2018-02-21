@@ -50,9 +50,10 @@
             "fieldType": "ZonedDateTime"
         }
     ],
-    "changelogDate": "20170727090136",
+    "changelogDate": "20180221114433",
     "entityTableName": "category",
     "dto": "no",
     "pagination": "pagination",
-    "service": "no"
+    "service": "no",
+    "jpaMetamodelFiltering": false
 }

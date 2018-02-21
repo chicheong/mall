@@ -27,7 +27,7 @@
             "fieldValues": "COLOR,SIZE"
         }
     ],
-    "changelogDate": "20171229082716",
+    "changelogDate": "20180221114435",
     "entityTableName": "product_style",
     "dto": "mapstruct",
     "pagination": "no",

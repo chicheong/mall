@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs/Rx';
+import { HttpResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs/Subscription';
 import { JhiEventManager } from 'ng-jhipster';
 
 import { Quantity } from './quantity.model';
@@ -31,10 +32,12 @@ export class QuantityDetailComponent implements OnInit, OnDestroy {
     }
 
     load(id) {
-        this.quantityService.find(id).subscribe((quantity) => {
-            this.quantity = quantity;
-        });
+        this.quantityService.find(id)
+            .subscribe((quantityResponse: HttpResponse<Quantity>) => {
+                this.quantity = quantityResponse.body;
+            });
     }
+
     previousState() {
         window.history.back();
     }

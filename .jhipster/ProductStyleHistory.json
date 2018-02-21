@@ -28,7 +28,7 @@
             "fieldType": "ZonedDateTime"
         }
     ],
-    "changelogDate": "20171229082719",
+    "changelogDate": "20180221114438",
     "entityTableName": "product_style_history",
     "dto": "no",
     "pagination": "no",

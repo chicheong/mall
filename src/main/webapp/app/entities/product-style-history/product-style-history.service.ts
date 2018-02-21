@@ -69,7 +69,7 @@ export class ProductStyleHistoryService {
      * Convert a returned JSON object to ProductStyleHistory.
      */
     private convertItemFromServer(productStyleHistory: ProductStyleHistory): ProductStyleHistory {
-        const copy: ProductStyleHistory = Object.assign({}, productStyle);
+        const copy: ProductStyleHistory = Object.assign({}, productStyleHistory);
         copy.createdDate = this.dateUtils
             .convertDateTimeFromServer(productStyleHistory.createdDate);
         return copy;

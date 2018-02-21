@@ -1,6 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { HttpResponse } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { ProductStyleHistory } from './product-style-history.model';
 import { ProductStyleHistoryService } from './product-style-history.service';
@@ -27,12 +28,14 @@ export class ProductStyleHistoryPopupService {
             }
 
             if (id) {
-                this.productStyleHistoryService.find(id).subscribe((productStyleHistory) => {
-                    productStyleHistory.createdDate = this.datePipe
-                        .transform(productStyleHistory.createdDate, 'yyyy-MM-ddTHH:mm:ss');
-                    this.ngbModalRef = this.productStyleHistoryModalRef(component, productStyleHistory);
-                    resolve(this.ngbModalRef);
-                });
+                this.productStyleHistoryService.find(id)
+                    .subscribe((productStyleHistoryResponse: HttpResponse<ProductStyleHistory>) => {
+                        const productStyleHistory: ProductStyleHistory = productStyleHistoryResponse.body;
+                        productStyleHistory.createdDate = this.datePipe
+                            .transform(productStyleHistory.createdDate, 'yyyy-MM-ddTHH:mm:ss');
+                        this.ngbModalRef = this.productStyleHistoryModalRef(component, productStyleHistory);
+                        resolve(this.ngbModalRef);
+                    });
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {

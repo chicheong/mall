@@ -48,9 +48,10 @@
             "fieldValues": "PERSONAL,COMPANY"
         }
     ],
-    "changelogDate": "20170727090127",
+    "changelogDate": "20180221114424",
     "entityTableName": "my_account",
     "dto": "mapstruct",
     "pagination": "pagination",
-    "service": "serviceClass"
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false
 }

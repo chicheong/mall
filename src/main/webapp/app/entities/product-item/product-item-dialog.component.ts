@@ -41,31 +41,31 @@ export class ProductItemDialogComponent implements OnInit {
         this.isSaving = false;
         this.productStyleService
             .query({filter: 'productitem-is-null'})
-            .subscribe((res: ResponseWrapper) => {
+            .subscribe((res: HttpResponse<ProductStyle[]>) => {
                 if (!this.productItem.color || !this.productItem.color.id) {
-                    this.colors = res.json;
+                    this.colors = res.body;
                 } else {
                     this.productStyleService
                         .find(this.productItem.color.id)
-                        .subscribe((subRes: ProductStyle) => {
-                            this.colors = [subRes].concat(res.json);
-                        }, (subRes: ResponseWrapper) => this.onError(subRes.json));
+                        .subscribe((subRes: HttpResponse<ProductStyle>) => {
+                            this.colors = [subRes.body].concat(res.body);
+                        }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
                 }
-            }, (res: ResponseWrapper) => this.onError(res.json));
+            }, (res: HttpErrorResponse) => this.onError(res.message));
         this.productStyleService
             .query({filter: 'productitem-is-null'})
-            .subscribe((res: ResponseWrapper) => {
+            .subscribe((res: HttpResponse<ProductStyle[]>) => {
                 if (!this.productItem.size || !this.productItem.size.id) {
-                    this.sizes = res.json;
+                    this.sizes = res.body;
                 } else {
                     this.productStyleService
                         .find(this.productItem.size.id)
-                        .subscribe((subRes: ProductStyle) => {
-                            this.sizes = [subRes].concat(res.json);
-                        }, (subRes: ResponseWrapper) => this.onError(subRes.json));
+                        .subscribe((subRes: HttpResponse<ProductStyle>) => {
+                            this.sizes = [subRes.body].concat(res.body);
+                        }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
                 }
-            }, (res: ResponseWrapper) => this.onError(res.json));
-        //this.orderItemService.query()
+            }, (res: HttpErrorResponse) => this.onError(res.message));
+        // this.orderItemService.query()
         //    .subscribe((res: HttpResponse<OrderItem[]>) => { this.orderitems = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
         this.productService.query()
             .subscribe((res: HttpResponse<Product[]>) => { this.products = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));

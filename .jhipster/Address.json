@@ -40,9 +40,10 @@
             "fieldType": "String"
         }
     ],
-    "changelogDate": "20170727090131",
+    "changelogDate": "20180221114428",
     "entityTableName": "address",
     "dto": "no",
     "pagination": "pager",
-    "service": "no"
+    "service": "no",
+    "jpaMetamodelFiltering": false
 }

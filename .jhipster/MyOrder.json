@@ -40,7 +40,7 @@
             "fieldValues": "PENDING,COMFIRMED,COMPLETED,CANCELLED"
         }
     ],
-    "changelogDate": "20171214063716",
+    "changelogDate": "20180221114443",
     "entityTableName": "my_order",
     "dto": "mapstruct",
     "pagination": "pagination",

@@ -14,7 +14,7 @@ export class ProductItemService {
     private resourceUrl =  SERVER_API_URL + 'api/product-items';
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/product-items';
 
-    constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }
+    constructor(private http: HttpClient) { }
 
     create(productItem: ProductItem): Observable<EntityResponseType> {
         const copy = this.convert(productItem);
@@ -66,12 +66,8 @@ export class ProductItemService {
     /**
      * Convert a returned JSON object to ProductItem.
      */
-	private convertItemFromServer(productItem: ProductItem): ProductItem {
+    private convertItemFromServer(productItem: ProductItem): ProductItem {
         const copy: ProductItem = Object.assign({}, productItem);
-        copy.createdDate = this.dateUtils
-            .convertDateTimeFromServer(productItem.createdDate);
-        copy.lastModifiedDate = this.dateUtils
-            .convertDateTimeFromServer(productItem.lastModifiedDate);
         return copy;
     }
 

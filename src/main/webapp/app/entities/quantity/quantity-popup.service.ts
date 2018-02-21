@@ -1,6 +1,7 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { HttpResponse } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
 import { Quantity } from './quantity.model';
 import { QuantityService } from './quantity.service';
@@ -27,14 +28,16 @@ export class QuantityPopupService {
             }
 
             if (id) {
-                this.quantityService.find(id).subscribe((quantity) => {
-                    quantity.from = this.datePipe
-                        .transform(quantity.from, 'yyyy-MM-ddTHH:mm:ss');
-                    quantity.to = this.datePipe
-                        .transform(quantity.to, 'yyyy-MM-ddTHH:mm:ss');
-                    this.ngbModalRef = this.quantityModalRef(component, quantity);
-                    resolve(this.ngbModalRef);
-                });
+                this.quantityService.find(id)
+                    .subscribe((quantityResponse: HttpResponse<Quantity>) => {
+                        const quantity: Quantity = quantityResponse.body;
+                        quantity.from = this.datePipe
+                            .transform(quantity.from, 'yyyy-MM-ddTHH:mm:ss');
+                        quantity.to = this.datePipe
+                            .transform(quantity.to, 'yyyy-MM-ddTHH:mm:ss');
+                        this.ngbModalRef = this.quantityModalRef(component, quantity);
+                        resolve(this.ngbModalRef);
+                    });
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {

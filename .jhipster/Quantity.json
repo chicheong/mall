@@ -22,9 +22,10 @@
             "fieldType": "Integer"
         }
     ],
-    "changelogDate": "20170727090141",
+    "changelogDate": "20180221114441",
     "entityTableName": "quantity",
     "dto": "mapstruct",
     "pagination": "pagination",
-    "service": "no"
+    "service": "no",
+    "jpaMetamodelFiltering": false
 }

@@ -82,7 +82,7 @@ export class MyOrderService {
         return copy;
     }
 
-    addToCart(productItem: ProductItem, quantity: number): Observable<MyOrder> {
+    addToCart(productItem: ProductItem, quantity: number): Observable<HttpResponse<MyOrder>> {
         const copy: ProductItem = Object.assign({}, productItem);
         const orderItem: OrderItem = Object.assign({});
         orderItem.productItem = copy;
@@ -91,6 +91,6 @@ export class MyOrderService {
         console.error('copy.currency: ' + copy.currency);
         orderItem.price = copy.price;
         return this.http.post<MyOrder>(this.resourceCartUrl, orderItem, { observe: 'response' })
-	        .map((res: EntityResponseType) => this.convertResponse(res));
+            .map((res: EntityResponseType) => this.convertResponse(res));
     }
 }

@@ -10,7 +10,6 @@ import { ProductItemsDialogType } from './product-items-dialog.component';
 
 import { Price } from '../price';
 import { ProductItem, ProductItemService } from '../product-item';
-import { ResponseWrapper } from '../../shared';
 
 @Component({
     selector: 'jhi-price-dialog',
@@ -38,7 +37,7 @@ export class PricesDialogComponent implements OnInit {
             this.productItem.prices.forEach((price) => {
                 const nPrice: Price = Object.assign(new Price(), price);
                 this.prices.push(nPrice);
-            })
+            });
         } else {
             if (this.productItem.id) {
                 // load prices from server
@@ -54,8 +53,8 @@ export class PricesDialogComponent implements OnInit {
     loadItem(itemId) {
         this.productItemService.find(itemId).subscribe((productItemResponse: HttpResponse<ProductItem>) => {
             this.productItem = productItemResponse.body;
-            if (productItem.prices.length > 0) {
-                this.prices = productItem.prices;
+            if (this.productItem.prices.length > 0) {
+                this.prices = this.productItem.prices;
             } else {
                 // default a price
                 this.initPrice();

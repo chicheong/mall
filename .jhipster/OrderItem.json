@@ -31,7 +31,7 @@
             "fieldValues": "HKD,CNY,USD,EUR,JPY,KRW,TWD"
         }
     ],
-    "changelogDate": "20170727090144",
+    "changelogDate": "20180221114444",
     "entityTableName": "order_item",
     "dto": "no",
     "pagination": "pagination",

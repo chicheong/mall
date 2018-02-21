@@ -59,10 +59,11 @@
             "fieldType": "BigDecimal"
         }
     ],
-    "changelogDate": "20170727090138",
-    "dto": "mapstruct",
-    "service": "no",
+    "changelogDate": "20180221114436",
     "entityTableName": "product_item",
-    "jpaMetamodelFiltering": false,
-    "pagination": "pagination"
+    "dto": "mapstruct",
+    "pagination": "pagination",
+    "service": "no",
+    "jpaMetamodelFiltering": false
+
 }

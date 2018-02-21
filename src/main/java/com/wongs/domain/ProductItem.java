@@ -47,9 +47,11 @@ public class ProductItem implements Serializable {
     private BigDecimal price;
 
     @OneToOne
+	@JoinColumn(unique = false)
     private ProductStyle color;
 
     @OneToOne
+	@JoinColumn(unique = false)
     private ProductStyle size;
 
     @OneToMany(mappedBy = "item")

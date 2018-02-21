@@ -103,7 +103,7 @@ export class ProductService {
                     });
                     item.quantities = quantities;
                 }
-            })
+            });
         }
         return copy;
     }
@@ -137,7 +137,7 @@ export class ProductService {
                     });
                     item.quantities = quantities;
                 }
-            })
+            });
         }
         return copy;
     }

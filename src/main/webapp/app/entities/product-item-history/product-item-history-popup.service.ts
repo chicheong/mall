@@ -33,8 +33,6 @@ export class ProductItemHistoryPopupService {
                         const productItemHistory: ProductItemHistory = productItemHistoryResponse.body;
                         productItemHistory.createdDate = this.datePipe
                             .transform(productItemHistory.createdDate, 'yyyy-MM-ddTHH:mm:ss');
-                        productItemHistory.lastModifiedDate = this.datePipe
-                            .transform(productItemHistory.lastModifiedDate, 'yyyy-MM-ddTHH:mm:ss');
                         this.ngbModalRef = this.productItemHistoryModalRef(component, productItemHistory);
                         resolve(this.ngbModalRef);
                     });

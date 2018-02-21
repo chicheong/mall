@@ -48,9 +48,10 @@
             "fieldType": "ZonedDateTime"
         }
     ],
-    "changelogDate": "20170727090135",
+    "changelogDate": "20180221114432",
     "entityTableName": "delegation",
     "dto": "no",
     "pagination": "infinite-scroll",
-    "service": "no"
+    "service": "no",
+    "jpaMetamodelFiltering": false
 }

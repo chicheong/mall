@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
 import { ActivatedRoute, Router } from '@angular/router';
-import { HttpResponse } from '@angular/common/http';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs/Subscription';
 import { Observable } from 'rxjs/Observable';
 import { JhiEventManager, JhiAlertService  } from 'ng-jhipster';
@@ -147,7 +147,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
             });
         this.selectedColor = {};
         this.selectedSize = {};
-        this.selectedItem = {};            
+        this.selectedItem = {};
     }
 
     previousState() {
@@ -178,9 +178,9 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
             'productStyleModification',
             (response) => {
                 if (response.type === ProductDetailComponentType.CONFIRM) {
-                    this.updateStyle(response.obj)
+                    this.updateStyle(response.obj);
                 } else if (response.type === ProductDetailComponentType.DELETE) {
-                    this.deleteStyle(response.obj)
+                    this.deleteStyle(response.obj);
                 }
             }
         );
@@ -199,8 +199,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                     this.product.items[index] = nProductItem;
                     return;
                 }
-            })
-        })
+            });
+        });
     }
 
     updateStyle(productStyle: ProductStyle) {
@@ -218,7 +218,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                     this.product.colors[index] = productStyle;
                     return;
                 }
-            })
+            });
             if (index === undefined) {
                 this.product.colors.push(productStyle);
                 let item: ProductItem;
@@ -243,7 +243,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                     this.product.sizes[index] = productStyle;
                     return;
                 }
-            })
+            });
             if (index === undefined) {
                 this.product.sizes.push(productStyle);
                 let item: ProductItem;
@@ -273,7 +273,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                     this.product.colors.splice(index, 1);
                     return;
                 }
-            })
+            });
         } else if (productStyle.type === ProductStyleType.SIZE) {
             this.product.sizes.forEach((size) => {
                 if (size.id && size.id === productStyle.id) {
@@ -285,7 +285,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                     this.product.colors.splice(index, 1);
                     return;
                 }
-            })
+            });
         }
         this.deleteItems(productStyle);
     }
@@ -299,7 +299,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                 } else if (item.color.tempId && item.color.tempId === productStyle.tempId) {
                     productItems.push(item);
                 }
-            })
+            });
         } else if (productStyle.type === ProductStyleType.SIZE) {
             this.product.items.forEach((item) => {
                 if (item.size.id && item.size.id === productStyle.id) {
@@ -307,7 +307,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                 } else if (item.size.tempId && item.size.tempId === productStyle.tempId) {
                     productItems.push(item);
                 }
-            })
+            });
         }
         this.product.items = this.product.items.filter((item) => productItems.indexOf(item) === -1);
     }
@@ -325,9 +325,9 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<Product>) {
-        result.subscribe((res: Product) =>
-            this.onSaveSuccess(res), (res: Response) => this.onSaveError(res));
+    private subscribeToSaveResponse(result: Observable<HttpResponse<Product>>) {
+        result.subscribe((res: HttpResponse<Product>) =>
+            this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
     private onSaveSuccess(result: Product) {
@@ -340,14 +340,9 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         // this.activeModal.dismiss(result);
     }
 
-    private onSaveError(error) {
-        try {
-            error.json();
-        } catch (exception) {
-            error.message = error.text();
-        }
+    private onSaveError() {
         this.isSaving = false;
-        this.onError(error);
+        // this.onError(error);
     }
 
     private onError(error) {
@@ -420,14 +415,14 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                 } else {
                     this.product.sizes.find((size) => size.id === item.size.id).disabled = false;
                 }
-            })
+            });
             this.product.items.filter((item) => item.size.id === this.selectedSize.id).forEach((item) => {
                 if (item.quantity <= 0) {
                     this.product.colors.find((color) => color.id === item.color.id).disabled = true;
                 } else {
                     this.product.colors.find((color) => color.id === item.color.id).disabled = false;
                 }
-            })
+            });
         } else if (this.selectedColor.id) {
             this.selectedItem = {};
             this.product.items.filter((item) => item.color.id === this.selectedColor.id).forEach((item) => {
@@ -436,7 +431,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                 } else {
                     this.product.sizes.find((size) => size.id === item.size.id).disabled = false;
                 }
-            })
+            });
         } else if (this.selectedSize.id) {
             this.selectedItem = {};
             this.product.items.filter((item) => item.size.id === this.selectedSize.id).forEach((item) => {
@@ -445,7 +440,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                 } else {
                     this.product.colors.find((color) => color.id === item.color.id).disabled = false;
                 }
-            })
+            });
         } else {
             this.selectedItem = {};
             this.product.colors.forEach((color) => color.disabled = false);
@@ -479,9 +474,9 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         }
     }
 
-    private subscribeToAddToCartResponse(result: Observable<MyOrder>) {
-        result.subscribe((res: MyOrder) =>
-            this.onAddToCartSuccess(res), (res: Response) => this.onSaveError(res));
+    private subscribeToAddToCartResponse(result: Observable<HttpResponse<MyOrder>>) {
+        result.subscribe((res: HttpResponse<MyOrder>) =>
+            this.onAddToCartSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
     private onAddToCartSuccess(result: MyOrder) {

@@ -41,7 +41,7 @@ export class UserInfoDialogComponent implements OnInit {
         this.isSaving = false;
         this.userService.query()
             .subscribe((res: HttpResponse<User[]>) => { this.users = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
-        //this.myAccountService
+        // this.myAccountService
         //    .query({filter: 'userinfo-is-null'})
         //    .subscribe((res: ResponseWrapper) => {
         //        if (!this.userInfo.defaultAccount || !this.userInfo.defaultAccount.id) {
