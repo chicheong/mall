@@ -79,7 +79,7 @@ export class ProductService {
     /**
      * Convert a returned JSON object to Product.
      */
-    private convertItemFromServer(json: any): Product {
+    private convertItemFromServer(product: Product): Product {
         const copy: Product = Object.assign({}, product);
         copy.createdDate = this.dateUtils
             .convertDateTimeFromServer(product.createdDate);

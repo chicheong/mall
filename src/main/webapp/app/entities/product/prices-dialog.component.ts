@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Response } from '@angular/http';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Rx';
+import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
@@ -52,8 +52,8 @@ export class PricesDialogComponent implements OnInit {
     }
 
     loadItem(itemId) {
-        this.productItemService.find(itemId).subscribe((productItem) => {
-            this.productItem = productItem;
+        this.productItemService.find(itemId).subscribe((productItemResponse: HttpResponse<ProductItem>) => {
+            this.productItem = productItemResponse.body;
             if (productItem.prices.length > 0) {
                 this.prices = productItem.prices;
             } else {

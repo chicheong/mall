@@ -10,8 +10,6 @@ import { ProductHistory } from './product-history.model';
 import { ProductHistoryPopupService } from './product-history-popup.service';
 import { ProductHistoryService } from './product-history.service';
 
-import { Product, ProductService } from '../product';
-
 @Component({
     selector: 'jhi-product-history-dialog',
     templateUrl: './product-history-dialog.component.html'
@@ -30,8 +28,6 @@ export class ProductHistoryDialogComponent implements OnInit {
 
     ngOnInit() {
         this.isSaving = false;
-        this.productService.query()
-            .subscribe((res: HttpResponse<Product[]>) => { this.products = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {

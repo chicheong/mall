@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiLanguageService, JhiEventManager } from 'ng-jhipster';
@@ -6,7 +7,7 @@ import { JhiLanguageService, JhiEventManager } from 'ng-jhipster';
 import { ProfileService } from '../profiles/profile.service';
 import { JhiLanguageHelper, Principal, LoginModalService, LoginService, User } from '../../shared';
 
-import { Subscription } from 'rxjs/Rx';
+import { Subscription } from 'rxjs/Subscription';
 import { VERSION } from '../../app.constants';
 
 import { MyAccount, MyAccountService } from '../../entities/my-account';
@@ -62,8 +63,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
             console.error('check navbar Authenticated?');
             this.principal.identity().then((account) => {
                 if (account && account.myAccount) {
-                    this.myAccountService.find(account.myAccount.id).subscribe((myAccount) => {
-                        this.myAccount = myAccount;
+                    this.myAccountService.find(account.myAccount.id).subscribe((myAccountResponse: HttpResponse<MyAccount>) => {
+                        this.myAccount = myAccountResponse.body;
                     });
                 } else {
                     this.myAccount = undefined;
@@ -80,8 +81,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
             console.error('navbar registerAuthenticationSuccess');
             this.principal.identity().then((account) => {
                 if (account && account.myAccount) {
-                    this.myAccountService.find(account.myAccount.id).subscribe((myAccount) => {
-                        this.myAccount = myAccount;
+                    this.myAccountService.find(account.myAccount.id).subscribe((myAccountResponse: HttpResponse<MyAccount>) => {
+                        this.myAccount = myAccountResponse.body;
                     });
                 } else {
                     this.myAccount = undefined;

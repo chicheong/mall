@@ -69,26 +69,26 @@ public class CacheConfiguration {
             cm.createCache(com.wongs.domain.Category.class.getName(), jcacheConfiguration);
             cm.createCache(com.wongs.domain.Category.class.getName() + ".products", jcacheConfiguration);
             cm.createCache(com.wongs.domain.Product.class.getName(), jcacheConfiguration);
+            cm.createCache(com.wongs.domain.Product.class.getName() + ".styles", jcacheConfiguration);
             cm.createCache(com.wongs.domain.Product.class.getName() + ".items", jcacheConfiguration);
-            cm.createCache(com.wongs.domain.Product.class.getName() + ".histories", jcacheConfiguration);
             cm.createCache(com.wongs.domain.Product.class.getName() + ".categories", jcacheConfiguration);
+            cm.createCache(com.wongs.domain.Product.class.getName() + ".histories", jcacheConfiguration);
+            cm.createCache(com.wongs.domain.ProductStyle.class.getName(), jcacheConfiguration);
             cm.createCache(com.wongs.domain.ProductItem.class.getName(), jcacheConfiguration);
-            cm.createCache(com.wongs.domain.ProductItem.class.getName() + ".histories", jcacheConfiguration);
             cm.createCache(com.wongs.domain.ProductItem.class.getName() + ".prices", jcacheConfiguration);
             cm.createCache(com.wongs.domain.ProductItem.class.getName() + ".quantities", jcacheConfiguration);
+            cm.createCache(com.wongs.domain.ProductItem.class.getName() + ".histories", jcacheConfiguration);
             cm.createCache(com.wongs.domain.ProductHistory.class.getName(), jcacheConfiguration);
+            cm.createCache(com.wongs.domain.ProductStyleHistory.class.getName(), jcacheConfiguration);
             cm.createCache(com.wongs.domain.ProductItemHistory.class.getName(), jcacheConfiguration);
             cm.createCache(com.wongs.domain.Price.class.getName(), jcacheConfiguration);
+            cm.createCache(com.wongs.domain.Quantity.class.getName(), jcacheConfiguration);
             cm.createCache(com.wongs.domain.CurrencyRate.class.getName(), jcacheConfiguration);
-            cm.createCache(com.wongs.domain.OrderItem.class.getName(), jcacheConfiguration);
-            cm.createCache(com.wongs.domain.OrderStatusHistory.class.getName(), jcacheConfiguration);
             cm.createCache(com.wongs.domain.MyOrder.class.getName(), jcacheConfiguration);
             cm.createCache(com.wongs.domain.MyOrder.class.getName() + ".items", jcacheConfiguration);
             cm.createCache(com.wongs.domain.MyOrder.class.getName() + ".statusHistories", jcacheConfiguration);
-            cm.createCache(com.wongs.domain.Product.class.getName() + ".styles", jcacheConfiguration);
-            cm.createCache(com.wongs.domain.ProductStyle.class.getName(), jcacheConfiguration);
-            cm.createCache(com.wongs.domain.ProductStyleHistory.class.getName(), jcacheConfiguration);
-            cm.createCache(com.wongs.domain.Quantity.class.getName(), jcacheConfiguration);
+            cm.createCache(com.wongs.domain.OrderItem.class.getName(), jcacheConfiguration);
+            cm.createCache(com.wongs.domain.OrderStatusHistory.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

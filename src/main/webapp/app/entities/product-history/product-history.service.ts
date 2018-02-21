@@ -72,8 +72,6 @@ export class ProductHistoryService {
         const copy: ProductHistory = Object.assign({}, productHistory);
         copy.createdDate = this.dateUtils
             .convertDateTimeFromServer(productHistory.createdDate);
-        copy.lastModifiedDate = this.dateUtils
-            .convertDateTimeFromServer(productHistory.lastModifiedDate);
         return copy;
     }
 
@@ -84,7 +82,6 @@ export class ProductHistoryService {
         const copy: ProductHistory = Object.assign({}, productHistory);
 
         copy.createdDate = this.dateUtils.toDate(productHistory.createdDate);
-        copy.lastModifiedDate = this.dateUtils.toDate(productHistory.lastModifiedDate);
         return copy;
     }
 }
