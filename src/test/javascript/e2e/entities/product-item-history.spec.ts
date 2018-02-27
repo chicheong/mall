@@ -98,9 +98,10 @@ export class ProductItemHistoryDialogPage {
     getCodeInput = function() {
         return this.codeInput.getAttribute('value');
     };
+
     getIsDefaultInput = function() {
         return this.isDefaultInput;
-    }
+    };
     setQuantityInput = function(quantity) {
         this.quantityInput.sendKeys(quantity);
     };
@@ -143,7 +144,7 @@ export class ProductItemHistoryDialogPage {
     getCreatedDateInput = function() {
         return this.createdDateInput.getAttribute('value');
     };
-    
+
     save() {
         this.saveButton.click();
     }

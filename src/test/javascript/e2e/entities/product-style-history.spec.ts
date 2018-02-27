@@ -18,14 +18,16 @@ describe('ProductStyleHistory e2e test', () => {
     it('should load ProductStyleHistories', () => {
         navBarPage.goToEntity('product-style-history');
         productStyleHistoryComponentsPage = new ProductStyleHistoryComponentsPage();
-        expect(productStyleHistoryComponentsPage.getTitle()).toMatch(/mallApp.productStyleHistory.home.title/);
+        expect(productStyleHistoryComponentsPage.getTitle())
+            .toMatch(/mallApp.productStyleHistory.home.title/);
 
     });
 
     it('should load create ProductStyleHistory dialog', () => {
         productStyleHistoryComponentsPage.clickOnCreateButton();
         productStyleHistoryDialogPage = new ProductStyleHistoryDialogPage();
-        expect(productStyleHistoryDialogPage.getModalTitle()).toMatch(/mallApp.productStyleHistory.home.createOrEditLabel/);
+        expect(productStyleHistoryDialogPage.getModalTitle())
+            .toMatch(/mallApp.productStyleHistory.home.createOrEditLabel/);
         productStyleHistoryDialogPage.close();
     });
 
@@ -88,49 +90,49 @@ export class ProductStyleHistoryDialogPage {
 
     setNameInput = function(name) {
         this.nameInput.sendKeys(name);
-    }
+    };
 
     getNameInput = function() {
         return this.nameInput.getAttribute('value');
-    }
+    };
 
     setCodeInput = function(code) {
         this.codeInput.sendKeys(code);
-    }
+    };
 
     getCodeInput = function() {
         return this.codeInput.getAttribute('value');
-    }
+    };
 
     getIsDefaultInput = function() {
         return this.isDefaultInput;
-    }
+    };
     setTypeSelect = function(type) {
         this.typeSelect.sendKeys(type);
-    }
+    };
 
     getTypeSelect = function() {
         return this.typeSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     typeSelectLastOption = function() {
         this.typeSelect.all(by.tagName('option')).last().click();
-    }
+    };
     setCreatedByInput = function(createdBy) {
         this.createdByInput.sendKeys(createdBy);
-    }
+    };
 
     getCreatedByInput = function() {
         return this.createdByInput.getAttribute('value');
-    }
+    };
 
     setCreatedDateInput = function(createdDate) {
         this.createdDateInput.sendKeys(createdDate);
-    }
+    };
 
     getCreatedDateInput = function() {
         return this.createdDateInput.getAttribute('value');
-    }
+    };
 
     save() {
         this.saveButton.click();

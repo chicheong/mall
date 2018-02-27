@@ -95,11 +95,11 @@ export class ProductHistoryDialogPage {
 
     setProductIdInput = function(productId) {
         this.productIdInput.sendKeys(productId);
-    }
+    };
 
     getProductIdInput = function() {
         return this.productIdInput.getAttribute('value');
-    }
+    };
 
     setNameInput = function(name) {
         this.nameInput.sendKeys(name);
@@ -174,38 +174,6 @@ export class ProductHistoryDialogPage {
 
     getCreatedDateInput = function() {
         return this.createdDateInput.getAttribute('value');
-    };
-
-    setLastModifiedByInput = function(lastModifiedBy) {
-        this.lastModifiedByInput.sendKeys(lastModifiedBy);
-    };
-
-    getLastModifiedByInput = function() {
-        return this.lastModifiedByInput.getAttribute('value');
-    };
-
-    setLastModifiedDateInput = function(lastModifiedDate) {
-        this.lastModifiedDateInput.sendKeys(lastModifiedDate);
-    };
-
-    getLastModifiedDateInput = function() {
-        return this.lastModifiedDateInput.getAttribute('value');
-    };
-
-    productSelectLastOption = function() {
-        this.productSelect.all(by.tagName('option')).last().click();
-    };
-
-    productSelectOption = function(option) {
-        this.productSelect.sendKeys(option);
-    };
-
-    getProductSelect = function() {
-        return this.productSelect;
-    };
-
-    getProductSelectedOption = function() {
-        return this.productSelect.element(by.css('option:checked')).getText();
     };
 
     save() {

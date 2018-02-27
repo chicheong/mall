@@ -78,19 +78,19 @@ export class UserInfoDialogPage {
 
     setAccountIdInput = function(accountId) {
         this.accountIdInput.sendKeys(accountId);
-    }
+    };
 
     getAccountIdInput = function() {
         return this.accountIdInput.getAttribute('value');
-    }
+    };
 
     setShopIdInput = function(shopId) {
         this.shopIdInput.sendKeys(shopId);
-    }
+    };
 
     getShopIdInput = function() {
         return this.shopIdInput.getAttribute('value');
-    }
+    };
 
     userSelectLastOption = function() {
         this.userSelect.all(by.tagName('option')).last().click();
@@ -110,19 +110,19 @@ export class UserInfoDialogPage {
 
     defaultAccountSelectLastOption = function() {
         this.defaultAccountSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     defaultAccountSelectOption = function(option) {
         this.defaultAccountSelect.sendKeys(option);
-    }
+    };
 
     getDefaultAccountSelect = function() {
         return this.defaultAccountSelect;
-    }
+    };
 
     getDefaultAccountSelectedOption = function() {
         return this.defaultAccountSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     accountSelectLastOption = function() {
         this.accountSelect.all(by.tagName('option')).last().click();

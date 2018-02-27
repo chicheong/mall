@@ -98,9 +98,10 @@ export class ProductItemDialogPage {
     getCodeInput = function() {
         return this.codeInput.getAttribute('value');
     };
+
     getIsDefaultInput = function() {
         return this.isDefaultInput;
-    }
+    };
     setQuantityInput = function(quantity) {
         this.quantityInput.sendKeys(quantity);
     };
@@ -127,37 +128,39 @@ export class ProductItemDialogPage {
     getPriceInput = function() {
         return this.priceInput.getAttribute('value');
     };
+
     colorSelectLastOption = function() {
         this.colorSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     colorSelectOption = function(option) {
         this.colorSelect.sendKeys(option);
-    }
+    };
 
     getColorSelect = function() {
         return this.colorSelect;
-    }
+    };
 
     getColorSelectedOption = function() {
         return this.colorSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     sizeSelectLastOption = function() {
         this.sizeSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     sizeSelectOption = function(option) {
         this.sizeSelect.sendKeys(option);
-    }
+    };
 
     getSizeSelect = function() {
         return this.sizeSelect;
-    }
+    };
 
     getSizeSelectedOption = function() {
         return this.sizeSelect.element(by.css('option:checked')).getText();
-    }
+    };
+
     productSelectLastOption = function() {
         this.productSelect.all(by.tagName('option')).last().click();
     };

@@ -18,14 +18,16 @@ describe('ProductStyle e2e test', () => {
     it('should load ProductStyles', () => {
         navBarPage.goToEntity('product-style');
         productStyleComponentsPage = new ProductStyleComponentsPage();
-        expect(productStyleComponentsPage.getTitle()).toMatch(/mallApp.productStyle.home.title/);
+        expect(productStyleComponentsPage.getTitle())
+            .toMatch(/mallApp.productStyle.home.title/);
 
     });
 
     it('should load create ProductStyle dialog', () => {
         productStyleComponentsPage.clickOnCreateButton();
         productStyleDialogPage = new ProductStyleDialogPage();
-        expect(productStyleDialogPage.getModalTitle()).toMatch(/mallApp.productStyle.home.createOrEditLabel/);
+        expect(productStyleDialogPage.getModalTitle())
+            .toMatch(/mallApp.productStyle.home.createOrEditLabel/);
         productStyleDialogPage.close();
     });
 
@@ -84,49 +86,49 @@ export class ProductStyleDialogPage {
 
     setNameInput = function(name) {
         this.nameInput.sendKeys(name);
-    }
+    };
 
     getNameInput = function() {
         return this.nameInput.getAttribute('value');
-    }
+    };
 
     setCodeInput = function(code) {
         this.codeInput.sendKeys(code);
-    }
+    };
 
     getCodeInput = function() {
         return this.codeInput.getAttribute('value');
-    }
+    };
 
     getIsDefaultInput = function() {
         return this.isDefaultInput;
-    }
+    };
     setTypeSelect = function(type) {
         this.typeSelect.sendKeys(type);
-    }
+    };
 
     getTypeSelect = function() {
         return this.typeSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     typeSelectLastOption = function() {
         this.typeSelect.all(by.tagName('option')).last().click();
-    }
+    };
     productSelectLastOption = function() {
         this.productSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     productSelectOption = function(option) {
         this.productSelect.sendKeys(option);
-    }
+    };
 
     getProductSelect = function() {
         return this.productSelect;
-    }
+    };
 
     getProductSelectedOption = function() {
         return this.productSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     save() {
         this.saveButton.click();

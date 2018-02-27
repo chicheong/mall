@@ -18,14 +18,16 @@ describe('Quantity e2e test', () => {
     it('should load Quantities', () => {
         navBarPage.goToEntity('quantity');
         quantityComponentsPage = new QuantityComponentsPage();
-        expect(quantityComponentsPage.getTitle()).toMatch(/mallApp.quantity.home.title/);
+        expect(quantityComponentsPage.getTitle())
+            .toMatch(/mallApp.quantity.home.title/);
 
     });
 
     it('should load create Quantity dialog', () => {
         quantityComponentsPage.clickOnCreateButton();
         quantityDialogPage = new QuantityDialogPage();
-        expect(quantityDialogPage.getModalTitle()).toMatch(/mallApp.quantity.home.createOrEditLabel/);
+        expect(quantityDialogPage.getModalTitle())
+            .toMatch(/mallApp.quantity.home.createOrEditLabel/);
         quantityDialogPage.close();
     });
 
@@ -75,43 +77,43 @@ export class QuantityDialogPage {
 
     setFromInput = function(from) {
         this.fromInput.sendKeys(from);
-    }
+    };
 
     getFromInput = function() {
         return this.fromInput.getAttribute('value');
-    }
+    };
 
     setToInput = function(to) {
         this.toInput.sendKeys(to);
-    }
+    };
 
     getToInput = function() {
         return this.toInput.getAttribute('value');
-    }
+    };
 
     setQuantityInput = function(quantity) {
         this.quantityInput.sendKeys(quantity);
-    }
+    };
 
     getQuantityInput = function() {
         return this.quantityInput.getAttribute('value');
-    }
+    };
 
     itemSelectLastOption = function() {
         this.itemSelect.all(by.tagName('option')).last().click();
-    }
+    };
 
     itemSelectOption = function(option) {
         this.itemSelect.sendKeys(option);
-    }
+    };
 
     getItemSelect = function() {
         return this.itemSelect;
-    }
+    };
 
     getItemSelectedOption = function() {
         return this.itemSelect.element(by.css('option:checked')).getText();
-    }
+    };
 
     save() {
         this.saveButton.click();
