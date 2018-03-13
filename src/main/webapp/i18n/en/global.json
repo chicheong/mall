@@ -121,7 +121,8 @@
             "open": "Open",
             "save": "Save",
             "view": "View",
-			"confirm": "Confirm"
+			"confirm": "Confirm",
+			"upload": "Upload"
         },
         "detail": {
             "field": "Field",

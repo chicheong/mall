@@ -121,7 +121,8 @@
             "open": "開啟",
             "save": "儲存",
             "view": "檢視",
-			"confirm": "確定"
+			"confirm": "確定",
+			"upload": "上載"
         },
         "detail": {
             "field": "欄位",
