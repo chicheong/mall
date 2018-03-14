@@ -8,7 +8,7 @@ import { JhiEventManager, JhiAlertService  } from 'ng-jhipster';
 
 import { Product } from './product.model';
 import { ProductService } from './product.service';
-import { LoginModalService, Principal } from '../../shared';
+import { LoginModalService, Principal, UuidService } from '../../shared';
 
 import { ProductItem, CurrencyType } from './../product-item';
 import { ProductStyle, ProductStyleType } from './../product-style';
@@ -54,6 +54,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         private principal: Principal,
         private loginModalService: LoginModalService,
         private myOrderService: MyOrderService,
+        private uuidService: UuidService,
     ) {
     }
 
@@ -93,46 +94,46 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
     initObjects() {
         const color: ProductStyle = Object.assign(new ProductStyle());
-        color.tempId = this.uuid();
+        color.tempId = this.uuidService.get();
         color.type = ProductStyleType.COLOR;
         color.name = 'D';
         color.isDefault = true;
         const size: ProductStyle = Object.assign(new ProductStyle());
-        size.tempId = this.uuid();
+        size.tempId = this.uuidService.get();
         size.type = ProductStyleType.SIZE;
         size.name = 'D';
         size.isDefault = true;
         const color1: ProductStyle = Object.assign(new ProductStyle());
-        color1.tempId = this.uuid();
+        color1.tempId = this.uuidService.get();
         color1.type = ProductStyleType.COLOR;
         color1.name = 'E';
         const size1: ProductStyle = Object.assign(new ProductStyle());
-        size1.tempId = this.uuid();
+        size1.tempId = this.uuidService.get();
         size1.type = ProductStyleType.SIZE;
         size1.name = 'F';
 
         this.product.colors = [color, color1];
         this.product.sizes = [size, size1];
         const item: ProductItem = Object.assign(new ProductItem());
-        item.tempId = this.uuid();
+        item.tempId = this.uuidService.get();
         item.color = color;
         item.size = size;
         item.quantity = 1;
         item.currency = CurrencyType.HKD;
         const item1: ProductItem = Object.assign(new ProductItem());
-        item1.tempId = this.uuid();
+        item1.tempId = this.uuidService.get();
         item1.color = color;
         item1.size = size1;
         item1.quantity = 1;
         item1.currency = CurrencyType.HKD;
         const item2: ProductItem = Object.assign(new ProductItem());
-        item2.tempId = this.uuid();
+        item2.tempId = this.uuidService.get();
         item2.color = color1;
         item2.size = size;
         item2.quantity = 1;
         item2.currency = CurrencyType.HKD;
         const item3: ProductItem = Object.assign(new ProductItem());
-        item3.tempId = this.uuid();
+        item3.tempId = this.uuidService.get();
         item3.color = color1;
         item3.size = size1;
         item3.quantity = 1;
@@ -224,7 +225,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                 let item: ProductItem;
                 this.product.sizes.forEach((size) => {
                     item = Object.assign(new ProductItem());
-                    item.tempId = this.uuid();
+                    item.tempId = this.uuidService.get();
                     item.color = productStyle;
                     item.size = size;
                     item.quantity = 1;
@@ -249,7 +250,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                 let item: ProductItem;
                 this.product.colors.forEach((color) => {
                     item = Object.assign(new ProductItem());
-                    item.tempId = this.uuid();
+                    item.tempId = this.uuidService.get();
                     item.color = color;
                     item.size = productStyle;
                     item.quantity = 1;
@@ -365,14 +366,14 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
     addColor() {
         const obj: ProductStyle = Object.assign(new ProductStyle());
-        obj.tempId = this.uuid();
+        obj.tempId = this.uuidService.get();
         obj.type = ProductStyleType.COLOR;
         this.editStyle(obj);
     }
 
     addSize() {
         const obj: ProductStyle = Object.assign(new ProductStyle());
-        obj.tempId = this.uuid();
+        obj.tempId = this.uuidService.get();
         obj.type = ProductStyleType.SIZE;
         this.editStyle(obj);
     }
@@ -486,11 +487,9 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         console.error('result.id=' + result.id);
     }
 
-    private uuid() {
-        return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' + this.s4() + this.s4() + this.s4();
+    uploadMedia(obj: ProductStyle) {
+        const copyObj: ProductStyle = Object.assign(new ProductStyle(), obj);
+        this.productStylePopupService.open(ProductStyleDialogComponent as Component, copyObj);
     }
 
-    private s4() {
-        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-    }
 }

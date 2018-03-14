@@ -11,6 +11,8 @@ import { ProductItemsDialogType } from './product-items-dialog.component';
 import { Quantity } from '../quantity';
 import { ProductItem, ProductItemService } from '../product-item';
 
+import { UuidService } from '../../shared';
+
 @Component({
     selector: 'jhi-quantity-dialog',
     templateUrl: './quantities-dialog.component.html'
@@ -25,7 +27,8 @@ export class QuantitiesDialogComponent implements OnInit {
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
         private productItemService: ProductItemService,
-        private eventManager: JhiEventManager
+        private eventManager: JhiEventManager,
+        private uuidService: UuidService
     ) {
     }
 
@@ -64,13 +67,13 @@ export class QuantitiesDialogComponent implements OnInit {
 
     initQuantity() {
         const quantity: Quantity = Object.assign(new Quantity());
-        quantity.tempId = this.uuid();
+        quantity.tempId = this.uuidService.get();
         this.quantities = [quantity];
     }
 
     add() {
         const quantity: Quantity = Object.assign(new Quantity());
-        quantity.tempId = this.uuid();
+        quantity.tempId = this.uuidService.get();
         this.quantities.push(quantity);
     }
 
@@ -97,13 +100,5 @@ export class QuantitiesDialogComponent implements OnInit {
         this.productItem.quantities = this.quantities;
         this.eventManager.broadcast({ name: 'quantitiesModification', content: 'OK', obj: this.productItem, type: ProductItemsDialogType.ALL});
         this.activeModal.dismiss('OK');
-    }
-
-    private uuid() {
-        return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' + this.s4() + this.s4() + this.s4();
-    }
-
-    private s4() {
-        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
     }
 }

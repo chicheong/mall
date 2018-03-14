@@ -6,7 +6,7 @@
 	<div class="row" *jhiHasAnyAuthority="'ROLE_USER'">
 		<div class="col-md-1"></div>
 		<div class="col-md-3">
-			<button *ngSwitchCase="true" type="button" [disabled]="isSaving" class="btn btn-primary" (click)="previousState()">
+			<button *ngSwitchCase="true" type="button" [disabled]="isSaving" class="btn btn-primary" (click)="uploadMedia()">
 		        <span class="fa fa-upload"></span>&nbsp;<span jhiTranslate="entity.action.upload"> Upload</span>
 		    </button>
 		</div>
@@ -116,7 +116,7 @@
 	  		<div>
 	  			You Save: $5.90 (28%)
 	  		</div>	  		  
-			<div>
+			<div *ngSwitchCase="false">
 			    <button type="button" [disabled]="isSaving || !(selectedItem && selectedItem.price)" class="btn btn-default" (click)="addToCart()">
 		            <span>Add to Cart</span>
 		        </button>

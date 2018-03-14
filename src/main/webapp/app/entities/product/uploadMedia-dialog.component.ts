@@ -14,10 +14,10 @@ import { ProductItem, ProductItemService } from '../product-item';
 import { UuidService } from '../../shared';
 
 @Component({
-    selector: 'jhi-price-dialog',
-    templateUrl: './prices-dialog.component.html'
+    selector: 'uploadMedia-dialog',
+    templateUrl: './uploadMedia-dialog.component.html'
 })
-export class PricesDialogComponent implements OnInit {
+export class UploadMediaDialogComponent implements OnInit {
 
     productItem: ProductItem;
     productitems: ProductItem[];

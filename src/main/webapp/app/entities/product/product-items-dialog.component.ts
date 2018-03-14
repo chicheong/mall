@@ -19,6 +19,8 @@ import { QuantitiesDialogComponent } from './quantities-dialog.component';
 
 import { GetItemFromColorSizePipe } from './get-item-from-color-size.pipe';
 
+import { UuidService } from '../../shared';
+
 export const enum ProductItemsDialogType {
     CODE = 'CODE',
     PRICE = 'PRICE',
@@ -45,7 +47,8 @@ export class ProductItemsDialogComponent implements OnInit {
         private pricesPopupService: PricesPopupService,
         private quantitiesPopupService: QuantitiesPopupService,
         private jhiAlertService: JhiAlertService,
-        private eventManager: JhiEventManager
+        private eventManager: JhiEventManager,
+        private uuidService: UuidService
     ) {
     }
 
@@ -114,7 +117,7 @@ export class ProductItemsDialogComponent implements OnInit {
                 productItem.prices.forEach((price) => {
                     const obj: Price = Object.assign(new Price(), price);
                     obj.id = undefined;
-                    obj.tempId = this.uuid();
+                    obj.tempId = this.uuidService.get();
                     item.prices.push(obj);
                 });
             }
@@ -155,7 +158,7 @@ export class ProductItemsDialogComponent implements OnInit {
                 productItem.quantities.forEach((quantity) => {
                     const obj: Quantity = Object.assign(new Quantity(), quantity);
                     obj.id = undefined;
-                    obj.tempId = this.uuid();
+                    obj.tempId = this.uuidService.get();
                     item.quantities.push(obj);
                 });
             }
@@ -189,13 +192,5 @@ export class ProductItemsDialogComponent implements OnInit {
 
     trackProductById(index: number, item: Product) {
         return item.id;
-    }
-
-    private uuid() {
-        return this.s4() + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' + this.s4() + '-' + this.s4() + this.s4() + this.s4();
-    }
-
-    private s4() {
-        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
     }
 }
