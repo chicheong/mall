@@ -26,7 +26,7 @@ export class UploadMediaPopupService {
             }
 
             if (item) {
-                this.ngbModalRef = this.priceModalRef(component, item);
+                this.ngbModalRef = this.uploadMediaModalRef(component, item);
                 resolve(this.ngbModalRef);
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
@@ -38,7 +38,7 @@ export class UploadMediaPopupService {
         });
     }
 
-    priceModalRef(component: Component, item: ProductItem): NgbModalRef {
+    uploadMediaModalRef(component: Component, item: ProductItem): NgbModalRef {
         const modalRef = this.modalService.open(component, { size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.productItem = item;
         modalRef.result.then((result) => {
