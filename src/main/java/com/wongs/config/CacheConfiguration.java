@@ -89,6 +89,7 @@ public class CacheConfiguration {
             cm.createCache(com.wongs.domain.MyOrder.class.getName() + ".statusHistories", jcacheConfiguration);
             cm.createCache(com.wongs.domain.OrderItem.class.getName(), jcacheConfiguration);
             cm.createCache(com.wongs.domain.OrderStatusHistory.class.getName(), jcacheConfiguration);
+            cm.createCache(com.wongs.domain.Url.class.getName(), jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

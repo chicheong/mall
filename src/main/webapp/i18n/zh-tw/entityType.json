@@ -1,0 +1,9 @@
+{
+    "mallApp": {
+        "EntityType" : {
+            "null": "",
+            "PRODUCT": "PRODUCT",
+            "PRODUCTITEM": "PRODUCTITEM"
+        }
+    }
+}

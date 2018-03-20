@@ -30,6 +30,7 @@
                 "productStyle": "Product Style",
                 "productStyleHistory": "Product Style History",
                 "quantity": "Quantity",
+                "url": "Url",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {
