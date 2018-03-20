@@ -1,16 +1,13 @@
 import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { DatePipe } from '@angular/common';
-import { Price } from '../price';
-import { ProductItem } from '../product-item';
+import { Product } from '../product';
 
 @Injectable()
-export class UploadMediaPopupService {
+export class FileUploadPopupService {
     private ngbModalRef: NgbModalRef;
 
     constructor(
-        private datePipe: DatePipe,
         private modalService: NgbModal,
         private router: Router,
 
@@ -18,29 +15,29 @@ export class UploadMediaPopupService {
         this.ngbModalRef = null;
     }
 
-    open(component: Component, item?: ProductItem): Promise<NgbModalRef> {
+    open(component: Component, product?: Product): Promise<NgbModalRef> {
         return new Promise<NgbModalRef>((resolve, reject) => {
             const isOpen = this.ngbModalRef !== null;
             if (isOpen) {
                 resolve(this.ngbModalRef);
             }
 
-            if (item) {
-                this.ngbModalRef = this.uploadMediaModalRef(component, item);
+            if (product) {
+                this.ngbModalRef = this.uploadMediaModalRef(component, product);
                 resolve(this.ngbModalRef);
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {
-                    this.ngbModalRef = this.priceModalRef(component, new ProductItem());
+                    this.ngbModalRef = this.uploadMediaModalRef(component, new Product());
                     resolve(this.ngbModalRef);
                 }, 0);
             }
         });
     }
 
-    uploadMediaModalRef(component: Component, item: ProductItem): NgbModalRef {
+    uploadMediaModalRef(component: Component, product: Product): NgbModalRef {
         const modalRef = this.modalService.open(component, { size: 'lg', backdrop: 'static'});
-        modalRef.componentInstance.productItem = item;
+        modalRef.componentInstance.product = product;
         modalRef.result.then((result) => {
             this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true, queryParamsHandling: 'merge' });
             this.ngbModalRef = null;

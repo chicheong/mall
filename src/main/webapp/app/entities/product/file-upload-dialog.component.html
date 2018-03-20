@@ -1,0 +1,27 @@
+<form name="editForm" role="form" novalidate (ngSubmit)="confirm()" #editForm="ngForm">
+
+    <div class="modal-header">
+        <h4 class="modal-title" id="myPriceLabel" jhiTranslate="mallApp.price.home.advancePrice">Advance Price</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="clear()">&times;</button>    	
+    </div>
+    <div class="modal-body">
+        <jhi-alert-error></jhi-alert-error>
+		<div class="col-md-12">
+		<div class="form-group">
+		    <label for="file">Choose File</label>
+		    <input type="file"
+		           id="file"
+		           (change)="handleFileInput($event.target.files)">
+		</div>
+		</div>
+		
+		<br /><br />
+        <div>{{editForm.value | json}}
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" [disabled]="editForm.form.invalid" class="btn btn-primary">
+            <span class="fa fa-check-square"></span>&nbsp;<span jhiTranslate="entity.action.confirm">Confirm</span>
+        </button>
+    </div>
+</form>

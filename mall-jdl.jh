@@ -215,8 +215,7 @@ entity OrderStatusHistory {
 	status OrderStatus
 }
 
-entity Media {
-	mediaType MediaType,
+entity Url {
 	entityType EntityType,
 	entityId Integer,
 	path String,
@@ -225,10 +224,6 @@ entity Media {
 	createdDate ZonedDateTime,
 	lastModifiedBy String,
 	lastModifiedDate ZonedDateTime
-}
-
-enum MediaType {
-    IMAGE
 }
 
 enum EntityType {
@@ -277,8 +272,8 @@ relationship ManyToMany {
 	Category{product} to Product{category}
 }
 
-paginate UserInfo, MyAccount, Company, Department, Office, Country, State, Shop, Category, Product, ProductItem, MyOrder, OrderItem, Price, Quantity, Media with pagination
+paginate UserInfo, MyAccount, Company, Department, Office, Country, State, Shop, Category, Product, ProductItem, MyOrder, OrderItem, Price, Quantity, Url with pagination
 paginate Address with pager
 paginate Delegation, OrderStatusHistory, ProductHistory, ProductItemHistory with infinite-scroll
-service MyAccount, Product, MyOrder, Shop, Media with serviceClass
+service MyAccount, Product, MyOrder, Shop, Url with serviceClass
 dto MyAccount, Product, MyOrder, Shop, ProductItem, ProductStyle, Price, Quantity with mapstruct

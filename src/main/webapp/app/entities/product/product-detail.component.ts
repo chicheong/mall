@@ -17,6 +17,8 @@ import { ProductStylePopupService } from './../product-style/product-style-popup
 import { ProductStyleDialogComponent } from './../product-style/product-style-dialog.component';
 import { ProductItemsPopupService } from './product-items-popup.service';
 import { ProductItemsDialogComponent, ProductItemsDialogType } from './product-items-dialog.component';
+import { FileUploadPopupService } from './file-upload-popup.service';
+import { FileUploadDialogComponent } from './file-upload-dialog.component';
 
 import { MyOrderService, MyOrder } from './../my-order';
 
@@ -48,6 +50,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         private productService: ProductService,
         private productStylePopupService: ProductStylePopupService,
         private productItemsPopupService: ProductItemsPopupService,
+        private uploadMediaPopupService: FileUploadPopupService,
         private route: ActivatedRoute,
         private jhiAlertService: JhiAlertService,
         private router: Router,
@@ -487,9 +490,9 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         console.error('result.id=' + result.id);
     }
 
-    uploadMedia(obj: ProductStyle) {
-        const copyObj: ProductStyle = Object.assign(new ProductStyle(), obj);
-        this.productStylePopupService.open(ProductStyleDialogComponent as Component, copyObj);
+    uploadMedia() {
+        const copyObj: Product = Object.assign(new Product(), this.product);
+        this.uploadMediaPopupService.open(FileUploadDialogComponent as Component, copyObj);
     }
 
 }
