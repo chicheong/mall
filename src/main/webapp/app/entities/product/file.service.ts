@@ -29,6 +29,15 @@ export class FileService {
             private quantityService: QuantityService
     ) { }
 
+    upload(files: FileList, parameters) {
+        const formData: FormData = new FormData();
+        files.forEach((file) => {
+            formData.append(file.name, file, file.name);
+        })
+        return this.http.post(this.resourceUrl, formData, { observe: 'response' })
+            .map((res: EntityResponseType) => { return true; });
+    }
+
     create(product: Product): Observable<EntityResponseType> {
         const copy = this.convert(product);
         return this.http.post<Product>(this.resourceUrl, copy, { observe: 'response' })
