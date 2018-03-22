@@ -1,8 +1,9 @@
 package com.wongs.service;
 
-import com.wongs.domain.Url;
-import com.wongs.repository.UrlRepository;
-import com.wongs.repository.search.UrlSearchRepository;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -10,8 +11,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.wongs.domain.Url;
+import com.wongs.repository.UrlRepository;
+import com.wongs.repository.search.UrlSearchRepository;
 
 /**
  * Service Implementation for managing Url.
@@ -54,6 +56,19 @@ public class UrlService {
     public Page<Url> findAll(Pageable pageable) {
         log.debug("Request to get all Urls");
         return urlRepository.findAll(pageable);
+    }
+    
+    /**
+     * Get all url by entityType and entityId.
+     *
+     * @param entityType
+     * @param entityId
+     * @return the list of entities
+     */
+    @Transactional(readOnly = true)
+    public Set<Url> findByEntityTypeAndEntityId(String entityType, Long entityId) {
+        log.debug("Request to get Url by entityType : {}, and entityId : {}", entityType, entityId);
+        return urlRepository.findByEntityTypeAndEntityId(entityType, entityId);
     }
 
     /**

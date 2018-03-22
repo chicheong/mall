@@ -1,9 +1,11 @@
 package com.wongs.repository;
 
-import com.wongs.domain.Url;
+import java.util.Set;
+
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import org.springframework.data.jpa.repository.*;
+import com.wongs.domain.Url;
 
 
 /**
@@ -12,5 +14,5 @@ import org.springframework.data.jpa.repository.*;
 @SuppressWarnings("unused")
 @Repository
 public interface UrlRepository extends JpaRepository<Url, Long> {
-
+    Set<Url> findByEntityTypeAndEntityId(String entityType, Long entityId);
 }

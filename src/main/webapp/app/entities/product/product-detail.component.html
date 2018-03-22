@@ -35,10 +35,20 @@
 	</div>
 	<div class="row">
 	  <div class="col-md-1">
-	  	<span class="hipster img-fluid img-rounded"></span>
+	  	<span *ngIf="product.urls">
+			<img *ngFor="let url of product.urls"
+				[src]="url.path"
+          		class="img-thumbnail"
+          		alt="">
+	  	</span>
 	  </div>
 	  <div class="col-md-3">
-	  	<span class="hipster img-fluid img-rounded"></span>
+	  	<span class="hipster img-fluid img-rounded" *ngIf="product.urls">
+	  		<img *ngFor="let url of product.urls"
+				[src]="url.path"
+          		class="img-fluid"
+          		alt="">
+	  	</span>
 	  </div>	
 	  <div class="col-md-5">
 	  	<div class="row-md jh-entity-details">

@@ -1,6 +1,7 @@
 import { BaseEntity } from './../../shared';
 import { ProductItem } from './../product-item';
 import { ProductStyle } from './../product-style';
+import { Url } from './../url';
 
 export const enum ProductStatus {
     'ACTIVE',
@@ -27,6 +28,7 @@ export class Product implements BaseEntity {
         public items?: ProductItem[],
         public shopId?: number,
         public categories?: BaseEntity[],
+        public urls?: Url[],
     ) {
     }
 }

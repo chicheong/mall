@@ -31,9 +31,9 @@ export class FileService {
 
     upload(files: FileList, parameters) {
         const formData: FormData = new FormData();
-        files.forEach((file) => {
-            formData.append(file.name, file, file.name);
-        })
+//        files.forEach((file) => {
+//            formData.append(file.name, file, file.name);
+//        })
         return this.http.post(this.resourceUrl, formData, { observe: 'response' })
             .map((res: EntityResponseType) => { return true; });
     }
@@ -53,12 +53,6 @@ export class FileService {
     find(id: number): Observable<EntityResponseType> {
         return this.http.get<Product>(`${this.resourceUrl}/${id}`, { observe: 'response'})
             .map((res: EntityResponseType) => this.convertResponse(res));
-    }
-
-    query(req?: any): Observable<HttpResponse<Product[]>> {
-        const options = createRequestOption(req);
-        return this.http.get<Product[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Product[]>) => this.convertArrayResponse(res));
     }
 
     delete(id: number): Observable<HttpResponse<any>> {

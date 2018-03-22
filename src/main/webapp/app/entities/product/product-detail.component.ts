@@ -148,6 +148,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.productService.find(id)
             .subscribe((productResponse: HttpResponse<Product>) => {
                 this.product = productResponse.body;
+                console.error('product.urls' + this.product.urls);
             });
         this.selectedColor = {};
         this.selectedSize = {};

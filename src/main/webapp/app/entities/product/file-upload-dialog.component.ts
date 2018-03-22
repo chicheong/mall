@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
@@ -14,10 +14,21 @@ import { UuidService } from '../../shared';
 
 @Component({
     selector: 'jhi-file-upload-dialog',
-    templateUrl: './file-upload-dialog.component.html'
+    templateUrl: './file-upload-dialog.component.html',
+    styleUrls: [
+        'file-upload.scss'
+    ]
 })
 export class FileUploadDialogComponent implements OnInit {
-
+    errors: Array<string> =[];
+    dragAreaClass: string = 'dragarea';
+    @Input() projectId: number;
+    @Input() sectionId: number;
+    @Input() fileExt: string = "JPG, GIF, PNG";
+    @Input() maxFiles: number = 5;
+    @Input() maxSize: number = 5; // 5MB
+    @Output() uploadStatus = new EventEmitter();
+        
     product: Product;
     fileToUpload: FileList;
 
@@ -49,26 +60,9 @@ export class FileUploadDialogComponent implements OnInit {
 //        }
     }
 
-    loadItem(itemId) {
-//        this.productItemService.find(itemId).subscribe((productItemResponse: HttpResponse<ProductItem>) => {
-//            this.productItem = productItemResponse.body;
-//            if (this.productItem.prices.length > 0) {
-//                this.prices = this.productItem.prices;
-//            } else {
-//                // default a price
-//                this.initPrice();
-//            }
-//        });
-    }
-
-    initPrice() {
-//        const price: Price = Object.assign(new Price());
-//        price.tempId = this.uuidService.get();
-//        this.prices = [price];
-    }
-
     handleFileInput(files: FileList) {
         this.fileToUpload = files;
+        console.error('FileList.size: ' + files.length);
     }
 
     clear() {

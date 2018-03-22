@@ -12,6 +12,17 @@
 		    <input type="file"
 		           id="file"
 		           (change)="handleFileInput($event.target.files)">
+		           
+		           
+		      <a href="javascript:void(0)" (click)="file.click()" >
+		        Click to browse 
+		      </a>
+		      Or Drag & Drop to upload your files
+		      <input type="file" 
+		             #file 
+		             [multiple]="(maxFiles > 1)"
+		             (change) = "onFileChange($event)"
+		             style="display:none" />
 		</div>
 		</div>
 		

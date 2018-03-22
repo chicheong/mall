@@ -5,7 +5,6 @@ import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +18,7 @@ import com.wongs.domain.Product;
 import com.wongs.domain.ProductItem;
 import com.wongs.domain.ProductStyle;
 import com.wongs.domain.Quantity;
+import com.wongs.domain.Url;
 import com.wongs.domain.enumeration.ProductStyleType;
 import com.wongs.repository.PriceRepository;
 import com.wongs.repository.ProductItemRepository;
@@ -70,6 +70,8 @@ public class ProductService {
     private final PriceSearchRepository priceSearchRepository;
     private final QuantityRepository quantityRepository;
     private final QuantitySearchRepository quantitySearchRepository;
+    
+    private final UrlService urlService;
 
     public ProductService(ProductMapper productMapper, ProductStyleMapper productStyleMapper, ProductItemMapper productItemMapper,
     		PriceMapper priceMapper, QuantityMapper quantityMapper, ProductRepository productRepository, 
@@ -77,7 +79,8 @@ public class ProductService {
 			ProductItemRepository productItemRepository, ProductItemSearchRepository productItemSearchRepository, ShopService shopService, 
 			ProductStyleRepository productStyleRepository, ProductStyleSearchRepository productStyleSearchRepository, 
 			PriceRepository priceRepository, PriceSearchRepository priceSearchRepository, 
-			QuantityRepository quantityRepository, QuantitySearchRepository quantitySearchRepository) {
+			QuantityRepository quantityRepository, QuantitySearchRepository quantitySearchRepository,
+			UrlService urlService) {
     	this.productMapper = productMapper;
     	this.productStyleMapper = productStyleMapper;
     	this.productItemMapper = productItemMapper;
@@ -94,6 +97,7 @@ public class ProductService {
         this.priceSearchRepository = priceSearchRepository;
         this.quantityRepository = quantityRepository;
         this.quantitySearchRepository = quantitySearchRepository;
+        this.urlService = urlService;
     }
 
     /**
@@ -244,6 +248,8 @@ public class ProductService {
 	        	productItemDTO.setSize(productStyleMapper.toDto(item.getSize()));
 	        	dto.getItems().add(productItemDTO);
 	        });
+	        Set<Url> urls = urlService.findByEntityTypeAndEntityId(Product.class.getSimpleName(), id);
+	        dto.getUrls().addAll(urls);
 	        return dto;
         }
     }

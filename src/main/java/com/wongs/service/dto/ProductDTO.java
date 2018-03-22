@@ -15,6 +15,7 @@ import com.wongs.domain.Product;
 import com.wongs.domain.ProductHistory;
 import com.wongs.domain.ProductItem;
 import com.wongs.domain.ProductStyle;
+import com.wongs.domain.Url;
 import com.wongs.domain.enumeration.ProductStatus;
 import com.wongs.domain.enumeration.ProductStyleType;
 
@@ -49,8 +50,9 @@ public class ProductDTO implements Serializable {
     private ZonedDateTime lastModifiedDate;
 
     private Set<ProductStyleDTO> colors = new HashSet<>();
-    private Set<ProductStyleDTO> sizes = new HashSet<>();
+    private Set<ProductStyleDTO> sizes = new HashSet<>();	
     private Set<ProductItemDTO> items = new HashSet<>();
+    private Set<Url> urls = new HashSet<>();
     private Set<Category> categories = new HashSet<>();
     private Long shopId;
 
@@ -200,6 +202,14 @@ public class ProductDTO implements Serializable {
 		this.items = items;
 	}
 
+	public Set<Url> getUrls() {
+		return urls;
+	}
+
+	public void setUrls(Set<Url> urls) {
+		this.urls = urls;
+	}
+	
 	public Set<Category> getCategories() {
 		return categories;
 	}

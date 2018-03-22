@@ -10,8 +10,6 @@ import java.io.Serializable;
 import java.time.ZonedDateTime;
 import java.util.Objects;
 
-import com.wongs.domain.enumeration.EntityType;
-
 /**
  * A Url.
  */
@@ -27,12 +25,11 @@ public class Url implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Enumerated(EnumType.STRING)
     @Column(name = "entity_type")
-    private EntityType entityType;
+    private String entityType;
 
     @Column(name = "entity_id")
-    private Integer entityId;
+    private Long entityId;
 
     @Column(name = "path")
     private String path;
@@ -61,29 +58,19 @@ public class Url implements Serializable {
         this.id = id;
     }
 
-    public EntityType getEntityType() {
+    public String getEntityType() {
         return entityType;
     }
 
-    public Url entityType(EntityType entityType) {
-        this.entityType = entityType;
-        return this;
-    }
-
-    public void setEntityType(EntityType entityType) {
+    public void setEntityType(String entityType) {
         this.entityType = entityType;
     }
 
-    public Integer getEntityId() {
+    public Long getEntityId() {
         return entityId;
     }
 
-    public Url entityId(Integer entityId) {
-        this.entityId = entityId;
-        return this;
-    }
-
-    public void setEntityId(Integer entityId) {
+    public void setEntityId(Long entityId) {
         this.entityId = entityId;
     }
 

@@ -216,18 +216,14 @@ entity OrderStatusHistory {
 }
 
 entity Url {
-	entityType EntityType,
-	entityId Integer,
+	entityType String,
+	entityId Long,
 	path String,
 	description String,
 	createdBy String,
 	createdDate ZonedDateTime,
 	lastModifiedBy String,
 	lastModifiedDate ZonedDateTime
-}
-
-enum EntityType {
-    PRODUCT, PRODUCTITEM
 }
 
 relationship OneToOne {
@@ -276,4 +272,4 @@ paginate UserInfo, MyAccount, Company, Department, Office, Country, State, Shop,
 paginate Address with pager
 paginate Delegation, OrderStatusHistory, ProductHistory, ProductItemHistory with infinite-scroll
 service MyAccount, Product, MyOrder, Shop, Url with serviceClass
-dto MyAccount, Product, MyOrder, Shop, ProductItem, ProductStyle, Price, Quantity with mapstruct
+dto MyAccount, Product, MyOrder, Shop, ProductItem, ProductStyle, Price, Quantity, Url with mapstruct

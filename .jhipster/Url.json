@@ -38,7 +38,7 @@
     ],
     "changelogDate": "20180221114443",
     "entityTableName": "url",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceClass",
     "jpaMetamodelFiltering": false
