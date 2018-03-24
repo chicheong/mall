@@ -6,6 +6,8 @@ import com.wongs.domain.Url;
 import com.wongs.repository.UrlRepository;
 import com.wongs.service.UrlService;
 import com.wongs.repository.search.UrlSearchRepository;
+import com.wongs.service.dto.UrlDTO;
+import com.wongs.service.mapper.UrlMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -36,7 +38,6 @@ import static org.hamcrest.Matchers.hasItem;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.wongs.domain.enumeration.EntityType;
 /**
  * Test class for the UrlResource REST controller.
  *
@@ -46,11 +47,11 @@ import com.wongs.domain.enumeration.EntityType;
 @SpringBootTest(classes = MallApp.class)
 public class UrlResourceIntTest {
 
-    private static final EntityType DEFAULT_ENTITY_TYPE = EntityType.PRODUCT;
-    private static final EntityType UPDATED_ENTITY_TYPE = EntityType.PRODUCTITEM;
+    private static final String DEFAULT_ENTITY_TYPE = "AAAAAAAAAA";
+    private static final String UPDATED_ENTITY_TYPE = "BBBBBBBBBB";
 
-    private static final Integer DEFAULT_ENTITY_ID = 1;
-    private static final Integer UPDATED_ENTITY_ID = 2;
+    private static final Long DEFAULT_ENTITY_ID = 1L;
+    private static final Long UPDATED_ENTITY_ID = 2L;
 
     private static final String DEFAULT_PATH = "AAAAAAAAAA";
     private static final String UPDATED_PATH = "BBBBBBBBBB";
@@ -72,6 +73,9 @@ public class UrlResourceIntTest {
 
     @Autowired
     private UrlRepository urlRepository;
+
+    @Autowired
+    private UrlMapper urlMapper;
 
     @Autowired
     private UrlService urlService;
@@ -137,9 +141,10 @@ public class UrlResourceIntTest {
         int databaseSizeBeforeCreate = urlRepository.findAll().size();
 
         // Create the Url
+        UrlDTO urlDTO = urlMapper.toDto(url);
         restUrlMockMvc.perform(post("/api/urls")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(url)))
+            .content(TestUtil.convertObjectToJsonBytes(urlDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Url in the database
@@ -169,11 +174,12 @@ public class UrlResourceIntTest {
 
         // Create the Url with an existing ID
         url.setId(1L);
+        UrlDTO urlDTO = urlMapper.toDto(url);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restUrlMockMvc.perform(post("/api/urls")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(url)))
+            .content(TestUtil.convertObjectToJsonBytes(urlDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Url in the database
@@ -193,7 +199,7 @@ public class UrlResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(url.getId().intValue())))
             .andExpect(jsonPath("$.[*].entityType").value(hasItem(DEFAULT_ENTITY_TYPE.toString())))
-            .andExpect(jsonPath("$.[*].entityId").value(hasItem(DEFAULT_ENTITY_ID)))
+            .andExpect(jsonPath("$.[*].entityId").value(hasItem(DEFAULT_ENTITY_ID.intValue())))
             .andExpect(jsonPath("$.[*].path").value(hasItem(DEFAULT_PATH.toString())))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
             .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY.toString())))
@@ -214,7 +220,7 @@ public class UrlResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(url.getId().intValue()))
             .andExpect(jsonPath("$.entityType").value(DEFAULT_ENTITY_TYPE.toString()))
-            .andExpect(jsonPath("$.entityId").value(DEFAULT_ENTITY_ID))
+            .andExpect(jsonPath("$.entityId").value(DEFAULT_ENTITY_ID.intValue()))
             .andExpect(jsonPath("$.path").value(DEFAULT_PATH.toString()))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
             .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY.toString()))
@@ -235,8 +241,8 @@ public class UrlResourceIntTest {
     @Transactional
     public void updateUrl() throws Exception {
         // Initialize the database
-        urlService.save(url);
-
+        urlRepository.saveAndFlush(url);
+        urlSearchRepository.save(url);
         int databaseSizeBeforeUpdate = urlRepository.findAll().size();
 
         // Update the url
@@ -252,10 +258,11 @@ public class UrlResourceIntTest {
             .createdDate(UPDATED_CREATED_DATE)
             .lastModifiedBy(UPDATED_LAST_MODIFIED_BY)
             .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE);
+        UrlDTO urlDTO = urlMapper.toDto(updatedUrl);
 
         restUrlMockMvc.perform(put("/api/urls")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedUrl)))
+            .content(TestUtil.convertObjectToJsonBytes(urlDTO)))
             .andExpect(status().isOk());
 
         // Validate the Url in the database
@@ -284,11 +291,12 @@ public class UrlResourceIntTest {
         int databaseSizeBeforeUpdate = urlRepository.findAll().size();
 
         // Create the Url
+        UrlDTO urlDTO = urlMapper.toDto(url);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restUrlMockMvc.perform(put("/api/urls")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(url)))
+            .content(TestUtil.convertObjectToJsonBytes(urlDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Url in the database
@@ -300,8 +308,8 @@ public class UrlResourceIntTest {
     @Transactional
     public void deleteUrl() throws Exception {
         // Initialize the database
-        urlService.save(url);
-
+        urlRepository.saveAndFlush(url);
+        urlSearchRepository.save(url);
         int databaseSizeBeforeDelete = urlRepository.findAll().size();
 
         // Get the url
@@ -322,7 +330,8 @@ public class UrlResourceIntTest {
     @Transactional
     public void searchUrl() throws Exception {
         // Initialize the database
-        urlService.save(url);
+        urlRepository.saveAndFlush(url);
+        urlSearchRepository.save(url);
 
         // Search the url
         restUrlMockMvc.perform(get("/api/_search/urls?query=id:" + url.getId()))
@@ -330,7 +339,7 @@ public class UrlResourceIntTest {
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(url.getId().intValue())))
             .andExpect(jsonPath("$.[*].entityType").value(hasItem(DEFAULT_ENTITY_TYPE.toString())))
-            .andExpect(jsonPath("$.[*].entityId").value(hasItem(DEFAULT_ENTITY_ID)))
+            .andExpect(jsonPath("$.[*].entityId").value(hasItem(DEFAULT_ENTITY_ID.intValue())))
             .andExpect(jsonPath("$.[*].path").value(hasItem(DEFAULT_PATH.toString())))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
             .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY.toString())))
@@ -352,5 +361,28 @@ public class UrlResourceIntTest {
         assertThat(url1).isNotEqualTo(url2);
         url1.setId(null);
         assertThat(url1).isNotEqualTo(url2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(UrlDTO.class);
+        UrlDTO urlDTO1 = new UrlDTO();
+        urlDTO1.setId(1L);
+        UrlDTO urlDTO2 = new UrlDTO();
+        assertThat(urlDTO1).isNotEqualTo(urlDTO2);
+        urlDTO2.setId(urlDTO1.getId());
+        assertThat(urlDTO1).isEqualTo(urlDTO2);
+        urlDTO2.setId(2L);
+        assertThat(urlDTO1).isNotEqualTo(urlDTO2);
+        urlDTO1.setId(null);
+        assertThat(urlDTO1).isNotEqualTo(urlDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(urlMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(urlMapper.fromId(null)).isNull();
     }
 }

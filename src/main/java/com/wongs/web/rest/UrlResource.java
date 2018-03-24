@@ -1,11 +1,11 @@
 package com.wongs.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
-import com.wongs.domain.Url;
 import com.wongs.service.UrlService;
 import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
+import com.wongs.service.dto.UrlDTO;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,18 +45,18 @@ public class UrlResource {
     /**
      * POST  /urls : Create a new url.
      *
-     * @param url the url to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new url, or with status 400 (Bad Request) if the url has already an ID
+     * @param urlDTO the urlDTO to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new urlDTO, or with status 400 (Bad Request) if the url has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/urls")
     @Timed
-    public ResponseEntity<Url> createUrl(@RequestBody Url url) throws URISyntaxException {
-        log.debug("REST request to save Url : {}", url);
-        if (url.getId() != null) {
+    public ResponseEntity<UrlDTO> createUrl(@RequestBody UrlDTO urlDTO) throws URISyntaxException {
+        log.debug("REST request to save Url : {}", urlDTO);
+        if (urlDTO.getId() != null) {
             throw new BadRequestAlertException("A new url cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Url result = urlService.save(url);
+        UrlDTO result = urlService.save(urlDTO);
         return ResponseEntity.created(new URI("/api/urls/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -65,22 +65,22 @@ public class UrlResource {
     /**
      * PUT  /urls : Updates an existing url.
      *
-     * @param url the url to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated url,
-     * or with status 400 (Bad Request) if the url is not valid,
-     * or with status 500 (Internal Server Error) if the url couldn't be updated
+     * @param urlDTO the urlDTO to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated urlDTO,
+     * or with status 400 (Bad Request) if the urlDTO is not valid,
+     * or with status 500 (Internal Server Error) if the urlDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/urls")
     @Timed
-    public ResponseEntity<Url> updateUrl(@RequestBody Url url) throws URISyntaxException {
-        log.debug("REST request to update Url : {}", url);
-        if (url.getId() == null) {
-            return createUrl(url);
+    public ResponseEntity<UrlDTO> updateUrl(@RequestBody UrlDTO urlDTO) throws URISyntaxException {
+        log.debug("REST request to update Url : {}", urlDTO);
+        if (urlDTO.getId() == null) {
+            return createUrl(urlDTO);
         }
-        Url result = urlService.save(url);
+        UrlDTO result = urlService.save(urlDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, url.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, urlDTO.getId().toString()))
             .body(result);
     }
 
@@ -92,9 +92,9 @@ public class UrlResource {
      */
     @GetMapping("/urls")
     @Timed
-    public ResponseEntity<List<Url>> getAllUrls(Pageable pageable) {
+    public ResponseEntity<List<UrlDTO>> getAllUrls(Pageable pageable) {
         log.debug("REST request to get a page of Urls");
-        Page<Url> page = urlService.findAll(pageable);
+        Page<UrlDTO> page = urlService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/urls");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
@@ -102,21 +102,21 @@ public class UrlResource {
     /**
      * GET  /urls/:id : get the "id" url.
      *
-     * @param id the id of the url to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the url, or with status 404 (Not Found)
+     * @param id the id of the urlDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the urlDTO, or with status 404 (Not Found)
      */
     @GetMapping("/urls/{id}")
     @Timed
-    public ResponseEntity<Url> getUrl(@PathVariable Long id) {
+    public ResponseEntity<UrlDTO> getUrl(@PathVariable Long id) {
         log.debug("REST request to get Url : {}", id);
-        Url url = urlService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(url));
+        UrlDTO urlDTO = urlService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(urlDTO));
     }
 
     /**
      * DELETE  /urls/:id : delete the "id" url.
      *
-     * @param id the id of the url to delete
+     * @param id the id of the urlDTO to delete
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/urls/{id}")
@@ -137,9 +137,9 @@ public class UrlResource {
      */
     @GetMapping("/_search/urls")
     @Timed
-    public ResponseEntity<List<Url>> searchUrls(@RequestParam String query, Pageable pageable) {
+    public ResponseEntity<List<UrlDTO>> searchUrls(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Urls for query {}", query);
-        Page<Url> page = urlService.search(query, pageable);
+        Page<UrlDTO> page = urlService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/urls");
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }

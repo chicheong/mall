@@ -4,12 +4,11 @@
     "fields": [
         {
             "fieldName": "entityType",
-            "fieldType": "EntityType",
-            "fieldValues": "PRODUCT,PRODUCTITEM"
+            "fieldType": "String"
         },
         {
             "fieldName": "entityId",
-            "fieldType": "Integer"
+            "fieldType": "Long"
         },
         {
             "fieldName": "path",

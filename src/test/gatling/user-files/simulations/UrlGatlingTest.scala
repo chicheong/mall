@@ -68,7 +68,7 @@ class UrlGatlingTest extends Simulation {
             .exec(http("Create new url")
             .post("/api/urls")
             .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null, "entityType":null, "entityId":"0", "path":"SAMPLE_TEXT", "description":"SAMPLE_TEXT", "createdBy":"SAMPLE_TEXT", "createdDate":"2020-01-01T00:00:00.000Z", "lastModifiedBy":"SAMPLE_TEXT", "lastModifiedDate":"2020-01-01T00:00:00.000Z"}""")).asJSON
+            .body(StringBody("""{"id":null, "entityType":"SAMPLE_TEXT", "entityId":null, "path":"SAMPLE_TEXT", "description":"SAMPLE_TEXT", "createdBy":"SAMPLE_TEXT", "createdDate":"2020-01-01T00:00:00.000Z", "lastModifiedBy":"SAMPLE_TEXT", "lastModifiedDate":"2020-01-01T00:00:00.000Z"}""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_url_url"))).exitHereIfFailed
             .pause(10)

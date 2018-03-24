@@ -14,10 +14,8 @@
         </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.url.entityType" for="field_entityType">Entity Type</label>
-            <select class="form-control" name="entityType" [(ngModel)]="url.entityType" id="field_entityType" >
-                <option value="PRODUCT">{{'mallApp.EntityType.PRODUCT' | translate}}</option>
-                <option value="PRODUCTITEM">{{'mallApp.EntityType.PRODUCTITEM' | translate}}</option>
-            </select>
+            <input type="text" class="form-control" name="entityType" id="field_entityType"
+                [(ngModel)]="url.entityType" />
         </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.url.entityId" for="field_entityId">Entity Id</label>

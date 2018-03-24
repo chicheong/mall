@@ -44,7 +44,7 @@
             <tbody>
             <tr *ngFor="let url of urls ;trackBy: trackId">
                 <td><a [routerLink]="['../url', url.id ]">{{url.id}}</a></td>
-                <td jhiTranslate="{{'mallApp.EntityType.' + url.entityType}}">{{url.entityType}}</td>
+                <td>{{url.entityType}}</td>
                 <td>{{url.entityId}}</td>
                 <td>{{url.path}}</td>
                 <td>{{url.description}}</td>

@@ -14,6 +14,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.wongs.domain.Url;
 import com.wongs.repository.UrlRepository;
 import com.wongs.repository.search.UrlSearchRepository;
+import com.wongs.service.dto.UrlDTO;
+import com.wongs.service.mapper.UrlMapper;
 
 /**
  * Service Implementation for managing Url.
@@ -26,23 +28,28 @@ public class UrlService {
 
     private final UrlRepository urlRepository;
 
+    private final UrlMapper urlMapper;
+
     private final UrlSearchRepository urlSearchRepository;
 
-    public UrlService(UrlRepository urlRepository, UrlSearchRepository urlSearchRepository) {
+    public UrlService(UrlRepository urlRepository, UrlMapper urlMapper, UrlSearchRepository urlSearchRepository) {
         this.urlRepository = urlRepository;
+        this.urlMapper = urlMapper;
         this.urlSearchRepository = urlSearchRepository;
     }
 
     /**
      * Save a url.
      *
-     * @param url the entity to save
+     * @param urlDTO the entity to save
      * @return the persisted entity
      */
-    public Url save(Url url) {
-        log.debug("Request to save Url : {}", url);
-        Url result = urlRepository.save(url);
-        urlSearchRepository.save(result);
+    public UrlDTO save(UrlDTO urlDTO) {
+        log.debug("Request to save Url : {}", urlDTO);
+        Url url = urlMapper.toEntity(urlDTO);
+        url = urlRepository.save(url);
+        UrlDTO result = urlMapper.toDto(url);
+        urlSearchRepository.save(url);
         return result;
     }
 
@@ -53,11 +60,12 @@ public class UrlService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Url> findAll(Pageable pageable) {
+    public Page<UrlDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Urls");
-        return urlRepository.findAll(pageable);
+        return urlRepository.findAll(pageable)
+            .map(urlMapper::toDto);
     }
-    
+
     /**
      * Get all url by entityType and entityId.
      *
@@ -70,7 +78,7 @@ public class UrlService {
         log.debug("Request to get Url by entityType : {}, and entityId : {}", entityType, entityId);
         return urlRepository.findByEntityTypeAndEntityId(entityType, entityId);
     }
-
+    
     /**
      * Get one url by id.
      *
@@ -78,9 +86,10 @@ public class UrlService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public Url findOne(Long id) {
+    public UrlDTO findOne(Long id) {
         log.debug("Request to get Url : {}", id);
-        return urlRepository.findOne(id);
+        Url url = urlRepository.findOne(id);
+        return urlMapper.toDto(url);
     }
 
     /**
@@ -102,9 +111,9 @@ public class UrlService {
      * @return the list of entities
      */
     @Transactional(readOnly = true)
-    public Page<Url> search(String query, Pageable pageable) {
+    public Page<UrlDTO> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Urls for query {}", query);
         Page<Url> result = urlSearchRepository.search(queryStringQuery(query), pageable);
-        return result;
+        return result.map(urlMapper::toDto);
     }
 }

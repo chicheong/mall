@@ -33,7 +33,8 @@ describe('Url e2e test', () => {
 
     it('should create and save Urls', () => {
         urlComponentsPage.clickOnCreateButton();
-        urlDialogPage.entityTypeSelectLastOption();
+        urlDialogPage.setEntityTypeInput('entityType');
+        expect(urlDialogPage.getEntityTypeInput()).toMatch('entityType');
         urlDialogPage.setEntityIdInput('5');
         expect(urlDialogPage.getEntityIdInput()).toMatch('5');
         urlDialogPage.setPathInput('path');
@@ -74,7 +75,7 @@ export class UrlDialogPage {
     modalTitle = element(by.css('h4#myUrlLabel'));
     saveButton = element(by.css('.modal-footer .btn.btn-primary'));
     closeButton = element(by.css('button.close'));
-    entityTypeSelect = element(by.css('select#field_entityType'));
+    entityTypeInput = element(by.css('input#field_entityType'));
     entityIdInput = element(by.css('input#field_entityId'));
     pathInput = element(by.css('input#field_path'));
     descriptionInput = element(by.css('input#field_description'));
@@ -87,17 +88,14 @@ export class UrlDialogPage {
         return this.modalTitle.getAttribute('jhiTranslate');
     }
 
-    setEntityTypeSelect = function(entityType) {
-        this.entityTypeSelect.sendKeys(entityType);
+    setEntityTypeInput = function(entityType) {
+        this.entityTypeInput.sendKeys(entityType);
     };
 
-    getEntityTypeSelect = function() {
-        return this.entityTypeSelect.element(by.css('option:checked')).getText();
+    getEntityTypeInput = function() {
+        return this.entityTypeInput.getAttribute('value');
     };
 
-    entityTypeSelectLastOption = function() {
-        this.entityTypeSelect.all(by.tagName('option')).last().click();
-    };
     setEntityIdInput = function(entityId) {
         this.entityIdInput.sendKeys(entityId);
     };
