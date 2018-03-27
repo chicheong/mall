@@ -11,6 +11,7 @@ export class Url implements BaseEntity {
         public createdDate?: any,
         public lastModifiedBy?: string,
         public lastModifiedDate?: any,
+        public file?: File,
     ) {
     }
 }

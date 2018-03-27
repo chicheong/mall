@@ -1,9 +1,12 @@
 package com.wongs.service.dto;
 
 
-import java.time.ZonedDateTime;
+import java.io.File;
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.Objects;
+
+import com.wongs.domain.Url;
 
 /**
  * A DTO for the Url entity.
@@ -27,7 +30,25 @@ public class UrlDTO implements Serializable {
     private String lastModifiedBy;
 
     private ZonedDateTime lastModifiedDate;
+    
+    private File file;
 
+    public UrlDTO() {
+        // Empty constructor needed for Jackson.
+    }
+    
+    public UrlDTO(Url url) {
+        this.id = url.getId();
+    	this.entityType = url.getEntityType();
+    	this.entityId = url.getEntityId();
+    	this.path = url.getPath();
+    	this.description = url.getDescription();
+    	this.createdBy = url.getCreatedBy();
+    	this.createdDate = url.getCreatedDate();
+    	this.lastModifiedBy = url.getLastModifiedBy();
+    	this.lastModifiedDate = url.getLastModifiedDate();
+    }
+    
     public Long getId() {
         return id;
     }
@@ -100,7 +121,15 @@ public class UrlDTO implements Serializable {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    @Override
+    public File getFile() {
+		return file;
+	}
+
+	public void setFile(File file) {
+		this.file = file;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

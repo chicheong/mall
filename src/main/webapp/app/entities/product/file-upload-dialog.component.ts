@@ -20,15 +20,15 @@ import { UuidService } from '../../shared';
     ]
 })
 export class FileUploadDialogComponent implements OnInit {
-    errors: Array<string> =[];
+    errors: Array<string> = [];
     dragAreaClass: string = 'dragarea';
     @Input() projectId: number;
     @Input() sectionId: number;
-    @Input() fileExt: string = "JPG, GIF, PNG";
+    @Input() fileExt: string = 'JPG, GIF, PNG';
     @Input() maxFiles: number = 5;
     @Input() maxSize: number = 5; // 5MB
     @Output() uploadStatus = new EventEmitter();
-        
+
     product: Product;
     fileToUpload: FileList;
 

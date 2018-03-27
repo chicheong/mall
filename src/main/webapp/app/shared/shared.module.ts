@@ -14,7 +14,8 @@ import {
     JhiLoginModalComponent,
     Principal,
     HasAnyAuthorityDirective,
-    UuidService
+    UuidService,
+    FileUploadComponent
 } from './';
 
 @NgModule({
@@ -24,7 +25,8 @@ import {
     ],
     declarations: [
         JhiLoginModalComponent,
-        HasAnyAuthorityDirective
+        HasAnyAuthorityDirective,
+        FileUploadComponent
     ],
     providers: [
         LoginService,
@@ -43,7 +45,8 @@ import {
         MallSharedCommonModule,
         JhiLoginModalComponent,
         HasAnyAuthorityDirective,
-        DatePipe
+        DatePipe,
+        FileUploadComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 
