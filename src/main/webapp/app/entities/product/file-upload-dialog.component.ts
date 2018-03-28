@@ -27,7 +27,7 @@ export class FileUploadDialogComponent implements OnInit {
     @Input() fileExt = 'JPG, GIF, PNG';
     @Input() maxFiles = 5;
     @Input() maxSize = 5; // 5MB
-    @Output() uploadStatus = new EventEmitter();
+    // @Output() uploadStatus = new EventEmitter();
 
     product: Product;
     fileToUpload: FileList;
@@ -41,48 +41,19 @@ export class FileUploadDialogComponent implements OnInit {
     }
 
     ngOnInit() {
-//        if (this.productItem.dirtyPrices) {
-//            // edited before
-//            this.prices = [];
-//            this.productItem.prices.forEach((price) => {
-//                const nPrice: Price = Object.assign(new Price(), price);
-//                this.prices.push(nPrice);
-//            });
-//        } else {
-//            if (this.productItem.id) {
-//                // load prices from server
-//                console.error('this.productItem.id: ' + this.productItem.id);
-//                this.loadItem(this.productItem.id);
-//            } else {
-//                // default a price
-//                this.initPrice();
-//            }
-//        }
-    }
-
-    handleFileInput(files: FileList) {
-        this.fileToUpload = files;
-        console.error('FileList.size: ' + files.length);
     }
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
-    save() {
-        this.eventManager.broadcast({ name: 'priceListModification', content: 'OK'});
+    ok() {
         this.activeModal.dismiss('OK');
     }
 
-    confirm() {
-//        this.productItem.prices = this.prices;
-//        this.eventManager.broadcast({ name: 'pricesModification', content: 'OK', obj: this.productItem, type: ProductItemsDialogType.SINGLE});
-        this.activeModal.dismiss('OK');
-    }
-    
     onFileChange(event) {
         const files = event.target.files;
-        this.saveFiles(files);
+        this.returnFiles(files);
     }
 
     @HostListener('dragover', ['$event']) onDragOver(event) {
@@ -110,14 +81,14 @@ export class FileUploadDialogComponent implements OnInit {
         event.preventDefault();
         event.stopPropagation();
         const files = event.dataTransfer.files;
-        this.saveFiles(files);
+        this.returnFiles(files);
     }
 
-    saveFiles(files) {
+    returnFiles(files) {
         this.errors = []; // Clear error
         // Validate file size and allowed extensions
         if (files.length > 0 && (!this.isValidFiles(files))) {
-            this.uploadStatus.emit(false);
+            // this.uploadStatus.emit(false);
             return;
         }
 
@@ -140,6 +111,10 @@ export class FileUploadDialogComponent implements OnInit {
 //                    this.uploadStatus.emit(true);
 //                    this.errors.push(error.ExceptionMessage);
 //                })
+
+//          this.productItem.prices = this.prices;
+            this.eventManager.broadcast({ name: 'filesModification', content: 'OK', obj: files});
+            this.activeModal.dismiss('OK');
         }
     }
 

@@ -1,4 +1,4 @@
-<form name="editForm" role="form" novalidate (ngSubmit)="confirm()" #editForm="ngForm">
+<form name="editForm" role="form" novalidate (ngSubmit)="ok()" #editForm="ngForm">
 
     <div class="modal-header">
         <h4 class="modal-title" id="myPriceLabel" jhiTranslate="mallApp.price.home.advancePrice">Advance Price</h4>
@@ -23,7 +23,7 @@
 		    </div>
 		  </div>
 		</div>
-		<div class="row error" *ngIf="errors.length > 0">    
+		<div class="row" *ngIf="errors.length > 0">    
 		  <ul>
 		    <li *ngFor="let err of errors">{{err}}</li>
 		  </ul>
@@ -35,7 +35,7 @@
     </div>
     <div class="modal-footer">
         <button type="submit" [disabled]="editForm.form.invalid" class="btn btn-primary">
-            <span class="fa fa-check-square"></span>&nbsp;<span jhiTranslate="entity.action.confirm">Confirm</span>
+            <span class="fa fa-check-square"></span>&nbsp;<span jhiTranslate="entity.action.ok">OK</span>
         </button>
     </div>
 </form>

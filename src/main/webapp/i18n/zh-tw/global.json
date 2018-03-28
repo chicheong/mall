@@ -123,7 +123,8 @@
             "save": "儲存",
             "view": "檢視",
 			"confirm": "確定",
-			"upload": "上載"
+			"upload": "上載",
+			"ok": "OK"
         },
         "detail": {
             "field": "欄位",

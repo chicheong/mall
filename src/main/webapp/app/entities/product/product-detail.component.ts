@@ -93,6 +93,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.registerChangeInProductStyle();
         this.registerChangeInProductItems();
         this.registerAuthenticationSuccess();
+        this.registerChangeInFiles();
     }
 
     initObjects() {
@@ -188,6 +189,13 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                     this.deleteStyle(response.obj);
                 }
             }
+        );
+    }
+
+    registerChangeInFiles() {
+        this.eventSubscriber = this.eventManager.subscribe(
+            'filesModification',
+            (response) => this.updateFiles(response.obj)
         );
     }
 
@@ -315,6 +323,27 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
             });
         }
         this.product.items = this.product.items.filter((item) => productItems.indexOf(item) === -1);
+    }
+
+    updateFiles(files: FileList) {
+        console.error('upload files success!!!!!');
+        for (let j = 0; j < files.length; j++) {
+            console.error(files[j] + ' '+ files[j].name);
+        }
+//        let index: number;
+//        this.product.items.forEach((oProductItem) => {
+//            product.items.forEach((nProductItem) => {
+//                if (oProductItem.id && oProductItem.id === nProductItem.id) {
+//                    index = this.product.items.indexOf(oProductItem);
+//                    this.product.items[index] = nProductItem;
+//                    return;
+//                } else if (oProductItem.tempId && oProductItem.tempId === nProductItem.tempId) {
+//                    index = this.product.items.indexOf(oProductItem);
+//                    this.product.items[index] = nProductItem;
+//                    return;
+//                }
+//            });
+//        });
     }
 
     save() {
