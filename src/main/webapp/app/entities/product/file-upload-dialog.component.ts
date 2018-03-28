@@ -53,6 +53,15 @@ export class FileUploadDialogComponent implements OnInit {
 
     onFileChange(event) {
         const files = event.target.files;
+        console.error('event: ' + event);
+        console.error('event.target: ' + event.target);
+        
+        let evilResponseProps = Object.keys(event.target);
+        // Step 2. Create an empty array.
+        // Step 3. Iterate throw all keys.
+        evilResponseProps.forEach((prop) => 
+            console.error(event.target[prop]));
+        
         this.returnFiles(files);
     }
 

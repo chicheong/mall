@@ -328,7 +328,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     updateFiles(files: FileList) {
         console.error('upload files success!!!!!');
         for (let j = 0; j < files.length; j++) {
-            console.error(files[j] + ' '+ files[j].name);
+            console.error(files[j] + ' ' + files[j].name);
         }
 //        let index: number;
 //        this.product.items.forEach((oProductItem) => {
