@@ -42,6 +42,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     selectedColor: ProductStyle = {};
     selectedSize: ProductStyle = {};
     selectedItem: ProductItem = {};
+    files: FileList;
+    urls: any;
 
     modalRef: NgbModalRef;
 
@@ -325,11 +327,16 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.product.items = this.product.items.filter((item) => productItems.indexOf(item) === -1);
     }
 
-    updateFiles(files: FileList) {
+    updateFiles(fileLocations) {
         console.error('upload files success!!!!!');
-        for (let j = 0; j < files.length; j++) {
-            console.error(files[j] + ' ' + files[j].name);
-        }
+
+        this.urls = fileLocations;
+
+//        const files = event.target.files;
+//        for (let j = 0; j < files.length; j++) {
+//            console.error(files[j] + ' ' + files[j].name);
+//        }
+//        this.files = files;
 //        let index: number;
 //        this.product.items.forEach((oProductItem) => {
 //            product.items.forEach((nProductItem) => {

@@ -6,11 +6,8 @@ import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
-import { ProductItemsDialogType } from './product-items-dialog.component';
-
 import { Product } from './product.model';
-
-import { UuidService } from '../../shared';
+import { Url } from './../url';
 
 @Component({
     selector: 'jhi-file-upload-dialog',
@@ -22,21 +19,17 @@ import { UuidService } from '../../shared';
 export class FileUploadDialogComponent implements OnInit {
     errors: Array<string> = [];
     dragAreaClass = 'dragarea';
-    @Input() entityType: string;
-    @Input() entityId: number;
     @Input() fileExt = 'JPG, GIF, PNG';
     @Input() maxFiles = 5;
     @Input() maxSize = 5; // 5MB
     // @Output() uploadStatus = new EventEmitter();
 
     product: Product;
-    fileToUpload: FileList;
 
     constructor(
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
-        private eventManager: JhiEventManager,
-        private uuidService: UuidService
+        private eventManager: JhiEventManager
     ) {
     }
 
@@ -49,20 +42,6 @@ export class FileUploadDialogComponent implements OnInit {
 
     ok() {
         this.activeModal.dismiss('OK');
-    }
-
-    onFileChange(event) {
-        const files = event.target.files;
-        console.error('event: ' + event);
-        console.error('event.target: ' + event.target);
-        
-        let evilResponseProps = Object.keys(event.target);
-        // Step 2. Create an empty array.
-        // Step 3. Iterate throw all keys.
-        evilResponseProps.forEach((prop) => 
-            console.error(event.target[prop]));
-        
-        this.returnFiles(files);
     }
 
     @HostListener('dragover', ['$event']) onDragOver(event) {
@@ -89,46 +68,52 @@ export class FileUploadDialogComponent implements OnInit {
         this.dragAreaClass = 'dragarea';
         event.preventDefault();
         event.stopPropagation();
-        const files = event.dataTransfer.files;
-        this.returnFiles(files);
+        if (this.isValidFiles(event.dataTransfer.files)) {
+            const urls = [];
+            for (let i = 0; i < event.dataTransfer.files.length; i++) {
+                var reader = new FileReader();
+                reader.readAsDataURL(event.dataTransfer.files[i]);
+                reader.onload = (event) => { // called once readAsDataURL is completed
+//                    const url = new Url();
+//                    url.entityType = Product.name;
+//                    url.entityId = this.product.id;
+//                    url.file = event.dataTransfer.files[i];
+//                    url.path = (<FileReader>event.dataTransfer).result;
+//                    urls.push(url);
+                }
+            }
+            this.eventManager.broadcast({ name: 'filesModification', content: 'OK', obj: urls});
+            this.activeModal.dismiss('OK');
+        } else {
+        }
     }
 
-    returnFiles(files) {
-        this.errors = []; // Clear error
-        // Validate file size and allowed extensions
-        if (files.length > 0 && (!this.isValidFiles(files))) {
-            // this.uploadStatus.emit(false);
-            return;
-        }
-
-        if (files.length > 0) {
-            const formData: FormData = new FormData();
-            for (let j = 0; j < files.length; j++) {
-                formData.append('file[]', files[j], files[j].name);
+    onFileChange(event) {
+        if (this.isValidFiles(event.target.files)) {
+            const urls = [];
+            for (let i = 0; i < event.target.files.length; i++) {
+                var reader = new FileReader();
+                reader.readAsDataURL(event.target.files[i]);
+                reader.onload = (event: any) => { // called once readAsDataURL is completed
+                    const url = new Url();
+                    url.entityType = Product.name;
+                    url.entityId = this.product.id;
+                    url.file = event.target.files[i];
+                    url.path = (<FileReader>event.target).result;
+                    urls.push(url);
+                }
             }
-            const parameters = {
-                entityType: this.entityType,
-                entityId: this.entityId
-            };
-//            this.fileService.upload(formData, parameters)
-//                .subscribe(
-//                success => {
-//                  this.uploadStatus.emit(true);
-//                  console.log(success)
-//                },
-//                error => {
-//                    this.uploadStatus.emit(true);
-//                    this.errors.push(error.ExceptionMessage);
-//                })
-
-//          this.productItem.prices = this.prices;
-            this.eventManager.broadcast({ name: 'filesModification', content: 'OK', obj: files});
+            this.eventManager.broadcast({ name: 'filesModification', content: 'OK', obj: urls});
             this.activeModal.dismiss('OK');
+        } else {
         }
     }
 
     private isValidFiles(files) {
         // Check Number of files
+        if (files.length <= 0) {
+            this.errors.push('Error: Please upload at least one file');
+        }
         if (files.length > this.maxFiles) {
             this.errors.push('Error: At a time you can upload only ' + this.maxFiles + ' files');
             return;
