@@ -4,7 +4,7 @@ import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
 import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
+import { JhiEventManager, JhiAlertService, JhiAlert } from 'ng-jhipster';
 
 import { Product } from './product.model';
 import { Url } from './../url';
@@ -17,7 +17,7 @@ import { Url } from './../url';
     ]
 })
 export class FileUploadDialogComponent implements OnInit {
-    errors: Array<string> = [];
+    errors: Array<JhiAlert> = [];
     dragAreaClass = 'dragarea';
     @Input() fileExt = 'JPG, GIF, PNG';
     @Input() maxFiles = 5;
@@ -71,20 +71,24 @@ export class FileUploadDialogComponent implements OnInit {
         if (this.isValidFiles(event.dataTransfer.files)) {
             const urls = [];
             for (let i = 0; i < event.dataTransfer.files.length; i++) {
-                var reader = new FileReader();
-                reader.readAsDataURL(event.dataTransfer.files[i]);
+                const reader = new FileReader();
+                const file = event.dataTransfer.files[i];
+                reader.readAsDataURL(file);
                 reader.onload = (event) => { // called once readAsDataURL is completed
-//                    const url = new Url();
-//                    url.entityType = Product.name;
-//                    url.entityId = this.product.id;
-//                    url.file = event.dataTransfer.files[i];
-//                    url.path = (<FileReader>event.dataTransfer).result;
-//                    urls.push(url);
-                }
+                    const url = new Url();
+                    url.entityType = Product.name;
+                    url.entityId = this.product.id;
+                    url.file = file;
+                    url.path = (<FileReader>event.target).result;
+                    urls.push(url);
+                };
             }
             this.eventManager.broadcast({ name: 'filesModification', content: 'OK', obj: urls});
             this.activeModal.dismiss('OK');
         } else {
+            this.errors.forEach((error) => {
+                this.jhiAlertService.error(error.msg, error.params, null);
+            });
         }
     }
 
@@ -92,31 +96,47 @@ export class FileUploadDialogComponent implements OnInit {
         if (this.isValidFiles(event.target.files)) {
             const urls = [];
             for (let i = 0; i < event.target.files.length; i++) {
-                var reader = new FileReader();
-                reader.readAsDataURL(event.target.files[i]);
-                reader.onload = (event: any) => { // called once readAsDataURL is completed
+                const reader = new FileReader();
+                const file = event.target.files[i];
+                reader.readAsDataURL(file);
+                reader.onload = (event) => { // called once readAsDataURL is completed
                     const url = new Url();
                     url.entityType = Product.name;
                     url.entityId = this.product.id;
-                    url.file = event.target.files[i];
+                    url.file = file;
                     url.path = (<FileReader>event.target).result;
                     urls.push(url);
-                }
+                };
             }
             this.eventManager.broadcast({ name: 'filesModification', content: 'OK', obj: urls});
             this.activeModal.dismiss('OK');
         } else {
+            this.errors.forEach((error) => {
+                this.jhiAlertService.error(error.msg, error.params, null);
+            });
         }
     }
 
     private isValidFiles(files) {
+        this.errors = [];
         // Check Number of files
         if (files.length <= 0) {
-            this.errors.push('Error: Please upload at least one file');
+            this.errors.push(
+                {
+                    type: 'danger',
+                    msg: 'mallApp.fileUpload.error.oneFile',
+                    params: {}
+                }
+            );
         }
         if (files.length > this.maxFiles) {
-            this.errors.push('Error: At a time you can upload only ' + this.maxFiles + ' files');
-            return;
+            this.errors.push(
+                {
+                    type: 'danger',
+                    msg: 'mallApp.fileUpload.error.maxFile',
+                    params: { maxFile: this.maxFiles }
+                }
+            );
         }
         this.isValidFileExtension(files);
         return this.errors.length === 0;
@@ -133,7 +153,13 @@ export class FileUploadDialogComponent implements OnInit {
             // Check the extension exists
             const exists = extensions.includes(ext);
             if (!exists) {
-                this.errors.push('Error (Extension): ' + files[i].name);
+                this.errors.push(
+                    {
+                        type: 'danger',
+                        msg: 'mallApp.fileUpload.error.invalidFile',
+                        params: { name: files[i].name }
+                    }
+                );
             }
             // Check file size
             this.isValidFileSize(files[i]);
@@ -144,7 +170,17 @@ export class FileUploadDialogComponent implements OnInit {
         const fileSizeinMB = file.size / (1024 * 1000);
         const size = Math.round(fileSizeinMB * 100) / 100; // convert upto 2 decimal place
         if (size > this.maxSize) {
-            this.errors.push('Error (File Size): ' + file.name + ': exceed file size limit of ' + this.maxSize + 'MB ( ' + size + 'MB )');
+            this.errors.push(
+                {
+                    type: 'danger',
+                    msg: 'mallApp.fileUpload.error.sizeLimit',
+                    params: {
+                        name: file.name,
+                        maxSize: this.maxFiles,
+                        size
+                    }
+                }
+            );
         }
     }
 }

@@ -1,11 +1,11 @@
 <form name="editForm" role="form" novalidate (ngSubmit)="ok()" #editForm="ngForm">
 
     <div class="modal-header">
-        <h4 class="modal-title" id="myPriceLabel" jhiTranslate="mallApp.price.home.advancePrice">Advance Price</h4>
+        <h4 class="modal-title" id="fileUploadLabel" jhiTranslate="mallApp.fileUpload.title">File Upload</h4>
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true" (click)="clear()">&times;</button>    	
     </div>
     <div class="modal-body">
-        <jhi-alert-error></jhi-alert-error>
+        <jhi-alert></jhi-alert>
 		
 		<div draggable="true" ngClass="{{dragAreaClass}}">
 			<div class="row">
@@ -22,14 +22,8 @@
 				</div>
 			</div>
 		</div>
-		<div class="row" *ngIf="errors.length > 0">    
-			<ul>
-				<li *ngFor="let err of errors">{{err}}</li>
-			</ul>
-		</div>		
 		
 		<br /><br />
-        <div>{{editForm.value | json}}</div>
     </div>
     <div class="modal-footer">
         <button type="submit" [disabled]="editForm.form.invalid" class="btn btn-primary">

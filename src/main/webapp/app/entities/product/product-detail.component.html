@@ -43,7 +43,7 @@
 	  	</span>
 	  	<span *ngIf="urls">
 			<img *ngFor="let url of urls"
-				[src]="url"
+				[src]="url.path"
           		class="img-thumbnail"
           		alt="">
 	  	</span>

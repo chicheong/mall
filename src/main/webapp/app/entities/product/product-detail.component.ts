@@ -21,6 +21,7 @@ import { FileUploadPopupService } from './file-upload-popup.service';
 import { FileUploadDialogComponent } from './file-upload-dialog.component';
 
 import { MyOrderService, MyOrder } from './../my-order';
+import { Url } from './../url';
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
@@ -43,7 +44,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     selectedSize: ProductStyle = {};
     selectedItem: ProductItem = {};
     files: FileList;
-    urls: any;
+    urls: Url[];
 
     modalRef: NgbModalRef;
 
@@ -327,30 +328,16 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.product.items = this.product.items.filter((item) => productItems.indexOf(item) === -1);
     }
 
-    updateFiles(fileLocations) {
-        console.error('upload files success!!!!!');
-
-        this.urls = fileLocations;
-
-//        const files = event.target.files;
-//        for (let j = 0; j < files.length; j++) {
-//            console.error(files[j] + ' ' + files[j].name);
-//        }
-//        this.files = files;
-//        let index: number;
-//        this.product.items.forEach((oProductItem) => {
-//            product.items.forEach((nProductItem) => {
-//                if (oProductItem.id && oProductItem.id === nProductItem.id) {
-//                    index = this.product.items.indexOf(oProductItem);
-//                    this.product.items[index] = nProductItem;
-//                    return;
-//                } else if (oProductItem.tempId && oProductItem.tempId === nProductItem.tempId) {
-//                    index = this.product.items.indexOf(oProductItem);
-//                    this.product.items[index] = nProductItem;
-//                    return;
-//                }
-//            });
-//        });
+    updateFiles(urls: Array<Url>) {
+        urls.forEach((url) => {
+            console.error('url: ' + url.path);
+            this.product.urls.push(url);
+        });
+        for (let i = 0; i < urls.length; i++) {
+            console.error('url: ' + urls[i].path);
+            this.product.urls.push(urls[i]);
+        }
+        this.urls = urls;
     }
 
     save() {
@@ -367,6 +354,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     }
 
     private subscribeToSaveResponse(result: Observable<HttpResponse<Product>>) {
+        console.error('step0');
         result.subscribe((res: HttpResponse<Product>) =>
             this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }

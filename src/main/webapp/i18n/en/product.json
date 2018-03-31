@@ -32,6 +32,15 @@
             "item": "Item",
             "shop": "Shop",
             "category": "Category"
+        },
+        "fileUpload" : {
+        	"title" : "File Upload",
+            "error": {
+                "oneFile": "Please upload at least one file",
+                "maxFile": "At a time you can upload only {{ maxFiles }} files",
+                "invalidFile": "Invalid file: {{ name }}",
+                "sizeLimit": "{{ name }} exceed file size limit of {{maxSize}} MB ( {{size}} MB )"
+            }
         }
     }
 }
