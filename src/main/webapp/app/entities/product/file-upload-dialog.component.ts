@@ -68,23 +68,28 @@ export class FileUploadDialogComponent implements OnInit {
         this.dragAreaClass = 'dragarea';
         event.preventDefault();
         event.stopPropagation();
-        if (this.isValidFiles(event.dataTransfer.files)) {
+        const files = event.dataTransfer.files;
+        if (this.isValidFiles(files)) {
             const urls = [];
-            for (let i = 0; i < event.dataTransfer.files.length; i++) {
+            let counter = 0;
+            for (let i = 0; i < files.length; i++) {
                 const reader = new FileReader();
-                const file = event.dataTransfer.files[i];
+                const file = files[i];
                 reader.readAsDataURL(file);
-                reader.onload = (event) => { // called once readAsDataURL is completed
+                reader.onload = (thisEvent) => { // called once readAsDataURL is completed
                     const url = new Url();
                     url.entityType = Product.name;
                     url.entityId = this.product.id;
-                    url.file = file;
-                    url.path = (<FileReader>event.target).result;
+//                    url.file = file;
+                    url.path = (<FileReader>thisEvent.target).result;
                     urls.push(url);
+                    counter++;
+                    if (counter === files.length) {
+                        this.eventManager.broadcast({ name: 'filesModification', content: 'OK', obj: urls});
+                        this.activeModal.dismiss('OK');
+                    }
                 };
             }
-            this.eventManager.broadcast({ name: 'filesModification', content: 'OK', obj: urls});
-            this.activeModal.dismiss('OK');
         } else {
             this.errors.forEach((error) => {
                 this.jhiAlertService.error(error.msg, error.params, null);
@@ -93,23 +98,28 @@ export class FileUploadDialogComponent implements OnInit {
     }
 
     onFileChange(event) {
-        if (this.isValidFiles(event.target.files)) {
+        const files = event.target.files;
+        if (this.isValidFiles(files)) {
             const urls = [];
-            for (let i = 0; i < event.target.files.length; i++) {
+            let counter = 0;
+            for (let i = 0; i < files.length; i++) {
                 const reader = new FileReader();
-                const file = event.target.files[i];
+                const file = files[i];
                 reader.readAsDataURL(file);
-                reader.onload = (event) => { // called once readAsDataURL is completed
+                reader.onload = (thisEvent) => { // called once readAsDataURL is completed
                     const url = new Url();
                     url.entityType = Product.name;
                     url.entityId = this.product.id;
-                    url.file = file;
-                    url.path = (<FileReader>event.target).result;
+//                    url.file = file;
+                    url.path = (<FileReader>thisEvent.target).result;
                     urls.push(url);
+                    counter++;
+                    if (counter === files.length) {
+                        this.eventManager.broadcast({ name: 'filesModification', content: 'OK', obj: urls});
+                        this.activeModal.dismiss('OK');
+                    }
                 };
             }
-            this.eventManager.broadcast({ name: 'filesModification', content: 'OK', obj: urls});
-            this.activeModal.dismiss('OK');
         } else {
             this.errors.forEach((error) => {
                 this.jhiAlertService.error(error.msg, error.params, null);

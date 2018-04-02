@@ -52,7 +52,7 @@ public class ProductDTO implements Serializable {
     private Set<ProductStyleDTO> colors = new HashSet<>();
     private Set<ProductStyleDTO> sizes = new HashSet<>();	
     private Set<ProductItemDTO> items = new HashSet<>();
-    private Set<Url> urls = new HashSet<>();
+    private Set<UrlDTO> urls = new HashSet<>();
     private Set<Category> categories = new HashSet<>();
     private Long shopId;
 
@@ -202,11 +202,11 @@ public class ProductDTO implements Serializable {
 		this.items = items;
 	}
 
-	public Set<Url> getUrls() {
+	public Set<UrlDTO> getUrls() {
 		return urls;
 	}
 
-	public void setUrls(Set<Url> urls) {
+	public void setUrls(Set<UrlDTO> urls) {
 		this.urls = urls;
 	}
 	

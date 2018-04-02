@@ -43,8 +43,6 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     selectedColor: ProductStyle = {};
     selectedSize: ProductStyle = {};
     selectedItem: ProductItem = {};
-    files: FileList;
-    urls: Url[];
 
     modalRef: NgbModalRef;
 
@@ -100,6 +98,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     }
 
     initObjects() {
+        this.product.urls = [];
         const color: ProductStyle = Object.assign(new ProductStyle());
         color.tempId = this.uuidService.get();
         color.type = ProductStyleType.COLOR;
@@ -328,16 +327,10 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.product.items = this.product.items.filter((item) => productItems.indexOf(item) === -1);
     }
 
-    updateFiles(urls: Array<Url>) {
+    updateFiles(urls: Url[]) {
         urls.forEach((url) => {
-            console.error('url: ' + url.path);
             this.product.urls.push(url);
         });
-        for (let i = 0; i < urls.length; i++) {
-            console.error('url: ' + urls[i].path);
-            this.product.urls.push(urls[i]);
-        }
-        this.urls = urls;
     }
 
     save() {

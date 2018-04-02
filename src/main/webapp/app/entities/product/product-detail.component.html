@@ -41,17 +41,10 @@
           		class="img-thumbnail"
           		alt="">
 	  	</span>
-	  	<span *ngIf="urls">
-			<img *ngFor="let url of urls"
-				[src]="url.path"
-          		class="img-thumbnail"
-          		alt="">
-	  	</span>
 	  </div>
 	  <div class="col-md-3">
-	  	<span class="hipster img-fluid img-rounded" *ngIf="product.urls">
-	  		<img *ngFor="let url of product.urls"
-				[src]="url.path"
+	  	<span class="hipster img-fluid img-rounded" *ngIf="product.urls[0]">
+	  		<img [src]="product.urls[0].path"
           		class="img-fluid"
           		alt="">
 	  	</span>

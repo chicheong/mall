@@ -33,11 +33,13 @@ import com.wongs.repository.search.QuantitySearchRepository;
 import com.wongs.service.dto.ProductDTO;
 import com.wongs.service.dto.ProductItemDTO;
 import com.wongs.service.dto.ProductStyleDTO;
+import com.wongs.service.dto.UrlDTO;
 import com.wongs.service.mapper.PriceMapper;
 import com.wongs.service.mapper.ProductItemMapper;
 import com.wongs.service.mapper.ProductMapper;
 import com.wongs.service.mapper.ProductStyleMapper;
 import com.wongs.service.mapper.QuantityMapper;
+import com.wongs.service.mapper.UrlMapper;
 
 /**
  * Service Implementation for managing Product.
@@ -55,6 +57,7 @@ public class ProductService {
     private final ProductItemMapper productItemMapper;
     private final PriceMapper priceMapper;
     private final QuantityMapper quantityMapper;
+    private final UrlMapper urlMapper;
 
     private final ProductSearchRepository productSearchRepository;
     
@@ -74,7 +77,8 @@ public class ProductService {
     private final UrlService urlService;
 
     public ProductService(ProductMapper productMapper, ProductStyleMapper productStyleMapper, ProductItemMapper productItemMapper,
-    		PriceMapper priceMapper, QuantityMapper quantityMapper, ProductRepository productRepository, 
+    		PriceMapper priceMapper, QuantityMapper quantityMapper, UrlMapper urlMapper,
+    		ProductRepository productRepository, 
     		ProductSearchRepository productSearchRepository,
 			ProductItemRepository productItemRepository, ProductItemSearchRepository productItemSearchRepository, ShopService shopService, 
 			ProductStyleRepository productStyleRepository, ProductStyleSearchRepository productStyleSearchRepository, 
@@ -86,6 +90,7 @@ public class ProductService {
     	this.productItemMapper = productItemMapper;
     	this.priceMapper = priceMapper;
     	this.quantityMapper = quantityMapper;
+    	this.urlMapper = urlMapper;
     	this.productRepository = productRepository;
         this.productSearchRepository = productSearchRepository;
         this.productItemRepository = productItemRepository;
@@ -111,6 +116,7 @@ public class ProductService {
         Product oProduct = productDTO.getId() == null? new Product():productRepository.findOneWithEagerRelationships(productDTO.getId());
         //Original item and style lists for delete
         List<ProductItem> oProductItems = new ArrayList<ProductItem>();
+        List<Url> oUrls = new ArrayList<Url>();
         List<ProductStyle> oProductStyles = new ArrayList<ProductStyle>();
         oProduct.getStyles().forEach(style -> oProductStyles.add(style));
         oProduct.getItems().forEach(item -> {
@@ -119,6 +125,10 @@ public class ProductService {
         	item.getQuantities().forEach(quantity -> productItem.getQuantities().add(quantity));
         	oProductItems.add(productItem);
         });
+        if (productDTO.getId() != null) {
+        	Set<Url> urls = urlService.findByEntityTypeAndEntityId(Product.class.getSimpleName(), productDTO.getId());
+        	oUrls.addAll(urls);
+        }
         
         Product product = productMapper.toEntity(productDTO);
         if (productDTO.getShopId() != null) {
@@ -128,6 +138,7 @@ public class ProductService {
         productSearchRepository.save(product);
         List<Long> productStyleIds = new ArrayList<Long>();
         List<Long> productItemIds = new ArrayList<Long>();
+        List<Long> urlIds = new ArrayList<Long>();
         for (ProductStyleDTO productStyleDTO : productDTO.getColors()) {
         	ProductStyle productStyle = productStyleMapper.toEntity(productStyleDTO);
         	productStyle.setProduct(product);
@@ -193,8 +204,13 @@ public class ProductService {
 	        	quantities.stream().filter(quantity -> !quantityIds.contains(quantity.getId())).forEach(quantity -> quantityRepository.delete(quantity));
         	}
         }
+        for (UrlDTO urlDTO : productDTO.getUrls()) {
+        	urlDTO = urlService.save(urlDTO);
+        	urlIds.add(urlDTO.getId());
+        }
         oProductItems.stream().filter(item -> !productItemIds.contains(item.getId())).forEach(item -> productItemRepository.delete(item));
         oProductStyles.stream().filter(style -> !productStyleIds.contains(style.getId())).forEach(style -> productStyleRepository.delete(style));
+        oUrls.stream().filter(url -> !urlIds.contains(url.getId())).forEach(url -> urlService.delete(url.getId()));
         return productMapper.toDto(product);
     }
     
@@ -249,7 +265,7 @@ public class ProductService {
 	        	dto.getItems().add(productItemDTO);
 	        });
 	        Set<Url> urls = urlService.findByEntityTypeAndEntityId(Product.class.getSimpleName(), id);
-	        dto.getUrls().addAll(urls);
+	        urls.forEach(url -> dto.getUrls().add(urlMapper.toDto(url)));
 	        return dto;
         }
     }
