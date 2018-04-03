@@ -80,7 +80,7 @@ export class FileUploadDialogComponent implements OnInit {
                     const url = new Url();
                     url.entityType = Product.name;
                     url.entityId = this.product.id;
-//                    url.file = file;
+                    url.fileName = file.name;
                     url.path = (<FileReader>thisEvent.target).result;
                     urls.push(url);
                     counter++;
@@ -110,7 +110,7 @@ export class FileUploadDialogComponent implements OnInit {
                     const url = new Url();
                     url.entityType = Product.name;
                     url.entityId = this.product.id;
-//                    url.file = file;
+                    url.fileName = file.name;
                     url.path = (<FileReader>thisEvent.target).result;
                     urls.push(url);
                     counter++;

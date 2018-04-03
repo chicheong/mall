@@ -31,7 +31,7 @@ public class UrlDTO implements Serializable {
 
     private ZonedDateTime lastModifiedDate;
     
-    private File file;
+    private String fileName;
 
     public UrlDTO() {
         // Empty constructor needed for Jackson.
@@ -121,12 +121,12 @@ public class UrlDTO implements Serializable {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public File getFile() {
-		return file;
+    public String getFileName() {
+		return fileName;
 	}
 
-	public void setFile(File file) {
-		this.file = file;
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 
 	@Override
@@ -142,7 +142,11 @@ public class UrlDTO implements Serializable {
         if(urlDTO.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(getId(), urlDTO.getId());
+        return Objects.equals(getId(), urlDTO.getId()) &&
+        		Objects.equals(getEntityType(), urlDTO.getEntityType()) &&
+        		Objects.equals(getEntityId(), urlDTO.getEntityId()) &&
+        		Objects.equals(getPath(), urlDTO.getPath()) &&
+        		Objects.equals(getDescription(), urlDTO.getDescription());
     }
 
     @Override

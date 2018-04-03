@@ -129,7 +129,10 @@ public class ProductStyle implements Serializable {
         if (productStyle.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(getId(), productStyle.getId());
+        return Objects.equals(getId(), productStyle.getId()) &&
+        		Objects.equals(getName(), productStyle.getName()) &&
+        		Objects.equals(getCode(), productStyle.getCode()) &&
+        		Objects.equals(isIsDefault(), productStyle.isIsDefault());
     }
 
     @Override

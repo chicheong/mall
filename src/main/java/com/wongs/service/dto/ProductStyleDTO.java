@@ -109,7 +109,10 @@ public class ProductStyleDTO implements Serializable {
         if(productStyleDTO.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(getId(), productStyleDTO.getId());
+        return Objects.equals(getId(), productStyleDTO.getId()) &&
+        		Objects.equals(getName(), productStyleDTO.getName()) &&
+        		Objects.equals(getCode(), productStyleDTO.getCode()) &&
+        		Objects.equals(isIsDefault(), productStyleDTO.isIsDefault());
     }
 
     @Override

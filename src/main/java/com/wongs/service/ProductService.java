@@ -2,8 +2,15 @@ package com.wongs.service;
 
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Base64;
+import java.util.Base64.Decoder;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
@@ -13,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.io.Files;
 import com.wongs.domain.Price;
 import com.wongs.domain.Product;
 import com.wongs.domain.ProductItem;
@@ -114,7 +122,7 @@ public class ProductService {
     public ProductDTO save(ProductDTO productDTO) {
         log.debug("Request to save Product : {}", productDTO);
         Product oProduct = productDTO.getId() == null? new Product():productRepository.findOneWithEagerRelationships(productDTO.getId());
-        //Original item and style lists for delete
+        //get Original item and style lists for delete
         List<ProductItem> oProductItems = new ArrayList<ProductItem>();
         List<Url> oUrls = new ArrayList<Url>();
         List<ProductStyle> oProductStyles = new ArrayList<ProductStyle>();
@@ -136,24 +144,37 @@ public class ProductService {
         }
         product = productRepository.save(product);
         productSearchRepository.save(product);
+        //record indexes of new items
         List<Long> productStyleIds = new ArrayList<Long>();
         List<Long> productItemIds = new ArrayList<Long>();
         List<Long> urlIds = new ArrayList<Long>();
         for (ProductStyleDTO productStyleDTO : productDTO.getColors()) {
-        	ProductStyle productStyle = productStyleMapper.toEntity(productStyleDTO);
-        	productStyle.setProduct(product);
-        	productStyle = productStyleRepository.save(productStyle);
-        	productStyleSearchRepository.save(productStyle);
-        	productStyleDTO.setId(productStyle.getId());
-        	productStyleIds.add(productStyle.getId());
+        	final ProductStyle productStyle = productStyleMapper.toEntity(productStyleDTO);
+        	//Check object changed
+        	if (oProductStyles.stream().filter(style -> style.equals(productStyle)).findAny().isPresent()) {
+            	productStyleDTO.setId(productStyle.getId());
+            	productStyleIds.add(productStyle.getId());
+        	} else {
+            	productStyle.setProduct(product);
+            	ProductStyle nProductStyle = productStyleRepository.save(productStyle);
+            	productStyleSearchRepository.save(productStyle);
+            	productStyleDTO.setId(nProductStyle.getId());
+            	productStyleIds.add(nProductStyle.getId());
+        	}
         }
         for (ProductStyleDTO productStyleDTO : productDTO.getSizes()) {
-        	ProductStyle productStyle = productStyleMapper.toEntity(productStyleDTO);
-        	productStyle.setProduct(product);
-        	productStyle = productStyleRepository.save(productStyle);
-        	productStyleSearchRepository.save(productStyle);
-        	productStyleDTO.setId(productStyle.getId());
-        	productStyleIds.add(productStyle.getId());
+        	final ProductStyle productStyle = productStyleMapper.toEntity(productStyleDTO);
+        	//Check object changed
+        	if (oProductStyles.stream().filter(style -> style.equals(productStyle)).findAny().isPresent()) {
+            	productStyleDTO.setId(productStyle.getId());
+            	productStyleIds.add(productStyle.getId());
+        	} else {
+            	productStyle.setProduct(product);
+            	ProductStyle nProductStyle = productStyleRepository.save(productStyle);
+            	productStyleSearchRepository.save(productStyle);
+            	productStyleDTO.setId(nProductStyle.getId());
+            	productStyleIds.add(nProductStyle.getId());
+        	}
         }
         for (ProductItemDTO productItemDTO : productDTO.getItems()) {
         	ProductItem oProductItem = productItemDTO.getId() == null? new ProductItem():oProductItems.stream().filter(item -> item.getId().equals(productItemDTO.getId())).findFirst().get();
@@ -204,10 +225,40 @@ public class ProductService {
 	        	quantities.stream().filter(quantity -> !quantityIds.contains(quantity.getId())).forEach(quantity -> quantityRepository.delete(quantity));
         	}
         }
+        Decoder decoder = Base64.getDecoder();
         for (UrlDTO urlDTO : productDTO.getUrls()) {
-        	urlDTO = urlService.save(urlDTO);
-        	urlIds.add(urlDTO.getId());
+        	if (urlDTO.getId() == null) {
+        		byte[] image = decoder.decode(urlDTO.getPath().substring(urlDTO.getPath().indexOf("base64,") + 7));
+            	Path targetPath = Paths.get("C:\\xampp\\htdocs\\img\\", urlDTO.getFileName());
+            	try {
+    				Files.write(image, targetPath.toFile());
+    	        	urlDTO.setEntityId(product.getId());
+    	        	urlDTO.setPath("http://localhost/img/" + urlDTO.getFileName());
+    	        	urlDTO.setCreatedBy(product.getCreatedBy());
+    	        	urlDTO.setCreatedDate(product.getCreatedDate());
+    	        	urlDTO.setLastModifiedBy(product.getLastModifiedBy());
+    	        	urlDTO.setLastModifiedDate(product.getLastModifiedDate());
+    	        	urlDTO = urlService.save(urlDTO);
+    	        	urlIds.add(urlDTO.getId());
+    			} catch (IOException e) {
+    				log.error(e.toString());
+    			}
+        	} else {
+        		Url nUrl = urlMapper.toEntity(urlDTO);
+            	//Check object changed
+            	if (oUrls.stream().filter(url -> url.equals(nUrl)).findAny().isPresent()) {
+                	urlIds.add(nUrl.getId());
+            	} else {
+    	        	urlDTO.setCreatedBy(product.getCreatedBy());
+    	        	urlDTO.setCreatedDate(product.getCreatedDate());
+    	        	urlDTO.setLastModifiedBy(product.getLastModifiedBy());
+    	        	urlDTO.setLastModifiedDate(product.getLastModifiedDate());
+    	        	urlDTO = urlService.save(urlDTO);
+                	urlIds.add(urlDTO.getId());
+            	}
+        	}
         }
+        //delete items not in update list
         oProductItems.stream().filter(item -> !productItemIds.contains(item.getId())).forEach(item -> productItemRepository.delete(item));
         oProductStyles.stream().filter(style -> !productStyleIds.contains(style.getId())).forEach(style -> productStyleRepository.delete(style));
         oUrls.stream().filter(url -> !urlIds.contains(url.getId())).forEach(url -> urlService.delete(url.getId()));
