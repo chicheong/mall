@@ -14,7 +14,7 @@
 		    <button type="button" [disabled]="isSaving" class="btn btn-info" (click)="previousState()">
 		        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
 		    </button>
-		    <button *ngSwitchCase="true" type="button" [disabled]="isSaving" class="btn btn-default" (click)="cancel()">
+		    <button *ngSwitchCase="true" type="button" [disabled]="isSaving || !product.id" class="btn btn-default" (click)="cancel()">
 	            <span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
 	        </button>
 	        <button *ngSwitchCase="true" type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
@@ -35,13 +35,19 @@
 	</div>
 	<div class="row">
 	  <div class="col-md-1">
-	  	<span *ngFor="let url of product.urls">
-			<img 
-				[src]="url.path"
+	  	<div *ngFor="let url of product.urls" class="img-wrap">
+			<img [src]="url.path"
           		class="img-thumbnail"
           		alt="">
-          	<span *ngSwitchCase="true" class="fa fa-check-square"></span>
-	  	</span>
+             <button *ngSwitchCase="true"  type="button"
+                     [routerLink]="['/', { outlets: { popup: 'product/'+ product.id + '/delete'} }]"
+                     replaceUrl="true"
+                     queryParamsHandling="merge"
+                     class="fa fa-remove close">
+             </button>          		
+          	<!-- <span *ngSwitchCase="true" class="fa fa-remove close" (click)="cancel()">
+          	</span> -->
+	  	</div>
 	  </div>
 	  <div class="col-md-3">
 	  	<span class="hipster img-fluid img-rounded" *ngIf="product.urls[0]">
