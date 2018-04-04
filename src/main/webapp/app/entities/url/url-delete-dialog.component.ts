@@ -36,6 +36,11 @@ export class UrlDeleteDialogComponent {
             this.activeModal.dismiss(true);
         });
     }
+
+    delete() {
+        this.eventManager.broadcast({ name: 'deleteUrlModification', content: 'Deleted an url', obj: this.url});
+        this.activeModal.dismiss(true);
+    }
 }
 
 @Component({

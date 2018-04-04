@@ -21,7 +21,7 @@ import { FileUploadPopupService } from './file-upload-popup.service';
 import { FileUploadDialogComponent } from './file-upload-dialog.component';
 
 import { MyOrderService, MyOrder } from './../my-order';
-import { Url } from './../url';
+import { Url, UrlPopupService, UrlDeleteDialogComponent } from './../url';
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
@@ -43,6 +43,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     selectedColor: ProductStyle = {};
     selectedSize: ProductStyle = {};
     selectedItem: ProductItem = {};
+    selectedUrl: Url;
 
     modalRef: NgbModalRef;
 
@@ -52,6 +53,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         private productStylePopupService: ProductStylePopupService,
         private productItemsPopupService: ProductItemsPopupService,
         private uploadMediaPopupService: FileUploadPopupService,
+        private urlPopupService: UrlPopupService,
         private route: ActivatedRoute,
         private jhiAlertService: JhiAlertService,
         private router: Router,
@@ -90,11 +92,13 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
             }
         });
+        this.resetSelectedUrl();
         this.registerChangeInProducts();
         this.registerChangeInProductStyle();
         this.registerChangeInProductItems();
         this.registerAuthenticationSuccess();
         this.registerChangeInFiles();
+        this.registerDeleteUrl();
     }
 
     initObjects() {
@@ -198,6 +202,13 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.eventSubscriber = this.eventManager.subscribe(
             'filesModification',
             (response) => this.updateFiles(response.obj)
+        );
+    }
+
+    registerDeleteUrl() {
+        this.eventSubscriber = this.eventManager.subscribe(
+            'deleteUrlModification',
+            (response) => this.deleteUrl(response.obj)
         );
     }
 
@@ -331,6 +342,21 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         urls.forEach((url) => {
             this.product.urls.push(url);
         });
+        this.resetSelectedUrl();
+    }
+
+    deleteUrl(nUrl: Url) {
+        for (let i = 0; i < this.product.urls.length; i++) {
+            const url = this.product.urls[i];
+            if (nUrl.id && url.id === nUrl.id) {
+                this.product.urls.splice(i, 1);
+                break;
+            } else if (url.path === nUrl.path) {
+                this.product.urls.splice(i, 1);
+                break;
+            }
+        }
+        this.resetSelectedUrl();
     }
 
     save() {
@@ -513,4 +539,29 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.uploadMediaPopupService.open(FileUploadDialogComponent as Component, copyObj);
     }
 
+    deleteMedia(url: Url) {
+        const copyObj: Url = Object.assign(new Url(), url);
+        this.urlPopupService.open(UrlDeleteDialogComponent as Component, copyObj);
+    }
+
+    selectUrl(nUrl: Url) {
+        for (let i = 0; i < this.product.urls.length; i++) {
+            const url = this.product.urls[i];
+            if (nUrl.id && url.id === nUrl.id) {
+                this.selectedUrl = url;
+                break;
+            } else if (url.path === nUrl.path) {
+                this.selectedUrl = url;
+                break;
+            }
+        }
+    }
+
+    resetSelectedUrl() {
+        if (this.product.urls && this.product.urls[0]) {
+            this.selectedUrl = this.product.urls[0];
+        } else {
+            this.selectedUrl = {};
+        }
+    }
 }

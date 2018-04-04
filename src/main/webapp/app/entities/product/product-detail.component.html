@@ -28,139 +28,134 @@
     </div>
 		
 	<div class="row">
-	  <div class="col-md-1">photo listing</div>
-	  <div class="col-md-3">main photo</div>	
-	  <div class="col-md-5">product description</div>
-	  <div class="col-md-3">other</div>	
+		<div class="col-md-1">photo listing</div>
+		<div class="col-md-3">main photo</div>
+		<div class="col-md-5">product description</div>
+		<div class="col-md-3">other</div>	
 	</div>
 	<div class="row">
-	  <div class="col-md-1">
-	  	<div *ngFor="let url of product.urls" class="img-wrap">
-			<img [src]="url.path"
-          		class="img-thumbnail"
-          		alt="">
-             <button *ngSwitchCase="true"  type="button"
-                     [routerLink]="['/', { outlets: { popup: 'product/'+ product.id + '/delete'} }]"
-                     replaceUrl="true"
-                     queryParamsHandling="merge"
-                     class="fa fa-remove close">
-             </button>          		
-          	<!-- <span *ngSwitchCase="true" class="fa fa-remove close" (click)="cancel()">
-          	</span> -->
-	  	</div>
-	  </div>
-	  <div class="col-md-3">
-	  	<span class="hipster img-fluid img-rounded" *ngIf="product.urls[0]">
-	  		<img [src]="product.urls[0].path"
-          		class="img-fluid"
-          		alt="">
-	  	</span>
-	  </div>	
-	  <div class="col-md-5">
-	  	<div class="row-md jh-entity-details">
-	    	<div>
-	            <span *ngSwitchCase="false">{{product.description}}</span>
-	            <span *ngSwitchCase="true"><textarea class="form-control" name="description" id="field_description" [(ngModel)]="product.description" rows="5" cols="50"></textarea></span>
-	        </div>
-	    	<div>
-	            <span *ngIf="product.brand || isEditing==true">by </span><span *ngSwitchCase="false">{{product.brand}}</span>
-	            <span *ngSwitchCase="true"><input type="text" class="form-control" name="brand" id="field_brand" [(ngModel)]="product.brand"  /></span>
-	        </div>
-	    	<div>
-	            <span>123 customer reviews</span>
-	        </div>
-            <div>
-	  			&nbsp;
-	  		</div>
-	  		<div *ngSwitchCase="true">
-	  			<div *ngIf="product.colors">
-	  				<div>Color</div>
-		        	<span *ngFor="let color of product.colors">
-		        		<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editStyle(color)">
-		        			<span>{{color.name}}</span>
-		        		</button>
-		        	</span>
-		        	<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="addColor()">
-			            <span>+</span>
-			        </button>
-				</div>
-				<div *ngIf="product.sizes">
-					<div>Size</div>
-		        	<span *ngFor="let size of product.sizes">
-		        		<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editStyle(size)">
-		        			<span>{{size.name}}</span>
-		        		</button>
-		        	</span>
-		        	<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="addSize()">
-			            <span>+</span>
-			        </button>
-				</div>
-	  		</div>
-	  		<div *ngSwitchCase="false">
-	  			<div *ngIf="product.colors">
-		        	<span *ngFor="let color of product.colors">
-		        		<button type="button" [disabled]="color.disabled" (click)="changeStyle(color)" [ngClass]="(this.selectedColor == color) ? 'btn-success' : 'btn-light'" class="btn btn-sm">{{color.name}}</button>
-		        	</span>
-				</div>
-				<div *ngIf="product.sizes">
-		        	<span *ngFor="let size of product.sizes">
-						<button type="button" [disabled]="size.disabled" (click)="changeStyle(size)" [ngClass]="(this.selectedSize == size) ? 'btn-success' : 'btn-light'" class="btn btn-sm">{{size.name}}</button>
-		        	</span>
-				</div>
-	  		</div>
-	  		<div *ngSwitchCase="true">
-	  			<div>Item</div>
-	  			<div *ngIf="product.items">
-		        	<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editItems('CODE')">
-			            <span>CODE</span>
-			        </button>
-			        <button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editItems('PRICE')">
-			            <span>PRICE</span>
-			        </button>
-		        	<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editItems('QUANTITY')">
-			            <span>QUANTITY</span>
-			        </button>			        
-				</div>
-	  		</div>
-
-            <div>
-	  			&nbsp;
-	  		</div>
-	  		<div *ngIf="selectedItem.id">
-	  			Price:	<span>{{selectedItem?selectedItem.currency : 'Fuck you'}} {{selectedItem?selectedItem.price : 'asshole'}}</span>
-	  		</div>
-	  		<div>
-	  			You Save: $5.90 (28%)
-	  		</div>	  		  
-			<div *ngSwitchCase="false">
-			    <button type="button" [disabled]="isSaving || !(selectedItem && selectedItem.price)" class="btn btn-default" (click)="addToCart()">
-		            <span>Add to Cart</span>
-		        </button>
+		<div class="col-md-1">
+	  		<div *ngFor="let url of product.urls" class="img-wrap">
+				<img [src]="url.path"
+	          		class="img-thumbnail"
+	          		(click)="selectUrl(url)"
+	          		alt="">        		
+	          	<button *ngSwitchCase="true"  type="button" [disabled]="isSaving" class="fa fa-remove close" (click)="deleteMedia(url)">
+				</button>
 			</div>
-			
-			<div *ngIf="false">
-		  		In stock/Pre-order/Out-of-order
-		  	</div>
-		  	<div *ngIf="false">
-		  		Estimated Delivery Date: Monday, Feb. 8 when you choose Two-Day Shipping at checkout.
-		  	</div>
-		  	<div *ngIf="false">
-		  		Ships from and sold by Koozam.
-		  	</div>
-		  	<div *ngIf="false">
-		  		Size: With Backpack
-		  	</div>
-		  	<div *ngIf="false">
-		  		Options
-		  	</div>	
-		  	<div *ngIf="false">
-		  		Item Description
-		  	</div> 
-			
-	  	</div>
+		</div>
+		<div class="col-md-3">
+			<span class="hipster img-fluid img-rounded" *ngIf="selectedUrl.path">
+		  		<img [src]="selectedUrl.path"
+	          		class="img-fluid"
+	          		alt="">
+		  	</span>
+		</div>
+		<div class="col-md-5">
+		  	<div class="row-md jh-entity-details">
+		    	<div>
+		            <span *ngSwitchCase="false">{{product.description}}</span>
+		            <span *ngSwitchCase="true"><textarea class="form-control" name="description" id="field_description" [(ngModel)]="product.description" rows="5" cols="50"></textarea></span>
+		        </div>
+		    	<div>
+		            <span *ngIf="product.brand || isEditing==true">by </span><span *ngSwitchCase="false">{{product.brand}}</span>
+		            <span *ngSwitchCase="true"><input type="text" class="form-control" name="brand" id="field_brand" [(ngModel)]="product.brand"  /></span>
+		        </div>
+		    	<div>
+		            <span>123 customer reviews</span>
+		        </div>
+	            <div>
+		  			&nbsp;
+		  		</div>
+		  		<div *ngSwitchCase="true">
+		  			<div *ngIf="product.colors">
+		  				<div>Color</div>
+			        	<span *ngFor="let color of product.colors">
+			        		<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editStyle(color)">
+			        			<span>{{color.name}}</span>
+			        		</button>
+			        	</span>
+			        	<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="addColor()">
+				            <span>+</span>
+				        </button>
+					</div>
+					<div *ngIf="product.sizes">
+						<div>Size</div>
+			        	<span *ngFor="let size of product.sizes">
+			        		<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editStyle(size)">
+			        			<span>{{size.name}}</span>
+			        		</button>
+			        	</span>
+			        	<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="addSize()">
+				            <span>+</span>
+				        </button>
+					</div>
+		  		</div>
+		  		<div *ngSwitchCase="false">
+		  			<div *ngIf="product.colors">
+			        	<span *ngFor="let color of product.colors">
+			        		<button type="button" [disabled]="color.disabled" (click)="changeStyle(color)" [ngClass]="(this.selectedColor == color) ? 'btn-success' : 'btn-light'" class="btn btn-sm">{{color.name}}</button>
+			        	</span>
+					</div>
+					<div *ngIf="product.sizes">
+			        	<span *ngFor="let size of product.sizes">
+							<button type="button" [disabled]="size.disabled" (click)="changeStyle(size)" [ngClass]="(this.selectedSize == size) ? 'btn-success' : 'btn-light'" class="btn btn-sm">{{size.name}}</button>
+			        	</span>
+					</div>
+		  		</div>
+		  		<div *ngSwitchCase="true">
+		  			<div>Item</div>
+		  			<div *ngIf="product.items">
+			        	<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editItems('CODE')">
+				            <span>CODE</span>
+				        </button>
+				        <button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editItems('PRICE')">
+				            <span>PRICE</span>
+				        </button>
+			        	<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editItems('QUANTITY')">
+				            <span>QUANTITY</span>
+				        </button>			        
+					</div>
+		  		</div>
 
-	  </div>
-	  <div class="col-md-3">other</div>		
+	            <div>
+		  			&nbsp;
+		  		</div>
+		  		<div *ngIf="selectedItem.id">
+		  			Price:	<span>{{selectedItem?selectedItem.currency : 'Fuck you'}} {{selectedItem?selectedItem.price : 'asshole'}}</span>
+		  		</div>
+		  		<div>
+		  			You Save: $5.90 (28%)
+		  		</div>	  		  
+				<div *ngSwitchCase="false">
+				    <button type="button" [disabled]="isSaving || !(selectedItem && selectedItem.price)" class="btn btn-default" (click)="addToCart()">
+			            <span>Add to Cart</span>
+			        </button>
+				</div>
+				
+				<div *ngIf="false">
+			  		In stock/Pre-order/Out-of-order
+			  	</div>
+			  	<div *ngIf="false">
+			  		Estimated Delivery Date: Monday, Feb. 8 when you choose Two-Day Shipping at checkout.
+			  	</div>
+			  	<div *ngIf="false">
+			  		Ships from and sold by Koozam.
+			  	</div>
+			  	<div *ngIf="false">
+			  		Size: With Backpack
+			  	</div>
+			  	<div *ngIf="false">
+			  		Options
+			  	</div>	
+			  	<div *ngIf="false">
+			  		Item Description
+			  	</div> 
+				
+		  	</div>
+
+		</div>
+		<div class="col-md-3">other</div>		
 	</div>
 	<div class="row">
 		<div class="col-md-1"></div>

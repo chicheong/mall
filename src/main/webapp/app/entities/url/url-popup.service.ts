@@ -28,16 +28,21 @@ export class UrlPopupService {
             }
 
             if (id) {
-                this.urlService.find(id)
-                    .subscribe((urlResponse: HttpResponse<Url>) => {
-                        const url: Url = urlResponse.body;
-                        url.createdDate = this.datePipe
-                            .transform(url.createdDate, 'yyyy-MM-ddTHH:mm:ss');
-                        url.lastModifiedDate = this.datePipe
-                            .transform(url.lastModifiedDate, 'yyyy-MM-ddTHH:mm:ss');
-                        this.ngbModalRef = this.urlModalRef(component, url);
-                        resolve(this.ngbModalRef);
-                    });
+                if (id instanceof Url) {
+                    this.ngbModalRef = this.urlModalRef(component, id);
+                    resolve(this.ngbModalRef);
+                } else {
+                    this.urlService.find(id)
+                        .subscribe((urlResponse: HttpResponse<Url>) => {
+                            const url: Url = urlResponse.body;
+                            url.createdDate = this.datePipe
+                                .transform(url.createdDate, 'yyyy-MM-ddTHH:mm:ss');
+                            url.lastModifiedDate = this.datePipe
+                                .transform(url.lastModifiedDate, 'yyyy-MM-ddTHH:mm:ss');
+                            this.ngbModalRef = this.urlModalRef(component, url);
+                            resolve(this.ngbModalRef);
+                        });
+                }
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {
