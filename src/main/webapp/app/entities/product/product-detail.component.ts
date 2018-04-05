@@ -11,10 +11,8 @@ import { ProductService } from './product.service';
 import { LoginModalService, Principal, UuidService } from '../../shared';
 
 import { ProductItem, CurrencyType } from './../product-item';
-import { ProductStyle, ProductStyleType } from './../product-style';
+import { ProductStyle, ProductStyleType, ProductStylePopupService, ProductStyleDialogComponent } from './../product-style';
 
-import { ProductStylePopupService } from './../product-style/product-style-popup.service';
-import { ProductStyleDialogComponent } from './../product-style/product-style-dialog.component';
 import { ProductItemsPopupService } from './product-items-popup.service';
 import { ProductItemsDialogComponent, ProductItemsDialogType } from './product-items-dialog.component';
 import { FileUploadPopupService } from './file-upload-popup.service';
@@ -92,7 +90,6 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
             }
         });
-        this.resetSelectedUrl();
         this.registerChangeInProducts();
         this.registerChangeInProductStyle();
         this.registerChangeInProductItems();
@@ -155,7 +152,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.productService.find(id)
             .subscribe((productResponse: HttpResponse<Product>) => {
                 this.product = productResponse.body;
-                console.error('product.urls' + this.product.urls);
+                this.resetSelectedUrl();
             });
         this.selectedColor = {};
         this.selectedSize = {};
@@ -385,6 +382,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         console.error('result.id=' + result.id);
         this.router.navigate(['/product', result.id]);
         this.product = result;
+        this.resetSelectedUrl();
         // this.activeModal.dismiss(result);
     }
 
