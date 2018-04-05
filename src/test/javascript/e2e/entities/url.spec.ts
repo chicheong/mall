@@ -39,6 +39,10 @@ describe('Url e2e test', () => {
         expect(urlDialogPage.getEntityIdInput()).toMatch('5');
         urlDialogPage.setPathInput('path');
         expect(urlDialogPage.getPathInput()).toMatch('path');
+        urlDialogPage.setFileNameInput('fileName');
+        expect(urlDialogPage.getFileNameInput()).toMatch('fileName');
+        urlDialogPage.setSequenceInput('5');
+        expect(urlDialogPage.getSequenceInput()).toMatch('5');
         urlDialogPage.setDescriptionInput('description');
         expect(urlDialogPage.getDescriptionInput()).toMatch('description');
         urlDialogPage.setCreatedByInput('createdBy');
@@ -78,6 +82,8 @@ export class UrlDialogPage {
     entityTypeInput = element(by.css('input#field_entityType'));
     entityIdInput = element(by.css('input#field_entityId'));
     pathInput = element(by.css('input#field_path'));
+    fileNameInput = element(by.css('input#field_fileName'));
+    sequenceInput = element(by.css('input#field_sequence'));
     descriptionInput = element(by.css('input#field_description'));
     createdByInput = element(by.css('input#field_createdBy'));
     createdDateInput = element(by.css('input#field_createdDate'));
@@ -110,6 +116,22 @@ export class UrlDialogPage {
 
     getPathInput = function() {
         return this.pathInput.getAttribute('value');
+    };
+
+    setFileNameInput = function(fileName) {
+        this.fileNameInput.sendKeys(fileName);
+    };
+
+    getFileNameInput = function() {
+        return this.fileNameInput.getAttribute('value');
+    };
+
+    setSequenceInput = function(sequence) {
+        this.sequenceInput.sendKeys(sequence);
+    };
+
+    getSequenceInput = function() {
+        return this.sequenceInput.getAttribute('value');
     };
 
     setDescriptionInput = function(description) {

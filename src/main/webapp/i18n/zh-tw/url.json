@@ -20,6 +20,8 @@
             "entityType": "Entity Type",
             "entityId": "Entity Id",
             "path": "Path",
+			"fileName": "File Name",
+            "sequence": "Sequence",
             "description": "Description",
             "createdBy": "Created By",
             "createdDate": "Created Date",

@@ -219,6 +219,8 @@ entity Url {
 	entityType String,
 	entityId Long,
 	path String,
+	fileName String,
+	sequence Integer,
 	description String,
 	createdBy String,
 	createdDate ZonedDateTime,

@@ -34,6 +34,12 @@ public class Url implements Serializable {
     @Column(name = "path")
     private String path;
 
+    @Column(name = "file_name")
+    private String fileName;
+
+    @Column(name = "jhi_sequence")
+    private Integer sequence;
+
     @Column(name = "description")
     private String description;
 
@@ -95,6 +101,32 @@ public class Url implements Serializable {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public Url fileName(String fileName) {
+        this.fileName = fileName;
+        return this;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public Integer getSequence() {
+        return sequence;
+    }
+
+    public Url sequence(Integer sequence) {
+        this.sequence = sequence;
+        return this;
+    }
+
+    public void setSequence(Integer sequence) {
+        this.sequence = sequence;
     }
 
     public String getDescription() {
@@ -175,11 +207,7 @@ public class Url implements Serializable {
         if (url.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(getId(), url.getId()) &&
-        		Objects.equals(getEntityType(), url.getEntityType()) &&
-        		Objects.equals(getEntityId(), url.getEntityId()) &&
-        		Objects.equals(getPath(), url.getPath()) &&
-        		Objects.equals(getDescription(), url.getDescription());
+        return Objects.equals(getId(), url.getId());
     }
 
     @Override
@@ -194,6 +222,8 @@ public class Url implements Serializable {
             ", entityType='" + getEntityType() + "'" +
             ", entityId=" + getEntityId() +
             ", path='" + getPath() + "'" +
+            ", fileName='" + getFileName() + "'" +
+            ", sequence=" + getSequence() +
             ", description='" + getDescription() + "'" +
             ", createdBy='" + getCreatedBy() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +

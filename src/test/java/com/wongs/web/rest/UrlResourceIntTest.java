@@ -56,6 +56,12 @@ public class UrlResourceIntTest {
     private static final String DEFAULT_PATH = "AAAAAAAAAA";
     private static final String UPDATED_PATH = "BBBBBBBBBB";
 
+    private static final String DEFAULT_FILE_NAME = "AAAAAAAAAA";
+    private static final String UPDATED_FILE_NAME = "BBBBBBBBBB";
+
+    private static final Integer DEFAULT_SEQUENCE = 1;
+    private static final Integer UPDATED_SEQUENCE = 2;
+
     private static final String DEFAULT_DESCRIPTION = "AAAAAAAAAA";
     private static final String UPDATED_DESCRIPTION = "BBBBBBBBBB";
 
@@ -121,6 +127,8 @@ public class UrlResourceIntTest {
             .entityType(DEFAULT_ENTITY_TYPE)
             .entityId(DEFAULT_ENTITY_ID)
             .path(DEFAULT_PATH)
+            .fileName(DEFAULT_FILE_NAME)
+            .sequence(DEFAULT_SEQUENCE)
             .description(DEFAULT_DESCRIPTION)
             .createdBy(DEFAULT_CREATED_BY)
             .createdDate(DEFAULT_CREATED_DATE)
@@ -154,6 +162,8 @@ public class UrlResourceIntTest {
         assertThat(testUrl.getEntityType()).isEqualTo(DEFAULT_ENTITY_TYPE);
         assertThat(testUrl.getEntityId()).isEqualTo(DEFAULT_ENTITY_ID);
         assertThat(testUrl.getPath()).isEqualTo(DEFAULT_PATH);
+        assertThat(testUrl.getFileName()).isEqualTo(DEFAULT_FILE_NAME);
+        assertThat(testUrl.getSequence()).isEqualTo(DEFAULT_SEQUENCE);
         assertThat(testUrl.getDescription()).isEqualTo(DEFAULT_DESCRIPTION);
         assertThat(testUrl.getCreatedBy()).isEqualTo(DEFAULT_CREATED_BY);
         assertThat(testUrl.getCreatedDate()).isEqualTo(DEFAULT_CREATED_DATE);
@@ -201,6 +211,8 @@ public class UrlResourceIntTest {
             .andExpect(jsonPath("$.[*].entityType").value(hasItem(DEFAULT_ENTITY_TYPE.toString())))
             .andExpect(jsonPath("$.[*].entityId").value(hasItem(DEFAULT_ENTITY_ID.intValue())))
             .andExpect(jsonPath("$.[*].path").value(hasItem(DEFAULT_PATH.toString())))
+            .andExpect(jsonPath("$.[*].fileName").value(hasItem(DEFAULT_FILE_NAME.toString())))
+            .andExpect(jsonPath("$.[*].sequence").value(hasItem(DEFAULT_SEQUENCE)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
             .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY.toString())))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
@@ -222,6 +234,8 @@ public class UrlResourceIntTest {
             .andExpect(jsonPath("$.entityType").value(DEFAULT_ENTITY_TYPE.toString()))
             .andExpect(jsonPath("$.entityId").value(DEFAULT_ENTITY_ID.intValue()))
             .andExpect(jsonPath("$.path").value(DEFAULT_PATH.toString()))
+            .andExpect(jsonPath("$.fileName").value(DEFAULT_FILE_NAME.toString()))
+            .andExpect(jsonPath("$.sequence").value(DEFAULT_SEQUENCE))
             .andExpect(jsonPath("$.description").value(DEFAULT_DESCRIPTION.toString()))
             .andExpect(jsonPath("$.createdBy").value(DEFAULT_CREATED_BY.toString()))
             .andExpect(jsonPath("$.createdDate").value(sameInstant(DEFAULT_CREATED_DATE)))
@@ -253,6 +267,8 @@ public class UrlResourceIntTest {
             .entityType(UPDATED_ENTITY_TYPE)
             .entityId(UPDATED_ENTITY_ID)
             .path(UPDATED_PATH)
+            .fileName(UPDATED_FILE_NAME)
+            .sequence(UPDATED_SEQUENCE)
             .description(UPDATED_DESCRIPTION)
             .createdBy(UPDATED_CREATED_BY)
             .createdDate(UPDATED_CREATED_DATE)
@@ -272,6 +288,8 @@ public class UrlResourceIntTest {
         assertThat(testUrl.getEntityType()).isEqualTo(UPDATED_ENTITY_TYPE);
         assertThat(testUrl.getEntityId()).isEqualTo(UPDATED_ENTITY_ID);
         assertThat(testUrl.getPath()).isEqualTo(UPDATED_PATH);
+        assertThat(testUrl.getFileName()).isEqualTo(UPDATED_FILE_NAME);
+        assertThat(testUrl.getSequence()).isEqualTo(UPDATED_SEQUENCE);
         assertThat(testUrl.getDescription()).isEqualTo(UPDATED_DESCRIPTION);
         assertThat(testUrl.getCreatedBy()).isEqualTo(UPDATED_CREATED_BY);
         assertThat(testUrl.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);
@@ -341,6 +359,8 @@ public class UrlResourceIntTest {
             .andExpect(jsonPath("$.[*].entityType").value(hasItem(DEFAULT_ENTITY_TYPE.toString())))
             .andExpect(jsonPath("$.[*].entityId").value(hasItem(DEFAULT_ENTITY_ID.intValue())))
             .andExpect(jsonPath("$.[*].path").value(hasItem(DEFAULT_PATH.toString())))
+            .andExpect(jsonPath("$.[*].fileName").value(hasItem(DEFAULT_FILE_NAME.toString())))
+            .andExpect(jsonPath("$.[*].sequence").value(hasItem(DEFAULT_SEQUENCE)))
             .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
             .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY.toString())))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))

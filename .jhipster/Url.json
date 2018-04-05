@@ -15,6 +15,14 @@
             "fieldType": "String"
         },
         {
+            "fieldName": "fileName",
+            "fieldType": "String"
+        },
+		{
+            "fieldName": "sequence",
+            "fieldType": "Integer"
+        },
+        {
             "fieldName": "description",
             "fieldType": "String"
         },

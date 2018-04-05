@@ -1,9 +1,8 @@
 package com.wongs.service.dto;
 
 
-import java.io.File;
-import java.io.Serializable;
 import java.time.ZonedDateTime;
+import java.io.Serializable;
 import java.util.Objects;
 
 import com.wongs.domain.Url;
@@ -21,6 +20,10 @@ public class UrlDTO implements Serializable {
 
     private String path;
 
+    private String fileName;
+
+    private Integer sequence;
+
     private String description;
 
     private String createdBy;
@@ -30,8 +33,6 @@ public class UrlDTO implements Serializable {
     private String lastModifiedBy;
 
     private ZonedDateTime lastModifiedDate;
-    
-    private String fileName;
 
     public UrlDTO() {
         // Empty constructor needed for Jackson.
@@ -42,6 +43,8 @@ public class UrlDTO implements Serializable {
     	this.entityType = url.getEntityType();
     	this.entityId = url.getEntityId();
     	this.path = url.getPath();
+    	this.fileName = url.getFileName();
+    	this.sequence = url.getSequence();
     	this.description = url.getDescription();
     	this.createdBy = url.getCreatedBy();
     	this.createdDate = url.getCreatedDate();
@@ -79,6 +82,22 @@ public class UrlDTO implements Serializable {
 
     public void setPath(String path) {
         this.path = path;
+    }
+
+    public String getFileName() {
+        return fileName;
+    }
+
+    public void setFileName(String fileName) {
+        this.fileName = fileName;
+    }
+
+    public Integer getSequence() {
+        return sequence;
+    }
+
+    public void setSequence(Integer sequence) {
+        this.sequence = sequence;
     }
 
     public String getDescription() {
@@ -121,15 +140,7 @@ public class UrlDTO implements Serializable {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public String getFileName() {
-		return fileName;
-	}
-
-	public void setFileName(String fileName) {
-		this.fileName = fileName;
-	}
-
-	@Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -146,6 +157,8 @@ public class UrlDTO implements Serializable {
         		Objects.equals(getEntityType(), urlDTO.getEntityType()) &&
         		Objects.equals(getEntityId(), urlDTO.getEntityId()) &&
         		Objects.equals(getPath(), urlDTO.getPath()) &&
+        		Objects.equals(getFileName(), urlDTO.getFileName()) &&
+        		Objects.equals(getSequence(), urlDTO.getSequence()) &&
         		Objects.equals(getDescription(), urlDTO.getDescription());
     }
 
@@ -161,6 +174,8 @@ public class UrlDTO implements Serializable {
             ", entityType='" + getEntityType() + "'" +
             ", entityId=" + getEntityId() +
             ", path='" + getPath() + "'" +
+            ", fileName='" + getFileName() + "'" +
+            ", sequence=" + getSequence() +
             ", description='" + getDescription() + "'" +
             ", createdBy='" + getCreatedBy() + "'" +
             ", createdDate='" + getCreatedDate() + "'" +

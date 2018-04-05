@@ -44,6 +44,8 @@ public class UrlMapper {
         	url.setEntityType(urlDTO.getEntityType());
         	url.setEntityId(urlDTO.getEntityId());
         	url.setPath(urlDTO.getPath());
+        	url.setFileName(urlDTO.getFileName());
+        	url.setSequence(urlDTO.getSequence());
         	url.setDescription(urlDTO.getDescription());
         	url.setCreatedBy(urlDTO.getCreatedBy());
         	url.setCreatedDate(urlDTO.getCreatedDate());
