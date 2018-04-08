@@ -29,7 +29,10 @@ export const enum ProductDetailComponentType {
 }
 @Component({
     selector: 'jhi-product-detail',
-    templateUrl: './product-detail.component.html'
+    templateUrl: './product-detail.component.html',
+    styleUrls: [
+        'product-detail.scss'
+    ]
 })
 export class ProductDetailComponent implements OnInit, OnDestroy {
 
@@ -562,4 +565,17 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
             this.selectedUrl = {};
         }
     }
+
+    onDragStart(): void {
+        console.log('got drag start');
+    }
+
+    onDragMove(event: PointerEvent): void {
+        console.log(`got drag move ${Math.round(event.clientX)} ${Math.round(event.clientY)}`);
+    }
+
+    onDragEnd(): void {
+        console.log('got drag end');
+    }
+
 }

@@ -4,6 +4,7 @@ import { DatePipe } from '@angular/common';
 import {
     MallSharedLibsModule,
     MallSharedCommonModule,
+    DraggableModule,
     CSRFService,
     AuthServerProvider,
     AccountService,
@@ -20,7 +21,8 @@ import {
 @NgModule({
     imports: [
         MallSharedLibsModule,
-        MallSharedCommonModule
+        MallSharedCommonModule,
+        DraggableModule
     ],
     declarations: [
         JhiLoginModalComponent,
@@ -41,6 +43,7 @@ import {
     entryComponents: [JhiLoginModalComponent],
     exports: [
         MallSharedCommonModule,
+        DraggableModule,
         JhiLoginModalComponent,
         HasAnyAuthorityDirective,
         DatePipe

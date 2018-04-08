@@ -213,8 +213,14 @@ entity detail page css
     line-height: 10px;
     border-radius: 50%;
 }
+
 .img-wrap:hover .close {
     opacity: 1;
+}
+
+.draggable {
+  cursor: move;
+  user-select: none;
 }
 
 /* ==========================================================================

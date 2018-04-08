@@ -26,7 +26,24 @@
 		</div>
 		<div class="col-md-3"></div>
     </div>
-		
+
+	<div class="row">
+		<div class="col-md-12">
+			<h1>Draggable</h1>
+	
+			<h2>Part 1 - draggable directive</h2>
+			
+			<div class="box" jhiDraggable
+			  (dragStart)="onDragStart()" (dragMove)="onDragMove($event)" (dragEnd)="onDragEnd()">
+			  My box
+			</div>
+			
+			<div class="box" jhiDraggableRx
+			     (dragStart)="onDragStart()" (dragMove)="onDragMove($event)" (dragEnd)="onDragEnd()">
+			  My box
+			</div>
+		</div>
+	</div>
 	<div class="row">
 		<div class="col-md-1">photo listing</div>
 		<div class="col-md-3">main photo</div>
