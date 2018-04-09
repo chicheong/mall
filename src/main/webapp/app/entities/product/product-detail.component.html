@@ -42,6 +42,36 @@
 			     (dragStart)="onDragStart()" (dragMove)="onDragMove($event)" (dragEnd)="onDragEnd()">
 			  My box
 			</div>
+			
+			<h2>Part 2 - movable directive</h2>
+			
+			<div class="box" jhiMovable>
+			  Movable 1
+			</div>
+			
+			<div class="box" jhiMovable [appMovableReset]="true">
+			  Movable 2
+			</div>
+			
+			<h2>Part 3 - movable area</h2>
+
+			<div class="area" jhiMovableArea>
+			  <div class="box" jhiMovable *ngFor="let trapped of trappedBoxes">
+			    {{ trapped }}
+			  </div>
+			</div>
+			
+			<button (click)="add()">Add</button>
+			
+			<h2>Part 4 - the draggable helper</h2>
+			
+			<div class="box" jhiDraggable>
+			  Drag me!
+			
+			  <div class="box helper" *jhiDraggableHelper>
+			    Drag me!
+			  </div>
+			</div>
 		</div>
 	</div>
 	<div class="row">
