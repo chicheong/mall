@@ -218,9 +218,19 @@ entity detail page css
     opacity: 1;
 }
 
+/* ==========================================================================
+draggable
+========================================================================== */
+@import "~@angular/cdk/overlay";
+@include cdk-overlay();
+
 .draggable {
   cursor: move;
   user-select: none;
+}
+
+.movable:not(.dragging) {
+  transition: transform 300ms ease-in-out;
 }
 
 /* ==========================================================================

@@ -18,8 +18,8 @@ export class DraggableHelperDirective implements OnInit, OnDestroy {
               private overlay: Overlay) { }
 
   ngOnInit(): void {
-    this.draggable.dragStart.subscribe(event => this.onDragStart(event));
-    this.draggable.dragMove.subscribe(event => this.onDragMove(event));
+    this.draggable.dragStart.subscribe((event) => this.onDragStart(event));
+    this.draggable.dragMove.subscribe((event) => this.onDragMove(event));
     this.draggable.dragEnd.subscribe(() => this.onDragEnd());
 
     // create an overlay...
@@ -41,12 +41,19 @@ export class DraggableHelperDirective implements OnInit, OnDestroy {
       x: event.clientX - clientRect.left,
       y: event.clientY - clientRect.top
     };
+
+    // added after YouTube video: width
+    this.overlayRef.overlayElement.style.width = `${clientRect.width}px`;
   }
 
   private onDragMove(event: PointerEvent): void {
     if (!this.overlayRef.hasAttached()) {
       // render the helper in the overlay
       this.overlayRef.attach(new TemplatePortal(this.templateRef, this.viewContainerRef));
+      // added after YouTube video: width
+    const rootElement = this.overlayRef.overlayElement.firstChild as HTMLElement;
+    rootElement.style.width = '100%';
+    rootElement.style.boxSizing = 'border-box';
     }
 
     // position the helper...

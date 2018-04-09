@@ -81,6 +81,7 @@ export class FileUploadDialogComponent implements OnInit {
                     url.entityType = Product.name;
                     url.entityId = this.product.id;
                     url.fileName = file.name;
+                    url.sequence = this.product.urls ? (this.product.urls.length + 1 + i) : 1;
                     url.path = (<FileReader>thisEvent.target).result;
                     urls.push(url);
                     counter++;
@@ -111,6 +112,7 @@ export class FileUploadDialogComponent implements OnInit {
                     url.entityType = Product.name;
                     url.entityId = this.product.id;
                     url.fileName = file.name;
+                    url.sequence = this.product.urls ? (this.product.urls.length + 1 + i) : 1;
                     url.path = (<FileReader>thisEvent.target).result;
                     urls.push(url);
                     counter++;

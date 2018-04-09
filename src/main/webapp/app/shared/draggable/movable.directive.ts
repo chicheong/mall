@@ -26,7 +26,7 @@ export class MovableDirective extends DraggableDirective {
   @Input() appMovableReset = false;
 
   constructor(private sanitizer: DomSanitizer, public element: ElementRef) {
-    super();
+    super(element);
   }
 
   @HostListener('dragStart', ['$event'])

@@ -23,6 +23,8 @@ import { Url, UrlPopupService, UrlDeleteDialogComponent } from './../url';
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
+import { SortEvent } from './../../shared/draggable/sortable-list.directive';
+
 export const enum ProductDetailComponentType {
     CONFIRM = 'CONFIRM',
     DELETE = 'DELETE',
@@ -566,21 +568,31 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         }
     }
 
-    onDragStart(): void {
-        console.log('got drag start');
-    }
-
-    onDragMove(event: PointerEvent): void {
-        console.log(`got drag move ${Math.round(event.clientX)} ${Math.round(event.clientY)}`);
-    }
-
-    onDragEnd(): void {
-        console.log('got drag end');
-    }
-
     trappedBoxes = ['Trapped 1', 'Trapped 2'];
+
+    sortableList = [
+      'Box 1',
+      'Box 2',
+      'Box 3',
+      'Box 4',
+      'Box 5',
+      'Box 6',
+      'Box 7',
+      'Box 8',
+      'Box 9',
+      'Box 10'
+    ];
 
     add(): void {
       this.trappedBoxes.push('New trapped');
+    }
+
+    sort(event: SortEvent) {
+        const current = this.product.urls[event.currentIndex].sequence;
+        const swapWith = this.product.urls[event.newIndex].sequence;
+
+        console.log('soring: current: ' + current + ' , swapWith: ' + swapWith);
+        this.product.urls[event.newIndex].sequence = current;
+        this.product.urls[event.currentIndex].sequence = swapWith;
     }
 }

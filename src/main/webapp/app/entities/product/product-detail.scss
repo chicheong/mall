@@ -7,6 +7,12 @@
   &.dragging {
     background: coral;
   }
+  
+  &.sortable.dragging {
+    background: none;
+    border: 1px dashed black;
+    color: transparent;
+  }
 }
 
 .area {
@@ -16,4 +22,16 @@
 
 button {
   margin-top: 20px;
+}
+
+ul {
+  display: inline-flex;
+  margin: 0;
+  padding: 0;
+  flex-direction: column;
+
+  &.horizontal {
+    flex-direction: row;
+    flex-wrap: wrap;
+  }
 }
