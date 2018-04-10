@@ -43,6 +43,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     private subscription: Subscription;
     private eventSubscriber: Subscription;
     isEditing: boolean;
+    isSorted: boolean;
     selectedColor: ProductStyle = {};
     selectedSize: ProductStyle = {};
     selectedItem: ProductItem = {};
@@ -71,6 +72,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         console.error('ngOnInit');
         this.isSaving = false;
         this.isEditing = false;
+        this.isSorted = false;
         this.subscription = this.route.params.subscribe((params) => {
             if ((params['id'])) {
                 if ((params['id']) === 'new') {
@@ -162,6 +164,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.selectedColor = {};
         this.selectedSize = {};
         this.selectedItem = {};
+        this.isSorted = false;
     }
 
     previousState() {
@@ -363,6 +366,15 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
     save() {
         this.isSaving = true;
+        if (this.isSorted) {
+            this.product.urls.forEach((url) => {
+                console.error('url.sequence: ' + url.sequence + ',url.fileName: ' + url.fileName);
+            });
+            for (let i = 0; i < this.product.urls.length; i++) {
+                this.product.urls[i].sequence = i + 1;
+                console.error('url.sequence: ' + this.product.urls[i].sequence + ',url.fileName: ' + this.product.urls[i].fileName);
+            }
+        }
         if (this.product.id) { // !== undefined
             console.error('update: ' + this.product.id);
             this.subscribeToSaveResponse(
@@ -565,12 +577,6 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
             this.product.urls.filter((url) => url.sequence === 1).map((url) => {
                 this.selectedUrl = url;
             });
-            setTimeout(() => {
-                console.error('finished waiting!!');
-                this.product.urls.forEach((url) => {
-                    console.error('url.sequence: ' + url.sequence + ',url.fileName: ' + url.fileName);
-                });
-            }, 3000 );
         } else {
             this.selectedUrl = {};
         }
@@ -580,5 +586,6 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         const url: Url = this.product.urls[event.currentIndex];
         this.product.urls.splice(event.currentIndex, 1);
         this.product.urls.splice(event.newIndex, 0, url);
+        this.isSorted = true;
     }
 }

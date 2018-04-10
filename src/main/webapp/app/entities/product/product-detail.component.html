@@ -28,24 +28,6 @@
     </div>
 
 	<div class="row">
-		<div class="col-md-12">
-			<section>
-			  <h2>Part 5 - the sortable list</h2>
-			
-			  <h3>Vertical</h3>
-			
-			  <ul jhiSortableList (sort)="sort($event)">
-			    <li *ngFor="let url of product.urls | orderBy: 'sequence'" class="box"  jhiSortable>
-{{url.fileName}}
-
-	          		
-	          		<div class="box" *jhiDraggableHelper>{{ url.fileName }}</div>
-			    </li>
-			  </ul>
-			</section>
-		</div>
-	</div>
-	<div class="row">
 		<div class="col-md-1">photo listing</div>
 		<div class="col-md-3">main photo</div>
 		<div class="col-md-5">product description</div>
@@ -53,10 +35,29 @@
 	</div>
 	<div class="row">
 		<div class="col-md-1" jhiSortableList (sort)="sort($event)" *ngSwitchCase="true">
+	  		<div *ngFor="let url of product.urls | orderBy: 'sequence'" class="img-wrap">	  			
+				<img [src]="url.path"
+					class="img-thumbnail"
+					(click)="selectUrl(url)"
+	          		alt="">
+	          	<button type="button" [disabled]="isSaving" class="fa fa-remove close" (click)="deleteMedia(url)">
+				</button>
+				<div class="box movable" jhiSortable>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					<div class="box" *jhiDraggableHelper >
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+					</div>
+				</div>
+			</div>
+		</div>	
+		<!-- <div class="col-md-1" jhiSortableList (sort)="sort($event)" *ngSwitchCase="false">
 	  		<div *ngFor="let url of product.urls | orderBy: 'sequence'" class="box img-wrap" 
-	  			[ngStyle]="{'background': '#fff url(' + url.path + ') no-repeat 0 0', 'background-size': 'cover'}"
+	  			[ngStyle]="{'background': '#fff url(' + url.path + ') no-repeat 0 0', 'background-size': 'contain'}"
 	  			(click)="selectUrl(url)" jhiSortable>
-	          	<button *ngSwitchCase="true" type="button" [disabled]="isSaving" class="fa fa-remove close" (click)="deleteMedia(url)">
+				<img [src]="url.path"
+					class="img-thumbnail"
+	          		alt="">
+	          	<button *ngSwitchCase="false" type="button" [disabled]="isSaving" class="fa fa-remove close" (click)="deleteMedia(url)">
 				</button>
 				<div class="box" *jhiDraggableHelper>
 					<img [src]="url.path"
@@ -64,7 +65,7 @@
 		          		alt="">
 				</div>
 			</div>
-		</div>
+		</div> -->
 		<div class="col-md-1" *ngSwitchCase="false">
 	  		<div *ngFor="let url of product.urls | orderBy: 'sequence'" class="img-wrap">
 				<img [src]="url.path"

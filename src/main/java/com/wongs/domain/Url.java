@@ -207,7 +207,13 @@ public class Url implements Serializable {
         if (url.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(getId(), url.getId());
+        return Objects.equals(getId(), url.getId()) &&
+        		Objects.equals(getEntityType(), url.getEntityType()) &&
+        		Objects.equals(getEntityId(), url.getEntityId()) &&
+        		Objects.equals(getPath(), url.getPath()) &&
+        		Objects.equals(getFileName(), url.getFileName()) &&
+        		Objects.equals(getSequence(), url.getSequence()) &&
+        		Objects.equals(getDescription(), url.getDescription());
     }
 
     @Override
