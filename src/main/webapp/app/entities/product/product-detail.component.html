@@ -35,11 +35,8 @@
 			  <h3>Vertical</h3>
 			
 			  <ul jhiSortableList (sort)="sort($event)">
-			    <li *ngFor="let url of product.urls | orderBy: 'sequence'" class="img-wrap"  jhiSortable>
-			      <img [src]="url.path"
-	          		class="img-thumbnail"
-	          		(click)="selectUrl(url)"
-	          		alt="" >
+			    <li *ngFor="let url of product.urls | orderBy: 'sequence'" class="box"  jhiSortable>
+{{url.fileName}}
 
 	          		
 	          		<div class="box" *jhiDraggableHelper>{{ url.fileName }}</div>
@@ -55,16 +52,27 @@
 		<div class="col-md-3">other</div>	
 	</div>
 	<div class="row">
-		<div class="col-md-1" jhiSortableList (sort)="sort($event)">
-	  		<div *ngFor="let url of product.urls | orderBy: 'sequence'" class="img-wrap" jhiSortable>
+		<div class="col-md-1" jhiSortableList (sort)="sort($event)" *ngSwitchCase="true">
+	  		<div *ngFor="let url of product.urls | orderBy: 'sequence'" class="box img-wrap" 
+	  			[ngStyle]="{'background': '#fff url(' + url.path + ') no-repeat 0 0', 'background-size': 'cover'}"
+	  			(click)="selectUrl(url)" jhiSortable>
+	          	<button *ngSwitchCase="true" type="button" [disabled]="isSaving" class="fa fa-remove close" (click)="deleteMedia(url)">
+				</button>
+				<div class="box" *jhiDraggableHelper>
+					<img [src]="url.path"
+						class="img-thumbnail"
+		          		alt="">
+				</div>
+			</div>
+		</div>
+		<div class="col-md-1" *ngSwitchCase="false">
+	  		<div *ngFor="let url of product.urls | orderBy: 'sequence'" class="img-wrap">
 				<img [src]="url.path"
 	          		class="img-thumbnail"
 	          		(click)="selectUrl(url)"
-	          		alt="">        		
-	          	<button *ngSwitchCase="true"  type="button" [disabled]="isSaving" class="fa fa-remove close" (click)="deleteMedia(url)">
-				</button>
+	          		alt="">
 			</div>
-		</div>
+		</div>		
 		<div class="col-md-3">
 			<span class="hipster img-fluid img-rounded" *ngIf="selectedUrl && selectedUrl.path">
 		  		<img [src]="selectedUrl.path"

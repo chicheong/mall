@@ -562,37 +562,23 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
     resetSelectedUrl() {
         if (this.product.urls && this.product.urls[0]) {
-            this.selectedUrl = this.product.urls[0];
+            this.product.urls.filter((url) => url.sequence === 1).map((url) => {
+                this.selectedUrl = url;
+            });
+            setTimeout(() => {
+                console.error('finished waiting!!');
+                this.product.urls.forEach((url) => {
+                    console.error('url.sequence: ' + url.sequence + ',url.fileName: ' + url.fileName);
+                });
+            }, 3000 );
         } else {
             this.selectedUrl = {};
         }
     }
 
-    trappedBoxes = ['Trapped 1', 'Trapped 2'];
-
-    sortableList = [
-      'Box 1',
-      'Box 2',
-      'Box 3',
-      'Box 4',
-      'Box 5',
-      'Box 6',
-      'Box 7',
-      'Box 8',
-      'Box 9',
-      'Box 10'
-    ];
-
-    add(): void {
-      this.trappedBoxes.push('New trapped');
-    }
-
     sort(event: SortEvent) {
-        const current = this.product.urls[event.currentIndex].sequence;
-        const swapWith = this.product.urls[event.newIndex].sequence;
-
-        console.log('soring: current: ' + current + ' , swapWith: ' + swapWith);
-        this.product.urls[event.newIndex].sequence = current;
-        this.product.urls[event.currentIndex].sequence = swapWith;
+        const url: Url = this.product.urls[event.currentIndex];
+        this.product.urls.splice(event.currentIndex, 1);
+        this.product.urls.splice(event.newIndex, 0, url);
     }
 }
