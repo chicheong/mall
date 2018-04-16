@@ -529,9 +529,9 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     }
 
     addToCart() {
-        this.subscribeToAddToCartResponse(
-            this.myOrderService.addToCart(this.selectedItem, 1));
         if (this.isAuthenticated()) {
+            this.subscribeToAddToCartResponse(
+                    this.myOrderService.addToCart(this.selectedItem, 1));
         } else {
             this.login();
         }

@@ -175,7 +175,7 @@ public class MyOrderResource {
         MyOrderDTO myOrderDTO  = myOrderService.addToCart(myAccount, orderItem);
 
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, "0"))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, myOrderDTO.getId().toString()))
             .body(myOrderDTO);
     }
 }

@@ -48,7 +48,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        console.error('navbar ngOnInit');
+        // console.error('navbar ngOnInit');
         this.languageHelper.getAll().then((languages) => {
             this.languages = languages;
         });
@@ -57,29 +57,25 @@ export class NavbarComponent implements OnInit, OnDestroy {
             this.inProduction = profileInfo.inProduction;
             this.swaggerEnabled = profileInfo.swaggerEnabled;
         });
-        // this.registerChangeInAccount();
 
-//        if (this.isAuthenticated()) {
-            /**console.error('check navbar Authenticated?');
-            this.principal.identity().then((account) => {
-                if (account && account.myAccount) {
-                    this.myAccountService.find(account.myAccount.id).subscribe((myAccountResponse: HttpResponse<MyAccount>) => {
-                        this.myAccount = myAccountResponse.body;
-                    });
-                } else {
-                    this.myAccount = undefined;
-                }
-            });*/
-//        } else {
-//            console.error('navbar is not Authenticated');
-//        };
         this.registerAuthenticationSuccess();
+        // this.registerChangeInAccount();
+        // console.error('check navbar Authenticated?');
+        this.principal.identity().then((account) => {
+            if (account) {
+                this.eventManager.broadcast({
+                    name: 'authenticationSuccess',
+                    content: 'Sending Already Authenticated'
+                });
+            }
+        });
     }
 
     registerAuthenticationSuccess() {
         this.eventManager.subscribe('authenticationSuccess', (message) => {
-            console.error('navbar registerAuthenticationSuccess');
+            // console.error('navbar registerAuthenticationSuccess');
             this.principal.identity().then((account) => {
+                // console.error('navbar this.principal.identity().then');
                 if (account && account.myAccount) {
                     this.myAccountService.find(account.myAccount.id).subscribe((myAccountResponse: HttpResponse<MyAccount>) => {
                         this.myAccount = myAccountResponse.body;

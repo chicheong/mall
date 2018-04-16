@@ -24,17 +24,14 @@ export class HomeComponent implements OnInit {
     }
 
     ngOnInit() {
-        console.error('home ngOnInit');
-        /**this.principal.identity().then((account) => {
-            console.error('home principal.identity().then: ' + account);
-            this.account = account;
-        });*/
         this.registerAuthenticationSuccess();
     }
 
     registerAuthenticationSuccess() {
         this.eventManager.subscribe('authenticationSuccess', (message) => {
+            // console.error('home subscribe authenticationSuccess');
             this.principal.identity().then((account) => {
+                // console.error('home this.principal.identity().then');
                 this.account = account;
             });
         });
