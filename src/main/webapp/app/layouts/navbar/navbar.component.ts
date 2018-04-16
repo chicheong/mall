@@ -60,7 +60,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
         // this.registerChangeInAccount();
 
 //        if (this.isAuthenticated()) {
-            console.error('check navbar Authenticated?');
+            /**console.error('check navbar Authenticated?');
             this.principal.identity().then((account) => {
                 if (account && account.myAccount) {
                     this.myAccountService.find(account.myAccount.id).subscribe((myAccountResponse: HttpResponse<MyAccount>) => {
@@ -69,7 +69,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
                 } else {
                     this.myAccount = undefined;
                 }
-            });
+            });*/
 //        } else {
 //            console.error('navbar is not Authenticated');
 //        };
