@@ -1,25 +1,13 @@
 package com.wongs.service;
 
-import com.wongs.config.CacheConfiguration;
-import com.wongs.domain.Authority;
-import com.wongs.domain.MyAccount;
-import com.wongs.domain.Shop;
-import com.wongs.domain.User;
-import com.wongs.domain.UserInfo;
-import com.wongs.repository.AuthorityRepository;
-import com.wongs.repository.MyAccountRepository;
-import com.wongs.repository.ShopRepository;
-import com.wongs.repository.UserInfoRepository;
-import com.wongs.config.Constants;
-import com.wongs.repository.UserRepository;
-import com.wongs.repository.search.MyAccountSearchRepository;
-import com.wongs.repository.search.ShopSearchRepository;
-import com.wongs.repository.search.UserInfoSearchRepository;
-import com.wongs.repository.search.UserSearchRepository;
-import com.wongs.security.AuthoritiesConstants;
-import com.wongs.security.SecurityUtils;
-import com.wongs.service.util.RandomUtil;
-import com.wongs.service.dto.UserDTO;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,10 +19,27 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.wongs.config.Constants;
+import com.wongs.domain.Authority;
+import com.wongs.domain.MyAccount;
+import com.wongs.domain.Shop;
+import com.wongs.domain.User;
+import com.wongs.domain.UserInfo;
+import com.wongs.repository.AuthorityRepository;
+import com.wongs.repository.MyAccountRepository;
+import com.wongs.repository.ShopRepository;
+import com.wongs.repository.UserInfoRepository;
+import com.wongs.repository.UserRepository;
+import com.wongs.repository.search.MyAccountSearchRepository;
+import com.wongs.repository.search.ShopSearchRepository;
+import com.wongs.repository.search.UserInfoSearchRepository;
+import com.wongs.repository.search.UserSearchRepository;
+import com.wongs.security.AuthoritiesConstants;
+import com.wongs.security.SecurityUtils;
+import com.wongs.service.dto.MyAccountDTO;
+import com.wongs.service.dto.UserDTO;
+import com.wongs.service.mapper.MyAccountMapper;
+import com.wongs.service.util.RandomUtil;
 
 /**
  * Service class for managing users.
@@ -63,11 +68,13 @@ public class UserService {
     private final ShopRepository shopRepository;
     private final ShopSearchRepository shopSearchRepository;
     
+    private final MyAccountMapper myAccountMapper;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserSearchRepository userSearchRepository, AuthorityRepository authorityRepository, CacheManager cacheManager,
     		UserInfoRepository userInfoRepository, UserInfoSearchRepository userInfoSearchRepository,
     		MyAccountRepository myAccountRepository, MyAccountSearchRepository myAccountSearchRepository,
-    		ShopRepository shopRepository, ShopSearchRepository shopSearchRepository) {
+    		ShopRepository shopRepository, ShopSearchRepository shopSearchRepository,
+    		MyAccountMapper myAccountMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userSearchRepository = userSearchRepository;
@@ -79,6 +86,7 @@ public class UserService {
         this.myAccountSearchRepository = myAccountSearchRepository;
         this.shopRepository = shopRepository;
         this.shopSearchRepository = shopSearchRepository;
+        this.myAccountMapper = myAccountMapper;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -386,9 +394,9 @@ public class UserService {
     }
     
     @Transactional(readOnly = true)
-    public MyAccount getMyAccountWithShops(long id) {
-    	MyAccount test = myAccountRepository.findOneWithEagerRelationships(id);
-        return test;
+    public MyAccountDTO getMyAccountWithShops(long id) {
+    	MyAccount myAccount = myAccountRepository.findOneWithEagerRelationships(id);
+        return myAccountMapper.toDto(myAccount);
     }
     
     @Transactional(readOnly = true)

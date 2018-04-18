@@ -30,7 +30,6 @@ export class NavbarComponent implements OnInit, OnDestroy {
     version: string;
     eventSubscriber: Subscription;
     myAccount: MyAccount;
-    accounts: any[];
 
     constructor(
         private loginService: LoginService,

@@ -1,4 +1,5 @@
 import { BaseEntity, User } from './../../shared';
+import { MyAccount } from './../my-account';
 
 export class UserInfo implements BaseEntity {
     constructor(
@@ -7,7 +8,7 @@ export class UserInfo implements BaseEntity {
         public shopId?: number,
         public user?: User,
         public defaultAccount?: BaseEntity,
-        public accounts?: BaseEntity[],
+        public accounts?: MyAccount[],
     ) {
     }
 }

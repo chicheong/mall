@@ -60,11 +60,7 @@ public class UserDTO {
     
     private UserInfo userInfo = null;
     
-    private MyAccount myAccount = null;
-    
-    private Set<MyAccount> myAccounts = null;
-    
-    private Long shopId;
+    private MyAccountDTO myAccount = null;
 
     public UserDTO() {
         // Empty constructor needed for Jackson.
@@ -198,39 +194,17 @@ public class UserDTO {
 
 	public void setUserInfo(UserInfo userInfo) {
 		this.userInfo = userInfo;
-		if (userInfo != null) {
-			this.shopId = userInfo.getShopId();
-			if (userInfo.getAccounts() != null) {
-				this.myAccounts = userInfo.getAccounts();
-			}
-		}
 	}
 
-	public MyAccount getMyAccount() {
+	public MyAccountDTO getMyAccount() {
 		return myAccount;
 	}
 
-	public void setMyAccount(MyAccount myAccount) {
+	public void setMyAccount(MyAccountDTO myAccount) {
 		this.myAccount = myAccount;
 //		if (myAccount != null && myAccount.getShops() != null) {
 //			this.shops = myAccount.getShops();
 //		}
-	}
-
-	public Set<MyAccount> getMyAccounts() {
-		return myAccounts;
-	}
-
-	public void setMyAccounts(Set<MyAccount> myAccounts) {
-		this.myAccounts = myAccounts;
-	}
-	
-	public Long getShopId() {
-		return shopId;
-	}
-
-	public void setShopId(Long shopId) {
-		this.shopId = shopId;
 	}
 
 	@Override
@@ -250,8 +224,6 @@ public class UserDTO {
             ", authorities=" + authorities +
             ", userIno=" + userInfo +
             ", myAccount=" + myAccount +
-            ", myAccounts=" + myAccounts +
-            ", shopId=" + shopId +
             "}";
     }
 }

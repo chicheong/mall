@@ -17,8 +17,6 @@ export class User {
     public password?: string;
     public userInfo?: UserInfo;
     public myAccount?: MyAccount;
-    public myAccounts?: MyAccount[];
-    public shopId?: any;
 
     constructor(
         id?: any,
@@ -35,9 +33,7 @@ export class User {
         lastModifiedDate?: Date,
         password?: string,
         userInfo?: UserInfo,
-        myAccount?: MyAccount,
-        myAccounts?: MyAccount[],
-        shopId?: any
+        myAccount?: MyAccount
     ) {
         this.id = id ? id : null;
         this.login = login ? login : null;
@@ -54,7 +50,5 @@ export class User {
         this.password = password ? password : null;
         this.userInfo = userInfo ? userInfo : null;
         this.myAccount = myAccount ? myAccount : null;
-        this.myAccounts = myAccounts ? myAccounts : null;
-        this.shopId = shopId ? shopId : null;
     }
 }
