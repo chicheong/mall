@@ -4,6 +4,7 @@ import com.wongs.MallApp;
 
 import com.wongs.domain.UserInfo;
 import com.wongs.repository.UserInfoRepository;
+import com.wongs.service.UserInfoService;
 import com.wongs.repository.search.UserInfoSearchRepository;
 import com.wongs.service.dto.UserInfoDTO;
 import com.wongs.service.mapper.UserInfoMapper;
@@ -33,9 +34,9 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Test class for the UserInfoResource REST controller.
+ * Test class for the UserinfoResource REST controller.
  *
- * @see UserInfoResource
+ * @see UserinfoResource
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MallApp.class)
@@ -52,6 +53,9 @@ public class UserInfoResourceIntTest {
 
     @Autowired
     private UserInfoMapper userInfoMapper;
+
+    @Autowired
+    private UserInfoService userInfoService;
 
     @Autowired
     private UserInfoSearchRepository userInfoSearchRepository;
@@ -75,7 +79,7 @@ public class UserInfoResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final UserInfoResource userInfoResource = new UserInfoResource(userInfoRepository, userInfoMapper, userInfoSearchRepository);
+        final UserInfoResource userInfoResource = new UserInfoResource(userInfoService);
         this.restUserInfoMockMvc = MockMvcBuilders.standaloneSetup(userInfoResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

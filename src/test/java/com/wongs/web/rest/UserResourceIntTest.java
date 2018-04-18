@@ -1,18 +1,24 @@
 package com.wongs.web.rest;
 
-import com.wongs.MallApp;
-import com.wongs.config.CacheConfiguration;
-import com.wongs.domain.Authority;
-import com.wongs.domain.User;
-import com.wongs.repository.UserRepository;
-import com.wongs.repository.search.UserSearchRepository;
-import com.wongs.security.AuthoritiesConstants;
-import com.wongs.service.MailService;
-import com.wongs.service.UserService;
-import com.wongs.service.dto.UserDTO;
-import com.wongs.service.mapper.UserMapper;
-import com.wongs.web.rest.errors.ExceptionTranslator;
-import com.wongs.web.rest.vm.ManagedUserVM;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.containsInAnyOrder;
+import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+
+import java.time.Instant;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
+
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -29,15 +35,20 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.util.*;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import com.wongs.MallApp;
+import com.wongs.domain.Authority;
+import com.wongs.domain.User;
+import com.wongs.repository.UserRepository;
+import com.wongs.repository.search.UserSearchRepository;
+import com.wongs.security.AuthoritiesConstants;
+import com.wongs.service.MailService;
+import com.wongs.service.MyAccountService;
+import com.wongs.service.UserInfoService;
+import com.wongs.service.UserService;
+import com.wongs.service.dto.UserDTO;
+import com.wongs.service.mapper.UserMapper;
+import com.wongs.web.rest.errors.ExceptionTranslator;
+import com.wongs.web.rest.vm.ManagedUserVM;
 
 /**
  * Test class for the UserResource REST controller.
@@ -82,6 +93,12 @@ public class UserResourceIntTest {
 
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private UserInfoService userInfoService;
+
+    @Autowired
+    private MyAccountService myAccountService;
 
     @Autowired
     private UserMapper userMapper;
@@ -110,7 +127,7 @@ public class UserResourceIntTest {
         MockitoAnnotations.initMocks(this);
         cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).clear();
         cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).clear();
-        UserResource userResource = new UserResource(userRepository, userService, mailService, userSearchRepository);
+        UserResource userResource = new UserResource(userRepository, userService, userInfoService, myAccountService, mailService, userSearchRepository);
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(userResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

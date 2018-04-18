@@ -304,7 +304,7 @@ public class UserService {
     public void deleteUser(String login) {
         userRepository.findOneByLogin(login).ifPresent(user -> {
         	       	
-        	UserInfo userInfo = this.getUserInfo(user.getLogin());
+        	UserInfo userInfo = null;//this.getUserInfo(user.getLogin());
         	if (userInfo != null) {
         		userInfoRepository.delete(userInfo);
             	Optional<Set<MyAccount>> myAccounts = this.getMyAcounts(userInfo.getId());
@@ -380,23 +380,11 @@ public class UserService {
     public List<String> getAuthorities() {
         return authorityRepository.findAll().stream().map(Authority::getName).collect(Collectors.toList());
     }
-
-    @Transactional(readOnly = true)
-    public UserInfo getUserInfo(String login) {
-    	UserInfo test = userInfoRepository.findOneByUserLogin(login);
-        return test;
-    }
     
     @Transactional(readOnly = true)
     public MyAccount getCurrentMyAccount(String login) {
     	MyAccount test = userInfoRepository.findCurrentMyAccountByUserLogin(login);
         return test;
-    }
-    
-    @Transactional(readOnly = true)
-    public MyAccountDTO getMyAccountWithShops(long id) {
-    	MyAccount myAccount = myAccountRepository.findOneWithEagerRelationships(id);
-        return myAccountMapper.toDto(myAccount);
     }
     
     @Transactional(readOnly = true)
