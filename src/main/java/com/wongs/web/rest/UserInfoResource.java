@@ -8,6 +8,8 @@ import com.wongs.repository.search.UserInfoSearchRepository;
 import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
+import com.wongs.service.dto.UserInfoDTO;
+import com.wongs.service.mapper.UserInfoMapper;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,29 +43,34 @@ public class UserInfoResource {
 
     private final UserInfoRepository userInfoRepository;
 
+    private final UserInfoMapper userInfoMapper;
+
     private final UserInfoSearchRepository userInfoSearchRepository;
 
-    public UserInfoResource(UserInfoRepository userInfoRepository, UserInfoSearchRepository userInfoSearchRepository) {
+    public UserInfoResource(UserInfoRepository userInfoRepository, UserInfoMapper userInfoMapper, UserInfoSearchRepository userInfoSearchRepository) {
         this.userInfoRepository = userInfoRepository;
+        this.userInfoMapper = userInfoMapper;
         this.userInfoSearchRepository = userInfoSearchRepository;
     }
 
     /**
      * POST  /user-infos : Create a new userInfo.
      *
-     * @param userInfo the userInfo to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new userInfo, or with status 400 (Bad Request) if the userInfo has already an ID
+     * @param userInfoDTO the userInfoDTO to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new userInfoDTO, or with status 400 (Bad Request) if the userInfo has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/user-infos")
     @Timed
-    public ResponseEntity<UserInfo> createUserInfo(@RequestBody UserInfo userInfo) throws URISyntaxException {
-        log.debug("REST request to save UserInfo : {}", userInfo);
-        if (userInfo.getId() != null) {
+    public ResponseEntity<UserInfoDTO> createUserInfo(@RequestBody UserInfoDTO userInfoDTO) throws URISyntaxException {
+        log.debug("REST request to save UserInfo : {}", userInfoDTO);
+        if (userInfoDTO.getId() != null) {
             throw new BadRequestAlertException("A new userInfo cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        UserInfo result = userInfoRepository.save(userInfo);
-        userInfoSearchRepository.save(result);
+        UserInfo userInfo = userInfoMapper.toEntity(userInfoDTO);
+        userInfo = userInfoRepository.save(userInfo);
+        UserInfoDTO result = userInfoMapper.toDto(userInfo);
+        userInfoSearchRepository.save(userInfo);
         return ResponseEntity.created(new URI("/api/user-infos/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -72,23 +79,25 @@ public class UserInfoResource {
     /**
      * PUT  /user-infos : Updates an existing userInfo.
      *
-     * @param userInfo the userInfo to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated userInfo,
-     * or with status 400 (Bad Request) if the userInfo is not valid,
-     * or with status 500 (Internal Server Error) if the userInfo couldn't be updated
+     * @param userInfoDTO the userInfoDTO to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated userInfoDTO,
+     * or with status 400 (Bad Request) if the userInfoDTO is not valid,
+     * or with status 500 (Internal Server Error) if the userInfoDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/user-infos")
     @Timed
-    public ResponseEntity<UserInfo> updateUserInfo(@RequestBody UserInfo userInfo) throws URISyntaxException {
-        log.debug("REST request to update UserInfo : {}", userInfo);
-        if (userInfo.getId() == null) {
-            return createUserInfo(userInfo);
+    public ResponseEntity<UserInfoDTO> updateUserInfo(@RequestBody UserInfoDTO userInfoDTO) throws URISyntaxException {
+        log.debug("REST request to update UserInfo : {}", userInfoDTO);
+        if (userInfoDTO.getId() == null) {
+            return createUserInfo(userInfoDTO);
         }
-        UserInfo result = userInfoRepository.save(userInfo);
-        userInfoSearchRepository.save(result);
+        UserInfo userInfo = userInfoMapper.toEntity(userInfoDTO);
+        userInfo = userInfoRepository.save(userInfo);
+        UserInfoDTO result = userInfoMapper.toDto(userInfo);
+        userInfoSearchRepository.save(userInfo);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, userInfo.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, userInfoDTO.getId().toString()))
             .body(result);
     }
 
@@ -100,31 +109,32 @@ public class UserInfoResource {
      */
     @GetMapping("/user-infos")
     @Timed
-    public ResponseEntity<List<UserInfo>> getAllUserInfos(Pageable pageable) {
+    public ResponseEntity<List<UserInfoDTO>> getAllUserInfos(Pageable pageable) {
         log.debug("REST request to get a page of UserInfos");
         Page<UserInfo> page = userInfoRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/user-infos");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(userInfoMapper.toDto(page.getContent()), headers, HttpStatus.OK);
     }
 
     /**
      * GET  /user-infos/:id : get the "id" userInfo.
      *
-     * @param id the id of the userInfo to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the userInfo, or with status 404 (Not Found)
+     * @param id the id of the userInfoDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the userInfoDTO, or with status 404 (Not Found)
      */
     @GetMapping("/user-infos/{id}")
     @Timed
-    public ResponseEntity<UserInfo> getUserInfo(@PathVariable Long id) {
+    public ResponseEntity<UserInfoDTO> getUserInfo(@PathVariable Long id) {
         log.debug("REST request to get UserInfo : {}", id);
         UserInfo userInfo = userInfoRepository.findOneWithEagerRelationships(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(userInfo));
+        UserInfoDTO userInfoDTO = userInfoMapper.toDto(userInfo);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(userInfoDTO));
     }
 
     /**
      * DELETE  /user-infos/:id : delete the "id" userInfo.
      *
-     * @param id the id of the userInfo to delete
+     * @param id the id of the userInfoDTO to delete
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/user-infos/{id}")
@@ -146,11 +156,11 @@ public class UserInfoResource {
      */
     @GetMapping("/_search/user-infos")
     @Timed
-    public ResponseEntity<List<UserInfo>> searchUserInfos(@RequestParam String query, Pageable pageable) {
+    public ResponseEntity<List<UserInfoDTO>> searchUserInfos(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of UserInfos for query {}", query);
         Page<UserInfo> page = userInfoSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/user-infos");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(userInfoMapper.toDto(page.getContent()), headers, HttpStatus.OK);
     }
 
 }

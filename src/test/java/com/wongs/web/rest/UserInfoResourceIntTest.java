@@ -5,6 +5,8 @@ import com.wongs.MallApp;
 import com.wongs.domain.UserInfo;
 import com.wongs.repository.UserInfoRepository;
 import com.wongs.repository.search.UserInfoSearchRepository;
+import com.wongs.service.dto.UserInfoDTO;
+import com.wongs.service.mapper.UserInfoMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -49,6 +51,9 @@ public class UserInfoResourceIntTest {
     private UserInfoRepository userInfoRepository;
 
     @Autowired
+    private UserInfoMapper userInfoMapper;
+
+    @Autowired
     private UserInfoSearchRepository userInfoSearchRepository;
 
     @Autowired
@@ -70,7 +75,7 @@ public class UserInfoResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final UserInfoResource userInfoResource = new UserInfoResource(userInfoRepository, userInfoSearchRepository);
+        final UserInfoResource userInfoResource = new UserInfoResource(userInfoRepository, userInfoMapper, userInfoSearchRepository);
         this.restUserInfoMockMvc = MockMvcBuilders.standaloneSetup(userInfoResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -103,9 +108,10 @@ public class UserInfoResourceIntTest {
         int databaseSizeBeforeCreate = userInfoRepository.findAll().size();
 
         // Create the UserInfo
+        UserInfoDTO userInfoDTO = userInfoMapper.toDto(userInfo);
         restUserInfoMockMvc.perform(post("/api/user-infos")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userInfo)))
+            .content(TestUtil.convertObjectToJsonBytes(userInfoDTO)))
             .andExpect(status().isCreated());
 
         // Validate the UserInfo in the database
@@ -127,11 +133,12 @@ public class UserInfoResourceIntTest {
 
         // Create the UserInfo with an existing ID
         userInfo.setId(1L);
+        UserInfoDTO userInfoDTO = userInfoMapper.toDto(userInfo);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restUserInfoMockMvc.perform(post("/api/user-infos")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userInfo)))
+            .content(TestUtil.convertObjectToJsonBytes(userInfoDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the UserInfo in the database
@@ -192,10 +199,11 @@ public class UserInfoResourceIntTest {
         updatedUserInfo
             .accountId(UPDATED_ACCOUNT_ID)
             .shopId(UPDATED_SHOP_ID);
+        UserInfoDTO userInfoDTO = userInfoMapper.toDto(updatedUserInfo);
 
         restUserInfoMockMvc.perform(put("/api/user-infos")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedUserInfo)))
+            .content(TestUtil.convertObjectToJsonBytes(userInfoDTO)))
             .andExpect(status().isOk());
 
         // Validate the UserInfo in the database
@@ -216,11 +224,12 @@ public class UserInfoResourceIntTest {
         int databaseSizeBeforeUpdate = userInfoRepository.findAll().size();
 
         // Create the UserInfo
+        UserInfoDTO userInfoDTO = userInfoMapper.toDto(userInfo);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restUserInfoMockMvc.perform(put("/api/user-infos")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(userInfo)))
+            .content(TestUtil.convertObjectToJsonBytes(userInfoDTO)))
             .andExpect(status().isCreated());
 
         // Validate the UserInfo in the database
@@ -279,5 +288,28 @@ public class UserInfoResourceIntTest {
         assertThat(userInfo1).isNotEqualTo(userInfo2);
         userInfo1.setId(null);
         assertThat(userInfo1).isNotEqualTo(userInfo2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(UserInfoDTO.class);
+        UserInfoDTO userInfoDTO1 = new UserInfoDTO();
+        userInfoDTO1.setId(1L);
+        UserInfoDTO userInfoDTO2 = new UserInfoDTO();
+        assertThat(userInfoDTO1).isNotEqualTo(userInfoDTO2);
+        userInfoDTO2.setId(userInfoDTO1.getId());
+        assertThat(userInfoDTO1).isEqualTo(userInfoDTO2);
+        userInfoDTO2.setId(2L);
+        assertThat(userInfoDTO1).isNotEqualTo(userInfoDTO2);
+        userInfoDTO1.setId(null);
+        assertThat(userInfoDTO1).isNotEqualTo(userInfoDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(userInfoMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(userInfoMapper.fromId(null)).isNull();
     }
 }
