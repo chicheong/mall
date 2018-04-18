@@ -3,8 +3,12 @@ package com.wongs.service.dto;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
+import java.util.Set;
+
+import com.wongs.domain.MyAccount;
+import com.wongs.domain.User;
+import com.wongs.domain.UserInfo;
 
 /**
  * A DTO for the UserInfo entity.
@@ -17,14 +21,24 @@ public class UserInfoDTO implements Serializable {
 
     private Long shopId;
 
-    private Long userId;
+    private User user;
 
-    private String userLogin;
-
-    private Long defaultAccountId;
+    private MyAccount defaultAccount;
 
     private Set<MyAccountDTO> accounts = new HashSet<>();
 
+    public UserInfoDTO() {
+        // Empty constructor needed for Jackson.
+    }
+    
+    public UserInfoDTO(UserInfo userInfo) {
+        this.id = userInfo.getId();
+    	this.accountId = userInfo.getAccountId();
+    	this.shopId = userInfo.getShopId();
+    	this.user = userInfo.getUser();
+    	this.defaultAccount = userInfo.getDefaultAccount();
+    }
+    
     public Long getId() {
         return id;
     }
@@ -49,28 +63,20 @@ public class UserInfoDTO implements Serializable {
         this.shopId = shopId;
     }
 
-    public Long getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(Long userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
-    public String getUserLogin() {
-        return userLogin;
+    public MyAccount getDefaultAccount() {
+        return defaultAccount;
     }
 
-    public void setUserLogin(String userLogin) {
-        this.userLogin = userLogin;
-    }
-
-    public Long getDefaultAccountId() {
-        return defaultAccountId;
-    }
-
-    public void setDefaultAccountId(Long myAccountId) {
-        this.defaultAccountId = myAccountId;
+    public void setDefaultAccountId(MyAccount myAccount) {
+        this.defaultAccount = myAccount;
     }
 
     public Set<MyAccountDTO> getAccounts() {

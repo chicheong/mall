@@ -40,6 +40,6 @@
     "entityTableName": "user_info",
     "dto": "mapstruct",
     "pagination": "pagination",
-    "service": "no",
+    "service": "serviceClass",
     "jpaMetamodelFiltering": false
 }

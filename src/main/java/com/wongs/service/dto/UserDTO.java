@@ -58,7 +58,7 @@ public class UserDTO {
 
     private Set<String> authorities;
     
-    private UserInfo userInfo = null;
+    private UserInfoDTO userInfo = null;
     
     private MyAccountDTO myAccount = null;
 
@@ -188,11 +188,11 @@ public class UserDTO {
         this.authorities = authorities;
     }
     
-    public UserInfo getUserInfo() {
+    public UserInfoDTO getUserInfo() {
 		return userInfo;
 	}
 
-	public void setUserInfo(UserInfo userInfo) {
+	public void setUserInfo(UserInfoDTO userInfo) {
 		this.userInfo = userInfo;
 	}
 
