@@ -121,6 +121,8 @@
             "edit": "Edit",
             "open": "Open",
             "save": "Save",
+            "saveUpdate": "Save & Update",
+            "checkout": "Checkout",
             "view": "View",
 			"confirm": "Confirm",
 			"upload": "Upload",

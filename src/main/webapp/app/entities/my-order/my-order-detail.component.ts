@@ -40,6 +40,17 @@ export class MyOrderDetailComponent implements OnInit, OnDestroy {
             });
     }
 
+    sumAll(): number {
+        if (this.myOrder.items) {
+            let total = 0;
+            this.myOrder.items.forEach((item) => {
+                total += (item.quantity * item.price);
+            });
+            return total;
+        }
+        return 0;
+    }
+
     save() {
         this.isSaving = true;
         this.isSaving = false;

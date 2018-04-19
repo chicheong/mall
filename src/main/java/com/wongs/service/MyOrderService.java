@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.wongs.domain.MyAccount;
 import com.wongs.domain.MyOrder;
 import com.wongs.domain.OrderItem;
+import com.wongs.domain.enumeration.CurrencyType;
 import com.wongs.domain.enumeration.OrderStatus;
 import com.wongs.repository.MyOrderRepository;
 import com.wongs.repository.OrderItemRepository;
@@ -81,7 +82,9 @@ public class MyOrderService {
     public MyOrderDTO addToCart(MyAccountDTO myAccountDTO, final OrderItem orderItem) {
         log.debug("Request to add ProductItem : {} ", orderItem);
         MyAccount myAccount = myAccountMapper.toEntity(myAccountDTO);
-        MyOrder myOrder = this.findEntityByAccountAndStatus(myAccount, OrderStatus.PENDING).orElseGet(() -> this.createPendingOrder(myAccount));
+        MyOrder myOrder = this.findEntityByAccountAndStatus(myAccount, OrderStatus.PENDING).orElseGet(() -> {
+        	return this.createPendingOrder(myAccount, orderItem.getCurrency());	
+        });
         myOrder.getItems().stream().filter(item -> orderItem.getProductItem().equals(item.getProductItem())).findFirst().map(item -> {
         	item.setQuantity(item.getQuantity() + orderItem.getQuantity());
         	orderItemRepository.save(item);
@@ -115,9 +118,10 @@ public class MyOrderService {
         return result;
     }
 
-    private MyOrder createPendingOrder(MyAccount myAccount) {
+    private MyOrder createPendingOrder(MyAccount myAccount, CurrencyType currency) {
     	MyOrder myOrder = new MyOrder();
     	myOrder.setAccount(myAccount);
+    	myOrder.setCurrency(currency);
     	myOrder.setStatus(OrderStatus.PENDING);
         myOrder = myOrderRepository.save(myOrder);
         myOrderSearchRepository.save(myOrder);
