@@ -37,7 +37,10 @@
 	  	<span class="hipster img-fluid img-rounded">{{item.price}}</span>
 	  </div>	  
 	  <div class="col-md-2">
-		<span class="hipster img-fluid img-rounded">{{item.quantity}}</span>
+		<span class="hipster img-fluid img-rounded">
+			<input type="number" class="form-control" name="price" 
+                [(ngModel)]="item.quantity" />
+        </span>
 	  </div>
 	  <div class="col-md-2">
 	  	<span class="hipster img-fluid img-rounded">{{item.price * item.quantity}}</span>

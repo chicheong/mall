@@ -30,6 +30,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     version: string;
     eventSubscriber: Subscription;
     myAccount: MyAccount;
+    noOfItems = 0;
 
     constructor(
         private loginService: LoginService,
@@ -57,6 +58,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
             this.swaggerEnabled = profileInfo.swaggerEnabled;
         });
 
+        this.registerMyOrderUpdated();
         this.registerAuthenticationSuccess();
         // this.registerChangeInAccount();
         // console.error('check navbar Authenticated?');
@@ -75,6 +77,15 @@ export class NavbarComponent implements OnInit, OnDestroy {
             // console.error('navbar registerAuthenticationSuccess');
             this.principal.identity().then((account) => {
                 // console.error('navbar this.principal.identity().then');
+                if (account) {
+                    if (account.myAccount) {
+                        this.myAccount = account.myAccount;
+                        this.calculateMyOrderTotalItems();
+                    } else {
+                        this.myAccount = undefined;
+                    }
+                }
+                /**
                 if (account && account.myAccount) {
                     this.myAccountService.find(account.myAccount.id).subscribe((myAccountResponse: HttpResponse<MyAccount>) => {
                         this.myAccount = myAccountResponse.body;
@@ -82,8 +93,37 @@ export class NavbarComponent implements OnInit, OnDestroy {
                 } else {
                     this.myAccount = undefined;
                 }
+                */
             });
         });
+    }
+
+    registerMyOrderUpdated() {
+        this.eventSubscriber = this.eventManager.subscribe(
+            'myOrderModification',
+            (response) => {
+                this.updateMyOrder(response.obj);
+                this.calculateMyOrderTotalItems();
+            }
+        );
+    }
+
+    updateMyOrder(myOrder: MyOrder) {
+        this.myAccount.myOrder = myOrder;
+    }
+
+    calculateMyOrderTotalItems() {
+        console.error('calculateMyOrderTotalItems()');
+        if (this.myAccount.myOrder && this.myAccount.myOrder.items) {
+            let total = 0;
+            this.myAccount.myOrder.items.forEach((item) => {
+                total += item.quantity;
+            });
+            console.error('this.noOfItems: ' + total);
+            this.noOfItems = total;
+        } else {
+            this.noOfItems = 0;
+        }
     }
 
     ngOnDestroy() {

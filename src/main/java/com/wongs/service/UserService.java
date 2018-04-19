@@ -22,23 +22,20 @@ import org.springframework.transaction.annotation.Transactional;
 import com.wongs.config.Constants;
 import com.wongs.domain.Authority;
 import com.wongs.domain.MyAccount;
-import com.wongs.domain.Shop;
 import com.wongs.domain.User;
 import com.wongs.domain.UserInfo;
 import com.wongs.repository.AuthorityRepository;
-import com.wongs.repository.MyAccountRepository;
-import com.wongs.repository.ShopRepository;
-import com.wongs.repository.UserInfoRepository;
 import com.wongs.repository.UserRepository;
-import com.wongs.repository.search.MyAccountSearchRepository;
-import com.wongs.repository.search.ShopSearchRepository;
-import com.wongs.repository.search.UserInfoSearchRepository;
 import com.wongs.repository.search.UserSearchRepository;
 import com.wongs.security.AuthoritiesConstants;
 import com.wongs.security.SecurityUtils;
 import com.wongs.service.dto.MyAccountDTO;
+import com.wongs.service.dto.ShopDTO;
 import com.wongs.service.dto.UserDTO;
+import com.wongs.service.dto.UserInfoDTO;
 import com.wongs.service.mapper.MyAccountMapper;
+import com.wongs.service.mapper.ShopMapper;
+import com.wongs.service.mapper.UserInfoMapper;
 import com.wongs.service.util.RandomUtil;
 
 /**
@@ -60,33 +57,28 @@ public class UserService {
 
     private final CacheManager cacheManager;
     
-    private final UserInfoRepository userInfoRepository;
-    private final UserInfoSearchRepository userInfoSearchRepository;
-    private final MyAccountRepository myAccountRepository;
-    private final MyAccountSearchRepository myAccountSearchRepository;
+    private final UserInfoService userInfoService;
+    private final MyAccountService myAccountService;
+    private final ShopService shopService;
     
-    private final ShopRepository shopRepository;
-    private final ShopSearchRepository shopSearchRepository;
-    
+    private final UserInfoMapper userInfoMapper;
     private final MyAccountMapper myAccountMapper;
+    private final ShopMapper shopMapper;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserSearchRepository userSearchRepository, AuthorityRepository authorityRepository, CacheManager cacheManager,
-    		UserInfoRepository userInfoRepository, UserInfoSearchRepository userInfoSearchRepository,
-    		MyAccountRepository myAccountRepository, MyAccountSearchRepository myAccountSearchRepository,
-    		ShopRepository shopRepository, ShopSearchRepository shopSearchRepository,
-    		MyAccountMapper myAccountMapper) {
+    		UserInfoService userInfoService, MyAccountService myAccountService, ShopService shopService,
+    		UserInfoMapper userInfoMapper, MyAccountMapper myAccountMapper, ShopMapper shopMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userSearchRepository = userSearchRepository;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
-        this.userInfoRepository = userInfoRepository;
-        this.userInfoSearchRepository = userInfoSearchRepository;
-        this.myAccountRepository = myAccountRepository;
-        this.myAccountSearchRepository = myAccountSearchRepository;
-        this.shopRepository = shopRepository;
-        this.shopSearchRepository = shopSearchRepository;
+        this.userInfoService = userInfoService;
+        this.myAccountService = myAccountService;
+        this.shopService = shopService;
+        this.userInfoMapper = userInfoMapper;
         this.myAccountMapper = myAccountMapper;
+        this.shopMapper = shopMapper;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -157,42 +149,36 @@ public class UserService {
         cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(newUser.getEmail());
         log.debug("Created Information for User: {}", newUser);
         
-        UserInfo userInfo = new UserInfo();
+        UserInfoDTO userInfo = new UserInfoDTO();
         userInfo.setUser(newUser);
-        userInfoRepository.save(userInfo);
-        userInfoSearchRepository.save(userInfo);
+        userInfo = userInfoService.save(userInfo);
         
-        MyAccount myAccount = new MyAccount();
-        myAccount.getUserInfos().add(userInfo);
-        myAccountRepository.save(myAccount);
-        myAccountSearchRepository.save(myAccount);
+        MyAccountDTO myAccount = new MyAccountDTO();
+        myAccount.getUserInfos().add(userInfoMapper.toEntity(userInfo));
+        myAccount = myAccountService.save(myAccount);
         
         //Add shops for Testing only
-        Shop shop1 = new Shop();
+        ShopDTO shop1 = new ShopDTO();
         shop1.setName("Shop001");
         shop1.setCode("SHOP001");
-        shop1.getAccounts().add(myAccount);
-        shopRepository.save(shop1);
-        shopSearchRepository.save(shop1);
+        shop1.getAccounts().add(myAccountMapper.toEntity(myAccount));
+        shop1 = shopService.save(shop1);
         
-        Shop shop2 = new Shop();
+        ShopDTO shop2 = new ShopDTO();
         shop2.setName("Shop002");
         shop2.setCode("SHOP002");
-        shop2.getAccounts().add(myAccount);
-        shopRepository.save(shop2);
-        shopSearchRepository.save(shop2);
+        shop2.getAccounts().add(myAccountMapper.toEntity(myAccount));
+        shop2 = shopService.save(shop2);
         
         userInfo.getAccounts().add(myAccount);
         userInfo.setAccountId(myAccount.getId());
-        userInfo.setDefaultAccount(myAccount);
+        userInfo.setDefaultAccount(myAccountMapper.toEntity(myAccount));
         userInfo.setShopId(shop1.getId());
-        userInfoRepository.save(userInfo);
-        userInfoSearchRepository.save(userInfo);
+        userInfoService.save(userInfo);
         
         myAccount.getShops().add(shop1);
         myAccount.getShops().add(shop2);
-        myAccountRepository.save(myAccount);
-        myAccountSearchRepository.save(myAccount);
+        myAccountService.save(myAccount);
         
         return newUser;
     }
@@ -226,21 +212,18 @@ public class UserService {
         cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
         log.debug("Created Information for User: {}", user);
         
-        UserInfo userInfo = new UserInfo();
+        UserInfoDTO userInfo = new UserInfoDTO();
         userInfo.setUser(user);
-        userInfoRepository.save(userInfo);
-        userInfoSearchRepository.save(userInfo);
+        userInfo = userInfoService.save(userInfo);
         
-        MyAccount myAccount = new MyAccount();
-        myAccount.getUserInfos().add(userInfo);
-        myAccountRepository.save(myAccount);
-        myAccountSearchRepository.save(myAccount);
+        MyAccountDTO myAccount = new MyAccountDTO();
+        myAccount.getUserInfos().add(userInfoMapper.toEntity(userInfo));
+        myAccount = myAccountService.save(myAccount);
         
         userInfo.getAccounts().add(myAccount);
         userInfo.setAccountId(myAccount.getId());
-        userInfo.setDefaultAccount(myAccount);
-        userInfoRepository.save(userInfo);
-        userInfoSearchRepository.save(userInfo);
+        userInfo.setDefaultAccount(myAccountMapper.toEntity(myAccount));
+        userInfoService.save(userInfo);
         
         return user;
     }
@@ -304,17 +287,13 @@ public class UserService {
     public void deleteUser(String login) {
         userRepository.findOneByLogin(login).ifPresent(user -> {
         	       	
-        	UserInfo userInfo = null;//this.getUserInfo(user.getLogin());
+        	UserInfoDTO userInfo = userInfoService.findOneWithAccountsByUserLogin(user.getLogin());
         	if (userInfo != null) {
-        		userInfoRepository.delete(userInfo);
-            	Optional<Set<MyAccount>> myAccounts = this.getMyAcounts(userInfo.getId());
-            	if (myAccounts.isPresent()) {
-        			Iterator<MyAccount> iter = myAccounts.get().iterator();
-        			if (iter.hasNext()) {
-        				myAccountRepository.delete(iter.next());
-        				//TODO: should only delete the primary account of UserInfo
-        			}
-            	}
+        		userInfoService.delete(userInfo.getId());
+        		userInfo.getAccounts().stream().forEach(account -> {
+    				myAccountService.delete(account.getId());
+    				//TODO: should only delete the primary account of UserInfo
+        		}); 
         	}
         	
             userRepository.delete(user);
@@ -379,18 +358,6 @@ public class UserService {
      */
     public List<String> getAuthorities() {
         return authorityRepository.findAll().stream().map(Authority::getName).collect(Collectors.toList());
-    }
-    
-    @Transactional(readOnly = true)
-    public MyAccount getCurrentMyAccount(String login) {
-    	MyAccount test = userInfoRepository.findCurrentMyAccountByUserLogin(login);
-        return test;
-    }
-    
-    @Transactional(readOnly = true)
-    public Optional<Set<MyAccount>> getMyAcounts(Long userInfoId) {
-    	Set<MyAccount> test = userInfoRepository.findByUserInfoId(userInfoId); 
-        return Optional.ofNullable(test);
     }
 
 }

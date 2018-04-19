@@ -75,7 +75,7 @@ public class UserInfoDTO implements Serializable {
         return defaultAccount;
     }
 
-    public void setDefaultAccountId(MyAccount myAccount) {
+    public void setDefaultAccount(MyAccount myAccount) {
         this.defaultAccount = myAccount;
     }
 

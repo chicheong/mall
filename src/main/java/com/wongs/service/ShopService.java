@@ -45,6 +45,7 @@ public class ShopService {
     public ShopDTO save(ShopDTO shopDTO) {
         log.debug("Request to save Shop : {}", shopDTO);
         Shop shop = shopMapper.toEntity(shopDTO);
+        shop.setAccounts(shopDTO.getAccounts());
         shop = shopRepository.save(shop);
         ShopDTO result = shopMapper.toDto(shop);
         shopSearchRepository.save(shop);

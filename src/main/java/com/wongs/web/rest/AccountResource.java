@@ -121,7 +121,7 @@ public class AccountResource {
         return userService.getUserWithAuthorities()
             .map(user -> {
             	UserDTO userDTO = new UserDTO(user);
-				userDTO.setUserInfo(userInfoService.getUserInfo(user.getLogin()));
+				userDTO.setUserInfo(userInfoService.findOneWithAccountsByUserLogin(user.getLogin()));
 				userDTO.setMyAccount(userDTO.getUserInfo() != null? myAccountService.findOne(userDTO.getUserInfo().getDefaultAccount().getId()) : null);
 				return userDTO;
     		}).orElseThrow(() -> new InternalServerErrorException("User could not be found"));

@@ -15,13 +15,14 @@ import org.springframework.transaction.annotation.Transactional;
 import com.wongs.domain.MyAccount;
 import com.wongs.domain.MyOrder;
 import com.wongs.domain.OrderItem;
-import com.wongs.domain.enumeration.CurrencyType;
 import com.wongs.domain.enumeration.OrderStatus;
 import com.wongs.repository.MyOrderRepository;
 import com.wongs.repository.OrderItemRepository;
 import com.wongs.repository.search.MyOrderSearchRepository;
 import com.wongs.repository.search.OrderItemSearchRepository;
+import com.wongs.service.dto.MyAccountDTO;
 import com.wongs.service.dto.MyOrderDTO;
+import com.wongs.service.mapper.MyAccountMapper;
 import com.wongs.service.mapper.MyOrderMapper;
 
 /**
@@ -36,17 +37,20 @@ public class MyOrderService {
     private final MyOrderRepository myOrderRepository;
 
     private final MyOrderMapper myOrderMapper;
+    private final MyAccountMapper myAccountMapper;
 
     private final MyOrderSearchRepository myOrderSearchRepository;
     
     private final OrderItemRepository orderItemRepository;
     private final OrderItemSearchRepository orderItemSearchRepository;
 
-    public MyOrderService(MyOrderRepository myOrderRepository, MyOrderMapper myOrderMapper, MyOrderSearchRepository myOrderSearchRepository,
+    public MyOrderService(MyOrderRepository myOrderRepository, MyOrderSearchRepository myOrderSearchRepository,
+    						MyOrderMapper myOrderMapper, MyAccountMapper myAccountMapper,
     						OrderItemRepository orderItemRepository, OrderItemSearchRepository orderItemSearchRepository) {
         this.myOrderRepository = myOrderRepository;
-        this.myOrderMapper = myOrderMapper;
         this.myOrderSearchRepository = myOrderSearchRepository;
+        this.myOrderMapper = myOrderMapper;
+        this.myAccountMapper = myAccountMapper;
         this.orderItemRepository = orderItemRepository;
         this.orderItemSearchRepository = orderItemSearchRepository;
     }
@@ -60,6 +64,8 @@ public class MyOrderService {
     public MyOrderDTO save(MyOrderDTO myOrderDTO) {
         log.debug("Request to save MyOrder : {}", myOrderDTO);
         MyOrder myOrder = myOrderMapper.toEntity(myOrderDTO);
+        myOrder.setItems(myOrderDTO.getItems());
+        myOrder.setStatusHistories(myOrderDTO.getStatusHistories());
         myOrder = myOrderRepository.save(myOrder);
         MyOrderDTO result = myOrderMapper.toDto(myOrder);
         myOrderSearchRepository.save(myOrder);
@@ -72,8 +78,9 @@ public class MyOrderService {
      * @param myOrderDTO the entity to save
      * @return the persisted entity
      */
-    public MyOrderDTO addToCart(MyAccount myAccount, final OrderItem orderItem) {
+    public MyOrderDTO addToCart(MyAccountDTO myAccountDTO, final OrderItem orderItem) {
         log.debug("Request to add ProductItem : {} ", orderItem);
+        MyAccount myAccount = myAccountMapper.toEntity(myAccountDTO);
         MyOrder myOrder = this.findEntityByAccountAndStatus(myAccount, OrderStatus.PENDING).orElseGet(() -> this.createPendingOrder(myAccount));
         myOrder.getItems().stream().filter(item -> orderItem.getProductItem().equals(item.getProductItem())).findFirst().map(item -> {
         	item.setQuantity(item.getQuantity() + orderItem.getQuantity());
@@ -108,7 +115,7 @@ public class MyOrderService {
         return result;
     }
 
-    public MyOrder createPendingOrder(MyAccount myAccount) {
+    private MyOrder createPendingOrder(MyAccount myAccount) {
     	MyOrder myOrder = new MyOrder();
     	myOrder.setAccount(myAccount);
     	myOrder.setStatus(OrderStatus.PENDING);
@@ -136,11 +143,11 @@ public class MyOrderService {
      * @param id the id of the entity
      * @return the entity
      */
- @Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     public MyOrderDTO findOne(Long id) {
         log.debug("Request to get MyOrder : {}", id);
         MyOrder myOrder = myOrderRepository.findOne(id);
-        return myOrderMapper.toDto(myOrder);
+        return this.toDTOWithLists(myOrder);
     }
     
     /**
@@ -153,7 +160,22 @@ public class MyOrderService {
     public MyOrderDTO findByAccountAndStatus(MyAccount account, OrderStatus status) {
         log.debug("Request to get MyOrder : {}", account, status);
         Set<MyOrder> myOrders = myOrderRepository.findByAccountAndStatus(account, status);
-        return myOrderMapper.toDto(myOrders.stream().findFirst().orElse(null));
+        MyOrder myOrder = myOrders.stream().findFirst().orElse(null);
+        return this.toDTOWithLists(myOrder);
+    }
+    
+    private MyOrderDTO toDTOWithLists(MyOrder myOrder){
+        if (myOrder == null)
+        	return null;
+        
+        MyOrderDTO myOrderDTO = myOrderMapper.toDto(myOrder);
+        myOrder.getItems().forEach((item) -> {
+        	myOrderDTO.getItems().add(item);
+        });
+        myOrder.getStatusHistories().forEach((statusHistory) -> {
+        	myOrderDTO.getStatusHistories().add(statusHistory);
+        });
+        return myOrderDTO;
     }
     
     /**
@@ -163,12 +185,11 @@ public class MyOrderService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public Optional<MyOrder> findEntityByAccountAndStatus(MyAccount account, OrderStatus status) {
+    private Optional<MyOrder> findEntityByAccountAndStatus(MyAccount account, OrderStatus status) {
         log.debug("Request to get MyOrder : {}", account, status);
         Set<MyOrder> myOrders = myOrderRepository.findByAccountAndStatus(account, status);
         return myOrders.stream().findFirst();
     }
-
 
     /**
      * Delete the myOrder by id.

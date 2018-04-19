@@ -28,20 +28,19 @@ public class MyAccountService {
     private final Logger log = LoggerFactory.getLogger(MyAccountService.class);
 
     private final MyAccountRepository myAccountRepository;
-
-    private final MyAccountMapper myAccountMapper;
-
     private final MyAccountSearchRepository myAccountSearchRepository;
 
+    private final MyAccountMapper myAccountMapper;
     private final ShopMapper shopMapper;
     
     private final MyOrderService myOrderService;
     
-    public MyAccountService(MyAccountRepository myAccountRepository, MyAccountMapper myAccountMapper, MyAccountSearchRepository myAccountSearchRepository,
-    		ShopMapper shopMapper, MyOrderService myOrderService) {
+    public MyAccountService(MyAccountRepository myAccountRepository, MyAccountSearchRepository myAccountSearchRepository,
+    		MyAccountMapper myAccountMapper, ShopMapper shopMapper, MyOrderService myOrderService) {
         this.myAccountRepository = myAccountRepository;
-        this.myAccountMapper = myAccountMapper;
+        
         this.myAccountSearchRepository = myAccountSearchRepository;
+        this.myAccountMapper = myAccountMapper;
         this.shopMapper = shopMapper;
         this.myOrderService = myOrderService;
     }
@@ -55,6 +54,9 @@ public class MyAccountService {
     public MyAccountDTO save(MyAccountDTO myAccountDTO) {
         log.debug("Request to save MyAccount : {}", myAccountDTO);
         MyAccount myAccount = myAccountMapper.toEntity(myAccountDTO);
+        myAccount.setUserInfos(myAccountDTO.getUserInfos());
+        myAccount.setShops(shopMapper.toEntity(myAccountDTO.getShops()));
+        myAccount.setDelegations(myAccountDTO.getDelegations());
         myAccount = myAccountRepository.save(myAccount);
         MyAccountDTO result = myAccountMapper.toDto(myAccount);
         myAccountSearchRepository.save(myAccount);
@@ -89,7 +91,7 @@ public class MyAccountService {
         myAccountDTO.setMyOrder(myOrderService.findByAccountAndStatus(myAccount, OrderStatus.PENDING));
         return myAccountDTO;
     }
-
+    
     /**
      * Delete the myAccount by id.
      *

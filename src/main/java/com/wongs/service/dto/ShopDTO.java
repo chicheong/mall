@@ -8,6 +8,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
 
+import com.wongs.domain.MyAccount;
 import com.wongs.domain.Product;
 import com.wongs.domain.Shop;
 import com.wongs.domain.enumeration.CommonStatus;
@@ -35,6 +36,8 @@ public class ShopDTO implements Serializable {
     private String lastModifiedBy;
 
     private ZonedDateTime lastModifiedDate;
+    
+    private Set<MyAccount> accounts = new HashSet<>();
 
     private Set<ProductDTO> products = null;
     
@@ -126,7 +129,15 @@ public class ShopDTO implements Serializable {
         this.lastModifiedDate = lastModifiedDate;
     }
     
-    public Set<ProductDTO> getProducts() {
+    public Set<MyAccount> getAccounts() {
+		return accounts;
+	}
+
+	public void setAccounts(Set<MyAccount> accounts) {
+		this.accounts = accounts;
+	}
+
+	public Set<ProductDTO> getProducts() {
 		return products;
 	}
 

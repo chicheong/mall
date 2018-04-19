@@ -23,11 +23,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
-import com.wongs.domain.MyAccount;
 import com.wongs.domain.OrderItem;
 import com.wongs.security.SecurityUtils;
+import com.wongs.service.MyAccountService;
 import com.wongs.service.MyOrderService;
+import com.wongs.service.UserInfoService;
 import com.wongs.service.UserService;
+import com.wongs.service.dto.MyAccountDTO;
 import com.wongs.service.dto.MyOrderDTO;
 import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
@@ -47,11 +49,15 @@ public class MyOrderResource {
     private static final String ENTITY_NAME = "myOrder";
 
     private final MyOrderService myOrderService;
+    private final UserInfoService userInfoService;
+    private final MyAccountService myAccountService;
     
     private final UserService userService;
 
-    public MyOrderResource(MyOrderService myOrderService, UserService userService) {
-        this.myOrderService = myOrderService;
+    public MyOrderResource(MyOrderService myOrderService, UserInfoService userInfoService, MyAccountService myAccountService, UserService userService) {
+    	this.myOrderService = myOrderService;
+    	this.userInfoService = userInfoService;
+    	this.myAccountService = myAccountService;
         this.userService = userService;
     }
 
@@ -171,7 +177,7 @@ public class MyOrderResource {
     public ResponseEntity<MyOrderDTO> addToCart(@RequestBody OrderItem orderItem) throws URISyntaxException {
         log.debug("REST request to update OrderItem : {}", orderItem);
         
-        MyAccount myAccount = userService.getCurrentMyAccount(SecurityUtils.getCurrentUserLogin().get());
+        MyAccountDTO myAccount = myAccountService.findOne(userInfoService.findOneWithAccountsByUserLogin(SecurityUtils.getCurrentUserLogin().get()).getAccountId());
         MyOrderDTO myOrderDTO  = myOrderService.addToCart(myAccount, orderItem);
 
         return ResponseEntity.ok()

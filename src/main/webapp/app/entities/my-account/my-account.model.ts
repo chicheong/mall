@@ -1,5 +1,6 @@
 import { BaseEntity } from './../../shared';
 import { Shop } from './../shop';
+import { MyOrder } from './../my-order';
 
 export const enum AccountType {
     'PERSONAL',
@@ -16,6 +17,7 @@ export class MyAccount implements BaseEntity {
         public office?: BaseEntity,
         public shops?: Shop[],
         public userInfos?: BaseEntity[],
+        public myOrder?: MyOrder,
     ) {
     }
 }

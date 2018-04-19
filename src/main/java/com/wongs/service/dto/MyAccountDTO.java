@@ -7,11 +7,13 @@ import java.util.Objects;
 import java.util.Set;
 
 import com.wongs.domain.Company;
+import com.wongs.domain.Delegation;
 import com.wongs.domain.Department;
 import com.wongs.domain.MyAccount;
 import com.wongs.domain.MyOrder;
 import com.wongs.domain.Office;
 import com.wongs.domain.Shop;
+import com.wongs.domain.UserInfo;
 import com.wongs.domain.enumeration.AccountType;
 
 /**
@@ -22,8 +24,10 @@ public class MyAccountDTO implements Serializable {
     private Long id;
 
     private AccountType type;
+    
+    private Set<Delegation> delegations = new HashSet<>();
 
-    private Company company;
+	private Company company;
 
 //    private String companyCode;
 
@@ -32,6 +36,8 @@ public class MyAccountDTO implements Serializable {
     private Office office;
 
     private Set<ShopDTO> shops = new HashSet<>();
+    
+    private Set<UserInfo> userInfos = new HashSet<>();
     
     private MyOrderDTO myOrder = null;
     
@@ -59,6 +65,14 @@ public class MyAccountDTO implements Serializable {
     public void setType(AccountType type) {
         this.type = type;
     }
+    
+    public Set<Delegation> getDelegations() {
+		return delegations;
+	}
+
+	public void setDelegations(Set<Delegation> delegations) {
+		this.delegations = delegations;
+	}
 
     public Company getCompany() {
 		return company;
@@ -91,6 +105,14 @@ public class MyAccountDTO implements Serializable {
     public void setShops(Set<ShopDTO> shops) {
         this.shops = shops;
     }
+    
+	public Set<UserInfo> getUserInfos() {
+		return userInfos;
+	}
+
+	public void setUserInfos(Set<UserInfo> userInfos) {
+		this.userInfos = userInfos;
+	}
     
     public MyOrderDTO getMyOrder() {
 		return myOrder;

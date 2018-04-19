@@ -195,7 +195,7 @@ public class UserResource {
         return ResponseUtil.wrapOrNotFound(userService.getUserWithAuthoritiesByLogin(login)
                 .map(user -> {
                 	UserDTO userDTO = new UserDTO(user);
-    				userDTO.setUserInfo(userInfoService.getUserInfo(user.getLogin()));
+    				userDTO.setUserInfo(userInfoService.findOneWithAccountsByUserLogin(user.getLogin()));
     				userDTO.setMyAccount(userDTO.getUserInfo() != null? myAccountService.findOne(userDTO.getUserInfo().getDefaultAccount().getId()) : null); //TODO: no need with shops
     				return userDTO;
         		})

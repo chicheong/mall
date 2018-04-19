@@ -36,7 +36,9 @@ import com.wongs.domain.enumeration.CurrencyType;
 import com.wongs.domain.enumeration.OrderStatus;
 import com.wongs.repository.MyOrderRepository;
 import com.wongs.repository.search.MyOrderSearchRepository;
+import com.wongs.service.MyAccountService;
 import com.wongs.service.MyOrderService;
+import com.wongs.service.UserInfoService;
 import com.wongs.service.UserService;
 import com.wongs.service.dto.MyOrderDTO;
 import com.wongs.service.mapper.MyOrderMapper;
@@ -72,6 +74,12 @@ public class MyOrderResourceIntTest {
     private MyOrderService myOrderService;
     
     @Autowired
+    private UserInfoService userInfoService;
+    
+    @Autowired
+    private MyAccountService myAccountService;
+    
+    @Autowired
     private UserService userService;
 
     @Autowired
@@ -96,7 +104,7 @@ public class MyOrderResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final MyOrderResource myOrderResource = new MyOrderResource(myOrderService, userService);
+        final MyOrderResource myOrderResource = new MyOrderResource(myOrderService, userInfoService, myAccountService, userService);
         this.restMyOrderMockMvc = MockMvcBuilders.standaloneSetup(myOrderResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
