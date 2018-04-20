@@ -7,6 +7,7 @@ import { MyOrderComponent } from './my-order.component';
 import { MyOrderDetailComponent } from './my-order-detail.component';
 import { MyOrderPopupComponent } from './my-order-dialog.component';
 import { MyOrderDeletePopupComponent } from './my-order-delete-dialog.component';
+import { CheckoutComponent } from './checkout.component';
 
 @Injectable()
 export class MyOrderResolvePagingParams implements Resolve<any> {
@@ -42,6 +43,14 @@ export const myOrderRoute: Routes = [
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.myOrder.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    }, {
+        path: 'checkout/:id',
+        component: CheckoutComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.myOrder.checkout.title'
         },
         canActivate: [UserRouteAccessService]
     }

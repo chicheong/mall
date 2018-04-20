@@ -9,10 +9,10 @@ import { MyOrder } from './my-order.model';
 import { MyOrderService } from './my-order.service';
 
 @Component({
-    selector: 'jhi-my-order-detail',
-    templateUrl: './my-order-detail.component.html'
+    selector: 'jhi-checkout',
+    templateUrl: './checkout.component.html'
 })
-export class MyOrderDetailComponent implements OnInit, OnDestroy {
+export class CheckoutComponent implements OnInit, OnDestroy {
 
     myOrder: MyOrder;
     isSaving: boolean;
@@ -83,7 +83,7 @@ export class MyOrderDetailComponent implements OnInit, OnDestroy {
     checkout() {
         console.log('calling checkout');
         this.save();
-        this.router.navigate(['/checkout', this.myOrder.id]);
+        this.router.navigate(['']);
     }
 
     previousState() {

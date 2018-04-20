@@ -121,7 +121,7 @@
             "edit": "編輯",
             "open": "開啟",
             "save": "儲存",
-			"saveUpdate": "儲存及更新",
+			"saveRefresh": "儲存及刷新",
             "checkout": "結賬",
             "view": "檢視",
 			"confirm": "確定",

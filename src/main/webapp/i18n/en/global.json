@@ -121,7 +121,7 @@
             "edit": "Edit",
             "open": "Open",
             "save": "Save",
-            "saveUpdate": "Save & Update",
+            "saveRefresh": "Save & Refresh",
             "checkout": "Checkout",
             "view": "View",
 			"confirm": "Confirm",

@@ -5,4 +5,5 @@ export * from './my-order-dialog.component';
 export * from './my-order-delete-dialog.component';
 export * from './my-order-detail.component';
 export * from './my-order.component';
+export * from './checkout.component';
 export * from './my-order.route';

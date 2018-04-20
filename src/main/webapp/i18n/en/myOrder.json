@@ -8,6 +8,9 @@
                 "createOrEditLabel": "Create or edit a My Order",
                 "search": "Search for My Order"
             },
+            "checkout": {
+                "title": "Checkout"
+            },
             "created": "A new My Order is created with identifier {{ param }}",
             "updated": "A My Order is updated with identifier {{ param }}",
             "deleted": "A My Order is deleted with identifier {{ param }}",

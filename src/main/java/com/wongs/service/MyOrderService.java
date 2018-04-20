@@ -70,6 +70,11 @@ public class MyOrderService {
         myOrder = myOrderRepository.save(myOrder);
         MyOrderDTO result = myOrderMapper.toDto(myOrder);
         myOrderSearchRepository.save(myOrder);
+        myOrderDTO.getItems().forEach((item) -> {
+        	//item.setOrder(myOrder);
+        	orderItemRepository.save(item);
+        	orderItemSearchRepository.save(item);
+        });
         return result;
     }
     

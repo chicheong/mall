@@ -11,6 +11,7 @@ import {
     MyOrderPopupComponent,
     MyOrderDeletePopupComponent,
     MyOrderDeleteDialogComponent,
+    CheckoutComponent,
     myOrderRoute,
     myOrderPopupRoute,
     MyOrderResolvePagingParams,
@@ -33,6 +34,7 @@ const ENTITY_STATES = [
         MyOrderDeleteDialogComponent,
         MyOrderPopupComponent,
         MyOrderDeletePopupComponent,
+        CheckoutComponent,
     ],
     entryComponents: [
         MyOrderComponent,
@@ -40,6 +42,7 @@ const ENTITY_STATES = [
         MyOrderPopupComponent,
         MyOrderDeleteDialogComponent,
         MyOrderDeletePopupComponent,
+        CheckoutComponent,
     ],
     providers: [
         MyOrderService,
