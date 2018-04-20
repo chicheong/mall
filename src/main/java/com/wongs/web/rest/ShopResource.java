@@ -1,13 +1,11 @@
 package com.wongs.web.rest;
 
-import com.codahale.metrics.annotation.Timed;
-import com.wongs.service.ProductService;
-import com.wongs.service.ShopService;
-import com.wongs.web.rest.errors.BadRequestAlertException;
-import com.wongs.web.rest.util.HeaderUtil;
-import com.wongs.web.rest.util.PaginationUtil;
-import com.wongs.service.dto.ShopDTO;
-import io.github.jhipster.web.util.ResponseUtil;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+
+import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -17,17 +15,28 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.codahale.metrics.annotation.Timed;
+import com.wongs.domain.Product;
+import com.wongs.service.ProductService;
+import com.wongs.service.ShopService;
+import com.wongs.service.UrlService;
+import com.wongs.service.dto.ShopDTO;
+import com.wongs.service.mapper.UrlMapper;
+import com.wongs.web.rest.errors.BadRequestAlertException;
+import com.wongs.web.rest.util.HeaderUtil;
+import com.wongs.web.rest.util.PaginationUtil;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import io.github.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing Shop.
@@ -41,12 +50,16 @@ public class ShopResource {
     private static final String ENTITY_NAME = "shop";
 
     private final ShopService shopService;
-    
     private final ProductService productService;
+    private final UrlService urlService;
+    private final UrlMapper urlMapper;
 
-    public ShopResource(ShopService shopService, ProductService productService) {
+    public ShopResource(ShopService shopService, ProductService productService, UrlService urlService,
+    		UrlMapper urlMapper) {
         this.shopService = shopService;
         this.productService = productService;
+        this.urlService = urlService;
+        this.urlMapper = urlMapper;
     }
 
     /**
@@ -121,8 +134,12 @@ public class ShopResource {
         	shopDTO = shopService.findOne(Long.valueOf(code));
         else
         	shopDTO = shopService.findByCode(code);
-        if (shopDTO != null)
+        if (shopDTO != null) {
         	shopDTO.setProducts(productService.findByShopId(shopDTO.getId()));
+        	shopDTO.getProducts().forEach((product) -> {
+        		product.setUrls(urlMapper.toDto(urlService.findByEntityTypeAndEntityId(Product.class.getSimpleName(), product.getId())));
+        	});
+        }
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(shopDTO));
     }
     

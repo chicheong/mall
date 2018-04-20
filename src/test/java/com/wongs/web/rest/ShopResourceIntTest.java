@@ -6,9 +6,11 @@ import com.wongs.domain.Shop;
 import com.wongs.repository.ShopRepository;
 import com.wongs.service.ProductService;
 import com.wongs.service.ShopService;
+import com.wongs.service.UrlService;
 import com.wongs.repository.search.ShopSearchRepository;
 import com.wongs.service.dto.ShopDTO;
 import com.wongs.service.mapper.ShopMapper;
+import com.wongs.service.mapper.UrlMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -84,6 +86,12 @@ public class ShopResourceIntTest {
     
     @Autowired
     private ProductService productService;
+    
+    @Autowired
+    private UrlService urlService;
+    
+    @Autowired
+    private UrlMapper urlMapper;
 
     @Autowired
     private ShopSearchRepository shopSearchRepository;
@@ -107,7 +115,7 @@ public class ShopResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ShopResource shopResource = new ShopResource(shopService, productService);
+        final ShopResource shopResource = new ShopResource(shopService, productService, urlService, urlMapper);
         this.restShopMockMvc = MockMvcBuilders.standaloneSetup(shopResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
