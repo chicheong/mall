@@ -30,10 +30,13 @@ export class HomeComponent implements OnInit {
     }
 
     ngOnInit() {
-        this._http.get('https://picsum.photos/list')
-        .pipe(map((images: Array<{id: number}>) => this._randomImageUrls(images)))
-        .subscribe((images) => this.images = images);
+        // this._http.get('https://picsum.photos/list')
+        // .pipe(map((images: Array<{id: number}>) => this._randomImageUrls(images)))
+        // .subscribe((images) => this.images = images);
 
+        this.images = ['http://placehold.it/1900x1080&amp;text=Slide One',
+                       'https://www.w3schools.com/bootstrap/chicago.jpg',
+                       'http://placehold.it/1900x1080&amp;text=Slide Three'];
         this.registerAuthenticationSuccess();
     }
 
