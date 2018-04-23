@@ -29,17 +29,17 @@
     
     <hr>
     <jhi-alert-error></jhi-alert-error>
-    <div class="container" style='margin: 0 auto; width:100%; background-color: #EAEAEA; overflow: hidden;'>
+    <!-- <div class="container" style='margin: 0 auto; width:100%; overflow: hidden;'> -->
 
 		<div *ngIf="shop.products">
 			<div class="row">
 				<div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 thumb" *ngFor="let product of shop.products ;trackBy: trackId">
 	                <a class="thumbnail" target="_self" [routerLink]="['../../product', product.id ]">
-	                    <img class="img-responsive" [src]="product.urls[0].path" alt="" />
+	                    <img class="img-fluid" [src]="product.urls[0].path" alt="" />
 	                    <div style="overflow: hidden; height:80px"><h3>{{product.name}}</h3></div>
 	                </a>
             </div>
 			</div>
 		</div>
-	</div>
+	<!-- </div>-->
 </div>
