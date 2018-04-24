@@ -1,11 +1,9 @@
 .box {
-  background: none;
   border: 0px solid black;
   padding: 20px 20px;
   display: inline-block;
 
   &.dragging {
-    background: coral;
   }
 
   &.sortable.dragging {
