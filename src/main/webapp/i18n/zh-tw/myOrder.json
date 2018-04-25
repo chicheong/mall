@@ -20,7 +20,8 @@
             "detail": {
                 "title": "我的購物車"
             },
-            "total": "Total",
+            "total": "總數",
+			"currentTotal": "現時總數",
             "currency": "Currency",
             "remark": "Remark",
             "status": "Status",

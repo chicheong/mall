@@ -21,6 +21,7 @@
                 "title": "My Shopping Cart"
             },
             "total": "Total",
+            "currentTotal": "Current Total",
             "currency": "Currency",
             "remark": "Remark",
             "status": "Status",

@@ -5,29 +5,23 @@
 		<jhi-alert-error></jhi-alert-error>
 	</div>
 	<div class="row" *jhiHasAnyAuthority="'ROLE_USER'">
-		<div class="col-md-5"><h2><span jhiTranslate="mallApp.myOrder.detail.title">My Order</span></h2></div>
+		<div class="col-md-5"><h2></h2></div>
 		<div class="col-md-7" [ngSwitch]="canCheckout()">
 		    <button type="button" [disabled]="isSaving" class="btn btn-info" (click)="previousState()">
 		        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
 		    </button>
-		    <button type="button" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary" (click)="save()">
-	            <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.saveRefresh">Save & Refresh</span>
-	        </button>
-	        <button *ngSwitchCase="true" type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-success">
-	            <span class="fa fa-credit-card"></span>&nbsp;<span jhiTranslate="entity.action.checkout">Checkout</span>
-	        </button>
 		</div>
     </div>
 	<div class="row">
 
-<div class="container">
+<!-- <div class="container">
       <div class="py-5 text-center">
         <img class="d-block mx-auto mb-4" src="https://getbootstrap.com/assets/brand/bootstrap-solid.svg" alt="" width="72" height="72">
         <h2>Checkout form</h2>
         <p class="lead">Below is an example form built entirely with Bootstrap's form controls. Each required form group has a validation state that can be triggered by attempting to submit the form without completing it.</p>
-      </div>
+      </div> -->
 
-      <div class="row">
+      <!-- <div class="row">-->
         <div class="col-md-4 order-md-2 mb-4">
           <h4 class="d-flex justify-content-between align-items-center mb-3">
             <span class="text-muted">Your cart</span>
@@ -224,8 +218,8 @@
             <button class="btn btn-primary btn-lg btn-block" type="submit">Continue to checkout</button>
           </form>
         </div>
-      </div>
-</div>
+      <!-- </div>-->
+<!-- </div>-->
 
 	</div>    
     </form>

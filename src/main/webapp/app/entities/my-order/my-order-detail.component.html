@@ -5,7 +5,7 @@
 		<jhi-alert-error></jhi-alert-error>
 	</div>
 	<div class="row" *jhiHasAnyAuthority="'ROLE_USER'">
-		<div class="col-md-5"><h2><span jhiTranslate="mallApp.myOrder.detail.title">My Order</span></h2></div>
+		<div class="col-md-5"><h2><span jhiTranslate="mallApp.myOrder.detail.title">My Shopping Cart</span></h2></div>
 		<div class="col-md-7" [ngSwitch]="canCheckout()">
 		    <button type="button" [disabled]="isSaving" class="btn btn-info" (click)="previousState()">
 		        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
@@ -49,8 +49,7 @@
 	<div class="row">
 		<div class="col-md-1"></div>
 		<div class="col-md-5"></div>
-		<div class="col-md-2"></div>
-		<div class="col-md-2"><h3><span *ngIf="myOrder.items" jhiTranslate="mallApp.myOrder.total">Total</span>:&nbsp;&nbsp;{{myOrder.currency}}</h3></div>
+		<div class="col-md-4"><h3 class="text-right"><span *ngIf="myOrder.items" jhiTranslate="mallApp.myOrder.currentTotal">Cent Total</span>&nbsp;&nbsp;({{myOrder.currency}}):</h3></div>
 		<div class="col-md-2"><h3>{{sumAll()}}</h3></div>
 	</div>    
     </form>
