@@ -10,7 +10,16 @@
             },
             "checkout": {
                 "title": "結賬"
-            },			
+            },
+            "cart": {
+            	"button": {
+            		"reviewCart": "Review Cart",
+            		"shippingInfo": "Shipping Info",
+            		"shipping": "Shipping",
+            		"billingInfo": "Billing Info",
+            		"payment": "Payment"
+            	}
+            },
             "created": "新的 My Order 建立成功，識別碼為 {{ param }}",
             "updated": "識別碼為 {{ param }} 的 My Order 更新成功",
             "deleted": "識別碼為 {{ param }} 的 My Order 刪除成功",

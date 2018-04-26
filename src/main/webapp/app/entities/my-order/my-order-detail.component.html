@@ -4,32 +4,14 @@
 	<div class="row">
 		<jhi-alert-error></jhi-alert-error>
 	</div>
+	<jhi-checkout-control></jhi-checkout-control>
+    <hr>
 	<div class="row" *jhiHasAnyAuthority="'ROLE_USER'">
 		<div class="col-md-3"><h2><span jhiTranslate="mallApp.myOrder.detail.title">My Shopping Cart</span></h2></div>
 		<div class="col-md-9" [ngSwitch]="canCheckout()">
 		    <button type="button" [disabled]="isSaving" class="btn btn-info" (click)="previousState()">
 		        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
 		    </button>
-	        <button type="button" class="btn btn-outline-primary">
-	        	<span class="fa fa-shopping-cart"></span>&nbsp;<span jhiTranslate="entity.action.checkout">Review Cart</span>
-	        </button>	        
-	        <span class="fa fa-angle-right"></span>
-	        <button type="button" class="btn btn-outline-primary">
-	        	<span class="fa fa-home"></span>&nbsp;<span jhiTranslate="entity.action.checkout">Shipping Info</span>
-	        </button>
-	        <span class="fa fa-angle-right"></span>
-	        <button type="button" class="btn btn-outline-primary">
-	        	<span class="fa fa-truck"></span>&nbsp;<span jhiTranslate="entity.action.checkout">Shipping</span>
-	        </button>
-	        <span class="fa fa-angle-right"></span>
-	        <button type="button" class="btn btn-outline-primary">
-	        	<span class="fa fa-money"></span>&nbsp;<span jhiTranslate="entity.action.checkout">Billing Info</span>
-	        </button>
-	        <span class="fa fa-angle-right"></span>
-	        <button type="button" class="btn btn-outline-primary">
-	        	<span class="fa fa-credit-card"></span>&nbsp;<span jhiTranslate="entity.action.checkout">Payment</span>
-	        </button>	
-	        
 	        <button type="button" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary" (click)="save()">
 	            <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.saveRefresh">Save & Refresh</span>
 	        </button>
@@ -37,12 +19,12 @@
 	            <span class="fa fa-credit-card"></span>&nbsp;<span jhiTranslate="entity.action.checkout">Checkout</span>
 	        </button>
 		</div>
-    </div>
+    </div>    
 	<div class="row">
 		<div class="col-md-6 text-center">Item</div>
 		<div class="col-md-2">Unit Price</div>	
 		<div class="col-md-2 text-center">Quantity</div>
-		<div class="col-md-2 text-right">Subtotal</div>
+		<div class="col-md-2 text-right">Subtotal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
 	</div>
 	<hr>
 	<div *ngFor="let item of myOrder.items">
@@ -63,7 +45,7 @@
 	      		</span>
  			</div>
 			<div class="col-md-2 text-right">
-				<span class="hipster img-fluid img-rounded font-weight-bold">{{item.price * item.quantity}}</span>
+				<span class="hipster img-fluid img-rounded font-weight-bold">{{item.price * item.quantity}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
 			</div>
 		</div>
 		<hr>
@@ -82,23 +64,9 @@
         </div>
 		<div class="col-md-6 text-right">
 			<span *ngIf="myOrder.items" jhiTranslate="mallApp.myOrder.currentTotal">Current Total</span>&nbsp;&nbsp;({{myOrder.currency}}):
-			<h3 style="display:inline;" class="font-weight-bold">{{sumAll()}}</h3>
+			<h3 style="display:inline;" class="font-weight-bold">{{sumAll()}}&nbsp;&nbsp;&nbsp;</h3>
 		</div>
 	</div>    
     </form>
-	<hr>
-	<div class="row">
-		<div class="col-md-3 bg-primary text-white p-3">
-			<h2 class="">Order Summary</h2>
-		</div>
-		<div class="col-md-3 bg-primary text-white p-3">
-			shipping<h2 style="display:inline;">$ 0.00</h2>
-		</div>
-		<div class="col-md-3 bg-primary text-white p-3">
-			item total<h2 style="display:inline;">$ 0.00</h2>
-		</div>	
-		<div class="col-md-3 bg-success text-white p-3 text-right">
-			Total<h2 style="display:inline;">$ 0.00</h2>
-		</div>
-	</div>
+    <jhi-checkout-summary></jhi-checkout-summary>
 </div>

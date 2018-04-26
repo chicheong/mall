@@ -11,6 +11,15 @@
             "checkout": {
                 "title": "Checkout"
             },
+            "cart": {
+            	"button": {
+            		"reviewCart": "Review Cart",
+            		"shippingInfo": "Shipping Info",
+            		"shipping": "Shipping",
+            		"billingInfo": "Billing Info",
+            		"payment": "Payment"
+            	}
+            },
             "created": "A new My Order is created with identifier {{ param }}",
             "updated": "A My Order is updated with identifier {{ param }}",
             "deleted": "A My Order is deleted with identifier {{ param }}",

@@ -6,4 +6,6 @@ export * from './my-order-delete-dialog.component';
 export * from './my-order-detail.component';
 export * from './my-order.component';
 export * from './checkout.component';
+export * from './checkout-control/checkout-control.component';
+export * from './checkout-summary/checkout-summary.component';
 export * from './my-order.route';

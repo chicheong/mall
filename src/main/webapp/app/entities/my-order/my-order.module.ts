@@ -17,6 +17,9 @@ import {
     MyOrderResolvePagingParams,
 } from './';
 
+import { CheckoutControlComponent } from './checkout-control/checkout-control.component';
+import { CheckoutSummaryComponent } from './checkout-summary/checkout-summary.component';
+
 const ENTITY_STATES = [
     ...myOrderRoute,
     ...myOrderPopupRoute,
@@ -35,6 +38,8 @@ const ENTITY_STATES = [
         MyOrderPopupComponent,
         MyOrderDeletePopupComponent,
         CheckoutComponent,
+        CheckoutControlComponent,
+        CheckoutSummaryComponent,
     ],
     entryComponents: [
         MyOrderComponent,
@@ -43,6 +48,8 @@ const ENTITY_STATES = [
         MyOrderDeleteDialogComponent,
         MyOrderDeletePopupComponent,
         CheckoutComponent,
+        CheckoutControlComponent,
+        CheckoutSummaryComponent,
     ],
     providers: [
         MyOrderService,
