@@ -5,12 +5,32 @@
 		<jhi-alert-error></jhi-alert-error>
 	</div>
 	<div class="row" *jhiHasAnyAuthority="'ROLE_USER'">
-		<div class="col-md-5"><h2><span jhiTranslate="mallApp.myOrder.detail.title">My Shopping Cart</span></h2></div>
-		<div class="col-md-7" [ngSwitch]="canCheckout()">
+		<div class="col-md-3"><h2><span jhiTranslate="mallApp.myOrder.detail.title">My Shopping Cart</span></h2></div>
+		<div class="col-md-9" [ngSwitch]="canCheckout()">
 		    <button type="button" [disabled]="isSaving" class="btn btn-info" (click)="previousState()">
 		        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
 		    </button>
-		    <button type="button" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary" (click)="save()">
+	        <button type="button" class="btn btn-outline-primary">
+	        	<span class="fa fa-shopping-cart"></span>&nbsp;<span jhiTranslate="entity.action.checkout">Review Cart</span>
+	        </button>	        
+	        <span class="fa fa-angle-right"></span>
+	        <button type="button" class="btn btn-outline-primary">
+	        	<span class="fa fa-home"></span>&nbsp;<span jhiTranslate="entity.action.checkout">Shipping Info</span>
+	        </button>
+	        <span class="fa fa-angle-right"></span>
+	        <button type="button" class="btn btn-outline-primary">
+	        	<span class="fa fa-truck"></span>&nbsp;<span jhiTranslate="entity.action.checkout">Shipping</span>
+	        </button>
+	        <span class="fa fa-angle-right"></span>
+	        <button type="button" class="btn btn-outline-primary">
+	        	<span class="fa fa-money"></span>&nbsp;<span jhiTranslate="entity.action.checkout">Billing Info</span>
+	        </button>
+	        <span class="fa fa-angle-right"></span>
+	        <button type="button" class="btn btn-outline-primary">
+	        	<span class="fa fa-credit-card"></span>&nbsp;<span jhiTranslate="entity.action.checkout">Payment</span>
+	        </button>	
+	        
+	        <button type="button" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary" (click)="save()">
 	            <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.saveRefresh">Save & Refresh</span>
 	        </button>
 	        <button *ngSwitchCase="true" type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-success">
@@ -19,40 +39,66 @@
 		</div>
     </div>
 	<div class="row">
-	  <div class="col-md-1">photo</div>
-	  <div class="col-md-5">product item name</div>
-	  <div class="col-md-2">unit price</div>	
-	  <div class="col-md-2">quantity</div>
-	  <div class="col-md-2">sub total</div>
+		<div class="col-md-6 text-center">Item</div>
+		<div class="col-md-2">Unit Price</div>	
+		<div class="col-md-2 text-center">Quantity</div>
+		<div class="col-md-2 text-right">Subtotal</div>
 	</div>
-	<div class="row" *ngFor="let item of myOrder.items">
-	  <div class="col-md-1">
-	  	<span class="hipster img-fluid img-rounded"></span>
-	  </div>
-	  <div class="col-md-5">
-	  	<span class="hipster img-fluid img-rounded">{{item.productItem.color.name + ' ' + item.productItem.size.name}}</span>
-	  </div>
-	  <div class="col-md-2">
-	  	<span class="hipster img-fluid img-rounded">{{item.price}}</span>
-	  </div>	  
-	  <div class="col-md-2">
-		<span class="hipster img-fluid img-rounded">
-			<input type="number" class="form-control" name="price{{item.id}}" (change)="updateMyOrder()"
-                [(ngModel)]="item.quantity" />
-        </span>
-	  </div>
-	  <div class="col-md-2">
-	  	<span class="hipster img-fluid img-rounded">{{item.price * item.quantity}}</span>
-	  </div>
+	<hr>
+	<div *ngFor="let item of myOrder.items">
+		<div class="row">
+			<div class="col-md-1">
+				<span class="hipster img-fluid img-rounded"></span>
+			</div>
+			<div class="col-md-5">
+				<span class="hipster img-fluid img-rounded font-weight-bold">{{item.productItem.color.name + ' ' + item.productItem.size.name}}</span>
+			</div>
+			<div class="col-md-2">
+				<span class="hipster img-fluid img-rounded font-weight-bold">{{item.price}}</span>
+			</div>	  
+			<div class="col-md-2">
+				<span class="hipster img-fluid img-rounded">		
+					<input type="number" class="form-control font-weight-bold" name="price{{item.id}}" (change)="updateMyOrder()"
+	              		[(ngModel)]="item.quantity" />
+	      		</span>
+ 			</div>
+			<div class="col-md-2 text-right">
+				<span class="hipster img-fluid img-rounded font-weight-bold">{{item.price * item.quantity}}</span>
+			</div>
+		</div>
+		<hr>
 	</div>
 	<hr>
 	<div class="row">
-		<div class="col-md-1"></div>
-		<div class="col-md-5"></div>
-		<div class="col-md-4"><h3 class="text-right"><span *ngIf="myOrder.items" jhiTranslate="mallApp.myOrder.currentTotal">Cent Total</span>&nbsp;&nbsp;({{myOrder.currency}}):</h3></div>
-		<div class="col-md-2"><h3>{{sumAll()}}</h3></div>
+		<div class="col-md-6">
+			<form class="card p-2">
+	            <div class="input-group">
+	              <input type="text" class="form-control" placeholder="Promo code">
+	              <div class="input-group-append">
+	                <button type="submit" class="btn btn-secondary">Redeem</button>
+	              </div>
+	            </div>
+			</form>
+        </div>
+		<div class="col-md-6 text-right">
+			<span *ngIf="myOrder.items" jhiTranslate="mallApp.myOrder.currentTotal">Current Total</span>&nbsp;&nbsp;({{myOrder.currency}}):
+			<h3 style="display:inline;" class="font-weight-bold">{{sumAll()}}</h3>
+		</div>
 	</div>    
     </form>
-
 	<hr>
+	<div class="row">
+		<div class="col-md-3 bg-primary text-white p-3">
+			<h2 class="">Order Summary</h2>
+		</div>
+		<div class="col-md-3 bg-primary text-white p-3">
+			shipping<h2 style="display:inline;">$ 0.00</h2>
+		</div>
+		<div class="col-md-3 bg-primary text-white p-3">
+			item total<h2 style="display:inline;">$ 0.00</h2>
+		</div>	
+		<div class="col-md-3 bg-success text-white p-3 text-right">
+			Total<h2 style="display:inline;">$ 0.00</h2>
+		</div>
+	</div>
 </div>
