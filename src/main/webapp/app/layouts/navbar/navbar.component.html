@@ -320,7 +320,7 @@
             </li>
             <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngSwitchCase="true">
 	            <span *ngIf="myAccount && myAccount.myOrder && noOfItems > 0">
-	                <a class="nav-link" [routerLink]="['/my-order', myAccount.myOrder.id]" (click)="collapseNavbar()">
+	                <a class="nav-link" [routerLink]="['/my-order/'+ myAccount.myOrder.id + '/review-cart']" (click)="collapseNavbar()">
 	                    <span>
 	                        <i class="fa fa-shopping-cart" aria-hidden="true"></i>
 	                        <span jhiTranslate="global.menu.cart">Cart</span>&nbsp;({{noOfItems}})

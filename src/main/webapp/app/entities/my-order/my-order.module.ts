@@ -17,8 +17,13 @@ import {
     MyOrderResolvePagingParams,
 } from './';
 
-import { CheckoutControlComponent } from './checkout-control/checkout-control.component';
-import { CheckoutSummaryComponent } from './checkout-summary/checkout-summary.component';
+import { CheckoutControlComponent } from './cart/checkout-control/checkout-control.component';
+import { CheckoutSummaryComponent } from './cart/checkout-summary/checkout-summary.component';
+import { BillingInfoComponent } from './cart/billing-info/billing-info.component';
+import { PaymentComponent } from './cart/payment/payment.component';
+import { ReviewCartComponent } from './cart/review-cart/review-cart.component';
+import { ShippingComponent } from './cart/shipping/shipping.component';
+import { ShippingInfoComponent } from './cart/shipping-info/shipping-info.component';
 
 const ENTITY_STATES = [
     ...myOrderRoute,
@@ -40,6 +45,11 @@ const ENTITY_STATES = [
         CheckoutComponent,
         CheckoutControlComponent,
         CheckoutSummaryComponent,
+        BillingInfoComponent,
+        PaymentComponent,
+        ReviewCartComponent,
+        ShippingComponent,
+        ShippingInfoComponent,
     ],
     entryComponents: [
         MyOrderComponent,
@@ -50,6 +60,11 @@ const ENTITY_STATES = [
         CheckoutComponent,
         CheckoutControlComponent,
         CheckoutSummaryComponent,
+        BillingInfoComponent,
+        PaymentComponent,
+        ReviewCartComponent,
+        ShippingComponent,
+        ShippingInfoComponent,
     ],
     providers: [
         MyOrderService,

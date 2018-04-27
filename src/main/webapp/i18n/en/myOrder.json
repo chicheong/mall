@@ -12,12 +12,26 @@
                 "title": "Checkout"
             },
             "cart": {
-            	"button": {
-            		"reviewCart": "Review Cart",
-            		"shippingInfo": "Shipping Info",
-            		"shipping": "Shipping",
-            		"billingInfo": "Billing Info",
-            		"payment": "Payment"
+            	"checkout-control": {
+            	    "button": {
+	            		"reviewCart": "Review Cart",
+	            		"shippingInfo": "Shipping Info",
+	            		"shipping": "Shipping",
+	            		"billingInfo": "Billing Info",
+	            		"payment": "Payment"
+	            	}
+            	},
+            	"checkout-summary": {
+            	},
+            	"billing-info": {
+            	},
+            	"payment": {
+            	},
+            	"review-cart": {
+            	},
+            	"shipping": {
+            	},
+            	"shipping-info": {
             	}
             },
             "created": "A new My Order is created with identifier {{ param }}",

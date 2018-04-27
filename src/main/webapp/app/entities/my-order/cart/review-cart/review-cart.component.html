@@ -4,7 +4,13 @@
 	<div class="row">
 		<jhi-alert-error></jhi-alert-error>
 	</div>
-	<jhi-checkout-control></jhi-checkout-control>
+	<jhi-checkout-control 
+		[reviewCartControl]="'A'" 
+		[shippingInfoControl]="'D'" 
+		[shippingControl]="'D'" 
+		[billingInfoControl]="'D'" 
+		[paymentControl]="'D'">
+	</jhi-checkout-control>
     <hr>
 	<div class="row" *jhiHasAnyAuthority="'ROLE_USER'">
 		<div class="col-md-3"><h2><span jhiTranslate="mallApp.myOrder.detail.title">My Shopping Cart</span></h2></div>

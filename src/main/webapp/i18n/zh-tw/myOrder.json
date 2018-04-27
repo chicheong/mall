@@ -12,12 +12,26 @@
                 "title": "結賬"
             },
             "cart": {
-            	"button": {
-            		"reviewCart": "Review Cart",
-            		"shippingInfo": "Shipping Info",
-            		"shipping": "Shipping",
-            		"billingInfo": "Billing Info",
-            		"payment": "Payment"
+            	"checkout-control": {
+            	    "button": {
+	            		"reviewCart": "Review Cart",
+	            		"shippingInfo": "Shipping Info",
+	            		"shipping": "Shipping",
+	            		"billingInfo": "Billing Info",
+	            		"payment": "Payment"
+	            	}
+            	},
+            	"checkout-summary": {
+            	},
+            	"billing-info": {
+            	},
+            	"payment": {
+            	},
+            	"review-cart": {
+            	},
+            	"shipping": {
+            	},
+            	"shipping-info": {
             	}
             },
             "created": "新的 My Order 建立成功，識別碼為 {{ param }}",
