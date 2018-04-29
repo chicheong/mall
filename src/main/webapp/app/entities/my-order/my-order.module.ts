@@ -17,13 +17,13 @@ import {
     MyOrderResolvePagingParams,
 } from './';
 
-import { CheckoutControlComponent } from './cart/checkout-control/checkout-control.component';
-import { CheckoutSummaryComponent } from './cart/checkout-summary/checkout-summary.component';
-import { BillingInfoComponent } from './cart/billing-info/billing-info.component';
-import { PaymentComponent } from './cart/payment/payment.component';
-import { ReviewCartComponent } from './cart/review-cart/review-cart.component';
-import { ShippingComponent } from './cart/shipping/shipping.component';
-import { ShippingInfoComponent } from './cart/shipping-info/shipping-info.component';
+import { CartControlComponent } from './cart/cart-control/cart-control.component';
+import { CartSummaryComponent } from './cart/cart-summary/cart-summary.component';
+import { CartBillingComponent } from './cart/cart-billing/cart-billing.component';
+import { CartPaymentComponent } from './cart/cart-payment/cart-payment.component';
+import { CartReviewComponent } from './cart/cart-review/cart-review.component';
+import { CartMethodComponent } from './cart/cart-method/cart-method.component';
+import { CartShippingComponent } from './cart/cart-shipping/cart-shipping.component';
 
 const ENTITY_STATES = [
     ...myOrderRoute,
@@ -43,13 +43,13 @@ const ENTITY_STATES = [
         MyOrderPopupComponent,
         MyOrderDeletePopupComponent,
         CheckoutComponent,
-        CheckoutControlComponent,
-        CheckoutSummaryComponent,
-        BillingInfoComponent,
-        PaymentComponent,
-        ReviewCartComponent,
-        ShippingComponent,
-        ShippingInfoComponent,
+        CartControlComponent,
+        CartSummaryComponent,
+        CartBillingComponent,
+        CartPaymentComponent,
+        CartReviewComponent,
+        CartMethodComponent,
+        CartShippingComponent,
     ],
     entryComponents: [
         MyOrderComponent,
@@ -58,13 +58,13 @@ const ENTITY_STATES = [
         MyOrderDeleteDialogComponent,
         MyOrderDeletePopupComponent,
         CheckoutComponent,
-        CheckoutControlComponent,
-        CheckoutSummaryComponent,
-        BillingInfoComponent,
-        PaymentComponent,
-        ReviewCartComponent,
-        ShippingComponent,
-        ShippingInfoComponent,
+        CartControlComponent,
+        CartSummaryComponent,
+        CartBillingComponent,
+        CartPaymentComponent,
+        CartReviewComponent,
+        CartMethodComponent,
+        CartShippingComponent,
     ],
     providers: [
         MyOrderService,

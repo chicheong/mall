@@ -4,11 +4,11 @@ import { JhiPaginationUtil } from 'ng-jhipster';
 
 import { UserRouteAccessService } from '../../shared';
 import { MyOrderComponent } from './my-order.component';
-import { ReviewCartComponent } from './cart/review-cart/review-cart.component';
-import { ShippingInfoComponent } from './cart/shipping-info/shipping-info.component';
-import { ShippingComponent } from './cart/shipping/shipping.component';
-import { BillingInfoComponent } from './cart/billing-info/billing-info.component';
-import { PaymentComponent } from './cart/payment/payment.component';
+import { CartReviewComponent } from './cart/cart-review/cart-review.component';
+import { CartShippingComponent } from './cart/cart-shipping/cart-shipping.component';
+import { CartMethodComponent } from './cart/cart-method/cart-method.component';
+import { CartBillingComponent } from './cart/cart-billing/cart-billing.component';
+import { CartPaymentComponent } from './cart/cart-payment/cart-payment.component';
 import { MyOrderPopupComponent } from './my-order-dialog.component';
 import { MyOrderDeletePopupComponent } from './my-order-delete-dialog.component';
 import { CheckoutComponent } from './checkout.component';
@@ -43,8 +43,8 @@ export const myOrderRoute: Routes = [
         canActivate: [UserRouteAccessService]
     },
     {
-        path: 'my-order/:id/review-cart',
-        component: ReviewCartComponent,
+        path: 'my-order/:id/review',
+        component: CartReviewComponent,
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.myOrder.home.title'
@@ -52,17 +52,8 @@ export const myOrderRoute: Routes = [
         canActivate: [UserRouteAccessService]
     },
     {
-        path: 'my-order/:id/shipping-info',
-        component: ShippingInfoComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.myOrder.checkout.title'
-        },
-        canActivate: [UserRouteAccessService]
-    },
-    {
         path: 'my-order/:id/shipping',
-        component: ShippingComponent,
+        component: CartShippingComponent,
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.myOrder.checkout.title'
@@ -70,8 +61,17 @@ export const myOrderRoute: Routes = [
         canActivate: [UserRouteAccessService]
     },
     {
-        path: 'my-order/:id/billing-info',
-        component: BillingInfoComponent,
+        path: 'my-order/:id/method',
+        component: CartMethodComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.myOrder.checkout.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: 'my-order/:id/billing',
+        component: CartBillingComponent,
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.myOrder.checkout.title'
@@ -80,7 +80,7 @@ export const myOrderRoute: Routes = [
     },
     {
         path: 'my-order/:id/payment',
-        component: PaymentComponent,
+        component: CartPaymentComponent,
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.myOrder.checkout.title'

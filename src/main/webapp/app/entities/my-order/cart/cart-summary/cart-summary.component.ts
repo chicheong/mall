@@ -7,9 +7,9 @@ import { MyOrderService } from './../../my-order.service';
 
 @Component({
     selector: 'jhi-checkout-summary',
-    templateUrl: './checkout-summary.component.html'
+    templateUrl: './cart-summary.component.html'
 })
-export class CheckoutSummaryComponent implements OnInit, OnDestroy {
+export class CartSummaryComponent implements OnInit, OnDestroy {
 
     @Input() shipping: number;
     @Input() itemTotal: number;

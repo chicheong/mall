@@ -10,9 +10,9 @@ import { MyOrderService } from './../../my-order.service';
 
 @Component({
     selector: 'jhi-billing-info',
-    templateUrl: './billing-info.component.html'
+    templateUrl: './cart-billing.component.html'
 })
-export class BillingInfoComponent implements OnInit, OnDestroy {
+export class CartBillingComponent implements OnInit, OnDestroy {
 
     myOrder: MyOrder;
     isSaving: boolean;

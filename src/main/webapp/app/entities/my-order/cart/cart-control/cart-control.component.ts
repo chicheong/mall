@@ -16,9 +16,9 @@ export const enum CheckoutControlType {
 }
 @Component({
     selector: 'jhi-checkout-control',
-    templateUrl: './checkout-control.component.html'
+    templateUrl: './cart-control.component.html'
 })
-export class CheckoutControlComponent implements OnInit, OnDestroy {
+export class CartControlComponent implements OnInit, OnDestroy {
 
     @Input() billingInfoControl = CheckoutControlType.HIDE;
     @Input() paymentControl = CheckoutControlType.HIDE;
@@ -41,6 +41,7 @@ export class CheckoutControlComponent implements OnInit, OnDestroy {
     }
 
     goToReviewCart() {
+        console.error(this.route.snapshot.url);
     }
 
     goToShippingInfo() {
