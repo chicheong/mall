@@ -8,6 +8,9 @@ import { createRequestOption } from '../../shared';
 import { ProductItem } from './../product-item';
 import { OrderItem } from './../order-item';
 
+import { CartControl } from './cart/cart-control/cart-control';
+import { CartControlType } from './cart/cart-control/cart-control-type';
+
 export type EntityResponseType = HttpResponse<MyOrder>;
 
 @Injectable()
@@ -92,5 +95,10 @@ export class MyOrderService {
         orderItem.price = copy.price;
         return this.http.post<MyOrder>(this.resourceCartUrl, orderItem, { observe: 'response' })
             .map((res: EntityResponseType) => this.convertResponse(res));
+    }
+
+    getCartControl(myOrder: MyOrder, path: String): CartControl {
+        const obj: CartControl = new CartControl();
+        return obj;
     }
 }

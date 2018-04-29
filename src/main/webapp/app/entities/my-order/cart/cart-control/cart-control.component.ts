@@ -8,6 +8,9 @@ import { JhiEventManager } from 'ng-jhipster';
 import { MyOrder } from './../../my-order.model';
 import { MyOrderService } from './../../my-order.service';
 
+import { CartControl } from './cart-control';
+import { CartControlType } from './cart-control-type';
+
 export const enum CheckoutControlType {
     HIDE = 'H',
     ACTIVE = 'A',
@@ -20,11 +23,12 @@ export const enum CheckoutControlType {
 })
 export class CartControlComponent implements OnInit, OnDestroy {
 
-    @Input() billingInfoControl = CheckoutControlType.HIDE;
-    @Input() paymentControl = CheckoutControlType.HIDE;
-    @Input() reviewCartControl = CheckoutControlType.HIDE;
-    @Input() shippingControl = CheckoutControlType.HIDE;
-    @Input() shippingInfoControl = CheckoutControlType.HIDE;
+    @Input() cartControl: CartControl;
+    @Input() billingInfoControl = CartControlType.HIDE;
+    @Input() paymentControl = CartControlType.HIDE;
+    @Input() reviewCartControl = CartControlType.HIDE;
+    @Input() shippingControl = CartControlType.HIDE;
+    @Input() shippingInfoControl = CartControlType.HIDE;
     myOrder: MyOrder;
     private subscription: Subscription;
     private eventSubscriber: Subscription;
@@ -41,7 +45,7 @@ export class CartControlComponent implements OnInit, OnDestroy {
     }
 
     goToReviewCart() {
-        console.error(this.route.snapshot.url);
+        console.error(this.route.snapshot.url.pop().path);
     }
 
     goToShippingInfo() {
