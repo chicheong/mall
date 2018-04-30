@@ -8,6 +8,8 @@ import { JhiEventManager } from 'ng-jhipster';
 import { MyOrder } from './../../my-order.model';
 import { MyOrderService } from './../../my-order.service';
 
+import { CartControl } from './../cart-control/cart-control';
+
 @Component({
     selector: 'jhi-billing-info',
     templateUrl: './cart-billing.component.html'
@@ -15,6 +17,7 @@ import { MyOrderService } from './../../my-order.service';
 export class CartBillingComponent implements OnInit, OnDestroy {
 
     myOrder: MyOrder;
+    cartControl: CartControl;
     isSaving: boolean;
     private subscription: Subscription;
     private eventSubscriber: Subscription;
@@ -32,6 +35,7 @@ export class CartBillingComponent implements OnInit, OnDestroy {
         this.subscription = this.route.params.subscribe((params) => {
             this.load(params['id']);
         });
+        this.cartControl = this.myOrderService.getCartControl(this.myOrder, this.route.snapshot.url.pop().path);
         this.registerChangeInMyOrders();
     }
 

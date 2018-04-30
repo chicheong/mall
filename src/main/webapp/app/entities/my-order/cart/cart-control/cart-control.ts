@@ -1,9 +1,9 @@
 import { CartControlType } from './cart-control-type';
 
 export class CartControl {
-    billingInfoControl = CartControlType.HIDE;
+    billingControl = CartControlType.HIDE;
     paymentControl = CartControlType.HIDE;
-    reviewCartControl = CartControlType.HIDE;
+    reviewControl = CartControlType.HIDE;
+    methodControl = CartControlType.HIDE;
     shippingControl = CartControlType.HIDE;
-    shippingInfoControl = CartControlType.HIDE;
 }

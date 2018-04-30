@@ -24,11 +24,6 @@ export const enum CheckoutControlType {
 export class CartControlComponent implements OnInit, OnDestroy {
 
     @Input() cartControl: CartControl;
-    @Input() billingInfoControl = CartControlType.HIDE;
-    @Input() paymentControl = CartControlType.HIDE;
-    @Input() reviewCartControl = CartControlType.HIDE;
-    @Input() shippingControl = CartControlType.HIDE;
-    @Input() shippingInfoControl = CartControlType.HIDE;
     myOrder: MyOrder;
     private subscription: Subscription;
     private eventSubscriber: Subscription;

@@ -4,12 +4,7 @@
 	<div class="row">
 		<jhi-alert-error></jhi-alert-error>
 	</div>
-	<jhi-checkout-control 
-		[reviewCartControl]="'C'" 
-		[shippingInfoControl]="'A'" 
-		[shippingControl]="'D'" 
-		[billingInfoControl]="'D'" 
-		[paymentControl]="'D'">
+	<jhi-checkout-control [cartControl]="cartControl">
 	</jhi-checkout-control>
     <hr>
 	<div class="row" *jhiHasAnyAuthority="'ROLE_USER'">

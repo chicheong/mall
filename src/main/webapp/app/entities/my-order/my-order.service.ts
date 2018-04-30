@@ -20,6 +20,12 @@ export class MyOrderService {
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/my-orders';
     private resourceCartUrl = SERVER_API_URL + 'api/my-cart';
 
+    private billingControl = CartControlType.HIDE;
+    private paymentControl = CartControlType.ACTIVE;
+    private reviewControl = CartControlType.ACTIVE;
+    private methodControl = CartControlType.ACTIVE;
+    private shippingControl = CartControlType.ACTIVE;
+
     constructor(private http: HttpClient) { }
 
     create(myOrder: MyOrder): Observable<EntityResponseType> {
@@ -99,6 +105,101 @@ export class MyOrderService {
 
     getCartControl(myOrder: MyOrder, path: String): CartControl {
         const obj: CartControl = new CartControl();
+        switch (path) {
+            case 'review':
+                console.error('review');
+                if (this.reviewControl !== CartControlType.HIDE) {
+                    obj.reviewControl = CartControlType.ACTIVE;
+                }
+                if (this.shippingControl !== CartControlType.HIDE) {
+                    obj.shippingControl = CartControlType.DISABLED;
+                }
+                if (this.methodControl !== CartControlType.HIDE) {
+                    obj.methodControl = CartControlType.DISABLED;
+                }
+                if (this.billingControl !== CartControlType.HIDE) {
+                    obj.billingControl = CartControlType.DISABLED;
+                }
+                if (this.paymentControl !== CartControlType.HIDE) {
+                    obj.paymentControl = CartControlType.DISABLED;
+                }
+                break;
+            case 'shipping':
+                console.error('shipping');
+                if (this.reviewControl !== CartControlType.HIDE) {
+                    obj.reviewControl = CartControlType.COMPLETE;
+                }
+                if (this.shippingControl !== CartControlType.HIDE) {
+                    obj.shippingControl = CartControlType.ACTIVE;
+                }
+                if (this.methodControl !== CartControlType.HIDE) {
+                    obj.methodControl = CartControlType.DISABLED;
+                }
+                if (this.billingControl !== CartControlType.HIDE) {
+                    obj.billingControl = CartControlType.DISABLED;
+                }
+                if (this.paymentControl !== CartControlType.HIDE) {
+                    obj.paymentControl = CartControlType.DISABLED;
+                }
+                break;
+            case 'method':
+                console.error('method');
+                if (this.reviewControl !== CartControlType.HIDE) {
+                    obj.reviewControl = CartControlType.COMPLETE;
+                }
+                if (this.shippingControl !== CartControlType.HIDE) {
+                    obj.shippingControl = CartControlType.COMPLETE;
+                }
+                if (this.methodControl !== CartControlType.HIDE) {
+                    obj.methodControl = CartControlType.ACTIVE;
+                }
+                if (this.billingControl !== CartControlType.HIDE) {
+                    obj.billingControl = CartControlType.DISABLED;
+                }
+                if (this.paymentControl !== CartControlType.HIDE) {
+                    obj.paymentControl = CartControlType.DISABLED;
+                }
+                break;
+            case 'billing':
+                console.error('billing');
+                if (this.reviewControl !== CartControlType.HIDE) {
+                    obj.reviewControl = CartControlType.COMPLETE;
+                }
+                if (this.shippingControl !== CartControlType.HIDE) {
+                    obj.shippingControl = CartControlType.COMPLETE;
+                }
+                if (this.methodControl !== CartControlType.HIDE) {
+                    obj.methodControl = CartControlType.COMPLETE;
+                }
+                if (this.billingControl !== CartControlType.HIDE) {
+                    obj.billingControl = CartControlType.ACTIVE;
+                }
+                if (this.paymentControl !== CartControlType.HIDE) {
+                    obj.paymentControl = CartControlType.DISABLED;
+                }
+                break;
+            case 'payment':
+                console.error('payment');
+                if (this.reviewControl !== CartControlType.HIDE) {
+                    obj.reviewControl = CartControlType.COMPLETE;
+                }
+                if (this.shippingControl !== CartControlType.HIDE) {
+                    obj.shippingControl = CartControlType.COMPLETE;
+                }
+                if (this.methodControl !== CartControlType.HIDE) {
+                    obj.methodControl = CartControlType.COMPLETE;
+                }
+                if (this.billingControl !== CartControlType.HIDE) {
+                    obj.billingControl = CartControlType.COMPLETE;
+                }
+                if (this.paymentControl !== CartControlType.HIDE) {
+                    obj.paymentControl = CartControlType.ACTIVE;
+                }
+                break;
+            default:
+                console.error('default');
+                break;
+        }
         return obj;
     }
 }

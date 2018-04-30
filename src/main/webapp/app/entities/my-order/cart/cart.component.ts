@@ -11,10 +11,10 @@ import { MyOrderService } from './../../my-order.service';
 import { CartControl } from './../cart-control/cart-control';
 
 @Component({
-    selector: 'jhi-payment',
-    templateUrl: './cart-payment.component.html'
+    selector: 'jhi-review-cart',
+    templateUrl: './cart-review.component.html'
 })
-export class CartPaymentComponent implements OnInit, OnDestroy {
+export class CartComponent implements OnInit, OnDestroy {
 
     myOrder: MyOrder;
     cartControl: CartControl;
