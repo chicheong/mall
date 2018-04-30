@@ -11,14 +11,13 @@ import { MyOrderService } from './../../my-order.service';
 import { CartControl } from './../cart-control/cart-control';
 
 @Component({
-    selector: 'jhi-review-cart',
-    templateUrl: './cart-review.component.html'
+    selector: 'jhi-cart',
+    templateUrl: ''
 })
 export class CartComponent implements OnInit, OnDestroy {
 
     myOrder: MyOrder;
     cartControl: CartControl;
-    isSaving: boolean;
     private subscription: Subscription;
     private eventSubscriber: Subscription;
 
@@ -31,12 +30,10 @@ export class CartComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.isSaving = false;
         this.subscription = this.route.params.subscribe((params) => {
             this.load(params['id']);
         });
         this.cartControl = this.myOrderService.getCartControl(this.myOrder, this.route.snapshot.url.pop().path);
-        this.registerChangeInMyOrders();
     }
 
     load(id) {
@@ -49,69 +46,8 @@ export class CartComponent implements OnInit, OnDestroy {
             });
     }
 
-    sumAll(): number {
-        if (this.myOrder.items) {
-            let total = 0;
-            this.myOrder.items.forEach((item) => {
-                total += (item.quantity * item.price);
-            });
-            return total;
-        }
-        return 0;
-    }
-
-    updateMyOrder() {
-    }
-
-    save() {
-        this.isSaving = true;
-        this.subscribeToSaveResponse(
-                this.myOrderService.update(this.myOrder));
-    }
-
-    private subscribeToSaveResponse(result: Observable<HttpResponse<MyOrder>>) {
-        result.subscribe((res: HttpResponse<MyOrder>) =>
-            this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
-    }
-
-    private onSaveSuccess(result: MyOrder) {
-        this.myOrder = result;
-        this.eventManager.broadcast({ name: 'myOrderModification', content: 'OK', obj: result});
-        this.isSaving = false;
-    }
-
-    private onSaveError() {
-        this.isSaving = false;
-    }
-
-    checkout() {
-        console.log('calling checkout');
-        this.save();
-        this.router.navigate(['/checkout', this.myOrder.id]);
-    }
-
-    previousState() {
-        this.save();
-        window.history.back();
-    }
-
     ngOnDestroy() {
         this.subscription.unsubscribe();
         this.eventManager.destroy(this.eventSubscriber);
-    }
-
-    registerChangeInMyOrders() {
-        this.eventSubscriber = this.eventManager.subscribe(
-            'myOrderListModification',
-            (response) => this.load(this.myOrder.id)
-        );
-    }
-
-    canCheckout() {
-        if (this.myOrder && this.myOrder.items && this.myOrder.items.length > 0) {
-            return true;
-        } else {
-            return false;
-        }
     }
 }

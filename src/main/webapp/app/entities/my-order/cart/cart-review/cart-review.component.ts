@@ -9,12 +9,13 @@ import { MyOrder } from './../../my-order.model';
 import { MyOrderService } from './../../my-order.service';
 
 import { CartControl } from './../cart-control/cart-control';
+import { CartComponent } from './../cart.component';
 
 @Component({
     selector: 'jhi-review-cart',
     templateUrl: './cart-review.component.html'
 })
-export class CartReviewComponent implements OnInit, OnDestroy {
+export class CartReviewComponent extends CartComponent implements OnInit, OnDestroy {
 
     myOrder: MyOrder;
     cartControl: CartControl;
@@ -37,6 +38,7 @@ export class CartReviewComponent implements OnInit, OnDestroy {
         });
         this.cartControl = this.myOrderService.getCartControl(this.myOrder, this.route.snapshot.url.pop().path);
         this.registerChangeInMyOrders();
+        super.ngOnInit();
     }
 
     load(id) {
