@@ -8,8 +8,7 @@ import { JhiEventManager } from 'ng-jhipster';
 import { MyOrder } from './../../my-order.model';
 import { MyOrderService } from './../../my-order.service';
 
-import { CartControl } from './../cart-control/cart-control';
-import { CartComponent } from './../cart.component';
+import { CartComponent } from './../../cart.component';
 
 @Component({
     selector: 'jhi-review-cart',
@@ -17,38 +16,18 @@ import { CartComponent } from './../cart.component';
 })
 export class CartReviewComponent extends CartComponent implements OnInit, OnDestroy {
 
-    myOrder: MyOrder;
-    cartControl: CartControl;
     isSaving: boolean;
-    private subscription: Subscription;
-    private eventSubscriber: Subscription;
 
     constructor(
-        private eventManager: JhiEventManager,
-        private myOrderService: MyOrderService,
-        private route: ActivatedRoute,
-        private router: Router
-    ) {
-    }
+        protected eventManager: JhiEventManager,
+        protected myOrderService: MyOrderService,
+        protected route: ActivatedRoute,
+        protected router: Router
+    ) { super(eventManager, myOrderService, route, router); }
 
     ngOnInit() {
-        this.isSaving = false;
-        this.subscription = this.route.params.subscribe((params) => {
-            this.load(params['id']);
-        });
-        this.cartControl = this.myOrderService.getCartControl(this.myOrder, this.route.snapshot.url.pop().path);
-        this.registerChangeInMyOrders();
         super.ngOnInit();
-    }
-
-    load(id) {
-        this.myOrderService.find(id)
-            .subscribe((myOrderResponse: HttpResponse<MyOrder>) => {
-                this.myOrder = myOrderResponse.body;
-                this.myOrder.items.forEach((item) => {
-                   console.error('item.price: ' + item.price + ', item.quantity: ' + item.quantity);
-                });
-            });
+        this.isSaving = false;
     }
 
     sumAll(): number {
@@ -65,54 +44,55 @@ export class CartReviewComponent extends CartComponent implements OnInit, OnDest
     updateMyOrder() {
     }
 
-    save() {
+    save(goNext: boolean) {
         this.isSaving = true;
         this.subscribeToSaveResponse(
-                this.myOrderService.update(this.myOrder));
+                this.myOrderService.update(this.myOrder), goNext);
     }
 
-    private subscribeToSaveResponse(result: Observable<HttpResponse<MyOrder>>) {
+    private subscribeToSaveResponse(result: Observable<HttpResponse<MyOrder>>, goNext: boolean) {
         result.subscribe((res: HttpResponse<MyOrder>) =>
-            this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
+            this.onSaveSuccess(res.body, goNext), (res: HttpErrorResponse) => this.onSaveError());
     }
 
-    private onSaveSuccess(result: MyOrder) {
+    private onSaveSuccess(result: MyOrder, goNext: boolean) {
         this.myOrder = result;
         this.eventManager.broadcast({ name: 'myOrderModification', content: 'OK', obj: result});
         this.isSaving = false;
+        if (goNext) {
+            this.myOrderService.doCartNextAction(this.myOrder, this.path);
+        }
     }
 
     private onSaveError() {
         this.isSaving = false;
     }
 
-    checkout() {
-        console.log('calling checkout');
-        this.save();
-        this.router.navigate(['/checkout', this.myOrder.id]);
-    }
-
     previousState() {
-        this.save();
+        this.save(false);
         window.history.back();
     }
 
     ngOnDestroy() {
+        super.ngOnDestroy();
         this.subscription.unsubscribe();
         this.eventManager.destroy(this.eventSubscriber);
     }
 
-    registerChangeInMyOrders() {
-        this.eventSubscriber = this.eventManager.subscribe(
-            'myOrderListModification',
-            (response) => this.load(this.myOrder.id)
-        );
-    }
-
-    canCheckout() {
-        if (this.myOrder && this.myOrder.items && this.myOrder.items.length > 0) {
-            return true;
+    canGoNext() {
+        if (this.myOrder && this.myOrder.items) {
+            let total = 0;
+            this.myOrder.items.forEach((item) => {
+                total += item.quantity;
+            });
+            if (total > 0) {
+                console.error('canGoNext: true');
+                return true;
+            } else {
+                return false;
+            }
         } else {
+            console.error('canGoNext: false');
             return false;
         }
     }

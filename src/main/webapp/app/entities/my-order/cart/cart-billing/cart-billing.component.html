@@ -1,23 +1,26 @@
 
 <div *ngIf="myOrder">
-	<form name="editForm" role="form" novalidate (ngSubmit)="checkout()" #editForm="ngForm">
+	<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
 	<div class="row">
 		<jhi-alert-error></jhi-alert-error>
 	</div>
-	<jhi-checkout-control [cartControl]="cartControl">
+	<jhi-checkout-control [cartControl]="cartControl" [myOrderId]="this.myOrder.id">
 	</jhi-checkout-control>
     <hr>
 	<div class="row" *jhiHasAnyAuthority="'ROLE_USER'">
-		<div class="col-md-3"><h2><span jhiTranslate="mallApp.myOrder.detail.title">My Shopping Cart</span></h2></div>
-		<div class="col-md-9" [ngSwitch]="canCheckout()">
+		<div class="col-md-3">				
+			<h2>
+				<span jhiTranslate="mallApp.myOrder.cart.billing.title">Billing Info</span>
+			</h2></div>
+		<div class="col-md-9">
 		    <button type="button" [disabled]="isSaving" class="btn btn-info" (click)="previousState()">
 		        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
 		    </button>
 	        <button type="button" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary" (click)="save()">
 	            <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.saveRefresh">Save & Refresh</span>
 	        </button>
-	        <button *ngSwitchCase="true" type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-success">
-	            <span class="fa fa-credit-card"></span>&nbsp;<span jhiTranslate="entity.action.checkout">Checkout</span>
+	        <button type="button" [disabled]="editForm.form.invalid || isSaving || !canGoNext()" class="btn btn-success" (click)="save()">
+	            <span class="fa fa-chevron-circle-right"></span>&nbsp;<span jhiTranslate="entity.action.continue">Continue</span>
 	        </button>
 		</div>
     </div>    

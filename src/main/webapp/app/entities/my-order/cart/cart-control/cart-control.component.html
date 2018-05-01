@@ -5,32 +5,32 @@
         	[ngClass]="(cartControl.reviewControl == 'A') ? 'btn-primary active' : ((cartControl.reviewControl == 'C') ? 'btn-success' : 'btn-outline-primary')" 
         	[hidden]="cartControl.reviewControl == 'H'" 
         	[disabled]="cartControl.reviewControl == 'D'" 
-        	(click)="goToReviewCart()">
-        	<span class="fa fa-shopping-cart"></span>&nbsp;<span jhiTranslate="mallApp.myOrder.cart.checkout-control.button.reviewCart">Review Cart</span>
+        	(click)="goToReview()">
+        	<span class="fa fa-shopping-cart"></span>&nbsp;<span jhiTranslate="mallApp.myOrder.cart.control.button.review">Shopping Cart</span>
         </button>	        
         <span class="fa fa-angle-right" [hidden]="cartControl.reviewControl == 'H'"></span>
         <button type="button" class="btn" 
         	[ngClass]="(cartControl.shippingControl == 'A') ? 'btn-primary active' : ((cartControl.shippingControl == 'C') ? 'btn-success' : 'btn-outline-primary')" 
         	[hidden]="cartControl.shippingControl == 'H'" 
         	[disabled]="cartControl.shippingControl == 'D'" 
-        	(click)="goToShippingInfo()">
-        	<span class="fa fa-home"></span>&nbsp;<span jhiTranslate="mallApp.myOrder.cart.checkout-control.button.shippingInfo">Shipping Info</span>
+        	(click)="goToShipping()">
+        	<span class="fa fa-home"></span>&nbsp;<span jhiTranslate="mallApp.myOrder.cart.control.button.shipping">Shipping Info</span>
         </button>
         <span class="fa fa-angle-right" [hidden]="cartControl.shippingControl == 'H'"></span>
         <button type="button" class="btn" 
         	[ngClass]="(cartControl.methodControl == 'A') ? 'btn-primary active' : ((cartControl.methodControl == 'C') ? 'btn-success' : 'btn-outline-primary')" 
         	[hidden]="cartControl.methodControl == 'H'" 
         	[disabled]="cartControl.methodControl == 'D'" 
-        	(click)="goToShipping()">
-        	<span class="fa fa-truck"></span>&nbsp;<span jhiTranslate="mallApp.myOrder.cart.checkout-control.button.shipping">Shipping</span>
+        	(click)="goToMethod()">
+        	<span class="fa fa-truck"></span>&nbsp;<span jhiTranslate="mallApp.myOrder.cart.control.button.method">Shipping Method</span>
         </button>
         <span class="fa fa-angle-right" [hidden]="cartControl.methodControl == 'H'"></span>
         <button type="button" class="btn" 
         	[ngClass]="(cartControl.billingControl == 'A') ? 'btn-primary active' : ((cartControl.billingControl == 'C') ? 'btn-success' : 'btn-outline-primary')" 
         	[hidden]="cartControl.billingControl == 'H'" 
         	[disabled]="cartControl.billingControl == 'D'" 
-        	(click)="goToBillingInfo()">
-        	<span class="fa fa-money"></span>&nbsp;<span jhiTranslate="mallApp.myOrder.cart.checkout-control.button.billingInfo">Billing Info</span>
+        	(click)="goToBilling()">
+        	<span class="fa fa-money"></span>&nbsp;<span jhiTranslate="mallApp.myOrder.cart.control.button.billing">Billing Info</span>
         </button>
         <span class="fa fa-angle-right" [hidden]="cartControl.billingControl == 'H'"></span>
         <button type="button" class="btn" 
@@ -38,7 +38,7 @@
         	[hidden]="cartControl.paymentControl == 'H'" 
         	[disabled]="cartControl.paymentControl == 'D'" 
         	(click)="goToPayment()">
-        	<span class="fa fa-credit-card"></span>&nbsp;<span jhiTranslate="mallApp.myOrder.cart.checkout-control.button.payment">Payment</span>
+        	<span class="fa fa-credit-card"></span>&nbsp;<span jhiTranslate="mallApp.myOrder.cart.control.button.payment">Payment</span>
         </button>     
 	</div>
 </div>

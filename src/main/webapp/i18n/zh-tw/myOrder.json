@@ -12,26 +12,32 @@
                 "title": "結賬"
             },
             "cart": {
-            	"checkout-control": {
+            	"control": {
             	    "button": {
-	            		"reviewCart": "Review Cart",
-	            		"shippingInfo": "Shipping Info",
-	            		"shipping": "Shipping",
-	            		"billingInfo": "Billing Info",
-	            		"payment": "Payment"
+	            		"review": "購物車",
+	            		"shipping": "運送資料",
+	            		"method": "運送方法",
+	            		"billing": "計費資料",
+	            		"payment": "付款"
 	            	}
             	},
-            	"checkout-summary": {
+            	"summary": {
             	},
-            	"billing-info": {
+            	"billing": {
+					"title": "計費資料"
             	},
             	"payment": {
+					"title": "付款"
             	},
-            	"review-cart": {
+            	"review": {
+					"title": "購物車",
+					"currentTotal": "現時總數"
+            	},
+            	"method": {
+					"title": "運送方法"
             	},
             	"shipping": {
-            	},
-            	"shipping-info": {
+					"title": "運送資料"
             	}
             },
             "created": "新的 My Order 建立成功，識別碼為 {{ param }}",
@@ -41,10 +47,9 @@
                 "question": "您確定要刪除 My Order {{ id }} 嗎?"
             },
             "detail": {
-                "title": "我的購物車"
+                "title": "My Order"
             },
             "total": "總數",
-			"currentTotal": "現時總數",
             "currency": "Currency",
             "remark": "Remark",
             "status": "Status",

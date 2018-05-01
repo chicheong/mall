@@ -122,11 +122,11 @@
             "open": "Open",
             "save": "Save",
             "saveRefresh": "Save & Refresh",
-            "checkout": "Checkout",
             "view": "View",
 			"confirm": "Confirm",
 			"upload": "Upload",
-			"ok": "OK"
+			"ok": "OK",
+			"continue": "Continue"
         },
         "detail": {
             "field": "Field",

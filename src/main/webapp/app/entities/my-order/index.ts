@@ -5,7 +5,7 @@ export * from './my-order-dialog.component';
 export * from './my-order-delete-dialog.component';
 export * from './my-order-detail.component';
 export * from './my-order.component';
-export * from './checkout.component';
+export * from './cart.component';
 export * from './cart/cart-control/cart-control.component';
 export * from './cart/cart-summary/cart-summary.component';
 export * from './cart/cart-billing/cart-billing.component';

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { SERVER_API_URL } from '../../app.constants';
@@ -20,13 +21,15 @@ export class MyOrderService {
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/my-orders';
     private resourceCartUrl = SERVER_API_URL + 'api/my-cart';
 
-    private billingControl = CartControlType.HIDE;
+    private billingControl = CartControlType.ACTIVE;
     private paymentControl = CartControlType.ACTIVE;
     private reviewControl = CartControlType.ACTIVE;
     private methodControl = CartControlType.ACTIVE;
     private shippingControl = CartControlType.ACTIVE;
+    private errorPathSuffix = 'review';
+    private pathPrefix = 'my-order';
 
-    constructor(private http: HttpClient) { }
+    constructor(private http: HttpClient, private router: Router) { }
 
     create(myOrder: MyOrder): Observable<EntityResponseType> {
         const copy = this.convert(myOrder);
@@ -131,6 +134,8 @@ export class MyOrderService {
                 }
                 if (this.shippingControl !== CartControlType.HIDE) {
                     obj.shippingControl = CartControlType.ACTIVE;
+                } else {
+                    this.router.navigate(['/' + this.pathPrefix + '/' + myOrder.id + '/' + this.errorPathSuffix]);
                 }
                 if (this.methodControl !== CartControlType.HIDE) {
                     obj.methodControl = CartControlType.DISABLED;
@@ -152,6 +157,8 @@ export class MyOrderService {
                 }
                 if (this.methodControl !== CartControlType.HIDE) {
                     obj.methodControl = CartControlType.ACTIVE;
+                } else {
+                    this.router.navigate(['/' + this.pathPrefix + '/' + myOrder.id + '/' + this.errorPathSuffix]);
                 }
                 if (this.billingControl !== CartControlType.HIDE) {
                     obj.billingControl = CartControlType.DISABLED;
@@ -173,6 +180,8 @@ export class MyOrderService {
                 }
                 if (this.billingControl !== CartControlType.HIDE) {
                     obj.billingControl = CartControlType.ACTIVE;
+                } else {
+                    this.router.navigate(['/' + this.pathPrefix + '/' + myOrder.id + '/' + this.errorPathSuffix]);
                 }
                 if (this.paymentControl !== CartControlType.HIDE) {
                     obj.paymentControl = CartControlType.DISABLED;
@@ -194,6 +203,8 @@ export class MyOrderService {
                 }
                 if (this.paymentControl !== CartControlType.HIDE) {
                     obj.paymentControl = CartControlType.ACTIVE;
+                } else {
+                    this.router.navigate(['/' + this.pathPrefix + '/' + myOrder.id + '/' + this.errorPathSuffix]);
                 }
                 break;
             default:
@@ -201,5 +212,64 @@ export class MyOrderService {
                 break;
         }
         return obj;
+    }
+
+    doCartNextAction(myOrder: MyOrder, path: String): void {
+        switch (path) {
+            case 'review':
+                this.doCartReviewNextAction(myOrder);
+                break;
+            case 'shipping':
+                this.doCartShippingNextAction(myOrder);
+                break;
+            case 'method':
+                this.doCartMethodNextAction(myOrder);
+                break;
+            case 'billing':
+                this.doCartBillingNextAction(myOrder);
+                break;
+            case 'payment':
+                this.doCartPaymentNextAction(myOrder);
+                break;
+            default:
+                console.error('default');
+                break;
+        }
+    }
+
+    doCartReviewNextAction(myOrder: MyOrder): void {
+        if (this.reviewControl !== CartControlType.HIDE) {
+            this.router.navigate(['/' + this.pathPrefix + '/' + myOrder.id + '/shipping']);
+        } else {
+            this.doCartShippingNextAction(myOrder);
+        }
+    }
+
+    doCartShippingNextAction(myOrder: MyOrder): void {
+        if (this.shippingControl !== CartControlType.HIDE) {
+            this.router.navigate(['/' + this.pathPrefix + '/' + myOrder.id + '/method']);
+        } else {
+            this.doCartMethodNextAction(myOrder);
+        }
+    }
+
+    doCartMethodNextAction(myOrder: MyOrder): void {
+        if (this.methodControl !== CartControlType.HIDE) {
+            this.router.navigate(['/' + this.pathPrefix + '/' + myOrder.id + '/billing']);
+        } else {
+            this.doCartBillingNextAction(myOrder);
+        }
+    }
+
+    doCartBillingNextAction(myOrder: MyOrder): void {
+        if (this.billingControl !== CartControlType.HIDE) {
+            this.router.navigate(['/' + this.pathPrefix + '/' + myOrder.id + '/payment']);
+        } else {
+            this.doCartPaymentNextAction(myOrder);
+        }
+    }
+
+    doCartPaymentNextAction(myOrder: MyOrder): void {
+        console.error('After Payment');
     }
 }

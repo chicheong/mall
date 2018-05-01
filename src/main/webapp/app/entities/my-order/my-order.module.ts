@@ -11,12 +11,12 @@ import {
     MyOrderPopupComponent,
     MyOrderDeletePopupComponent,
     MyOrderDeleteDialogComponent,
-    CheckoutComponent,
     myOrderRoute,
     myOrderPopupRoute,
     MyOrderResolvePagingParams,
 } from './';
 
+import { CartComponent } from './cart.component';
 import { CartControlComponent } from './cart/cart-control/cart-control.component';
 import { CartSummaryComponent } from './cart/cart-summary/cart-summary.component';
 import { CartBillingComponent } from './cart/cart-billing/cart-billing.component';
@@ -42,7 +42,7 @@ const ENTITY_STATES = [
         MyOrderDeleteDialogComponent,
         MyOrderPopupComponent,
         MyOrderDeletePopupComponent,
-        CheckoutComponent,
+        CartComponent,
         CartControlComponent,
         CartSummaryComponent,
         CartBillingComponent,
@@ -57,7 +57,7 @@ const ENTITY_STATES = [
         MyOrderPopupComponent,
         MyOrderDeleteDialogComponent,
         MyOrderDeletePopupComponent,
-        CheckoutComponent,
+        CartComponent,
         CartControlComponent,
         CartSummaryComponent,
         CartBillingComponent,

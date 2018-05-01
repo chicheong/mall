@@ -8,59 +8,26 @@ import { JhiEventManager } from 'ng-jhipster';
 import { MyOrder } from './../../my-order.model';
 import { MyOrderService } from './../../my-order.service';
 
-import { CartControl } from './../cart-control/cart-control';
+import { CartComponent } from './../../cart.component';
 
 @Component({
     selector: 'jhi-shipping-info',
     templateUrl: './cart-shipping.component.html'
 })
-export class CartShippingComponent implements OnInit, OnDestroy {
+export class CartShippingComponent extends CartComponent implements OnInit, OnDestroy {
 
-    myOrder: MyOrder;
-    cartControl: CartControl;
     isSaving: boolean;
-    private subscription: Subscription;
-    private eventSubscriber: Subscription;
 
     constructor(
-        private eventManager: JhiEventManager,
-        private myOrderService: MyOrderService,
-        private route: ActivatedRoute,
-        private router: Router
-    ) {
-    }
+        protected eventManager: JhiEventManager,
+        protected myOrderService: MyOrderService,
+        protected route: ActivatedRoute,
+        protected router: Router
+    ) { super(eventManager, myOrderService, route, router); }
 
     ngOnInit() {
+        super.ngOnInit();
         this.isSaving = false;
-        this.subscription = this.route.params.subscribe((params) => {
-            this.load(params['id']);
-        });
-        this.cartControl = this.myOrderService.getCartControl(this.myOrder, this.route.snapshot.url.pop().path);
-        this.registerChangeInMyOrders();
-    }
-
-    load(id) {
-        this.myOrderService.find(id)
-            .subscribe((myOrderResponse: HttpResponse<MyOrder>) => {
-                this.myOrder = myOrderResponse.body;
-                this.myOrder.items.forEach((item) => {
-                   console.error('item.price: ' + item.price + ', item.quantity: ' + item.quantity);
-                });
-            });
-    }
-
-    sumAll(): number {
-        if (this.myOrder.items) {
-            let total = 0;
-            this.myOrder.items.forEach((item) => {
-                total += (item.quantity * item.price);
-            });
-            return total;
-        }
-        return 0;
-    }
-
-    updateMyOrder() {
     }
 
     save() {
@@ -78,16 +45,11 @@ export class CartShippingComponent implements OnInit, OnDestroy {
         this.myOrder = result;
         this.eventManager.broadcast({ name: 'myOrderModification', content: 'OK', obj: result});
         this.isSaving = false;
+        this.myOrderService.doCartNextAction(this.myOrder, this.path);
     }
 
     private onSaveError() {
         this.isSaving = false;
-    }
-
-    checkout() {
-        console.log('calling checkout');
-        this.save();
-        this.router.navigate(['/checkout', this.myOrder.id]);
     }
 
     previousState() {
@@ -96,19 +58,13 @@ export class CartShippingComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
+        super.ngOnDestroy();
         this.subscription.unsubscribe();
         this.eventManager.destroy(this.eventSubscriber);
     }
 
-    registerChangeInMyOrders() {
-        this.eventSubscriber = this.eventManager.subscribe(
-            'myOrderListModification',
-            (response) => this.load(this.myOrder.id)
-        );
-    }
-
-    canCheckout() {
-        if (this.myOrder && this.myOrder.items && this.myOrder.items.length > 0) {
+    canGoNext() {
+        if (this.myOrder && this.myOrder.items) {
             return true;
         } else {
             return false;

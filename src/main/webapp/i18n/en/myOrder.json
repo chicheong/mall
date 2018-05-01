@@ -12,26 +12,32 @@
                 "title": "Checkout"
             },
             "cart": {
-            	"checkout-control": {
+            	"control": {
             	    "button": {
-	            		"reviewCart": "Review Cart",
-	            		"shippingInfo": "Shipping Info",
-	            		"shipping": "Shipping",
-	            		"billingInfo": "Billing Info",
+	            		"review": "Shopping Cart",
+	            		"shipping": "Shipping Info",
+	            		"method": "Shipping Method",
+	            		"billing": "Billing Info",
 	            		"payment": "Payment"
 	            	}
             	},
-            	"checkout-summary": {
+            	"summary": {
             	},
-            	"billing-info": {
+            	"billing": {
+            		"title": "Billing Info"
             	},
             	"payment": {
+            		"title": "Payment"
             	},
-            	"review-cart": {
+            	"review": {
+            		"title": "Shopping Cart",
+            		"currentTotal": "Current Total"
+            	},
+            	"method": {
+            		"title": "Shipping Method"
             	},
             	"shipping": {
-            	},
-            	"shipping-info": {
+            		"title": "Shipping Info"
             	}
             },
             "created": "A new My Order is created with identifier {{ param }}",
@@ -41,10 +47,9 @@
                 "question": "Are you sure you want to delete My Order {{ id }}?"
             },
             "detail": {
-                "title": "My Shopping Cart"
+                "title": "My Order"
             },
             "total": "Total",
-            "currentTotal": "Current Total",
             "currency": "Currency",
             "remark": "Remark",
             "status": "Status",
