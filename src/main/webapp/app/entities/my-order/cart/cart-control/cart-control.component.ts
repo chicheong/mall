@@ -25,7 +25,7 @@ export class CartControlComponent implements OnInit, OnDestroy {
 
     @Input() cartControl: CartControl;
     @Input() myOrderId: number;
-    path: String;
+    @Input() path: String;
     private subscription: Subscription;
     private eventSubscriber: Subscription;
 
@@ -38,43 +38,15 @@ export class CartControlComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        const urlSegment = this.route.snapshot.url.pop();
-        this.route.snapshot.url.push(urlSegment);
-        this.path = urlSegment.path;
+        // const urlSegment = this.route.snapshot.url.pop();
+        // this.route.snapshot.url.push(urlSegment);
+        // this.path = urlSegment.path;
     }
 
-    goToReview() {
+    goTo(pathName: String) {
         console.error('this.path: ' + this.path);
-        if (!(this.path === 'review')) {
-            this.router.navigate(['/my-order/' + this.myOrderId + '/review']);
-        }
-    }
-
-    goToShipping() {
-        console.error('this.path: ' + this.path);
-        if (!(this.path === 'shipping')) {
-            this.router.navigate(['/my-order/' + this.myOrderId + '/shipping']);
-        }
-    }
-
-    goToMethod() {
-        console.error('this.path: ' + this.path);
-        if (!(this.path === 'method')) {
-            this.router.navigate(['/my-order/' + this.myOrderId + '/method']);
-        }
-    }
-
-    goToBilling() {
-        console.error('this.path: ' + this.path);
-        if (!(this.path === 'billing')) {
-            this.router.navigate(['/my-order/' + this.myOrderId + '/billing']);
-        }
-    }
-
-    goToPayment() {
-        console.error('this.path: ' + this.path);
-        if (!(this.path === 'payment')) {
-            this.router.navigate(['/my-order/' + this.myOrderId + '/payment']);
+        if (!(this.path === pathName)) {
+            this.router.navigate(['/my-order/' + this.myOrderId + '/' + pathName]);
         }
     }
 

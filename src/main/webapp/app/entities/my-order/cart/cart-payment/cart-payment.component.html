@@ -6,7 +6,7 @@
 			<jhi-alert-error></jhi-alert-error>
 		</div>
 		<jhi-checkout-control [cartControl]="cartControl"
-			[myOrderId]="this.myOrder.id"> </jhi-checkout-control>
+			[myOrderId]="this.myOrder.id" [path]="path"> </jhi-checkout-control>
 		<hr>
 		<div class="row" *jhiHasAnyAuthority="'ROLE_USER'">
 			<div class="col-md-3">
