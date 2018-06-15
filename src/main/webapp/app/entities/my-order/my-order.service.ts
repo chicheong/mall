@@ -272,4 +272,15 @@ export class MyOrderService {
     doCartPaymentNextAction(myOrder: MyOrder): void {
         console.error('After Payment');
     }
+
+    sumAllItems(myOrder: MyOrder): number {
+        if (myOrder.items) {
+            let total = 0;
+            myOrder.items.forEach((item) => {
+                total += (item.quantity * item.price);
+            });
+            return total;
+        }
+        return 0;
+    }
 }

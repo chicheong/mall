@@ -31,14 +31,7 @@ export class CartReviewComponent extends CartComponent implements OnInit, OnDest
     }
 
     sumAll(): number {
-        if (this.myOrder.items) {
-            let total = 0;
-            this.myOrder.items.forEach((item) => {
-                total += (item.quantity * item.price);
-            });
-            return total;
-        }
-        return 0;
+        return this.myOrderService.sumAllItems(this.myOrder);
     }
 
     updateMyOrder() {
