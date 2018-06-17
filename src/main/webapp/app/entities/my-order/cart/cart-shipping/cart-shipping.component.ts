@@ -52,11 +52,6 @@ export class CartShippingComponent extends CartComponent implements OnInit, OnDe
         this.isSaving = false;
     }
 
-    previousState() {
-        this.save();
-        window.history.back();
-    }
-
     ngOnDestroy() {
         super.ngOnDestroy();
         this.subscription.unsubscribe();

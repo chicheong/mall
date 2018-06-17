@@ -31,7 +31,7 @@ export class CartReviewComponent extends CartComponent implements OnInit, OnDest
     }
 
     sumAll(): number {
-        return this.myOrderService.sumAllItems(this.myOrder);
+        return this.myOrderService.sumAll(this.myOrder);
     }
 
     updateMyOrder() {
@@ -59,11 +59,6 @@ export class CartReviewComponent extends CartComponent implements OnInit, OnDest
 
     private onSaveError() {
         this.isSaving = false;
-    }
-
-    previousState() {
-        this.save(false);
-        window.history.back();
     }
 
     ngOnDestroy() {

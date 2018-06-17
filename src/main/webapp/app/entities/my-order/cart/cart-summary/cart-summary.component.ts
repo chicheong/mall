@@ -12,9 +12,8 @@ import { MyOrderService } from './../../my-order.service';
 export class CartSummaryComponent implements OnInit, OnDestroy {
 
     @Input() myOrder: MyOrder;
-    shipping = 1000;
-    itemTotal: number;
-    total: number;
+    @Input() shipping: number;
+    @Input() itemTotal: number;
 
     constructor(
         private myOrderService: MyOrderService
@@ -22,9 +21,20 @@ export class CartSummaryComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        this.itemTotal = this.myOrderService.sumAllItems(this.myOrder);
-        this.total = this.shipping + this.itemTotal;
-        console.error('total: ' + this.total);
+        if (this.itemTotal === undefined) {
+            if (this.myOrder && this.myOrder.items) {
+                this.itemTotal = this.myOrderService.sumAll(this.myOrder);
+            } else {
+                this.itemTotal = 0;
+            }
+        }
+        if (this.shipping === undefined) {
+            this.shipping = 0;
+        }
+    }
+
+    sum(): number {
+        return this.shipping + this.itemTotal;
     }
 
     save() {}

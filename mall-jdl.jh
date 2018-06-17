@@ -228,13 +228,31 @@ entity Url {
 	lastModifiedDate ZonedDateTime
 }
 
+entity Payment {
+	type PaymentType
+}
+
+enum PaymentType {
+	CREDIT_CARD, DEBIT_CARD, PAYPAL, PAYME, BANK_TRANSFER
+}
+
+entity Shipping {
+	type ShippingType
+}
+
+enum ShippingType {
+	NORMAL, EXPRESS
+}
+
 relationship OneToOne {
 	UserInfo{user(login)} to User,
 	UserInfo{defaultAccount} to MyAccount,
 	Office{address} to Address,
 	ProductItem{color} to ProductStyle,
 	ProductItem{size} to ProductStyle,
-	OrderItem{productItem} to ProductItem
+	OrderItem{productItem} to ProductItem,
+	MyOrder{shippingAddress} to Address,
+	MyOrder{billingAddress} to Address
 }
 
 relationship OneToMany {
@@ -258,7 +276,9 @@ relationship ManyToOne {
 	State{country} to Country,
 	Category{parent} to Category,
 	Product{shop} to Shop,
-	MyOrder{account} to MyAccount
+	MyOrder{account} to MyAccount,
+	MyOrder{payment} to Payment,
+	MyOrder{shipping} to Shipping
 }
 
 relationship ManyToMany {

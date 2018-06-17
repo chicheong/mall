@@ -273,7 +273,70 @@ export class MyOrderService {
         console.error('After Payment');
     }
 
-    sumAllItems(myOrder: MyOrder): number {
+    doCartBackAction(myOrder: MyOrder, path: String): void {
+        switch (path) {
+            case 'review':
+                this.doCartReviewBackAction(myOrder);
+                break;
+            case 'shipping':
+                this.doCartShippingBackAction(myOrder);
+                break;
+            case 'method':
+                this.doCartMethodBackAction(myOrder);
+                break;
+            case 'billing':
+                this.doCartBillingBackAction(myOrder);
+                break;
+            case 'payment':
+                this.doCartPaymentBackAction(myOrder);
+                break;
+            default:
+                console.error('default');
+                break;
+        }
+    }
+
+    doCartReviewBackAction(myOrder: MyOrder): void {
+        if (this.reviewControl !== CartControlType.HIDE) {
+            window.history.back();
+        } else {
+            window.history.back();
+        }
+    }
+
+    doCartShippingBackAction(myOrder: MyOrder): void {
+        if (this.shippingControl !== CartControlType.HIDE) {
+            this.router.navigate(['/' + this.pathPrefix + '/' + myOrder.id + '/review']);
+        } else {
+            this.doCartReviewBackAction(myOrder);
+        }
+    }
+
+    doCartMethodBackAction(myOrder: MyOrder): void {
+        if (this.methodControl !== CartControlType.HIDE) {
+            this.router.navigate(['/' + this.pathPrefix + '/' + myOrder.id + '/shipping']);
+        } else {
+            this.doCartShippingBackAction(myOrder);
+        }
+    }
+
+    doCartBillingBackAction(myOrder: MyOrder): void {
+        if (this.billingControl !== CartControlType.HIDE) {
+            this.router.navigate(['/' + this.pathPrefix + '/' + myOrder.id + '/method']);
+        } else {
+            this.doCartMethodBackAction(myOrder);
+        }
+    }
+
+    doCartPaymentBackAction(myOrder: MyOrder): void {
+        if (this.paymentControl !== CartControlType.HIDE) {
+            this.router.navigate(['/' + this.pathPrefix + '/' + myOrder.id + '/billing']);
+        } else {
+            this.doCartBillingBackAction(myOrder);
+        }
+    }
+
+    sumAll(myOrder: MyOrder): number {
         if (myOrder.items) {
             let total = 0;
             myOrder.items.forEach((item) => {

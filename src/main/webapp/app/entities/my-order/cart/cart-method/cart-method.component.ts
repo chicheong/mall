@@ -66,11 +66,6 @@ export class CartMethodComponent extends CartComponent implements OnInit, OnDest
         this.isSaving = false;
     }
 
-    previousState() {
-        this.save();
-        window.history.back();
-    }
-
     ngOnDestroy() {
         super.ngOnDestroy();
         this.subscription.unsubscribe();

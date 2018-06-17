@@ -52,6 +52,11 @@ export class CartComponent implements OnInit, OnDestroy {
             });
     }
 
+    previousState() {
+        // this.save(false);
+        this.myOrderService.doCartBackAction(this.myOrder, this.path);
+    }
+
     ngOnDestroy() {
         this.subscription.unsubscribe();
         this.eventManager.destroy(this.eventSubscriber);
