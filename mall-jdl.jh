@@ -241,8 +241,9 @@ entity Shipping {
 	currency CurrencyType,
 	status ShippingStatus,
 	date ZonedDateTime,
-	shipper String,
-	shipee String,
+	receiver String,
+	contactNum String,
+	email String,
 	remark String
 }
 
@@ -268,7 +269,6 @@ entity Payment {
 enum PaymentType {
 	CREDIT_CARD, DEBIT_CARD, PAYPAL, PAYME, BANK_TRANSFER
 }
-
 
 relationship OneToOne {
 	UserInfo{user(login)} to User,
