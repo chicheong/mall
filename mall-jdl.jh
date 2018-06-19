@@ -228,6 +228,39 @@ entity Url {
 	lastModifiedDate ZonedDateTime
 }
 
+entity CreditCard {
+	name String,
+	value String,
+	holderName String,
+	expireDate ZonedDateTime
+}
+
+entity Shipping {
+	type ShippingType,
+	price BigDecimal,
+	currency CurrencyType,
+	status ShippingStatus,
+	date ZonedDateTime,
+	shipper String,
+	shipee String,
+	remark String
+}
+
+entity ShippingType {
+	name String,
+	description String,
+	price BigDecimal
+}
+
+enum ShippingStatus {
+	PENDING, SHIPPED, COMPLETED, CANCELLED
+}
+
+entity ShippingStatusHistory {
+	effectiveDate ZonedDateTime,
+	status ShippingStatus
+}
+
 entity Payment {
 	type PaymentType
 }
@@ -236,13 +269,6 @@ enum PaymentType {
 	CREDIT_CARD, DEBIT_CARD, PAYPAL, PAYME, BANK_TRANSFER
 }
 
-entity Shipping {
-	type ShippingType
-}
-
-enum ShippingType {
-	NORMAL, EXPRESS
-}
 
 relationship OneToOne {
 	UserInfo{user(login)} to User,
@@ -251,8 +277,8 @@ relationship OneToOne {
 	ProductItem{color} to ProductStyle,
 	ProductItem{size} to ProductStyle,
 	OrderItem{productItem} to ProductItem,
-	MyOrder{shippingAddress} to Address,
-	MyOrder{billingAddress} to Address
+	Shipping{shippingAddress} to Address,
+	Shipping{billingAddress} to Address
 }
 
 relationship OneToMany {
@@ -276,6 +302,7 @@ relationship ManyToOne {
 	State{country} to Country,
 	Category{parent} to Category,
 	Product{shop} to Shop,
+	CreditCard{account} to MyAccount,
 	MyOrder{account} to MyAccount,
 	MyOrder{payment} to Payment,
 	MyOrder{shipping} to Shipping
