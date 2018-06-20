@@ -4,6 +4,7 @@ entity UserInfo {
 }
 
 entity MyAccount {
+	balance BigDecimal,
 	type AccountType
 }
 
@@ -236,21 +237,21 @@ entity CreditCard {
 }
 
 entity Shipping {
-	type ShippingType,
 	price BigDecimal,
 	currency CurrencyType,
-	status ShippingStatus,
 	date ZonedDateTime,
 	receiver String,
 	contactNum String,
 	email String,
-	remark String
+	remark String,
+	status ShippingStatus
 }
 
 entity ShippingType {
 	name String,
 	description String,
-	price BigDecimal
+	price BigDecimal,
+	currency CurrencyType
 }
 
 enum ShippingStatus {
@@ -263,11 +264,26 @@ entity ShippingStatusHistory {
 }
 
 entity Payment {
-	type PaymentType
+	amount BigDecimal,
+	currency CurrencyType,
+	type PaymentType,
+	remark String,
+	status PaymentStatus
+}
+
+entity PaymentCreditCard {
+	name String,
+	value String,
+	holderName String,
+	expireDate ZonedDateTime
 }
 
 enum PaymentType {
-	CREDIT_CARD, DEBIT_CARD, PAYPAL, PAYME, BANK_TRANSFER
+	CREDIT_CARD, DEBIT_CARD, PAYPAL, PAYME, BANK_TRANSFER, ACCOUNT
+}
+
+enum PaymentStatus {
+	PENDING, PAID, CANCELLED
 }
 
 relationship OneToOne {
@@ -277,8 +293,11 @@ relationship OneToOne {
 	ProductItem{color} to ProductStyle,
 	ProductItem{size} to ProductStyle,
 	OrderItem{productItem} to ProductItem,
+	Shipping{order} to MyOrder,
 	Shipping{shippingAddress} to Address,
-	Shipping{billingAddress} to Address
+	Shipping{billingAddress} to Address,
+	Payment{order} to MyOrder,
+	PaymentCreditCard{payment} to Payment
 }
 
 relationship OneToMany {
@@ -287,7 +306,8 @@ relationship OneToMany {
 	Product{item} to ProductItem{product},
 	MyOrder{item} to OrderItem{order},
 	MyOrder{statusHistory} to OrderStatusHistory{order},
-	ProductItem{price} to Price{item}
+	Shipping{statusHistory} to ShippingStatusHistory{shipping},
+	ProductItem{price} to Price{item},
 	ProductItem{quantity} to Quantity{item}
 }
 
@@ -304,8 +324,8 @@ relationship ManyToOne {
 	Product{shop} to Shop,
 	CreditCard{account} to MyAccount,
 	MyOrder{account} to MyAccount,
-	MyOrder{payment} to Payment,
-	MyOrder{shipping} to Shipping
+	Shipping{type} to ShippingType
+
 }
 
 relationship ManyToMany {
