@@ -1,0 +1,11 @@
+{
+    "mallApp": {
+        "ShippingStatus" : {
+            "null": "",
+            "PENDING": "PENDING",
+            "SHIPPED": "SHIPPED",
+            "COMPLETED": "COMPLETED",
+            "CANCELLED": "CANCELLED"
+        }
+    }
+}

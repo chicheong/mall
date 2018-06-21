@@ -1,0 +1,83 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "order",
+            "otherEntityName": "myOrder",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "shipping"
+        },
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "shippingAddress",
+            "otherEntityName": "address",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "shipping"
+        },
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "billingAddress",
+            "otherEntityName": "address",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "shipping"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "relationshipName": "statusHistory",
+            "otherEntityName": "shippingStatusHistory",
+            "otherEntityRelationshipName": "shipping"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "relationshipName": "type",
+            "otherEntityName": "shippingType",
+            "otherEntityField": "id"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "price",
+            "fieldType": "BigDecimal"
+        },
+        {
+            "fieldName": "currency",
+            "fieldType": "CurrencyType",
+            "fieldValues": "HKD,CNY,USD,EUR,JPY,KRW,TWD"
+        },
+        {
+            "fieldName": "date",
+            "fieldType": "ZonedDateTime"
+        },
+        {
+            "fieldName": "receiver",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "contactNum",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "email",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "remark",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "status",
+            "fieldType": "ShippingStatus",
+            "fieldValues": "PENDING,SHIPPED,COMPLETED,CANCELLED"
+        }
+    ],
+    "changelogDate": "20180621083506",
+    "entityTableName": "shipping",
+    "dto": "mapstruct",
+    "pagination": "pagination",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false
+}

@@ -1,0 +1,27 @@
+
+{
+    "mallApp": {
+        "creditCard" : {
+            "home": {
+                "title": "Credit Cards",
+                "createLabel": "Create a new Credit Card",
+                "createOrEditLabel": "Create or edit a Credit Card",
+                "search": "Search for Credit Card"
+            },
+            "created": "A new Credit Card is created with identifier {{ param }}",
+            "updated": "A Credit Card is updated with identifier {{ param }}",
+            "deleted": "A Credit Card is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Credit Card {{ id }}?"
+            },
+            "detail": {
+                "title": "Credit Card"
+            },
+            "name": "Name",
+            "value": "Value",
+            "holderName": "Holder Name",
+            "expireDate": "Expire Date",
+            "account": "Account"
+        }
+    }
+}

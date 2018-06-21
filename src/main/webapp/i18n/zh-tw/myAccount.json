@@ -17,6 +17,7 @@
             "detail": {
                 "title": "My Account"
             },
+            "balance": "Balance",
             "type": "Type",
             "delegation": "Delegation",
             "company": "Company",

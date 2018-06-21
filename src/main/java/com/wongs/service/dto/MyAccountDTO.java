@@ -2,6 +2,7 @@ package com.wongs.service.dto;
 
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
@@ -22,6 +23,8 @@ import com.wongs.domain.enumeration.AccountType;
 public class MyAccountDTO implements Serializable {
 
     private Long id;
+
+    private BigDecimal balance;
 
     private AccountType type;
     
@@ -56,6 +59,14 @@ public class MyAccountDTO implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 
     public AccountType getType() {
@@ -122,7 +133,7 @@ public class MyAccountDTO implements Serializable {
 		this.myOrder = myOrder;
 	}
 
-	@Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -147,6 +158,7 @@ public class MyAccountDTO implements Serializable {
     public String toString() {
         return "MyAccountDTO{" +
             "id=" + getId() +
+            ", balance=" + getBalance() +
             ", type='" + getType() + "'" +
             "}";
     }

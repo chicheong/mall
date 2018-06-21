@@ -30,6 +30,7 @@
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
             <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="balance"><span jhiTranslate="mallApp.myAccount.balance">Balance</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="type"><span jhiTranslate="mallApp.myAccount.type">Type</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="company.code"><span jhiTranslate="mallApp.myAccount.company">Company</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="department.code"><span jhiTranslate="mallApp.myAccount.department">Department</span> <span class="fa fa-sort"></span></th>
@@ -40,6 +41,7 @@
             <tbody>
             <tr *ngFor="let myAccount of myAccounts ;trackBy: trackId">
                 <td><a [routerLink]="['../my-account', myAccount.id ]">{{myAccount.id}}</a></td>
+                <td>{{myAccount.balance}}</td>
                 <td jhiTranslate="{{'mallApp.AccountType.' + myAccount.type}}">{{myAccount.type}}</td>
                 <td>
                     <div *ngIf="myAccount.company">

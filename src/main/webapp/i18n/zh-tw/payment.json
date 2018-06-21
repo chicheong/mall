@@ -1,0 +1,28 @@
+
+{
+    "mallApp": {
+        "payment" : {
+            "home": {
+                "title": "Payments",
+                "createLabel": "建立一筆新的 Payment",
+                "createOrEditLabel": "建立或編輯 Payment",
+                "search": "搜尋 Payment"
+            },
+            "created": "新的 Payment 建立成功，識別碼為 {{ param }}",
+            "updated": "識別碼為 {{ param }} 的 Payment 更新成功",
+            "deleted": "識別碼為 {{ param }} 的 Payment 刪除成功",
+            "delete": {
+                "question": "您確定要刪除 Payment {{ id }} 嗎?"
+            },
+            "detail": {
+                "title": "Payment"
+            },
+            "amount": "Amount",
+            "currency": "Currency",
+            "type": "Type",
+            "remark": "Remark",
+            "status": "Status",
+            "order": "Order"
+        }
+    }
+}

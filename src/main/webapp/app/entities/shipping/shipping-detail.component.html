@@ -1,0 +1,78 @@
+
+<div *ngIf="shipping">
+    <h2><span jhiTranslate="mallApp.shipping.detail.title">Shipping</span> {{shipping.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="mallApp.shipping.price">Price</span></dt>
+        <dd>
+            <span>{{shipping.price}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.shipping.currency">Currency</span></dt>
+        <dd>
+            <span jhiTranslate="{{'mallApp.CurrencyType.' + shipping.currency}}">{{shipping.currency}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.shipping.date">Date</span></dt>
+        <dd>
+            <span>{{shipping.date | date:'medium'}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.shipping.receiver">Receiver</span></dt>
+        <dd>
+            <span>{{shipping.receiver}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.shipping.contactNum">Contact Num</span></dt>
+        <dd>
+            <span>{{shipping.contactNum}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.shipping.email">Email</span></dt>
+        <dd>
+            <span>{{shipping.email}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.shipping.remark">Remark</span></dt>
+        <dd>
+            <span>{{shipping.remark}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.shipping.status">Status</span></dt>
+        <dd>
+            <span jhiTranslate="{{'mallApp.ShippingStatus.' + shipping.status}}">{{shipping.status}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.shipping.order">Order</span></dt>
+        <dd>
+            <div *ngIf="shipping.orderId">
+                <a [routerLink]="['/my-order', shipping.orderId]">{{shipping.orderId}}</a>
+            </div>
+        </dd>
+        <dt><span jhiTranslate="mallApp.shipping.shippingAddress">Shipping Address</span></dt>
+        <dd>
+            <div *ngIf="shipping.shippingAddressId">
+                <a [routerLink]="['/address', shipping.shippingAddressId]">{{shipping.shippingAddressId}}</a>
+            </div>
+        </dd>
+        <dt><span jhiTranslate="mallApp.shipping.billingAddress">Billing Address</span></dt>
+        <dd>
+            <div *ngIf="shipping.billingAddressId">
+                <a [routerLink]="['/address', shipping.billingAddressId]">{{shipping.billingAddressId}}</a>
+            </div>
+        </dd>
+        <dt><span jhiTranslate="mallApp.shipping.type">Type</span></dt>
+        <dd>
+            <div *ngIf="shipping.typeId">
+                <a [routerLink]="['/shipping-type', shipping.typeId]">{{shipping.typeId}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'shipping/'+ shipping.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

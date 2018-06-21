@@ -68,7 +68,7 @@ class MyAccountGatlingTest extends Simulation {
             .exec(http("Create new myAccount")
             .post("/api/my-accounts")
             .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null, "type":null}""")).asJSON
+            .body(StringBody("""{"id":null, "balance":"0", "type":null}""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_myAccount_url"))).exitHereIfFailed
             .pause(10)

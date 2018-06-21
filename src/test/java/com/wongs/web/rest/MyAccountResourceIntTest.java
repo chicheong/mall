@@ -25,6 +25,7 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import java.math.BigDecimal;
 import java.util.List;
 
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
@@ -42,6 +43,9 @@ import com.wongs.domain.enumeration.AccountType;
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MallApp.class)
 public class MyAccountResourceIntTest {
+
+    private static final BigDecimal DEFAULT_BALANCE = new BigDecimal(1);
+    private static final BigDecimal UPDATED_BALANCE = new BigDecimal(2);
 
     private static final AccountType DEFAULT_TYPE = AccountType.PERSONAL;
     private static final AccountType UPDATED_TYPE = AccountType.COMPANY;
@@ -93,6 +97,7 @@ public class MyAccountResourceIntTest {
      */
     public static MyAccount createEntity(EntityManager em) {
         MyAccount myAccount = new MyAccount()
+            .balance(DEFAULT_BALANCE)
             .type(DEFAULT_TYPE);
         return myAccount;
     }
@@ -119,6 +124,7 @@ public class MyAccountResourceIntTest {
         List<MyAccount> myAccountList = myAccountRepository.findAll();
         assertThat(myAccountList).hasSize(databaseSizeBeforeCreate + 1);
         MyAccount testMyAccount = myAccountList.get(myAccountList.size() - 1);
+        assertThat(testMyAccount.getBalance()).isEqualTo(DEFAULT_BALANCE);
         assertThat(testMyAccount.getType()).isEqualTo(DEFAULT_TYPE);
 
         // Validate the MyAccount in Elasticsearch
@@ -157,6 +163,7 @@ public class MyAccountResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(myAccount.getId().intValue())))
+            .andExpect(jsonPath("$.[*].balance").value(hasItem(DEFAULT_BALANCE.intValue())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())));
     }
 
@@ -171,6 +178,7 @@ public class MyAccountResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(myAccount.getId().intValue()))
+            .andExpect(jsonPath("$.balance").value(DEFAULT_BALANCE.intValue()))
             .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()));
     }
 
@@ -195,6 +203,7 @@ public class MyAccountResourceIntTest {
         // Disconnect from session so that the updates on updatedMyAccount are not directly saved in db
         em.detach(updatedMyAccount);
         updatedMyAccount
+            .balance(UPDATED_BALANCE)
             .type(UPDATED_TYPE);
         MyAccountDTO myAccountDTO = myAccountMapper.toDto(updatedMyAccount);
 
@@ -207,6 +216,7 @@ public class MyAccountResourceIntTest {
         List<MyAccount> myAccountList = myAccountRepository.findAll();
         assertThat(myAccountList).hasSize(databaseSizeBeforeUpdate);
         MyAccount testMyAccount = myAccountList.get(myAccountList.size() - 1);
+        assertThat(testMyAccount.getBalance()).isEqualTo(UPDATED_BALANCE);
         assertThat(testMyAccount.getType()).isEqualTo(UPDATED_TYPE);
 
         // Validate the MyAccount in Elasticsearch
@@ -267,6 +277,7 @@ public class MyAccountResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(myAccount.getId().intValue())))
+            .andExpect(jsonPath("$.[*].balance").value(hasItem(DEFAULT_BALANCE.intValue())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())));
     }
 

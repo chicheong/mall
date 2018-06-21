@@ -1,0 +1,26 @@
+
+{
+    "mallApp": {
+        "shippingType" : {
+            "home": {
+                "title": "Shipping Types",
+                "createLabel": "Create a new Shipping Type",
+                "createOrEditLabel": "Create or edit a Shipping Type",
+                "search": "Search for Shipping Type"
+            },
+            "created": "A new Shipping Type is created with identifier {{ param }}",
+            "updated": "A Shipping Type is updated with identifier {{ param }}",
+            "deleted": "A Shipping Type is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Shipping Type {{ id }}?"
+            },
+            "detail": {
+                "title": "Shipping Type"
+            },
+            "name": "Name",
+            "description": "Description",
+            "price": "Price",
+            "currency": "Currency"
+        }
+    }
+}

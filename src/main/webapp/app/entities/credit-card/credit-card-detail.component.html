@@ -1,0 +1,44 @@
+
+<div *ngIf="creditCard">
+    <h2><span jhiTranslate="mallApp.creditCard.detail.title">Credit Card</span> {{creditCard.id}}</h2>
+    <hr>
+    <jhi-alert-error></jhi-alert-error>
+    <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="mallApp.creditCard.name">Name</span></dt>
+        <dd>
+            <span>{{creditCard.name}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.creditCard.value">Value</span></dt>
+        <dd>
+            <span>{{creditCard.value}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.creditCard.holderName">Holder Name</span></dt>
+        <dd>
+            <span>{{creditCard.holderName}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.creditCard.expireDate">Expire Date</span></dt>
+        <dd>
+            <span>{{creditCard.expireDate | date:'medium'}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.creditCard.account">Account</span></dt>
+        <dd>
+            <div *ngIf="creditCard.account">
+                <a [routerLink]="['/my-account', creditCard.account?.id]">{{creditCard.account?.id}}</a>
+            </div>
+        </dd>
+    </dl>
+
+    <button type="submit"
+            (click)="previousState()"
+            class="btn btn-info">
+        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+    </button>
+
+    <button type="button"
+            [routerLink]="['/', { outlets: { popup: 'credit-card/'+ creditCard.id + '/edit'} }]"
+            replaceUrl="true"
+            queryParamsHandling="merge"
+            class="btn btn-primary">
+        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+    </button>
+</div>

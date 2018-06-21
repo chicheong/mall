@@ -43,6 +43,10 @@
     ],
     "fields": [
         {
+            "fieldName": "balance",
+            "fieldType": "BigDecimal"
+        },
+        {
             "fieldName": "type",
             "fieldType": "AccountType",
             "fieldValues": "PERSONAL,COMPANY"

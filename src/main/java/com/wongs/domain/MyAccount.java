@@ -8,6 +8,7 @@ import javax.persistence.*;
 
 import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
@@ -28,6 +29,9 @@ public class MyAccount implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @Column(name = "balance", precision=10, scale=2)
+    private BigDecimal balance;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "jhi_type")
@@ -66,6 +70,19 @@ public class MyAccount implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public BigDecimal getBalance() {
+        return balance;
+    }
+
+    public MyAccount balance(BigDecimal balance) {
+        this.balance = balance;
+        return this;
+    }
+
+    public void setBalance(BigDecimal balance) {
+        this.balance = balance;
     }
 
     public AccountType getType() {
@@ -220,6 +237,7 @@ public class MyAccount implements Serializable {
     public String toString() {
         return "MyAccount{" +
             "id=" + getId() +
+            ", balance=" + getBalance() +
             ", type='" + getType() + "'" +
             "}";
     }

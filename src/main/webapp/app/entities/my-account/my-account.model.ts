@@ -10,6 +10,7 @@ export const enum AccountType {
 export class MyAccount implements BaseEntity {
     constructor(
         public id?: number,
+        public balance?: number,
         public type?: AccountType,
         public delegations?: BaseEntity[],
         public company?: BaseEntity,

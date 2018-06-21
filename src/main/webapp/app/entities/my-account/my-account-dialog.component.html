@@ -13,6 +13,11 @@
                    [(ngModel)]="myAccount.id" readonly />
         </div>
         <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.myAccount.balance" for="field_balance">Balance</label>
+            <input type="number" class="form-control" name="balance" id="field_balance"
+                [(ngModel)]="myAccount.balance" />
+        </div>
+        <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.myAccount.type" for="field_type">Type</label>
             <select class="form-control" name="type" [(ngModel)]="myAccount.type" id="field_type" >
                 <option value="PERSONAL">{{'mallApp.AccountType.PERSONAL' | translate}}</option>
