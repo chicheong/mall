@@ -2,29 +2,80 @@ package com.wongs.service.mapper;
 
 import com.wongs.domain.*;
 import com.wongs.service.dto.ShippingDTO;
+import com.wongs.service.dto.ShippingDTO;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.mapstruct.*;
+import org.springframework.stereotype.Service;
 
 /**
  * Mapper for the entity Shipping and its DTO ShippingDTO.
  */
-@Mapper(componentModel = "spring", uses = {MyOrderMapper.class, AddressMapper.class, ShippingTypeMapper.class})
-public interface ShippingMapper extends EntityMapper<ShippingDTO, Shipping> {
+@Service
+public class ShippingMapper {
 
-    @Mapping(source = "order.id", target = "orderId")
-    @Mapping(source = "shippingAddress.id", target = "shippingAddressId")
-    @Mapping(source = "billingAddress.id", target = "billingAddressId")
-    @Mapping(source = "type.id", target = "typeId")
-    ShippingDTO toDto(Shipping shipping);
+	public ShippingDTO toDto(Shipping shipping) {
+		if (shipping == null) return null;
+		return new ShippingDTO(shipping);
+	}
 
-    @Mapping(source = "orderId", target = "order")
-    @Mapping(source = "shippingAddressId", target = "shippingAddress")
-    @Mapping(source = "billingAddressId", target = "billingAddress")
-    @Mapping(target = "statusHistories", ignore = true)
-    @Mapping(source = "typeId", target = "type")
-    Shipping toEntity(ShippingDTO shippingDTO);
+    public Set<ShippingDTO> toDto(Set<Shipping> shippings) {
+        return shippings.stream()
+            .filter(Objects::nonNull)
+            .map(this::toDto)
+            .collect(Collectors.toSet());
+    }
+    
+    public List<ShippingDTO> toDto(List<Shipping> prices) {
+        return prices.stream()
+            .filter(Objects::nonNull)
+            .map(this::toDto)
+            .collect(Collectors.toList());
+    }
 
-    default Shipping fromId(Long id) {
+    public Shipping toEntity(ShippingDTO shippingDTO) {
+        if (shippingDTO == null) {
+            return null;
+        } else {
+        	Shipping shipping = new Shipping();
+        	shipping.setId(shippingDTO.getId());
+        	shipping.setPrice(shippingDTO.getPrice());
+        	shipping.setCurrency(shippingDTO.getCurrency());
+        	shipping.setDate(shippingDTO.getDate());
+        	shipping.setReceiver(shippingDTO.getReceiver());
+    		shipping.setContactNum(shippingDTO.getContactNum());
+    		shipping.setEmail(shippingDTO.getEmail());
+    		shipping.setRemark(shippingDTO.getRemark());
+    		shipping.setStatus(shippingDTO.getStatus());
+    		shipping.setOrder(shippingDTO.getOrder());
+    		shipping.setShippingAddress(shippingDTO.getShippingAddress());
+    		shipping.setBillingAddress(shippingDTO.getBillingAddress());
+    		shipping.setType(shippingDTO.getType());
+    		shipping.setStatusHistories(shippingDTO.getStatusHistories());
+    		
+            return shipping;
+        }
+    }
+
+    public Set<Shipping> toEntity(Set<ShippingDTO> shippingDTOs) {
+        return shippingDTOs.stream()
+            .filter(Objects::nonNull)
+            .map(this::toEntity)
+            .collect(Collectors.toSet());	
+    }
+    
+    public List<Shipping> toEntity(List<ShippingDTO> shippingDTOs) {
+        return shippingDTOs.stream()
+            .filter(Objects::nonNull)
+            .map(this::toEntity)
+            .collect(Collectors.toList());	
+    }
+
+    public Shipping fromId(Long id) {
         if (id == null) {
             return null;
         }

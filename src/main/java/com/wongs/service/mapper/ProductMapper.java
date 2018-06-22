@@ -1,18 +1,14 @@
 package com.wongs.service.mapper;
 
-import com.wongs.domain.*;
-import com.wongs.service.ShopService;
-import com.wongs.service.dto.ProductDTO;
-
-import scala.collection.immutable.Stream;
-
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import org.mapstruct.*;
 import org.springframework.stereotype.Service;
+
+import com.wongs.domain.Product;
+import com.wongs.domain.Shop;
+import com.wongs.service.dto.ProductDTO;
 
 /**
  * Mapper for the entity Product and its DTO ProductDTO.

@@ -44,7 +44,7 @@
         </div>
     </div>
     <div class="modal-footer">   
-	    <button *ngIf="productStyle.id" type="button" [disabled]="editForm.form.invalid || isSaving" class="btn btn-danger" (click)="delete()">
+	    <button *ngIf="productStyle.id || productStyle.tempId" type="button" [disabled]="editForm.form.invalid || isSaving" class="btn btn-danger" (click)="delete()">
 	         <span class="fa fa-remove"></span>&nbsp;<span jhiTranslate="entity.action.delete">Delete</span>
 	    </button>    
         <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">

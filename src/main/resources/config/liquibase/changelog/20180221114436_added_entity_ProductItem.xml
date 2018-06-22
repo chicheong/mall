@@ -42,9 +42,10 @@
                 <constraints nullable="true" />
             </column>
             <column name="color_id" type="bigint">
-                <constraints unique="true" nullable="true" />
-            </column>            <column name="size_id" type="bigint">
-                <constraints unique="true" nullable="true" />
+                <constraints unique="false" nullable="true" />
+            </column>            
+            <column name="size_id" type="bigint">
+                <constraints unique="false" nullable="true" />
             </column>
             <column name="product_id" type="bigint">
                 <constraints nullable="true" />

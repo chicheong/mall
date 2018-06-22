@@ -300,6 +300,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                     this.product.colors.splice(index, 1);
                     return;
                 } else if (color.tempId && color.tempId === productStyle.tempId) {
+                    console.error('tempId matched: ' + color.tempId);
                     index = this.product.colors.indexOf(color);
                     this.product.colors.splice(index, 1);
                     return;
@@ -309,11 +310,12 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
             this.product.sizes.forEach((size) => {
                 if (size.id && size.id === productStyle.id) {
                     index = this.product.sizes.indexOf(size);
-                    this.product.colors.splice(index, 1);
+                    this.product.sizes.splice(index, 1);
                     return;
                 } else if (size.tempId && size.tempId === productStyle.tempId) {
+                    console.error('tempId matched: ' + size.tempId);
                     index = this.product.sizes.indexOf(size);
-                    this.product.colors.splice(index, 1);
+                    this.product.sizes.splice(index, 1);
                     return;
                 }
             });

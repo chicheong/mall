@@ -1,12 +1,18 @@
 package com.wongs.service.dto;
 
 
-import java.time.ZonedDateTime;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
+import java.util.Set;
+
+import com.wongs.domain.Address;
+import com.wongs.domain.MyOrder;
+import com.wongs.domain.Shipping;
+import com.wongs.domain.ShippingStatusHistory;
+import com.wongs.domain.ShippingType;
 import com.wongs.domain.enumeration.CurrencyType;
 import com.wongs.domain.enumeration.ShippingStatus;
 
@@ -33,14 +39,37 @@ public class ShippingDTO implements Serializable {
 
     private ShippingStatus status;
 
-    private Long orderId;
+    private MyOrder order;
 
-    private Long shippingAddressId;
+    private Address shippingAddress;
 
-    private Long billingAddressId;
+    private Address billingAddress;
 
-    private Long typeId;
+    private ShippingType type;
 
+    private Set<ShippingStatusHistory> statusHistories = new HashSet<>();
+    
+    public ShippingDTO() {
+        // Empty constructor needed for Jackson.
+	}
+    
+    public ShippingDTO(Shipping shipping) {
+		this.id = shipping.getId();
+		this.price = shipping.getPrice();
+		this.currency = shipping.getCurrency();
+		this.date = shipping.getDate();
+		this.receiver = shipping.getReceiver();
+		this.contactNum = shipping.getContactNum();
+		this.email = shipping.getEmail();
+		this.remark = shipping.getRemark();
+		this.status = shipping.getStatus();
+		this.order = shipping.getOrder();
+		this.shippingAddress = shipping.getShippingAddress();
+		this.billingAddress = shipping.getBillingAddress();
+		this.type = shipping.getType();
+		this.statusHistories = shipping.getStatusHistories();
+	}
+    
     public Long getId() {
         return id;
     }
@@ -113,39 +142,47 @@ public class ShippingDTO implements Serializable {
         this.status = status;
     }
 
-    public Long getOrderId() {
-        return orderId;
-    }
+    public MyOrder getOrder() {
+		return order;
+	}
 
-    public void setOrderId(Long myOrderId) {
-        this.orderId = myOrderId;
-    }
+	public void setOrder(MyOrder order) {
+		this.order = order;
+	}
 
-    public Long getShippingAddressId() {
-        return shippingAddressId;
-    }
+	public Address getShippingAddress() {
+		return shippingAddress;
+	}
 
-    public void setShippingAddressId(Long addressId) {
-        this.shippingAddressId = addressId;
-    }
+	public void setShippingAddress(Address shippingAddress) {
+		this.shippingAddress = shippingAddress;
+	}
 
-    public Long getBillingAddressId() {
-        return billingAddressId;
-    }
+	public Address getBillingAddress() {
+		return billingAddress;
+	}
 
-    public void setBillingAddressId(Long addressId) {
-        this.billingAddressId = addressId;
-    }
+	public void setBillingAddress(Address billingAddress) {
+		this.billingAddress = billingAddress;
+	}
 
-    public Long getTypeId() {
-        return typeId;
-    }
+	public ShippingType getType() {
+		return type;
+	}
 
-    public void setTypeId(Long shippingTypeId) {
-        this.typeId = shippingTypeId;
-    }
+	public void setType(ShippingType type) {
+		this.type = type;
+	}
 
-    @Override
+	public Set<ShippingStatusHistory> getStatusHistories() {
+		return statusHistories;
+	}
+
+	public void setStatusHistories(Set<ShippingStatusHistory> statusHistories) {
+		this.statusHistories = statusHistories;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
