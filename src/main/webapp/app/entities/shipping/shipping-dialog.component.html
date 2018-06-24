@@ -67,10 +67,18 @@
         </div>
 
         <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.productItem.color" for="field_color">Color</label>
+            <select class="form-control" id="field_color" name="color" [(ngModel)]="productItem.color">
+                <option [ngValue]="null"></option>
+                <option [ngValue]="productStyleOption.id === productItem.color?.id ? productItem.color : productStyleOption" *ngFor="let productStyleOption of colors; trackBy: trackProductStyleById">{{productStyleOption.id}}</option>
+            </select>
+        </div>
+        <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.shipping.order" for="field_order">Order</label>
-            <select class="form-control" id="field_order" name="order" [(ngModel)]="shipping.orderId">
+            <select class="form-control" id="field_order" name="order" [(ngModel)]="shipping.order">
                 <option [ngValue]="null"></option>
                 <option [ngValue]="myOrderOption.id" *ngFor="let myOrderOption of orders; trackBy: trackMyOrderById">{{myOrderOption.id}}</option>
+                <option [ngValue]="myOrderOption.id === shipping.order?.id ? shipping.order : myOrderOption" *ngFor="let myOrderOption of colors; trackBy: trackProductStyleById">{{productStyleOption.id}}</option>
             </select>
         </div>
         <div class="form-group">
