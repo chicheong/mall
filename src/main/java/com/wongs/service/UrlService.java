@@ -26,15 +26,14 @@ public class UrlService {
 
     private final Logger log = LoggerFactory.getLogger(UrlService.class);
 
-    private final UrlRepository urlRepository;
-
     private final UrlMapper urlMapper;
-
+    
+    private final UrlRepository urlRepository;
     private final UrlSearchRepository urlSearchRepository;
 
-    public UrlService(UrlRepository urlRepository, UrlMapper urlMapper, UrlSearchRepository urlSearchRepository) {
-        this.urlRepository = urlRepository;
+    public UrlService(UrlMapper urlMapper, UrlRepository urlRepository, UrlSearchRepository urlSearchRepository) {
         this.urlMapper = urlMapper;
+    	this.urlRepository = urlRepository;
         this.urlSearchRepository = urlSearchRepository;
     }
 

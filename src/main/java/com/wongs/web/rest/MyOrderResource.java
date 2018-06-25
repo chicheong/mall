@@ -27,6 +27,7 @@ import com.wongs.domain.OrderItem;
 import com.wongs.security.SecurityUtils;
 import com.wongs.service.MyAccountService;
 import com.wongs.service.MyOrderService;
+import com.wongs.service.ShippingService;
 import com.wongs.service.UserInfoService;
 import com.wongs.service.UserService;
 import com.wongs.service.dto.MyAccountDTO;
@@ -51,14 +52,17 @@ public class MyOrderResource {
     private final MyOrderService myOrderService;
     private final UserInfoService userInfoService;
     private final MyAccountService myAccountService;
+    private final ShippingService shippingService;
     
     private final UserService userService;
 
-    public MyOrderResource(MyOrderService myOrderService, UserInfoService userInfoService, MyAccountService myAccountService, UserService userService) {
+    public MyOrderResource(MyOrderService myOrderService, UserInfoService userInfoService, MyAccountService myAccountService, 
+    						UserService userService, ShippingService shippingService) {
     	this.myOrderService = myOrderService;
     	this.userInfoService = userInfoService;
     	this.myAccountService = myAccountService;
         this.userService = userService;
+        this.shippingService = shippingService;
     }
 
     /**

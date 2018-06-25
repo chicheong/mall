@@ -58,8 +58,6 @@ public class ProductService {
 
     private final Logger log = LoggerFactory.getLogger(ProductService.class);
 
-    private final ProductRepository productRepository;
-
     private final ProductMapper productMapper;
     private final ProductStyleMapper productStyleMapper;
     private final ProductItemMapper productItemMapper;
@@ -67,12 +65,11 @@ public class ProductService {
     private final QuantityMapper quantityMapper;
     private final UrlMapper urlMapper;
 
+    private final ProductRepository productRepository;
     private final ProductSearchRepository productSearchRepository;
     
     private final ProductItemRepository productItemRepository;
     private final ProductItemSearchRepository productItemSearchRepository;
-    
-    private final ShopService shopService;
     
     private final ProductStyleRepository productStyleRepository;
     private final ProductStyleSearchRepository productStyleSearchRepository;
@@ -82,17 +79,18 @@ public class ProductService {
     private final QuantityRepository quantityRepository;
     private final QuantitySearchRepository quantitySearchRepository;
     
+    private final ShopService shopService;
     private final UrlService urlService;
 
     public ProductService(ProductMapper productMapper, ProductStyleMapper productStyleMapper, ProductItemMapper productItemMapper,
     		PriceMapper priceMapper, QuantityMapper quantityMapper, UrlMapper urlMapper,
     		ProductRepository productRepository, 
     		ProductSearchRepository productSearchRepository,
-			ProductItemRepository productItemRepository, ProductItemSearchRepository productItemSearchRepository, ShopService shopService, 
+			ProductItemRepository productItemRepository, ProductItemSearchRepository productItemSearchRepository,
 			ProductStyleRepository productStyleRepository, ProductStyleSearchRepository productStyleSearchRepository, 
 			PriceRepository priceRepository, PriceSearchRepository priceSearchRepository, 
 			QuantityRepository quantityRepository, QuantitySearchRepository quantitySearchRepository,
-			UrlService urlService) {
+			ShopService shopService, UrlService urlService) {
     	this.productMapper = productMapper;
     	this.productStyleMapper = productStyleMapper;
     	this.productItemMapper = productItemMapper;

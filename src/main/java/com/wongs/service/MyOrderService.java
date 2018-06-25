@@ -35,11 +35,10 @@ public class MyOrderService {
 
     private final Logger log = LoggerFactory.getLogger(MyOrderService.class);
 
-    private final MyOrderRepository myOrderRepository;
-
     private final MyOrderMapper myOrderMapper;
     private final MyAccountMapper myAccountMapper;
 
+    private final MyOrderRepository myOrderRepository;
     private final MyOrderSearchRepository myOrderSearchRepository;
     
     private final OrderItemRepository orderItemRepository;

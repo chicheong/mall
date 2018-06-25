@@ -25,19 +25,19 @@ public class UserInfoService {
 
     private final Logger log = LoggerFactory.getLogger(UserInfoService.class);
 
-    private final UserInfoRepository userInfoRepository;
-
-    private final UserInfoSearchRepository userInfoSearchRepository;
-    
     private final UserInfoMapper userInfoMapper;
     private final MyAccountMapper myAccountMapper;
+    
+    private final UserInfoRepository userInfoRepository;
+    private final UserInfoSearchRepository userInfoSearchRepository;
 
-    public UserInfoService(UserInfoRepository userInfoRepository, UserInfoSearchRepository userInfoSearchRepository,
-    		UserInfoMapper userInfoMapper, MyAccountMapper myAccountMapper) {
-        this.userInfoRepository = userInfoRepository;
-        this.userInfoSearchRepository = userInfoSearchRepository;
+    public UserInfoService(UserInfoMapper userInfoMapper, MyAccountMapper myAccountMapper,
+    		UserInfoRepository userInfoRepository, UserInfoSearchRepository userInfoSearchRepository
+    		) {
         this.userInfoMapper = userInfoMapper;
         this.myAccountMapper = myAccountMapper;
+        this.userInfoRepository = userInfoRepository;
+        this.userInfoSearchRepository = userInfoSearchRepository;
     }
 
     /**

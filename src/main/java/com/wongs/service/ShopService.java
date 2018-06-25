@@ -24,15 +24,14 @@ public class ShopService {
 
     private final Logger log = LoggerFactory.getLogger(ShopService.class);
 
-    private final ShopRepository shopRepository;
-
     private final ShopMapper shopMapper;
-
+    
+    private final ShopRepository shopRepository;
     private final ShopSearchRepository shopSearchRepository;
 
-    public ShopService(ShopRepository shopRepository, ShopMapper shopMapper, ShopSearchRepository shopSearchRepository) {
-        this.shopRepository = shopRepository;
+    public ShopService(ShopMapper shopMapper, ShopRepository shopRepository, ShopSearchRepository shopSearchRepository) {
         this.shopMapper = shopMapper;
+    	this.shopRepository = shopRepository;
         this.shopSearchRepository = shopSearchRepository;
     }
 

@@ -11,7 +11,6 @@ import java.util.Set;
 import com.wongs.domain.MyOrder;
 import com.wongs.domain.OrderItem;
 import com.wongs.domain.OrderStatusHistory;
-import com.wongs.domain.Payment;
 import com.wongs.domain.Shipping;
 import com.wongs.domain.enumeration.CurrencyType;
 import com.wongs.domain.enumeration.OrderStatus;
@@ -33,7 +32,7 @@ public class MyOrderDTO implements Serializable {
 
     private Long accountId;
     
-    private Shipping shipping;
+    private ShippingDTO shipping;
     
     private Set<OrderItem> items = new HashSet<>();
     private Set<OrderStatusHistory> statusHistories = new HashSet<>();
@@ -102,11 +101,11 @@ public class MyOrderDTO implements Serializable {
         this.accountId = myAccountId;
     }
 
-    public Shipping getShipping() {
+	public ShippingDTO getShipping() {
 		return shipping;
 	}
 
-	public void setShipping(Shipping shipping) {
+	public void setShipping(ShippingDTO shipping) {
 		this.shipping = shipping;
 	}
 

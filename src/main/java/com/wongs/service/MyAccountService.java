@@ -27,21 +27,21 @@ public class MyAccountService {
 
     private final Logger log = LoggerFactory.getLogger(MyAccountService.class);
 
-    private final MyAccountRepository myAccountRepository;
-    private final MyAccountSearchRepository myAccountSearchRepository;
-
     private final MyAccountMapper myAccountMapper;
     private final ShopMapper shopMapper;
     
+    private final MyAccountRepository myAccountRepository;
+    private final MyAccountSearchRepository myAccountSearchRepository;
+    
     private final MyOrderService myOrderService;
     
-    public MyAccountService(MyAccountRepository myAccountRepository, MyAccountSearchRepository myAccountSearchRepository,
-    		MyAccountMapper myAccountMapper, ShopMapper shopMapper, MyOrderService myOrderService) {
-        this.myAccountRepository = myAccountRepository;
-        
-        this.myAccountSearchRepository = myAccountSearchRepository;
+    public MyAccountService(MyAccountMapper myAccountMapper, ShopMapper shopMapper, 
+    		MyAccountRepository myAccountRepository, MyAccountSearchRepository myAccountSearchRepository,
+    		MyOrderService myOrderService) {
         this.myAccountMapper = myAccountMapper;
         this.shopMapper = shopMapper;
+    	this.myAccountRepository = myAccountRepository;
+        this.myAccountSearchRepository = myAccountSearchRepository;
         this.myOrderService = myOrderService;
     }
 
