@@ -24,9 +24,9 @@ export class ShippingDialogComponent implements OnInit {
 
     orders: MyOrder[];
 
-    shippingaddresses: Address[];
+    shippingAddresses: Address[];
 
-    billingaddresses: Address[];
+    billingAddresses: Address[];
 
     shippingtypes: ShippingType[];
 
@@ -46,11 +46,11 @@ export class ShippingDialogComponent implements OnInit {
         this.myOrderService
             .query({filter: 'shipping-is-null'})
             .subscribe((res: HttpResponse<MyOrder[]>) => {
-                if (!this.shipping.orderId) {
+                if (!this.shipping.order || !this.shipping.order.id) {
                     this.orders = res.body;
                 } else {
                     this.myOrderService
-                        .find(this.shipping.orderId)
+                        .find(this.shipping.order.id)
                         .subscribe((subRes: HttpResponse<MyOrder>) => {
                             this.orders = [subRes.body].concat(res.body);
                         }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
@@ -59,26 +59,26 @@ export class ShippingDialogComponent implements OnInit {
         this.addressService
             .query({filter: 'shipping-is-null'})
             .subscribe((res: HttpResponse<Address[]>) => {
-                if (!this.shipping.shippingAddressId) {
-                    this.shippingaddresses = res.body;
+                if (!this.shipping.shippingAddress || !this.shipping.shippingAddress.id) {
+                    this.shippingAddresses = res.body;
                 } else {
                     this.addressService
-                        .find(this.shipping.shippingAddressId)
+                        .find(this.shipping.shippingAddress.id)
                         .subscribe((subRes: HttpResponse<Address>) => {
-                            this.shippingaddresses = [subRes.body].concat(res.body);
+                            this.shippingAddresses = [subRes.body].concat(res.body);
                         }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
                 }
             }, (res: HttpErrorResponse) => this.onError(res.message));
         this.addressService
             .query({filter: 'shipping-is-null'})
             .subscribe((res: HttpResponse<Address[]>) => {
-                if (!this.shipping.billingAddressId) {
-                    this.billingaddresses = res.body;
+                if (!this.shipping.billingAddress || !this.shipping.billingAddress.id) {
+                    this.billingAddresses = res.body;
                 } else {
                     this.addressService
-                        .find(this.shipping.billingAddressId)
+                        .find(this.shipping.billingAddress.id)
                         .subscribe((subRes: HttpResponse<Address>) => {
-                            this.billingaddresses = [subRes.body].concat(res.body);
+                            this.billingAddresses = [subRes.body].concat(res.body);
                         }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
                 }
             }, (res: HttpErrorResponse) => this.onError(res.message));

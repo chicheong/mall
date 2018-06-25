@@ -67,39 +67,31 @@
         </div>
 
         <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.productItem.color" for="field_color">Color</label>
-            <select class="form-control" id="field_color" name="color" [(ngModel)]="productItem.color">
-                <option [ngValue]="null"></option>
-                <option [ngValue]="productStyleOption.id === productItem.color?.id ? productItem.color : productStyleOption" *ngFor="let productStyleOption of colors; trackBy: trackProductStyleById">{{productStyleOption.id}}</option>
-            </select>
-        </div>
-        <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.shipping.order" for="field_order">Order</label>
             <select class="form-control" id="field_order" name="order" [(ngModel)]="shipping.order">
                 <option [ngValue]="null"></option>
-                <option [ngValue]="myOrderOption.id" *ngFor="let myOrderOption of orders; trackBy: trackMyOrderById">{{myOrderOption.id}}</option>
-                <option [ngValue]="myOrderOption.id === shipping.order?.id ? shipping.order : myOrderOption" *ngFor="let myOrderOption of colors; trackBy: trackProductStyleById">{{productStyleOption.id}}</option>
+                <option [ngValue]="myOrderOption.id === shipping.order?.id ? shipping.order : myOrderOption" *ngFor="let myOrderOption of orders; trackBy: trackMyOrderById">{{myOrderOption.id}}</option>
             </select>
         </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.shipping.shippingAddress" for="field_shippingAddress">Shipping Address</label>
-            <select class="form-control" id="field_shippingAddress" name="shippingAddress" [(ngModel)]="shipping.shippingAddressId">
+            <select class="form-control" id="field_shippingAddress" name="shippingAddress" [(ngModel)]="shipping.shippingAddress">
                 <option [ngValue]="null"></option>
-                <option [ngValue]="addressOption.id" *ngFor="let addressOption of shippingaddresses; trackBy: trackAddressById">{{addressOption.id}}</option>
+                <option [ngValue]="addressOption.id === shipping.shippingAddress?.id ? shipping.shippingAddress : addressOption" *ngFor="let addressOption of shippingAddresses; trackBy: trackAddressById">{{addressOption.id}}</option>
             </select>
         </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.shipping.billingAddress" for="field_billingAddress">Billing Address</label>
-            <select class="form-control" id="field_billingAddress" name="billingAddress" [(ngModel)]="shipping.billingAddressId">
+            <select class="form-control" id="field_billingAddress" name="billingAddress" [(ngModel)]="shipping.billingAddress">
                 <option [ngValue]="null"></option>
-                <option [ngValue]="addressOption.id" *ngFor="let addressOption of billingaddresses; trackBy: trackAddressById">{{addressOption.id}}</option>
+                <option [ngValue]="addressOption.id === shipping.billingAddress?.id ? shipping.billingAddress : addressOption" *ngFor="let addressOption of billingAddresses; trackBy: trackAddressById">{{addressOption.id}}</option>
             </select>
         </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.shipping.type" for="field_type">Type</label>
-            <select class="form-control" id="field_type" name="type" [(ngModel)]="shipping.typeId" >
+            <select class="form-control" id="field_type" name="type" [(ngModel)]="shipping.type" >
                 <option [ngValue]="null"></option>
-                <option [ngValue]="shippingTypeOption.id" *ngFor="let shippingTypeOption of shippingtypes; trackBy: trackShippingTypeById">{{shippingTypeOption.id}}</option>
+                <option [ngValue]="shippingTypeOption.id === shipping.type?.id ? shipping.type : shippingTypeOption" *ngFor="let shippingTypeOption of shippingtypes; trackBy: trackShippingTypeById">{{shippingTypeOption.id}}</option>
             </select>
         </div>
     </div>

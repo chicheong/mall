@@ -1,5 +1,6 @@
 package com.wongs.service;
 
+import com.wongs.domain.MyOrder;
 import com.wongs.domain.Shipping;
 import com.wongs.repository.ShippingRepository;
 import com.wongs.repository.search.ShippingSearchRepository;
@@ -77,6 +78,19 @@ public class ShippingService {
         return shippingMapper.toDto(shipping);
     }
 
+    /**
+     * Get one shipping by MyOrder.
+     *
+     * @param MyOrder
+     * @return the entity
+     */
+    @Transactional(readOnly = true)
+    public ShippingDTO findByOrder(MyOrder myOrder) {
+        log.debug("Request to get Shipping : {}", myOrder);
+        Shipping shipping = shippingRepository.findByOrder(myOrder);
+        return shippingMapper.toDto(shipping);
+    }
+    
     /**
      * Delete the shipping by id.
      *

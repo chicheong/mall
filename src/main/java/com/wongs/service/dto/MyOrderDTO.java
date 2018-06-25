@@ -4,13 +4,15 @@ package com.wongs.service.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 
 import com.wongs.domain.MyOrder;
 import com.wongs.domain.OrderItem;
 import com.wongs.domain.OrderStatusHistory;
+import com.wongs.domain.Payment;
+import com.wongs.domain.Shipping;
 import com.wongs.domain.enumeration.CurrencyType;
 import com.wongs.domain.enumeration.OrderStatus;
 
@@ -30,6 +32,8 @@ public class MyOrderDTO implements Serializable {
     private OrderStatus status;
 
     private Long accountId;
+    
+    private Shipping shipping;
     
     private Set<OrderItem> items = new HashSet<>();
     private Set<OrderStatusHistory> statusHistories = new HashSet<>();
@@ -98,7 +102,15 @@ public class MyOrderDTO implements Serializable {
         this.accountId = myAccountId;
     }
 
-    public Set<OrderItem> getItems() {
+    public Shipping getShipping() {
+		return shipping;
+	}
+
+	public void setShipping(Shipping shipping) {
+		this.shipping = shipping;
+	}
+
+	public Set<OrderItem> getItems() {
 		return items;
 	}
 

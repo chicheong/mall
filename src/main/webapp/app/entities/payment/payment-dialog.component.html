@@ -56,9 +56,9 @@
 
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.payment.order" for="field_order">Order</label>
-            <select class="form-control" id="field_order" name="order" [(ngModel)]="payment.orderId">
+            <select class="form-control" id="field_order" name="order" [(ngModel)]="payment.order">
                 <option [ngValue]="null"></option>
-                <option [ngValue]="myOrderOption.id" *ngFor="let myOrderOption of orders; trackBy: trackMyOrderById">{{myOrderOption.id}}</option>
+                <option [ngValue]="myOrderOption.id === payment.order?.id ? payment.order : myOrderOption" *ngFor="let myOrderOption of orders; trackBy: trackMyOrderById">{{myOrderOption.id}}</option>
             </select>
         </div>
     </div>

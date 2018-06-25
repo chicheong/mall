@@ -48,8 +48,8 @@
                 <td>{{payment.remark}}</td>
                 <td jhiTranslate="{{'mallApp.PaymentStatus.' + payment.status}}">{{payment.status}}</td>
                 <td>
-                    <div *ngIf="payment.orderId">
-                        <a [routerLink]="['../my-order', payment.orderId  ]" >{{payment.orderId}}</a>
+                    <div *ngIf="payment.order">
+                        <a [routerLink]="['../my-order', payment.order?.id  ]" >{{payment.order?.id}}</a>
                     </div>
                 </td>
                 <td class="text-right">

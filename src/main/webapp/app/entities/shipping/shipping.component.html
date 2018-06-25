@@ -57,23 +57,23 @@
                 <td>{{shipping.remark}}</td>
                 <td jhiTranslate="{{'mallApp.ShippingStatus.' + shipping.status}}">{{shipping.status}}</td>
                 <td>
-                    <div *ngIf="shipping.orderId">
-                        <a [routerLink]="['../my-order', shipping.orderId  ]" >{{shipping.orderId}}</a>
+                    <div *ngIf="shipping.order">
+                        <a [routerLink]="['../my-order', shipping.order?.id  ]" >{{shipping.order?.id}}</a>
                     </div>
                 </td>
                 <td>
-                    <div *ngIf="shipping.shippingAddressId">
-                        <a [routerLink]="['../address', shipping.shippingAddressId  ]" >{{shipping.shippingAddressId}}</a>
+                    <div *ngIf="shipping.shippingAddress">
+                        <a [routerLink]="['../address', shipping.shippingAddress?.id  ]" >{{shipping.shippingAddress?.id}}</a>
                     </div>
                 </td>
                 <td>
-                    <div *ngIf="shipping.billingAddressId">
-                        <a [routerLink]="['../address', shipping.billingAddressId  ]" >{{shipping.billingAddressId}}</a>
+                    <div *ngIf="shipping.billingAddress">
+                        <a [routerLink]="['../address', shipping.billingAddress?.id  ]" >{{shipping.billingAddress?.id}}</a>
                     </div>
                 </td>
                 <td>
-                    <div *ngIf="shipping.typeId">
-                        <a [routerLink]="['../shipping-type', shipping.typeId  ]" >{{shipping.typeId}}</a>
+                    <div *ngIf="shipping.type">
+                        <a [routerLink]="['../shipping-type', shipping.type?.id  ]" >{{shipping.type?.id}}</a>
                     </div>
                 </td>
                 <td class="text-right">

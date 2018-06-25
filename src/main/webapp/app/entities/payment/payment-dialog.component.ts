@@ -36,11 +36,11 @@ export class PaymentDialogComponent implements OnInit {
         this.myOrderService
             .query({filter: 'payment-is-null'})
             .subscribe((res: HttpResponse<MyOrder[]>) => {
-                if (!this.payment.orderId) {
+                if (!this.payment.order || !this.payment.order.id) {
                     this.orders = res.body;
                 } else {
                     this.myOrderService
-                        .find(this.payment.orderId)
+                        .find(this.payment.order.id)
                         .subscribe((subRes: HttpResponse<MyOrder>) => {
                             this.orders = [subRes.body].concat(res.body);
                         }, (subRes: HttpErrorResponse) => this.onError(subRes.message));

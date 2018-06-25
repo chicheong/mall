@@ -1,9 +1,11 @@
 package com.wongs.repository;
 
-import com.wongs.domain.Shipping;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import org.springframework.data.jpa.repository.*;
+import com.wongs.domain.MyAccount;
+import com.wongs.domain.MyOrder;
+import com.wongs.domain.Shipping;
 
 
 /**
@@ -13,4 +15,5 @@ import org.springframework.data.jpa.repository.*;
 @Repository
 public interface ShippingRepository extends JpaRepository<Shipping, Long> {
 
+	Shipping findByOrder(MyOrder myOrder);
 }
