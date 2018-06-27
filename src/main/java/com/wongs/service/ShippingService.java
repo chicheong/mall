@@ -1,11 +1,7 @@
 package com.wongs.service;
 
-import com.wongs.domain.MyOrder;
-import com.wongs.domain.Shipping;
-import com.wongs.repository.ShippingRepository;
-import com.wongs.repository.search.ShippingSearchRepository;
-import com.wongs.service.dto.ShippingDTO;
-import com.wongs.service.mapper.ShippingMapper;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -13,8 +9,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.wongs.domain.Shipping;
+import com.wongs.repository.ShippingRepository;
+import com.wongs.repository.search.ShippingSearchRepository;
+import com.wongs.service.dto.MyOrderDTO;
+import com.wongs.service.dto.ShippingDTO;
+import com.wongs.service.mapper.MyOrderMapper;
+import com.wongs.service.mapper.ShippingMapper;
 
 /**
  * Service Implementation for managing Shipping.
@@ -25,15 +26,17 @@ public class ShippingService {
 
     private final Logger log = LoggerFactory.getLogger(ShippingService.class);
 
-    private final ShippingRepository shippingRepository;
-
     private final ShippingMapper shippingMapper;
+    private final MyOrderMapper myOrderMapper;
+    
+    private final ShippingRepository shippingRepository;
 
     private final ShippingSearchRepository shippingSearchRepository;
 
-    public ShippingService(ShippingRepository shippingRepository, ShippingMapper shippingMapper, ShippingSearchRepository shippingSearchRepository) {
-        this.shippingRepository = shippingRepository;
-        this.shippingMapper = shippingMapper;
+    public ShippingService(ShippingMapper shippingMapper, MyOrderMapper myOrderMapper, ShippingRepository shippingRepository, ShippingSearchRepository shippingSearchRepository) {
+    	this.shippingMapper = shippingMapper;
+    	this.myOrderMapper = myOrderMapper;
+    	this.shippingRepository = shippingRepository;
         this.shippingSearchRepository = shippingSearchRepository;
     }
 
@@ -85,9 +88,9 @@ public class ShippingService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public ShippingDTO findByOrder(MyOrder myOrder) {
-        log.debug("Request to get Shipping : {}", myOrder);
-        Shipping shipping = shippingRepository.findByOrder(myOrder);
+    public ShippingDTO findByOrder(MyOrderDTO myOrderDTO) {
+        log.debug("Request to get Shipping from MyOrder : {}", myOrderDTO);
+        Shipping shipping = shippingRepository.findByOrder(myOrderMapper.toEntity(myOrderDTO));
         return shippingMapper.toDto(shipping);
     }
     

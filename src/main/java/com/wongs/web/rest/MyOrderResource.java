@@ -102,6 +102,7 @@ public class MyOrderResource {
             return createMyOrder(myOrderDTO);
         }
         MyOrderDTO result = myOrderService.save(myOrderDTO);
+        Optional.ofNullable(myOrderDTO.getShipping()).ifPresent(shipping -> shippingService.save(shipping));
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, myOrderDTO.getId().toString()))
             .body(result);
@@ -133,6 +134,7 @@ public class MyOrderResource {
     public ResponseEntity<MyOrderDTO> getMyOrder(@PathVariable Long id) {
         log.debug("REST request to get MyOrder : {}", id);
         MyOrderDTO myOrderDTO = myOrderService.findOne(id);
+        Optional.ofNullable(myOrderDTO).ifPresent(myOrder -> myOrder.setShipping(shippingService.findByOrder(myOrder)));
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(myOrderDTO));
     }
 

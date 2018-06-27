@@ -29,7 +29,11 @@ export class CartSummaryComponent implements OnInit, OnDestroy {
             }
         }
         if (this.shipping === undefined) {
-            this.shipping = 0;
+            if (this.myOrder && this.myOrder.shipping) {
+                this.shipping = this.myOrder.shipping.price;
+            } else {
+                this.shipping = 0;
+            }
         }
     }
 

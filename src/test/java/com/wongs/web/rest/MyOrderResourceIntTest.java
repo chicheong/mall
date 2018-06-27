@@ -38,6 +38,7 @@ import com.wongs.repository.MyOrderRepository;
 import com.wongs.repository.search.MyOrderSearchRepository;
 import com.wongs.service.MyAccountService;
 import com.wongs.service.MyOrderService;
+import com.wongs.service.ShippingService;
 import com.wongs.service.UserInfoService;
 import com.wongs.service.UserService;
 import com.wongs.service.dto.MyOrderDTO;
@@ -81,6 +82,9 @@ public class MyOrderResourceIntTest {
     
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private ShippingService shippingService;
 
     @Autowired
     private MyOrderSearchRepository myOrderSearchRepository;
@@ -104,7 +108,7 @@ public class MyOrderResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final MyOrderResource myOrderResource = new MyOrderResource(myOrderService, userInfoService, myAccountService, userService);
+        final MyOrderResource myOrderResource = new MyOrderResource(myOrderService, userInfoService, myAccountService, userService, shippingService);
         this.restMyOrderMockMvc = MockMvcBuilders.standaloneSetup(myOrderResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
