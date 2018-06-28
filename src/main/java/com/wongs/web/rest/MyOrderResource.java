@@ -32,6 +32,7 @@ import com.wongs.service.UserInfoService;
 import com.wongs.service.UserService;
 import com.wongs.service.dto.MyAccountDTO;
 import com.wongs.service.dto.MyOrderDTO;
+import com.wongs.service.dto.ShippingDTO;
 import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
@@ -185,7 +186,10 @@ public class MyOrderResource {
         
         MyAccountDTO myAccount = myAccountService.findOne(userInfoService.findOneWithAccountsByUserLogin(SecurityUtils.getCurrentUserLogin().get()).getAccountId());
         MyOrderDTO myOrderDTO  = myOrderService.addToCart(myAccount, orderItem);
-
+        Optional.ofNullable(myOrderDTO.getShipping()).orElseGet(() -> {
+        	myOrderDTO.setShipping(shippingService.create(myOrderDTO));
+        	return null;
+        });
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, myOrderDTO.getId().toString()))
             .body(myOrderDTO);

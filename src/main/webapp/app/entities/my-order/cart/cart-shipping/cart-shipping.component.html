@@ -34,17 +34,17 @@
 				</button>
 			</div>
 		</div>
-		<div class="row">
+		<div class="row" *ngIf="myOrder.shipping">
 			<div class="col-md-12">
 				<div class="row">
 					<div class="col-md-6 mb-3">
 						<label for="fullName">Full name</label> 
-						<input type="text" class="form-control" id="fullName" placeholder="" value="" required [(ngModel)]="myOrder.shipping.receiver">
+						<input type="text" class="form-control" name="fullName" id="fullName" placeholder="" value="" required [(ngModel)]="myOrder.shipping.receiver">
 						<div class="invalid-feedback">Valid first name is required.</div>
 					</div>
 					<div class="col-md-6 mb-3">
 						<label for="contactNum">Contact No.</label> 
-						<input type="text" class="form-control" id="contactNum" placeholder="" value="" required [(ngModel)]="myOrder.shipping.contactNum">
+						<input type="text" class="form-control" name="contactNum" id="contactNum" placeholder="" value="" required [(ngModel)]="myOrder.shipping.contactNum">
 						<div class="invalid-feedback">Valid last name is required.</div>
 					</div>
 				</div>
@@ -64,13 +64,13 @@
 
 				<div class="mb-3">
 					<label for="email">Email <span class="text-muted">(Optional)</span></label>
-					<input type="email" class="form-control" id="email" placeholder="you@example.com">
+					<input type="email" class="form-control" name="email" id="email" placeholder="you@example.com" required [(ngModel)]="myOrder.shipping.email">
 					<div class="invalid-feedback">Please enter a valid email address for shipping updates.</div>
 				</div>
 
 				<div class="mb-3">
-					<label for="address">Address</label> 
-					<input type="text" class="form-control" id="address" placeholder="1234 Main St" required>
+					<label for="address">Address</label>
+					<input type="text" class="form-control" name="address" id="address" placeholder="1234 Main St" required [(ngModel)]="myOrder.shipping.remark">
 					<div class="invalid-feedback">Please enter your shipping address.</div>
 				</div>
 
@@ -102,7 +102,7 @@
 						<div class="invalid-feedback">Zip code required.</div>
 					</div>
 				</div>
-				<hr class="mb-4">
+				<!-- <hr class="mb-4">
 				<div class="custom-control custom-checkbox">
 					<input type="checkbox" class="custom-control-input"	id="same-address"> 
 					<label class="custom-control-label"	for="same-address">Shipping address is the same as my billing address</label>
@@ -110,7 +110,7 @@
 				<div class="custom-control custom-checkbox">
 					<input type="checkbox" class="custom-control-input" id="save-info">
 					<label class="custom-control-label" for="save-info">Save this information for next time</label>
-				</div>
+				</div> -->
 				<hr class="mb-4">
 
 			</div>

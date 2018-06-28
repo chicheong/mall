@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.wongs.domain.Shipping;
+import com.wongs.domain.enumeration.ShippingStatus;
 import com.wongs.repository.ShippingRepository;
 import com.wongs.repository.search.ShippingSearchRepository;
 import com.wongs.service.dto.MyOrderDTO;
@@ -53,6 +54,22 @@ public class ShippingService {
         ShippingDTO result = shippingMapper.toDto(shipping);
         shippingSearchRepository.save(shipping);
         return result;
+    }
+    
+    /**
+     * Create a shipping from MyOrder
+     *
+     * @param shippingDTO the entity to create
+     * @return the persisted entity
+     */
+    public ShippingDTO create(MyOrderDTO myOrder) {
+        log.debug("Request to create Shipping from MyOrder : {}", myOrder);
+        ShippingDTO shipping = new ShippingDTO();
+        shipping.setOrder(myOrderMapper.toEntity(myOrder));
+        shipping.setCurrency(myOrder.getCurrency());
+        shipping.setStatus(ShippingStatus.PENDING);
+        shipping.setShippingAddress(null);
+        return this.save(shipping);
     }
 
     /**
