@@ -1,5 +1,6 @@
 package com.wongs.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -8,6 +9,8 @@ import javax.persistence.*;
 import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.Objects;
 
 import com.wongs.domain.enumeration.CurrencyType;
@@ -52,6 +55,11 @@ public class Payment implements Serializable {
     @OneToOne
     @JoinColumn(unique = true)
     private MyOrder order;
+
+    @OneToMany(mappedBy = "payment")
+    @JsonIgnore
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<PaymentStatusHistory> statusHistories = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -138,6 +146,31 @@ public class Payment implements Serializable {
 
     public void setOrder(MyOrder myOrder) {
         this.order = myOrder;
+    }
+
+    public Set<PaymentStatusHistory> getStatusHistories() {
+        return statusHistories;
+    }
+
+    public Payment statusHistories(Set<PaymentStatusHistory> paymentStatusHistories) {
+        this.statusHistories = paymentStatusHistories;
+        return this;
+    }
+
+    public Payment addStatusHistory(PaymentStatusHistory paymentStatusHistory) {
+        this.statusHistories.add(paymentStatusHistory);
+        paymentStatusHistory.setPayment(this);
+        return this;
+    }
+
+    public Payment removeStatusHistory(PaymentStatusHistory paymentStatusHistory) {
+        this.statusHistories.remove(paymentStatusHistory);
+        paymentStatusHistory.setPayment(null);
+        return this;
+    }
+
+    public void setStatusHistories(Set<PaymentStatusHistory> paymentStatusHistories) {
+        this.statusHistories = paymentStatusHistories;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

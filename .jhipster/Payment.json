@@ -8,6 +8,12 @@
             "otherEntityField": "id",
             "ownerSide": true,
             "otherEntityRelationshipName": "payment"
+        },        
+		{
+            "relationshipType": "one-to-many",
+            "relationshipName": "statusHistory",
+            "otherEntityName": "paymentStatusHistory",
+            "otherEntityRelationshipName": "payment"
         }
     ],
     "fields": [

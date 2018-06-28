@@ -35,6 +35,7 @@ export class Payment implements BaseEntity {
         public remark?: string,
         public status?: PaymentStatus,
         public order?: MyOrder,
+        public statusHistories?: BaseEntity[],
     ) {
     }
 }

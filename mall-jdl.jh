@@ -286,6 +286,11 @@ enum PaymentStatus {
 	PENDING, PAID, CANCELLED
 }
 
+entity PaymentStatusHistory {
+	effectiveDate ZonedDateTime,
+	status PaymentStatus
+}
+
 relationship OneToOne {
 	UserInfo{user(login)} to User,
 	UserInfo{defaultAccount} to MyAccount,
@@ -308,7 +313,8 @@ relationship OneToMany {
 	MyOrder{statusHistory} to OrderStatusHistory{order},
 	Shipping{statusHistory} to ShippingStatusHistory{shipping},
 	ProductItem{price} to Price{item},
-	ProductItem{quantity} to Quantity{item}
+	ProductItem{quantity} to Quantity{item},
+	Payment{statusHistory} to PaymentStatusHistory{payment}
 }
 
 relationship ManyToOne {
@@ -339,6 +345,6 @@ relationship ManyToMany {
 
 paginate UserInfo, MyAccount, Company, Department, Office, Country, State, Shop, Category, Product, ProductItem, MyOrder, OrderItem, Price, Quantity, Url, CreditCard, Shipping, ShippingType, Payment, PaymentCreditCard with pagination
 paginate Address with pager
-paginate Delegation, OrderStatusHistory, ProductHistory, ProductItemHistory, ShippingStatusHistory with infinite-scroll
+paginate Delegation, OrderStatusHistory, ProductHistory, ProductItemHistory, ShippingStatusHistory, PaymentStatusHistory with infinite-scroll
 service UserInfo, MyAccount, Product, MyOrder, Shop, Url, Shipping, Payment, Address with serviceClass
 dto UserInfo, MyAccount, Product, MyOrder, Shop, ProductItem, ProductStyle, Price, Quantity, Url, Shipping, Payment, Address with mapstruct

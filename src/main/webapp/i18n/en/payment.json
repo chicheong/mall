@@ -22,7 +22,8 @@
             "type": "Type",
             "remark": "Remark",
             "status": "Status",
-            "order": "Order"
+            "order": "Order",
+            "statusHistory": "Status History"
         }
     }
 }

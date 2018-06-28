@@ -96,6 +96,8 @@ public class CacheConfiguration {
             cm.createCache(com.wongs.domain.ShippingStatusHistory.class.getName(), jcacheConfiguration);
             cm.createCache(com.wongs.domain.Payment.class.getName(), jcacheConfiguration);
             cm.createCache(com.wongs.domain.PaymentCreditCard.class.getName(), jcacheConfiguration);
+            cm.createCache(com.wongs.domain.PaymentStatusHistory.class.getName(), jcacheConfiguration);
+            cm.createCache(com.wongs.domain.Payment.class.getName() + ".statusHistories", jcacheConfiguration);
             // jhipster-needle-ehcache-add-entry
         };
     }

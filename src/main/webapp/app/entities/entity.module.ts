@@ -30,6 +30,7 @@ import { MallShippingTypeModule } from './shipping-type/shipping-type.module';
 import { MallShippingStatusHistoryModule } from './shipping-status-history/shipping-status-history.module';
 import { MallPaymentModule } from './payment/payment.module';
 import { MallPaymentCreditCardModule } from './payment-credit-card/payment-credit-card.module';
+import { MallPaymentStatusHistoryModule } from './payment-status-history/payment-status-history.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
@@ -64,6 +65,7 @@ import { MallPaymentCreditCardModule } from './payment-credit-card/payment-credi
         MallShippingStatusHistoryModule,
         MallPaymentModule,
         MallPaymentCreditCardModule,
+        MallPaymentStatusHistoryModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],

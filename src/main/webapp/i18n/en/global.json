@@ -37,6 +37,7 @@
                 "shippingStatusHistory": "Shipping Status History",
                 "payment": "Payment",
                 "paymentCreditCard": "Payment Credit Card",
+                "paymentStatusHistory": "Payment Status History",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {
