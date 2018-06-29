@@ -60,15 +60,15 @@ public class Shipping implements Serializable {
     private ShippingStatus status;
 
     @OneToOne
-    @JoinColumn(unique = true)
+    @JoinColumn(unique = false)
     private MyOrder order;
 
     @OneToOne
-    @JoinColumn(unique = true)
+    @JoinColumn(unique = false)
     private Address shippingAddress;
 
     @OneToOne
-    @JoinColumn(unique = true)
+    @JoinColumn(unique = false)
     private Address billingAddress;
 
     @OneToMany(mappedBy = "shipping")

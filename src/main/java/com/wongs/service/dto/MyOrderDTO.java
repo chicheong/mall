@@ -33,6 +33,7 @@ public class MyOrderDTO implements Serializable {
     private Long accountId;
     
     private ShippingDTO shipping;
+    private PaymentDTO payment;
     
     private Set<OrderItem> items = new HashSet<>();
     private Set<OrderStatusHistory> statusHistories = new HashSet<>();
@@ -107,6 +108,14 @@ public class MyOrderDTO implements Serializable {
 
 	public void setShipping(ShippingDTO shipping) {
 		this.shipping = shipping;
+	}
+
+	public PaymentDTO getPayment() {
+		return payment;
+	}
+
+	public void setPayment(PaymentDTO payment) {
+		this.payment = payment;
 	}
 
 	public Set<OrderItem> getItems() {

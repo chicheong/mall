@@ -27,12 +27,12 @@ import com.wongs.domain.OrderItem;
 import com.wongs.security.SecurityUtils;
 import com.wongs.service.MyAccountService;
 import com.wongs.service.MyOrderService;
+import com.wongs.service.PaymentService;
 import com.wongs.service.ShippingService;
 import com.wongs.service.UserInfoService;
 import com.wongs.service.UserService;
 import com.wongs.service.dto.MyAccountDTO;
 import com.wongs.service.dto.MyOrderDTO;
-import com.wongs.service.dto.ShippingDTO;
 import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
@@ -54,16 +54,18 @@ public class MyOrderResource {
     private final UserInfoService userInfoService;
     private final MyAccountService myAccountService;
     private final ShippingService shippingService;
+    private final PaymentService paymentService;
     
     private final UserService userService;
 
     public MyOrderResource(MyOrderService myOrderService, UserInfoService userInfoService, MyAccountService myAccountService, 
-    						UserService userService, ShippingService shippingService) {
+    						UserService userService, ShippingService shippingService, PaymentService paymentService) {
     	this.myOrderService = myOrderService;
     	this.userInfoService = userInfoService;
     	this.myAccountService = myAccountService;
         this.userService = userService;
         this.shippingService = shippingService;
+        this.paymentService = paymentService;
     }
 
     /**
@@ -104,6 +106,8 @@ public class MyOrderResource {
         }
         MyOrderDTO result = myOrderService.save(myOrderDTO);
         Optional.ofNullable(myOrderDTO.getShipping()).ifPresent(shipping -> shippingService.save(shipping));
+        Optional.ofNullable(myOrderDTO.getPayment()).ifPresent(payment -> paymentService.save(payment));
+        
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, myOrderDTO.getId().toString()))
             .body(result);
@@ -135,7 +139,6 @@ public class MyOrderResource {
     public ResponseEntity<MyOrderDTO> getMyOrder(@PathVariable Long id) {
         log.debug("REST request to get MyOrder : {}", id);
         MyOrderDTO myOrderDTO = myOrderService.findOne(id);
-        Optional.ofNullable(myOrderDTO).ifPresent(myOrder -> myOrder.setShipping(shippingService.findByOrder(myOrder)));
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(myOrderDTO));
     }
 
@@ -185,11 +188,7 @@ public class MyOrderResource {
         log.debug("REST request to update OrderItem : {}", orderItem);
         
         MyAccountDTO myAccount = myAccountService.findOne(userInfoService.findOneWithAccountsByUserLogin(SecurityUtils.getCurrentUserLogin().get()).getAccountId());
-        MyOrderDTO myOrderDTO  = myOrderService.addToCart(myAccount, orderItem);
-        Optional.ofNullable(myOrderDTO.getShipping()).orElseGet(() -> {
-        	myOrderDTO.setShipping(shippingService.create(myOrderDTO));
-        	return null;
-        });
+        MyOrderDTO myOrderDTO  = myOrderService.addToCart(myAccount, orderItem);     
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, myOrderDTO.getId().toString()))
             .body(myOrderDTO);

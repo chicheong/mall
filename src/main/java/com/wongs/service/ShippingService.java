@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.wongs.domain.MyOrder;
 import com.wongs.domain.Shipping;
 import com.wongs.domain.enumeration.ShippingStatus;
 import com.wongs.repository.ShippingRepository;
@@ -62,10 +63,10 @@ public class ShippingService {
      * @param shippingDTO the entity to create
      * @return the persisted entity
      */
-    public ShippingDTO create(MyOrderDTO myOrder) {
+    public ShippingDTO create(MyOrder myOrder) {
         log.debug("Request to create Shipping from MyOrder : {}", myOrder);
         ShippingDTO shipping = new ShippingDTO();
-        shipping.setOrder(myOrderMapper.toEntity(myOrder));
+        shipping.setOrder(myOrder);
         shipping.setCurrency(myOrder.getCurrency());
         shipping.setStatus(ShippingStatus.PENDING);
         shipping.setShippingAddress(null);
@@ -105,9 +106,9 @@ public class ShippingService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public ShippingDTO findByOrder(MyOrderDTO myOrderDTO) {
-        log.debug("Request to get Shipping from MyOrder : {}", myOrderDTO);
-        Shipping shipping = shippingRepository.findByOrder(myOrderMapper.toEntity(myOrderDTO));
+    public ShippingDTO findByOrder(MyOrder myOrder) {
+        log.debug("Request to get Shipping from MyOrder : {}", myOrder);
+        Shipping shipping = shippingRepository.findByOrder(myOrder);
         return shippingMapper.toDto(shipping);
     }
     

@@ -6,7 +6,7 @@
             "relationshipName": "order",
             "otherEntityName": "myOrder",
             "otherEntityField": "id",
-            "ownerSide": true,
+            "ownerSide": false,
             "otherEntityRelationshipName": "shipping"
         },
         {
@@ -14,7 +14,7 @@
             "relationshipName": "shippingAddress",
             "otherEntityName": "address",
             "otherEntityField": "id",
-            "ownerSide": true,
+            "ownerSide": false,
             "otherEntityRelationshipName": "shipping"
         },
         {
@@ -22,7 +22,7 @@
             "relationshipName": "billingAddress",
             "otherEntityName": "address",
             "otherEntityField": "id",
-            "ownerSide": true,
+            "ownerSide": false,
             "otherEntityRelationshipName": "shipping"
         },
         {

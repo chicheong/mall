@@ -1,9 +1,10 @@
 package com.wongs.repository;
 
-import com.wongs.domain.Payment;
+import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import org.springframework.data.jpa.repository.*;
+import com.wongs.domain.MyOrder;
+import com.wongs.domain.Payment;
 
 
 /**
@@ -13,4 +14,5 @@ import org.springframework.data.jpa.repository.*;
 @Repository
 public interface PaymentRepository extends JpaRepository<Payment, Long> {
 
+	Payment findByOrder(MyOrder myOrder);
 }

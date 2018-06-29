@@ -6,7 +6,7 @@
             "relationshipName": "order",
             "otherEntityName": "myOrder",
             "otherEntityField": "id",
-            "ownerSide": true,
+            "ownerSide": false,
             "otherEntityRelationshipName": "payment"
         },        
 		{

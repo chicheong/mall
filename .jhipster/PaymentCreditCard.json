@@ -6,7 +6,7 @@
             "relationshipName": "payment",
             "otherEntityName": "payment",
             "otherEntityField": "id",
-            "ownerSide": true,
+            "ownerSide": false,
             "otherEntityRelationshipName": "paymentCreditCard"
         }
     ],

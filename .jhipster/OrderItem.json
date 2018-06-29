@@ -6,7 +6,7 @@
             "relationshipName": "productItem",
             "otherEntityName": "productItem",
             "otherEntityField": "id",
-            "ownerSide": true,
+            "ownerSide": false,
             "otherEntityRelationshipName": "orderItem"
         },
         {

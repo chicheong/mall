@@ -43,16 +43,22 @@ public class MyOrderService {
     
     private final OrderItemRepository orderItemRepository;
     private final OrderItemSearchRepository orderItemSearchRepository;
+    
+    private final ShippingService shippingService;
+    private final PaymentService paymentService;
 
     public MyOrderService(MyOrderRepository myOrderRepository, MyOrderSearchRepository myOrderSearchRepository,
     						MyOrderMapper myOrderMapper, MyAccountMapper myAccountMapper,
-    						OrderItemRepository orderItemRepository, OrderItemSearchRepository orderItemSearchRepository) {
+    						OrderItemRepository orderItemRepository, OrderItemSearchRepository orderItemSearchRepository,
+    						ShippingService shippingService, PaymentService paymentService) {
         this.myOrderRepository = myOrderRepository;
         this.myOrderSearchRepository = myOrderSearchRepository;
         this.myOrderMapper = myOrderMapper;
         this.myAccountMapper = myAccountMapper;
         this.orderItemRepository = orderItemRepository;
         this.orderItemSearchRepository = orderItemSearchRepository;
+        this.shippingService = shippingService;
+        this.paymentService = paymentService;
     }
 
     /**
@@ -118,8 +124,7 @@ public class MyOrderService {
 //        	myOrderSearchRepository.save(myOrder); 
 //        }
         
-        MyOrderDTO result = myOrderMapper.toDto(myOrder);
-        return result;
+        return this.findOne(myOrder.getId());
     }
 
     private MyOrder createPendingOrder(MyAccount myAccount, CurrencyType currency) {
@@ -129,6 +134,10 @@ public class MyOrderService {
     	myOrder.setStatus(OrderStatus.PENDING);
         myOrder = myOrderRepository.save(myOrder);
         myOrderSearchRepository.save(myOrder);
+        
+        shippingService.create(myOrder);
+        paymentService.create(myOrder);
+        
     	return myOrder;
     }
 
@@ -155,7 +164,7 @@ public class MyOrderService {
     public MyOrderDTO findOne(Long id) {
         log.debug("Request to get MyOrder : {}", id);
         MyOrder myOrder = myOrderRepository.findOne(id);
-        return this.toDTOWithLists(myOrder);
+        return this.toDTOWithDetail(myOrder);
     }
     
     /**
@@ -169,10 +178,10 @@ public class MyOrderService {
         log.debug("Request to get MyOrder : {}", account, status);
         Set<MyOrder> myOrders = myOrderRepository.findByAccountAndStatus(account, status);
         MyOrder myOrder = myOrders.stream().findFirst().orElse(null);
-        return this.toDTOWithLists(myOrder);
+        return this.toDTOWithDetail(myOrder);
     }
     
-    private MyOrderDTO toDTOWithLists(MyOrder myOrder){
+    private MyOrderDTO toDTOWithDetail(MyOrder myOrder){
         if (myOrder == null)
         	return null;
         
@@ -183,6 +192,9 @@ public class MyOrderService {
         myOrder.getStatusHistories().forEach((statusHistory) -> {
         	myOrderDTO.getStatusHistories().add(statusHistory);
         });
+        
+        myOrderDTO.setShipping(shippingService.findByOrder(myOrder));
+        myOrderDTO.setPayment(paymentService.findByOrder(myOrder));
         return myOrderDTO;
     }
     

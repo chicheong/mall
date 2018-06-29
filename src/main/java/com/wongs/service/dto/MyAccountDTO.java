@@ -50,6 +50,7 @@ public class MyAccountDTO implements Serializable {
     
     public MyAccountDTO(MyAccount myAccount) {
 		this.id = myAccount.getId();
+		this.balance = myAccount.getBalance();
 		this.type = myAccount.getType();
 	}
     

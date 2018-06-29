@@ -38,7 +38,7 @@ public class PaymentCreditCard implements Serializable {
     private ZonedDateTime expireDate;
 
     @OneToOne
-    @JoinColumn(unique = true)
+    @JoinColumn(unique = false)
     private Payment payment;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
