@@ -14,8 +14,9 @@ import com.wongs.domain.Shipping;
 import com.wongs.domain.enumeration.ShippingStatus;
 import com.wongs.repository.ShippingRepository;
 import com.wongs.repository.search.ShippingSearchRepository;
-import com.wongs.service.dto.MyOrderDTO;
+import com.wongs.service.dto.AddressDTO;
 import com.wongs.service.dto.ShippingDTO;
+import com.wongs.service.mapper.AddressMapper;
 import com.wongs.service.mapper.MyOrderMapper;
 import com.wongs.service.mapper.ShippingMapper;
 
@@ -30,16 +31,21 @@ public class ShippingService {
 
     private final ShippingMapper shippingMapper;
     private final MyOrderMapper myOrderMapper;
+    private final AddressMapper addressMapper;
     
     private final ShippingRepository shippingRepository;
-
     private final ShippingSearchRepository shippingSearchRepository;
+    
+    private final AddressService addressService; 
 
-    public ShippingService(ShippingMapper shippingMapper, MyOrderMapper myOrderMapper, ShippingRepository shippingRepository, ShippingSearchRepository shippingSearchRepository) {
+    public ShippingService(ShippingMapper shippingMapper, MyOrderMapper myOrderMapper, AddressMapper addressMapper, ShippingRepository shippingRepository, ShippingSearchRepository shippingSearchRepository,
+    						AddressService addressService) {
     	this.shippingMapper = shippingMapper;
     	this.myOrderMapper = myOrderMapper;
+    	this.addressMapper = addressMapper;
     	this.shippingRepository = shippingRepository;
         this.shippingSearchRepository = shippingSearchRepository;
+        this.addressService = addressService;
     }
 
     /**
@@ -69,7 +75,9 @@ public class ShippingService {
         shipping.setOrder(myOrder);
         shipping.setCurrency(myOrder.getCurrency());
         shipping.setStatus(ShippingStatus.PENDING);
-        shipping.setShippingAddress(null);
+        AddressDTO shippingAddress = new AddressDTO();
+        shippingAddress = addressService.save(shippingAddress);
+        shipping.setShippingAddress(addressMapper.toEntity(shippingAddress));
         return this.save(shipping);
     }
 

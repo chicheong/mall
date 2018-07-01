@@ -260,7 +260,8 @@ public class ProductService {
         oProductItems.stream().filter(item -> !productItemIds.contains(item.getId())).forEach(item -> productItemRepository.delete(item));
         oProductStyles.stream().filter(style -> !productStyleIds.contains(style.getId())).forEach(style -> productStyleRepository.delete(style));
         oUrls.stream().filter(url -> !urlIds.contains(url.getId())).forEach(url -> urlService.delete(url.getId()));
-        return productMapper.toDto(product);
+//        return productMapper.toDto(product);
+        return this.findOneWithLists(product.getId());
     }
     
 
