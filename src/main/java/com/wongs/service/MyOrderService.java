@@ -21,8 +21,10 @@ import com.wongs.repository.MyOrderRepository;
 import com.wongs.repository.OrderItemRepository;
 import com.wongs.repository.search.MyOrderSearchRepository;
 import com.wongs.repository.search.OrderItemSearchRepository;
+import com.wongs.service.dto.AddressDTO;
 import com.wongs.service.dto.MyAccountDTO;
 import com.wongs.service.dto.MyOrderDTO;
+import com.wongs.service.mapper.AddressMapper;
 import com.wongs.service.mapper.MyAccountMapper;
 import com.wongs.service.mapper.MyOrderMapper;
 
@@ -37,6 +39,7 @@ public class MyOrderService {
 
     private final MyOrderMapper myOrderMapper;
     private final MyAccountMapper myAccountMapper;
+    private final AddressMapper addressMapper;
 
     private final MyOrderRepository myOrderRepository;
     private final MyOrderSearchRepository myOrderSearchRepository;
@@ -46,19 +49,22 @@ public class MyOrderService {
     
     private final ShippingService shippingService;
     private final PaymentService paymentService;
+    private final AddressService addressService;
 
-    public MyOrderService(MyOrderRepository myOrderRepository, MyOrderSearchRepository myOrderSearchRepository,
-    						MyOrderMapper myOrderMapper, MyAccountMapper myAccountMapper,
+    public MyOrderService(MyOrderMapper myOrderMapper, MyAccountMapper myAccountMapper, AddressMapper addressMapper,
+    						MyOrderRepository myOrderRepository, MyOrderSearchRepository myOrderSearchRepository,
     						OrderItemRepository orderItemRepository, OrderItemSearchRepository orderItemSearchRepository,
-    						ShippingService shippingService, PaymentService paymentService) {
-        this.myOrderRepository = myOrderRepository;
-        this.myOrderSearchRepository = myOrderSearchRepository;
+    						ShippingService shippingService, PaymentService paymentService, AddressService addressService) {
         this.myOrderMapper = myOrderMapper;
         this.myAccountMapper = myAccountMapper;
+        this.addressMapper = addressMapper;
+    	this.myOrderRepository = myOrderRepository;
+        this.myOrderSearchRepository = myOrderSearchRepository;
         this.orderItemRepository = orderItemRepository;
         this.orderItemSearchRepository = orderItemSearchRepository;
         this.shippingService = shippingService;
         this.paymentService = paymentService;
+        this.addressService = addressService;
     }
 
     /**
@@ -79,6 +85,20 @@ public class MyOrderService {
         	//item.setOrder(myOrder);
         	orderItemRepository.save(item);
         	orderItemSearchRepository.save(item);
+        });
+        Optional.of(myOrderDTO.getShipping()).ifPresent(shippingDTO -> {
+        	Optional.of(shippingDTO.getShippingAddress()).ifPresent(address -> {
+        		if (address.getId() == null) {
+        			addressService.save(addressMapper.toDto(shippingDTO.getShippingAddress()));
+        		} else {
+        			AddressDTO addressDTO = addressService.findOne(address.getId());
+        			if (addressDTO.equals(address)) {
+        				
+        			}
+        		}
+        	});
+        	shippingService.save(shippingDTO);
+        	
         });
         return result;
     }

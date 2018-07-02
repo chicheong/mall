@@ -1,6 +1,7 @@
 import { BaseEntity } from './../../shared';
 import { OrderItem } from './../order-item';
 import { Shipping } from './../shipping';
+import { Payment } from './../payment';
 
 export const enum CurrencyType {
     'HKD',
@@ -28,6 +29,7 @@ export class MyOrder implements BaseEntity {
         public status?: OrderStatus,
         public accountId?: number,
         public shipping?: Shipping,
+        public payment?: Payment,
         public items?: OrderItem[],
         public statusHistories?: BaseEntity[],
 
