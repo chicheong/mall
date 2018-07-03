@@ -8,9 +8,9 @@ import { JhiEventManager } from 'ng-jhipster';
 import { MyOrder } from './my-order.model';
 import { MyOrderService } from './my-order.service';
 
-import { Shipping } from './../shipping';
+import { Shipping, ShippingStatus } from './../shipping';
 import { Address } from './../address';
-import { Payment } from './../payment';
+import { Payment, PaymentStatus } from './../payment';
 
 import { CartControl } from './cart/cart-control/cart-control';
 
@@ -56,15 +56,13 @@ export class CartComponent implements OnInit, OnDestroy {
                 if (!this.myOrder) {
                     console.error('!this.myOrder');
                 } else if (!this.myOrder.shipping) {
-                    console.error('!this.myOrder.shipping');
                     const shipping: Shipping = Object.assign(new Shipping());
-                    // shipping.order = this.myOrder;
+                    shipping.status = ShippingStatus.PENDING;
+                    shipping.currency = this.myOrder.currency;
                     const address: Address = Object.assign(new Address());
                     shipping.shippingAddress = address;
-
                     this.myOrder.shipping = shipping;
                 } else if (!this.myOrder.shipping.shippingAddress) {
-                    console.error('!this.myOrder.shipping.shippingAddress');
                     const address: Address = Object.assign(new Address());
                     this.myOrder.shipping.shippingAddress = address;
                 }
@@ -72,9 +70,9 @@ export class CartComponent implements OnInit, OnDestroy {
                 if (!this.myOrder) {
                     console.error('!this.myOrder');
                 } else if (!this.myOrder.payment) {
-                    console.error('!this.myOrder.payment');
                     const payment: Payment = Object.assign(new Payment());
-                    // payment.order = this.myOrder;
+                    payment.status = PaymentStatus.PENDING;
+                    payment.currency = this.myOrder.currency;
                     this.myOrder.payment = payment;
                 }
                 this.cartControl = this.myOrderService.getCartControl(this.myOrder, this.path);

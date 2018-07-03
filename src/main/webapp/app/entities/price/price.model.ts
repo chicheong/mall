@@ -1,13 +1,13 @@
 import { BaseEntity } from './../../shared';
 
 export const enum CurrencyType {
-    'HKD',
-    'CNY',
-    'USD',
-    'EUR',
-    'JPY',
-    'KRW',
-    'TWD'
+    HKD = 'HKD',
+    CNY = 'CNY',
+    USD = 'USD',
+    EUR = 'EUR',
+    JPY = 'JPY',
+    KRW = 'KRW',
+    TWD = 'TWD'
 }
 
 export class Price implements BaseEntity {

@@ -105,9 +105,6 @@ public class MyOrderResource {
             return createMyOrder(myOrderDTO);
         }
         MyOrderDTO result = myOrderService.save(myOrderDTO);
-        Optional.ofNullable(myOrderDTO.getShipping()).ifPresent(shipping -> shippingService.save(shipping));
-        Optional.ofNullable(myOrderDTO.getPayment()).ifPresent(payment -> paymentService.save(payment));
-        
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, myOrderDTO.getId().toString()))
             .body(result);

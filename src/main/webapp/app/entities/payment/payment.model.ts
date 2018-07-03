@@ -1,15 +1,6 @@
 import { BaseEntity } from './../../shared';
 import { MyOrder } from './../my-order';
-
-export const enum CurrencyType {
-    'HKD',
-    'CNY',
-    'USD',
-    'EUR',
-    'JPY',
-    'KRW',
-    'TWD'
-}
+import { CurrencyType } from './../price';
 
 export const enum PaymentType {
     'CREDIT_CARD',
@@ -21,9 +12,9 @@ export const enum PaymentType {
 }
 
 export const enum PaymentStatus {
-    'PENDING',
-    'PAID',
-    'CANCELLED'
+    PENDING = 'PENDING',
+    PAID = 'PAID',
+    CANCELLED = 'CANCELLED'
 }
 
 export class Payment implements BaseEntity {

@@ -1,14 +1,5 @@
 import { BaseEntity } from './../../shared';
-
-export const enum CurrencyType {
-    'HKD',
-    'CNY',
-    'USD',
-    'EUR',
-    'JPY',
-    'KRW',
-    'TWD'
-}
+import { CurrencyType } from './../price';
 
 export class CurrencyRate implements BaseEntity {
     constructor(

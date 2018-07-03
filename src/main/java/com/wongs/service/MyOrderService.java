@@ -78,8 +78,8 @@ public class MyOrderService {
         MyOrder myOrder = myOrderMapper.toEntity(myOrderDTO);
         myOrder.setItems(myOrderDTO.getItems());
         myOrder.setStatusHistories(myOrderDTO.getStatusHistories());
-        myOrder = myOrderRepository.save(myOrder);
-        MyOrderDTO result = myOrderMapper.toDto(myOrder);
+        MyOrder result = myOrderRepository.save(myOrder);
+//        MyOrderDTO result = myOrderMapper.toDto(myOrder);
         myOrderSearchRepository.save(myOrder);
         myOrderDTO.getItems().forEach((item) -> {
         	//item.setOrder(myOrder);
@@ -89,18 +89,23 @@ public class MyOrderService {
         Optional.of(myOrderDTO.getShipping()).ifPresent(shippingDTO -> {
         	Optional.of(shippingDTO.getShippingAddress()).ifPresent(address -> {
         		if (address.getId() == null) {
-        			addressService.save(addressMapper.toDto(shippingDTO.getShippingAddress()));
+        			shippingDTO.setShippingAddress(addressService.save(address));
         		} else {
-        			AddressDTO addressDTO = addressService.findOne(address.getId());
-        			if (addressDTO.equals(address)) {
-        				
+        			AddressDTO oAddressDTO = addressService.findOne(address.getId());
+        			AddressDTO nAddressDTO = addressMapper.toDto(address);
+        			if (!(oAddressDTO.equals(nAddressDTO))) {
+        				shippingDTO.setShippingAddress(addressService.save(address));
         			}
         		}
         	});
+        	shippingDTO.setOrder(result);
         	shippingService.save(shippingDTO);
-        	
         });
-        return result;
+        Optional.of(myOrderDTO.getPayment()).ifPresent(paymentDTO -> {
+        	paymentDTO.setOrder(result);
+        	paymentService.save(paymentDTO);
+        });
+        return this.findOne(myOrder.getId());
     }
     
     /**

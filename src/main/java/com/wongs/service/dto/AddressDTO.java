@@ -132,7 +132,15 @@ public class AddressDTO implements Serializable {
         if(addressDTO.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(getId(), addressDTO.getId());
+        return Objects.equals(getId(), addressDTO.getId()) &&
+        		Objects.equals(getLine1(), addressDTO.getLine1()) &&
+        		Objects.equals(getLine2(), addressDTO.getLine2()) &&
+        		Objects.equals(getLine3(), addressDTO.getLine3()) &&
+        		Objects.equals(getLine4(), addressDTO.getLine4()) &&
+        		Objects.equals(getCity(), addressDTO.getCity()) &&
+        		Objects.equals(getPostalCode(), addressDTO.getPostalCode()) &&
+        		Objects.equals(getCountry(), addressDTO.getCountry()) &&
+        		Objects.equals(getState(), addressDTO.getState());
     }
 
     @Override

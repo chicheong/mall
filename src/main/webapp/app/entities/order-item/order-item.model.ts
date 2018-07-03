@@ -1,5 +1,6 @@
 import { BaseEntity } from './../../shared';
-import { ProductItem, CurrencyType } from './../product-item';
+import { ProductItem } from './../product-item';
+import { CurrencyType } from './../price';
 
 export class OrderItem implements BaseEntity {
     constructor(

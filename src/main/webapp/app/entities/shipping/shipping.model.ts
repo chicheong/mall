@@ -2,22 +2,13 @@ import { BaseEntity } from './../../shared';
 import { MyOrder } from './../my-order';
 import { Address } from './../address';
 import { ShippingType } from './../shipping-type';
-
-export const enum CurrencyType {
-    'HKD',
-    'CNY',
-    'USD',
-    'EUR',
-    'JPY',
-    'KRW',
-    'TWD'
-}
+import { CurrencyType } from './../price';
 
 export const enum ShippingStatus {
-    'PENDING',
-    'SHIPPED',
-    'COMPLETED',
-    'CANCELLED'
+    PENDING = 'PENDING',
+    SHIPPED = 'SHIPPED',
+    COMPLETED = 'COMPLETED',
+    CANCELLED = 'CANCELLED'
 }
 
 export class Shipping implements BaseEntity {

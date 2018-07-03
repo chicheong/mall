@@ -10,7 +10,7 @@ import { Product } from './product.model';
 import { ProductService } from './product.service';
 import { LoginModalService, Principal, UuidService } from '../../shared';
 
-import { ProductItem, CurrencyType } from './../product-item';
+import { ProductItem } from './../product-item';
 import { ProductStyle, ProductStyleType, ProductStylePopupService, ProductStyleDialogComponent } from './../product-style';
 
 import { ProductItemsPopupService } from './product-items-popup.service';
@@ -20,6 +20,8 @@ import { FileUploadDialogComponent } from './file-upload-dialog.component';
 
 import { MyOrderService, MyOrder } from './../my-order';
 import { Url, UrlPopupService, UrlDeleteDialogComponent } from './../url';
+
+import { CurrencyType } from './../price';
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 

@@ -48,7 +48,7 @@ public class PaymentMapper {
         	payment.setType(paymentDTO.getType());
         	payment.setRemark(paymentDTO.getRemark());
     		payment.setStatus(paymentDTO.getStatus());
-    		payment.setOrder(payment.getOrder());
+    		payment.setOrder(paymentDTO.getOrder());
     		
             return payment;
         }

@@ -2,16 +2,7 @@ import { BaseEntity } from './../../shared';
 import { OrderItem } from './../order-item';
 import { Shipping } from './../shipping';
 import { Payment } from './../payment';
-
-export const enum CurrencyType {
-    'HKD',
-    'CNY',
-    'USD',
-    'EUR',
-    'JPY',
-    'KRW',
-    'TWD'
-}
+import { CurrencyType } from './../price';
 
 export const enum OrderStatus {
     'PENDING',
