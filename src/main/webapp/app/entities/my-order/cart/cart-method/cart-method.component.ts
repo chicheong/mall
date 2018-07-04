@@ -7,6 +7,7 @@ import { JhiEventManager } from 'ng-jhipster';
 
 import { MyOrder } from './../../my-order.model';
 import { MyOrderService } from './../../my-order.service';
+import { ShippingType, ShippingTypeService } from './../../../shipping-type';
 
 import { CartComponent } from './../../cart.component';
 
@@ -17,10 +18,12 @@ import { CartComponent } from './../../cart.component';
 export class CartMethodComponent extends CartComponent implements OnInit, OnDestroy {
 
     isSaving: boolean;
+    shippingTypes: ShippingType[];
 
     constructor(
         protected eventManager: JhiEventManager,
         protected myOrderService: MyOrderService,
+        private shippingTypeService: ShippingTypeService,
         protected route: ActivatedRoute,
         protected router: Router
     ) { super(eventManager, myOrderService, route, router); }
@@ -28,20 +31,11 @@ export class CartMethodComponent extends CartComponent implements OnInit, OnDest
     ngOnInit() {
         super.ngOnInit();
         this.isSaving = false;
-    }
-
-    sumAll(): number {
-        if (this.myOrder.items) {
-            let total = 0;
-            this.myOrder.items.forEach((item) => {
-                total += (item.quantity * item.price);
-            });
-            return total;
-        }
-        return 0;
-    }
-
-    updateMyOrder() {
+        this.shippingTypeService
+            .query({filter: 'payment-is-null'})
+            .subscribe((res: HttpResponse<ShippingType[]>) => {
+                this.shippingTypes = res.body;
+            }, (res: HttpErrorResponse) => this.onSaveError());
     }
 
     save() {
