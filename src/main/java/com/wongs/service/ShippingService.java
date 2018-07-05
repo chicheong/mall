@@ -2,6 +2,8 @@ package com.wongs.service;
 
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
+import java.math.BigDecimal;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -75,6 +77,7 @@ public class ShippingService {
         shipping.setOrder(myOrder);
         shipping.setCurrency(myOrder.getCurrency());
         shipping.setStatus(ShippingStatus.PENDING);
+        shipping.setPrice(new BigDecimal(0));
         AddressDTO shippingAddress = new AddressDTO();
         shippingAddress = addressService.save(shippingAddress);
         shipping.setShippingAddress(addressMapper.toEntity(shippingAddress));

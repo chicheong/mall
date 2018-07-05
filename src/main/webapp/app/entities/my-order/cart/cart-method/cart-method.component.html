@@ -19,53 +19,30 @@
 		</div>
     </div>    
 	<div class="row">
-		<div class="col-md-6 text-center">Item</div>
-		<div class="col-md-2">Unit Price</div>	
-		<div class="col-md-2 text-center">Quantity</div>
-		<div class="col-md-2 text-right">Subtotal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+		<div>&nbsp;&nbsp;&nbsp;&nbsp;Please select one of the following:</div>
 	</div>
 	<hr>
-	<div *ngFor="let item of myOrder.items">
-		<div class="row">
-			<div class="col-md-1">
-				<span class="hipster img-fluid img-rounded"></span>
+	<div *ngFor="let shippingType of shippingTypes; let idx = index">
+		<div class="row" (click)="onSelectionChange(shippingType)">
+			<div class="col-md-3">
+				<span class="hipster img-fluid img-rounded font-weight-bold">&nbsp;</span>
+			</div>		
+			<div class="col-md-4">
+				<span class="hipster img-fluid img-rounded font-weight-bold">
+					<input type="radio" id="shippingType{{shippingType.id}}" name="shippingTypeGroup" [checked]="this.myOrder.shipping?.type?.id === shippingType.id" 
+						[value]="shippingType.id" >&nbsp;&nbsp;<label>{{shippingType.name}}</label>
+				</span>
 			</div>
-			<div class="col-md-5">
-				<span class="hipster img-fluid img-rounded font-weight-bold">{{item.productItem.color.name + ' ' + item.productItem.size.name}}</span>
-			</div>
-			<div class="col-md-2">
-				<span class="hipster img-fluid img-rounded font-weight-bold">{{item.price}}</span>
-			</div>	  
-			<div class="col-md-2">
-				<span class="hipster img-fluid img-rounded">		
-					<input type="number" class="form-control font-weight-bold" name="price{{item.id}}" (change)="updateMyOrder()"
-	              		[(ngModel)]="item.quantity" />
-	      		</span>
- 			</div>
 			<div class="col-md-2 text-right">
-				<span class="hipster img-fluid img-rounded font-weight-bold">{{item.price * item.quantity}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+				<span class="hipster img-fluid img-rounded font-weight-bold">{{shippingType.price}}</span>
 			</div>
+			<div class="col-md-3">
+				<span class="hipster img-fluid img-rounded font-weight-bold">&nbsp;</span>
+			</div>	
 		</div>
 		<hr>
 	</div>
-	<hr>
-	<div class="row">
-		<div class="col-md-6">
-			<form class="card p-2">
-	            <div class="input-group">
-	              <input type="text" class="form-control" placeholder="Promo code">
-	              <div class="input-group-append">
-	                <button type="submit" class="btn btn-secondary">Redeem</button>
-	              </div>
-	            </div>
-			</form>
-        </div>
-		<div class="col-md-6 text-right">
-			<span *ngIf="myOrder.items" jhiTranslate="mallApp.myOrder.currentTotal">Current Total</span>&nbsp;&nbsp;({{myOrder.currency}}):
-			<h3 style="display:inline;" class="font-weight-bold">{{sumAll()}}&nbsp;&nbsp;&nbsp;</h3>
-		</div>
-	</div>    
     </form>
-	<jhi-checkout-summary [myOrder]=myOrder>
+	<jhi-checkout-summary [myOrder]=myOrder [shipping]="this.myOrder.shipping?.price">
 	</jhi-checkout-summary>
 </div>

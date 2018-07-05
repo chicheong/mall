@@ -86,8 +86,8 @@ public class MyOrderService {
         	orderItemRepository.save(item);
         	orderItemSearchRepository.save(item);
         });
-        Optional.of(myOrderDTO.getShipping()).ifPresent(shippingDTO -> {
-        	Optional.of(shippingDTO.getShippingAddress()).ifPresent(address -> {
+        Optional.ofNullable(myOrderDTO.getShipping()).ifPresent(shippingDTO -> {
+        	Optional.ofNullable(shippingDTO.getShippingAddress()).ifPresent(address -> {
         		if (address.getId() == null) {
         			shippingDTO.setShippingAddress(addressService.save(address));
         		} else {
@@ -101,7 +101,7 @@ public class MyOrderService {
         	shippingDTO.setOrder(result);
         	shippingService.save(shippingDTO);
         });
-        Optional.of(myOrderDTO.getPayment()).ifPresent(paymentDTO -> {
+        Optional.ofNullable(myOrderDTO.getPayment()).ifPresent(paymentDTO -> {
         	paymentDTO.setOrder(result);
         	paymentService.save(paymentDTO);
         });

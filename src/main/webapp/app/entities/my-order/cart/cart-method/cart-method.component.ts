@@ -3,7 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { JhiEventManager } from 'ng-jhipster';
+import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
 import { MyOrder } from './../../my-order.model';
 import { MyOrderService } from './../../my-order.service';
@@ -21,6 +21,7 @@ export class CartMethodComponent extends CartComponent implements OnInit, OnDest
     shippingTypes: ShippingType[];
 
     constructor(
+        private jhiAlertService: JhiAlertService,
         protected eventManager: JhiEventManager,
         protected myOrderService: MyOrderService,
         private shippingTypeService: ShippingTypeService,
@@ -32,10 +33,17 @@ export class CartMethodComponent extends CartComponent implements OnInit, OnDest
         super.ngOnInit();
         this.isSaving = false;
         this.shippingTypeService
-            .query({filter: 'payment-is-null'})
+            .query({filter: 'empty'})
             .subscribe((res: HttpResponse<ShippingType[]>) => {
                 this.shippingTypes = res.body;
-            }, (res: HttpErrorResponse) => this.onSaveError());
+            }, (res: HttpErrorResponse) => this.onError(res.message));
+    }
+
+    onSelectionChange(entry) {
+        const shippingType: ShippingType = Object.assign({}, entry);
+        this.myOrder.shipping.type = shippingType;
+        this.myOrder.shipping.price = shippingType.price;
+        this.myOrder.shipping.currency = shippingType.currency;
     }
 
     save() {
@@ -60,6 +68,10 @@ export class CartMethodComponent extends CartComponent implements OnInit, OnDest
         this.isSaving = false;
     }
 
+    private onError(error: any) {
+        this.jhiAlertService.error(error.message, null, null);
+    }
+
     ngOnDestroy() {
         super.ngOnDestroy();
         this.subscription.unsubscribe();
@@ -67,7 +79,7 @@ export class CartMethodComponent extends CartComponent implements OnInit, OnDest
     }
 
     canGoNext() {
-        if (this.myOrder && this.myOrder.items && this.myOrder.items.length > 0) {
+        if (this.myOrder && this.myOrder.items && this.myOrder.items.length > 0 && this.myOrder.shipping.type) {
             return true;
         } else {
             return false;

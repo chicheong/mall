@@ -11,6 +11,7 @@ import { MyOrderService } from './my-order.service';
 import { Shipping, ShippingStatus } from './../shipping';
 import { Address } from './../address';
 import { Payment, PaymentStatus } from './../payment';
+import { ShippingType } from './../shipping-type';
 
 import { CartControl } from './cart/cart-control/cart-control';
 
@@ -59,12 +60,28 @@ export class CartComponent implements OnInit, OnDestroy {
                     const shipping: Shipping = Object.assign(new Shipping());
                     shipping.status = ShippingStatus.PENDING;
                     shipping.currency = this.myOrder.currency;
+                    shipping.price = 0;
                     const address: Address = Object.assign(new Address());
                     shipping.shippingAddress = address;
+                    const shippingType: ShippingType = Object.assign(new ShippingType());
+                    shippingType.id = 1;
+                    shippingType.price = 0;
+                    shippingType.currency = this.myOrder.currency;
+                    shipping.type = shippingType;
                     this.myOrder.shipping = shipping;
-                } else if (!this.myOrder.shipping.shippingAddress) {
-                    const address: Address = Object.assign(new Address());
-                    this.myOrder.shipping.shippingAddress = address;
+                } else if (!this.myOrder.shipping.shippingAddress || !this.myOrder.shipping.type) {
+                    if (!this.myOrder.shipping.shippingAddress) {
+                        const address: Address = Object.assign(new Address());
+                        this.myOrder.shipping.shippingAddress = address;
+                    }
+                    if (!this.myOrder.shipping.type) {
+                        console.error('!this.myOrder.shipping.type');
+                        const shippingType: ShippingType = Object.assign(new ShippingType());
+                        shippingType.id = 1;
+                        shippingType.price = 0;
+                        shippingType.currency = this.myOrder.currency;
+                        this.myOrder.shipping.type = shippingType;
+                    }
                 }
                 // Initialize Payment if not exist
                 if (!this.myOrder) {
