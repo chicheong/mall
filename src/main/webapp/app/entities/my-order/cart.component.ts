@@ -75,7 +75,6 @@ export class CartComponent implements OnInit, OnDestroy {
                         this.myOrder.shipping.shippingAddress = address;
                     }
                     if (!this.myOrder.shipping.type) {
-                        console.error('!this.myOrder.shipping.type');
                         const shippingType: ShippingType = Object.assign(new ShippingType());
                         shippingType.id = 1;
                         shippingType.price = 0;
