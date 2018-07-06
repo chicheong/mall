@@ -16,62 +16,105 @@
 		    <button type="button" [disabled]="isSaving" class="btn btn-info" (click)="previousState()">
 		        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
 		    </button>
-	        <button type="button" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary" (click)="save()">
-	            <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.saveRefresh">Save & Refresh</span>
-	        </button>
 	        <button type="button" [disabled]="editForm.form.invalid || isSaving || !canGoNext()" class="btn btn-success" (click)="save()">
 	            <span class="fa fa-chevron-circle-right"></span>&nbsp;<span jhiTranslate="entity.action.continue">Continue</span>
 	        </button>
 		</div>
     </div>    
-	<div class="row">
-		<div class="col-md-6 text-center">Item</div>
-		<div class="col-md-2">Unit Price</div>	
-		<div class="col-md-2 text-center">Quantity</div>
-		<div class="col-md-2 text-right">Subtotal&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
-	</div>
-	<hr>
-	<div *ngFor="let item of myOrder.items">
-		<div class="row">
-			<div class="col-md-1">
-				<span class="hipster img-fluid img-rounded"></span>
-			</div>
-			<div class="col-md-5">
-				<span class="hipster img-fluid img-rounded font-weight-bold">{{item.productItem.color.name + ' ' + item.productItem.size.name}}</span>
-			</div>
-			<div class="col-md-2">
-				<span class="hipster img-fluid img-rounded font-weight-bold">{{item.price}}</span>
-			</div>	  
-			<div class="col-md-2">
-				<span class="hipster img-fluid img-rounded">		
-					<input type="number" class="form-control font-weight-bold" name="price{{item.id}}" (change)="updateMyOrder()"
-	              		[(ngModel)]="item.quantity" />
-	      		</span>
- 			</div>
-			<div class="col-md-2 text-right">
-				<span class="hipster img-fluid img-rounded font-weight-bold">{{item.price * item.quantity}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+		<div class="row" *ngIf="myOrder.shipping">
+			<div class="col-md-12">
+				<div class="row">
+					<input type="checkbox" id="same-address"> 
+					<label for="same-address">Shipping address is the same as my billing address</label>
+				</div>
+				<div class="row">
+					<div class="col-md-6 mb-3">
+						<label for="fullName">Full name</label> 
+						<input type="text" class="form-control" name="fullName" id="fullName" placeholder="" value="" required [(ngModel)]="myOrder.shipping.receiver">
+						<div class="invalid-feedback">Valid first name is required.</div>
+					</div>
+					<div class="col-md-6 mb-3">
+						<label for="contactNum">Contact No.</label> 
+						<input type="text" class="form-control" name="contactNum" id="contactNum" placeholder="" value="" required [(ngModel)]="myOrder.shipping.contactNum">
+						<div class="invalid-feedback">Valid last name is required.</div>
+					</div>
+				</div>
+
+				<!-- <div class="mb-3">
+					<label for="username">Username</label>
+					<div class="input-group">
+						<div class="input-group-prepend">
+							<span class="input-group-text">@</span>
+						</div>
+						<input type="text" class="form-control" id="username"
+							placeholder="Username" required>
+						<div class="invalid-feedback" style="width: 100%;">Your
+							username is required.</div>
+					</div>
+				</div> -->
+
+				<div class="mb-3">
+					<label for="email">Email <span class="text-muted">(Optional)</span></label>
+					<input type="email" class="form-control" name="email" id="email" placeholder="you@example.com" required [(ngModel)]="myOrder.shipping.email">
+					<div class="invalid-feedback">Please enter a valid email address for shipping updates.</div>
+				</div>
+
+				<div class="mb-3">
+					<label for="address">Address</label>
+					<input type="text" class="form-control" name="address" id="address" placeholder="Room 1111 / Apartment / Building" required [(ngModel)]="myOrder.shipping.shippingAddress.line1">
+					<div class="invalid-feedback">Please enter your shipping address.</div>
+				</div>
+
+				<div class="mb-3">
+					<label for="address2">Address 2 <span class="text-muted">(Optional)</span></label>
+					<input type="text" class="form-control" name="address2" id="address2" placeholder="Estate" [(ngModel)]="myOrder.shipping.shippingAddress.line2">
+				</div>
+				
+				<div class="mb-3">
+					<label for="address2">Address 3 <span class="text-muted">(Optional)</span></label>
+					<input type="text" class="form-control" name="address3" id="address3" placeholder="District" [(ngModel)]="myOrder.shipping.shippingAddress.line3">
+				</div>
+
+				<div class="row">
+					<div class="col-md-4 mb-3">
+						<label for="city">City</label>
+						<input type="text" class="form-control" name="city" id="city" placeholder="Hong Kong" [(ngModel)]="myOrder.shipping.shippingAddress.city">
+					</div>
+					<div class="col-md-5 mb-3">
+						<label for="country">Country</label> 
+						<select class="custom-select d-block w-100" id="country" required>
+							<option value="">Choose...</option>
+							<option>Mainland China</option>
+							<option>Japan</option>
+							<option>Korea</option>
+							<option>United States</option>
+						</select>
+						<div class="invalid-feedback">Please select a valid	country.</div>
+					</div>
+					<!-- <div class="col-md-4 mb-3">
+						<label for="state">State</label> 
+						<select class="custom-select d-block w-100" id="state" required>
+							<option value="">Choose...</option>
+							<option>California</option>
+						</select>
+						<div class="invalid-feedback">Please provide a valid state.
+						</div>
+					</div> -->
+					<div class="col-md-3 mb-3">
+						<label for="zip">Postal Code</label>
+						<input type="text" class="form-control" name="zip" id="zip" placeholder="" [(ngModel)]="myOrder.shipping.shippingAddress.postalCode">
+						<div class="invalid-feedback">Zip code required.</div>
+					</div>
+				</div>
+				<!--
+				<div class="custom-control custom-checkbox">
+					<input type="checkbox" class="custom-control-input" id="save-info">
+					<label class="custom-control-label" for="save-info">Save this information for next time</label>
+				</div>
+				<hr class="mb-4"> -->
 			</div>
 		</div>
-		<hr>
-	</div>
-	<hr>
-	<div class="row">
-		<div class="col-md-6">
-			<form class="card p-2">
-	            <div class="input-group">
-	              <input type="text" class="form-control" placeholder="Promo code">
-	              <div class="input-group-append">
-	                <button type="submit" class="btn btn-secondary">Redeem</button>
-	              </div>
-	            </div>
-			</form>
-        </div>
-		<div class="col-md-6 text-right">
-			<span *ngIf="myOrder.items" jhiTranslate="mallApp.myOrder.currentTotal">Current Total</span>&nbsp;&nbsp;({{myOrder.currency}}):
-			<h3 style="display:inline;" class="font-weight-bold">{{sumAll()}}&nbsp;&nbsp;&nbsp;</h3>
-		</div>
-	</div>    
-    </form>
+	</form>
 	<jhi-checkout-summary [myOrder]=myOrder>
 	</jhi-checkout-summary>
 </div>

@@ -30,9 +30,6 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
         this.isSaving = false;
     }
 
-    updateMyOrder() {
-    }
-
     save() {
         this.isSaving = true;
         this.subscribeToSaveResponse(
@@ -61,7 +58,7 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
     }
 
     canGoNext() {
-        if (this.myOrder && this.myOrder.items && this.myOrder.items.length > 0) {
+        if (this.myOrder && this.myOrder.items && this.myOrder.items.length > 0 && this.myOrder.shipping && this.myOrder.payment && this.myOrder.payment.amount > 0) {
             return true;
         } else {
             return false;

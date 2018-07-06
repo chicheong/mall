@@ -30,20 +30,6 @@ export class CartBillingComponent extends CartComponent implements OnInit, OnDes
         this.isSaving = false;
     }
 
-    sumAll(): number {
-        if (this.myOrder.items) {
-            let total = 0;
-            this.myOrder.items.forEach((item) => {
-                total += (item.quantity * item.price);
-            });
-            return total;
-        }
-        return 0;
-    }
-
-    updateMyOrder() {
-    }
-
     save() {
         this.isSaving = true;
         this.subscribeToSaveResponse(

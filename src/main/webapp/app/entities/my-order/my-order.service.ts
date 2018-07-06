@@ -21,7 +21,7 @@ export class MyOrderService {
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/my-orders';
     private resourceCartUrl = SERVER_API_URL + 'api/my-cart';
 
-    private billingControl = CartControlType.ACTIVE;
+    private billingControl = CartControlType.HIDE;
     private paymentControl = CartControlType.ACTIVE;
     private reviewControl = CartControlType.ACTIVE;
     private methodControl = CartControlType.ACTIVE;
@@ -238,7 +238,7 @@ export class MyOrderService {
     }
 
     doCartReviewNextAction(myOrder: MyOrder): void {
-        if (this.reviewControl !== CartControlType.HIDE) {
+        if (this.shippingControl !== CartControlType.HIDE) {
             this.router.navigate(['/' + this.pathPrefix + '/' + myOrder.id + '/shipping']);
         } else {
             this.doCartShippingNextAction(myOrder);
@@ -246,7 +246,7 @@ export class MyOrderService {
     }
 
     doCartShippingNextAction(myOrder: MyOrder): void {
-        if (this.shippingControl !== CartControlType.HIDE) {
+        if (this.methodControl !== CartControlType.HIDE) {
             this.router.navigate(['/' + this.pathPrefix + '/' + myOrder.id + '/method']);
         } else {
             this.doCartMethodNextAction(myOrder);
@@ -254,7 +254,7 @@ export class MyOrderService {
     }
 
     doCartMethodNextAction(myOrder: MyOrder): void {
-        if (this.methodControl !== CartControlType.HIDE) {
+        if (this.billingControl !== CartControlType.HIDE) {
             this.router.navigate(['/' + this.pathPrefix + '/' + myOrder.id + '/billing']);
         } else {
             this.doCartBillingNextAction(myOrder);
@@ -262,7 +262,7 @@ export class MyOrderService {
     }
 
     doCartBillingNextAction(myOrder: MyOrder): void {
-        if (this.billingControl !== CartControlType.HIDE) {
+        if (this.paymentControl !== CartControlType.HIDE) {
             this.router.navigate(['/' + this.pathPrefix + '/' + myOrder.id + '/payment']);
         } else {
             this.doCartPaymentNextAction(myOrder);
@@ -297,15 +297,11 @@ export class MyOrderService {
     }
 
     doCartReviewBackAction(myOrder: MyOrder): void {
-        if (this.reviewControl !== CartControlType.HIDE) {
-            window.history.back();
-        } else {
-            window.history.back();
-        }
+        window.history.back();
     }
 
     doCartShippingBackAction(myOrder: MyOrder): void {
-        if (this.shippingControl !== CartControlType.HIDE) {
+        if (this.reviewControl !== CartControlType.HIDE) {
             this.router.navigate(['/' + this.pathPrefix + '/' + myOrder.id + '/review']);
         } else {
             this.doCartReviewBackAction(myOrder);
@@ -313,7 +309,7 @@ export class MyOrderService {
     }
 
     doCartMethodBackAction(myOrder: MyOrder): void {
-        if (this.methodControl !== CartControlType.HIDE) {
+        if (this.shippingControl !== CartControlType.HIDE) {
             this.router.navigate(['/' + this.pathPrefix + '/' + myOrder.id + '/shipping']);
         } else {
             this.doCartShippingBackAction(myOrder);
@@ -321,7 +317,7 @@ export class MyOrderService {
     }
 
     doCartBillingBackAction(myOrder: MyOrder): void {
-        if (this.billingControl !== CartControlType.HIDE) {
+        if (this.methodControl !== CartControlType.HIDE) {
             this.router.navigate(['/' + this.pathPrefix + '/' + myOrder.id + '/method']);
         } else {
             this.doCartMethodBackAction(myOrder);
@@ -329,7 +325,7 @@ export class MyOrderService {
     }
 
     doCartPaymentBackAction(myOrder: MyOrder): void {
-        if (this.paymentControl !== CartControlType.HIDE) {
+        if (this.billingControl !== CartControlType.HIDE) {
             this.router.navigate(['/' + this.pathPrefix + '/' + myOrder.id + '/billing']);
         } else {
             this.doCartBillingBackAction(myOrder);

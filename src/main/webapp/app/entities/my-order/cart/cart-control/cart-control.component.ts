@@ -11,12 +11,6 @@ import { MyOrderService } from './../../my-order.service';
 import { CartControl } from './cart-control';
 import { CartControlType } from './cart-control-type';
 
-export const enum CheckoutControlType {
-    HIDE = 'H',
-    ACTIVE = 'A',
-    DISABLED = 'D',
-    COMPLETE = 'C',
-}
 @Component({
     selector: 'jhi-checkout-control',
     templateUrl: './cart-control.component.html'
