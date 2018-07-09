@@ -32,51 +32,60 @@
 			<div class="col-md-12">
 				<div class="d-block my-3">
 					<div class="custom-control custom-radio">
-						<input id="credit" name="paymentMethod" type="radio"
-							class="custom-control-input" checked required> <label
-							class="custom-control-label" for="credit">Credit card</label>
+						<input id="credit" name="paymentMethod" type="radio" class="custom-control-input" required 
+							[value]="'credit'" [(ngModel)]="selectedMethod" (click)="onSelectionChange('credit')"> 
+						<label class="custom-control-label" for="credit">Credit card</label>
 					</div>
 					<div class="custom-control custom-radio">
-						<input id="debit" name="paymentMethod" type="radio"
-							class="custom-control-input" required> <label
-							class="custom-control-label" for="debit">Debit card</label>
+						<input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" checked required 
+							[value]="'paypal'" [(ngModel)]="selectedMethod" (click)="onSelectionChange('paypal')">
+						<label class="custom-control-label" for="paypal">Paypal</label>
 					</div>
 					<div class="custom-control custom-radio">
-						<input id="paypal" name="paymentMethod" type="radio"
-							class="custom-control-input" required> <label
-							class="custom-control-label" for="paypal">Paypal</label>
-					</div>
+						<input id="payme" name="paymentMethod" type="radio"	class="custom-control-input" required 
+							[value]="'payme'" [(ngModel)]="selectedMethod" (click)="onSelectionChange('payme')">
+						<label class="custom-control-label" for="payme">Payme</label>
+					</div>					
 				</div>
-				<div class="row">
-					<div class="col-md-6 mb-3">
-						<label for="cc-name">Name on card</label> <input type="text"
-							class="form-control" id="cc-name" placeholder="" required>
-						<small class="text-muted">Full name as displayed on card</small>
-						<div class="invalid-feedback">Name on card is required</div>
-					</div>
-					<div class="col-md-6 mb-3">
-						<label for="cc-number">Credit card number</label> <input
-							type="text" class="form-control" id="cc-number" placeholder=""
-							required>
-						<div class="invalid-feedback">Credit card number is required
+				<div [hidden]="selectedMethod !== 'credit'">
+					<div class="row">
+						<div class="col-md-6 mb-3">
+							<label for="cc-name">Name on card</label> <input type="text"
+								class="form-control" id="cc-name" placeholder="" required>
+							<small class="text-muted">Full name as displayed on card</small>
+							<div class="invalid-feedback">Name on card is required</div>
+						</div>
+						<div class="col-md-6 mb-3">
+							<label for="cc-number">Credit card number</label> <input
+								type="text" class="form-control" id="cc-number" placeholder=""
+								required>
+							<div class="invalid-feedback">Credit card number is required
+							</div>
 						</div>
 					</div>
-				</div>
-				<div class="row">
-					<div class="col-md-3 mb-3">
-						<label for="cc-expiration">Expiration</label> <input type="text"
-							class="form-control" id="cc-expiration" placeholder="" required>
-						<div class="invalid-feedback">Expiration date required</div>
+					<div class="row">
+						<div class="col-md-3 mb-3">
+							<label for="cc-expiration">Expiration</label> <input type="text"
+								class="form-control" id="cc-expiration" placeholder="" required>
+							<div class="invalid-feedback">Expiration date required</div>
+						</div>
+						<div class="col-md-3 mb-3">
+							<label for="cc-expiration">CVV</label> <input type="text"
+								class="form-control" id="cc-cvv" placeholder="" required>
+							<div class="invalid-feedback">Security code required</div>
+						</div>
 					</div>
-					<div class="col-md-3 mb-3">
-						<label for="cc-expiration">CVV</label> <input type="text"
-							class="form-control" id="cc-cvv" placeholder="" required>
-						<div class="invalid-feedback">Security code required</div>
-					</div>
+					<hr class="mb-4">
+					<button class="btn btn-primary btn-lg btn-block" type="submit">Continue
+						to checkout</button>
 				</div>
-				<hr class="mb-4">
-				<button class="btn btn-primary btn-lg btn-block" type="submit">Continue
-					to checkout</button>
+				<div [hidden]="selectedMethod !== 'paypal'">
+					<h2 *ngIf="paypalLoad">Paypal button is loading</h2>
+					<div id="paypal-checkout-btn"></div>
+				</div>
+				<div [hidden]="selectedMethod !== 'payme'">
+				This is for payme
+				</div>
 			</div>
 		</div>
 	</form>
