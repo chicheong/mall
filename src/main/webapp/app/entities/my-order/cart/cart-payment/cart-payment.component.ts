@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, AfterViewChecked } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
@@ -16,14 +16,13 @@ declare let paypal: any;
     selector: 'jhi-payment',
     templateUrl: './cart-payment.component.html'
 })
-export class CartPaymentComponent extends CartComponent implements OnInit, OnDestroy, AfterViewChecked {
+export class CartPaymentComponent extends CartComponent implements OnInit, OnDestroy {
 
     isSaving: boolean;
     selectedMethod: string;
 
 /********** For Paypal starts **********/
-    addScript = false;
-    paypalLoad = true;
+    payPaylButtonLoaded = false;
     paypalConfig = {
         env: 'sandbox',
         client: {
@@ -42,25 +41,27 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
                     transactions: [
                        {
                            amount: {
-                               total: '30.11',
-                               currency: 'HKD',
+                               total: this.myOrder.total,
+                               currency: this.myOrder.currency,
                                details: {
-                                   subtotal: '30.00',
-                                   tax: '0.07',
-                                   shipping: '0.03',
-                                   handling_fee: '1.00',
-                                   shipping_discount: '-1.00',
-                                   insurance: '0.01'
+                                   subtotal: this.myOrderService.sumAll(this.myOrder),
+                                   tax: '0', // 0.07
+                                   shipping: this.myOrder.shipping.price,
+                                   handling_fee: '0',
+                                   shipping_discount: '0', // -1.00
+                                   insurance: '0' // 0.01
                                }
                            },
                            description: 'The payment transaction description.',
-                           custom: '90048630024435',
+                           custom: 'custom', // 90048630024435
                            // invoice_number: '12345', Insert a unique invoice number
                            payment_options: {
                                allowed_payment_method: 'INSTANT_FUNDING_SOURCE'
                            },
                            soft_descriptor: 'ECHI5786786',
                            item_list: {
+                               items: this.myOrderService.getPaypalOrderItems(this.myOrder),
+                               /**
                                items: [
                                    {
                                      name: 'hat',
@@ -81,15 +82,16 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
                                      currency: 'HKD'
                                    }
                               ],
+                              */
                               shipping_address: {
-                                   recipient_name: 'Brian Robinson',
-                                   line1: '4th Floor',
-                                   line2: 'Unit #34',
-                                   city: 'San Jose',
-                                   country_code: 'US',
-                                   postal_code: '95131',
-                                   phone: '011862212345678',
-                                   state: 'CA'
+                                   recipient_name: this.myOrder.shipping.receiver,
+                                   line1: this.myOrder.shipping.shippingAddress.line1,
+                                   line2: this.myOrder.shipping.shippingAddress.line2,
+                                   city: 'HK',
+                                   country_code: 'HK', // 'US'
+                                   postal_code: this.myOrder.shipping.shippingAddress.postalCode,
+                                   phone: this.myOrder.shipping.contactNum,
+                                   state: '' // 'CA'
                               }
                            }
                        }
@@ -101,25 +103,18 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
         onAuthorize: (data, actions) => {
             return actions.payment.execute().then((payment) => {
                 // Do something when payment is successful.
-                window.alert('Thank you for your purchase!');
+                window.alert('Thank you for your purchase! with payment: ' + payment);
             });
         }
     };
-    ngAfterViewChecked(): void {
-        if (!this.addScript) {
-            this.addPaypalScript().then(() => {
-                paypal.Button.render(this.paypalConfig, '#paypal-checkout-btn');
-                this.paypalLoad = false;
-            });
-        }
-    }
     addPaypalScript() {
-        this.addScript = true;
         return new Promise((resolve, reject) => {
-            const scripttagElement = document.createElement('script');
-            scripttagElement.src = 'https://www.paypalobjects.com/api/checkout.js';
-            scripttagElement.onload = resolve;
-            document.body.appendChild(scripttagElement);
+            if (!this.myOrderService.paypalScriptTagElement) {
+                this.myOrderService.paypalScriptTagElement = document.createElement('script');
+                this.myOrderService.paypalScriptTagElement.src = 'https://www.paypalobjects.com/api/checkout.js';
+                this.myOrderService.paypalScriptTagElement.onload = resolve;
+                document.body.appendChild(this.myOrderService.paypalScriptTagElement);
+            }
         });
     }
 /********** For Paypal ends **********/
@@ -134,15 +129,22 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
     ngOnInit() {
         super.ngOnInit();
         this.isSaving = false;
+        if (!this.myOrderService.paypalScriptTagElement) {
+            this.addPaypalScript().then(() => {
+                paypal.Button.render(this.paypalConfig, '#paypal-checkout-btn');
+                this.payPaylButtonLoaded = true;
+            });
+        }
     }
 
     onSelectionChange(entry) {
         if (entry === 'credit') {
-
         } else if (entry === 'paypal') {
-
+            if (!this.payPaylButtonLoaded) {
+                paypal.Button.render(this.paypalConfig, '#paypal-checkout-btn');
+                this.payPaylButtonLoaded = true;
+            }
         } else if (entry === 'payme') {
-
         }
     }
 

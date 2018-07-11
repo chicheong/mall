@@ -39,6 +39,7 @@ export class CartReviewComponent extends CartComponent implements OnInit, OnDest
 
     save(goNext: boolean) {
         this.isSaving = true;
+        this.myOrder.total = this.myOrderService.getTotal(this.myOrder);
         this.subscribeToSaveResponse(
                 this.myOrderService.update(this.myOrder), goNext);
     }

@@ -48,6 +48,7 @@ export class CartMethodComponent extends CartComponent implements OnInit, OnDest
 
     save() {
         this.isSaving = true;
+        this.myOrder.total = this.myOrderService.getTotal(this.myOrder);
         this.subscribeToSaveResponse(
                 this.myOrderService.update(this.myOrder));
     }

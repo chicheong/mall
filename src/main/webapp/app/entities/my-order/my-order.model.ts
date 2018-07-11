@@ -27,3 +27,16 @@ export class MyOrder implements BaseEntity {
     ) {
     }
 }
+
+export class PaypalOrderItem {
+    constructor(
+        public name?: string,
+        public description?: string,
+        public quantity?: number,
+        public price?: number,
+        public tax?: number,
+        public sku?: string,
+        public currency?: CurrencyType,
+    ) {
+    }
+}

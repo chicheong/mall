@@ -4,7 +4,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { SERVER_API_URL } from '../../app.constants';
 
-import { MyOrder } from './my-order.model';
+import { MyOrder, PaypalOrderItem } from './my-order.model';
 import { createRequestOption } from '../../shared';
 import { ProductItem } from './../product-item';
 import { OrderItem } from './../order-item';
@@ -28,6 +28,9 @@ export class MyOrderService {
     private shippingControl = CartControlType.ACTIVE;
     private errorPathSuffix = 'review';
     private pathPrefix = 'my-order';
+
+    // Determine if paypal script is added to index or not
+    public paypalScriptTagElement: any;
 
     constructor(private http: HttpClient, private router: Router) { }
 
@@ -341,5 +344,34 @@ export class MyOrderService {
             return total;
         }
         return 0;
+    }
+
+    getTotal(myOrder: MyOrder): number {
+        let shippingTotal = 0;
+        if (myOrder.shipping) {
+            if (myOrder.shipping.price) {
+                shippingTotal = myOrder.shipping.price;
+            }
+        }
+        return this.sumAll(myOrder) + shippingTotal;
+    }
+
+    getPaypalOrderItems(myOrder: MyOrder): PaypalOrderItem[] {
+        const paypalOrderItems: PaypalOrderItem[] = [];
+        if (myOrder.items) {
+            let paypalOrderItem: PaypalOrderItem;
+            myOrder.items.forEach((item) => {
+                paypalOrderItem = Object.assign(new PaypalOrderItem());
+                paypalOrderItem.name = 'name' + item.id;
+                paypalOrderItem.description = 'product' + item.id;
+                paypalOrderItem.price = item.price;
+                paypalOrderItem.quantity = item.quantity;
+                paypalOrderItem.currency = item.currency;
+                paypalOrderItem.tax = 0;
+                paypalOrderItems.push(paypalOrderItem);
+            });
+        }
+        console.error('paypalOrderItems: ' + paypalOrderItems);
+        return paypalOrderItems;
     }
 }
