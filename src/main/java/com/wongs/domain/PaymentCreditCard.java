@@ -7,7 +7,6 @@ import javax.persistence.*;
 
 import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -25,17 +24,20 @@ public class PaymentCreditCard implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "jhi_value")
-    private String value;
-
     @Column(name = "holder_name")
     private String holderName;
 
-    @Column(name = "expire_date")
-    private ZonedDateTime expireDate;
+    @Column(name = "card_number")
+    private String cardNumber;
+
+    @Column(name = "expiration_month")
+    private String expirationMonth;
+
+    @Column(name = "expiration_year")
+    private String expirationYear;
+
+    @Column(name = "cvc")
+    private String cvc;
 
     @OneToOne
     @JoinColumn(unique = false)
@@ -48,32 +50,6 @@ public class PaymentCreditCard implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public PaymentCreditCard name(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public PaymentCreditCard value(String value) {
-        this.value = value;
-        return this;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 
     public String getHolderName() {
@@ -89,17 +65,56 @@ public class PaymentCreditCard implements Serializable {
         this.holderName = holderName;
     }
 
-    public ZonedDateTime getExpireDate() {
-        return expireDate;
+    public String getCardNumber() {
+        return cardNumber;
     }
 
-    public PaymentCreditCard expireDate(ZonedDateTime expireDate) {
-        this.expireDate = expireDate;
+    public PaymentCreditCard cardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
         return this;
     }
 
-    public void setExpireDate(ZonedDateTime expireDate) {
-        this.expireDate = expireDate;
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+
+    public String getExpirationMonth() {
+        return expirationMonth;
+    }
+
+    public PaymentCreditCard expirationMonth(String expirationMonth) {
+        this.expirationMonth = expirationMonth;
+        return this;
+    }
+
+    public void setExpirationMonth(String expirationMonth) {
+        this.expirationMonth = expirationMonth;
+    }
+
+    public String getExpirationYear() {
+        return expirationYear;
+    }
+
+    public PaymentCreditCard expirationYear(String expirationYear) {
+        this.expirationYear = expirationYear;
+        return this;
+    }
+
+    public void setExpirationYear(String expirationYear) {
+        this.expirationYear = expirationYear;
+    }
+
+    public String getCvc() {
+        return cvc;
+    }
+
+    public PaymentCreditCard cvc(String cvc) {
+        this.cvc = cvc;
+        return this;
+    }
+
+    public void setCvc(String cvc) {
+        this.cvc = cvc;
     }
 
     public Payment getPayment() {
@@ -140,10 +155,11 @@ public class PaymentCreditCard implements Serializable {
     public String toString() {
         return "PaymentCreditCard{" +
             "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", value='" + getValue() + "'" +
             ", holderName='" + getHolderName() + "'" +
-            ", expireDate='" + getExpireDate() + "'" +
+            ", cardNumber='" + getCardNumber() + "'" +
+            ", expirationMonth='" + getExpirationMonth() + "'" +
+            ", expirationYear='" + getExpirationYear() + "'" +
+            ", cvc='" + getCvc() + "'" +
             "}";
     }
 }

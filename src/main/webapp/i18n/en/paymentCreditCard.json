@@ -17,10 +17,11 @@
             "detail": {
                 "title": "Payment Credit Card"
             },
-            "name": "Name",
-            "value": "Value",
             "holderName": "Holder Name",
-            "expireDate": "Expire Date",
+            "cardNumber": "Card Number",
+            "expirationMonth": "Expiration Month",
+            "expirationYear": "Expiration Year",
+            "cvc": "Cvc",
             "payment": "Payment"
         }
     }

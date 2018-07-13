@@ -22,27 +22,28 @@
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="name" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-
-            <column name="jhi_value" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-
             <column name="holder_name" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
 
-            <column name="expire_date" type="timestamp">
+            <column name="card_number" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="payment_id" type="bigint">
-                <constraints unique="false" nullable="true" />
+
+            <column name="expiration_month" type="varchar(255)">
+                <constraints nullable="true" />
             </column>
+
+            <column name="expiration_year" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
+            <column name="cvc" type="varchar(255)">
+                <constraints nullable="true" />
+            </column>
+
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
-        <dropDefaultValue tableName="payment_credit_card" columnName="expire_date" columnDataType="datetime"/>
         
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->

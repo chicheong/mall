@@ -3,8 +3,6 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { SERVER_API_URL } from '../../app.constants';
 
-import { JhiDateUtils } from 'ng-jhipster';
-
 import { PaymentCreditCard } from './payment-credit-card.model';
 import { createRequestOption } from '../../shared';
 
@@ -16,7 +14,7 @@ export class PaymentCreditCardService {
     private resourceUrl =  SERVER_API_URL + 'api/payment-credit-cards';
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/payment-credit-cards';
 
-    constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }
+    constructor(private http: HttpClient) { }
 
     create(paymentCreditCard: PaymentCreditCard): Observable<EntityResponseType> {
         const copy = this.convert(paymentCreditCard);
@@ -70,8 +68,6 @@ export class PaymentCreditCardService {
      */
     private convertItemFromServer(paymentCreditCard: PaymentCreditCard): PaymentCreditCard {
         const copy: PaymentCreditCard = Object.assign({}, paymentCreditCard);
-        copy.expireDate = this.dateUtils
-            .convertDateTimeFromServer(paymentCreditCard.expireDate);
         return copy;
     }
 
@@ -80,8 +76,6 @@ export class PaymentCreditCardService {
      */
     private convert(paymentCreditCard: PaymentCreditCard): PaymentCreditCard {
         const copy: PaymentCreditCard = Object.assign({}, paymentCreditCard);
-
-        copy.expireDate = this.dateUtils.toDate(paymentCreditCard.expireDate);
         return copy;
     }
 }

@@ -96,11 +96,19 @@ public class PaymentCreditCardResource {
      * GET  /payment-credit-cards : get all the paymentCreditCards.
      *
      * @param pageable the pagination information
+     * @param filter the filter of the request
      * @return the ResponseEntity with status 200 (OK) and the list of paymentCreditCards in body
      */
     @GetMapping("/payment-credit-cards")
     @Timed
-    public ResponseEntity<List<PaymentCreditCard>> getAllPaymentCreditCards(Pageable pageable) {
+    public ResponseEntity<List<PaymentCreditCard>> getAllPaymentCreditCards(Pageable pageable) { //, @RequestParam(required = false) String filter
+        /**if ("payment-is-null".equals(filter)) {
+            log.debug("REST request to get all PaymentCreditCards where payment is null");
+            return new ResponseEntity<>(StreamSupport
+                .stream(paymentCreditCardRepository.findAll().spliterator(), false)
+                .filter(paymentCreditCard -> paymentCreditCard.getPayment() == null)
+                .collect(Collectors.toList()), HttpStatus.OK);
+        }*/
         log.debug("REST request to get a page of PaymentCreditCards");
         Page<PaymentCreditCard> page = paymentCreditCardRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/payment-credit-cards");

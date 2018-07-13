@@ -4,21 +4,25 @@
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="mallApp.creditCard.name">Name</span></dt>
-        <dd>
-            <span>{{creditCard.name}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.creditCard.value">Value</span></dt>
-        <dd>
-            <span>{{creditCard.value}}</span>
-        </dd>
         <dt><span jhiTranslate="mallApp.creditCard.holderName">Holder Name</span></dt>
         <dd>
             <span>{{creditCard.holderName}}</span>
         </dd>
-        <dt><span jhiTranslate="mallApp.creditCard.expireDate">Expire Date</span></dt>
+        <dt><span jhiTranslate="mallApp.creditCard.cardNumber">Card Number</span></dt>
         <dd>
-            <span>{{creditCard.expireDate | date:'medium'}}</span>
+            <span>{{creditCard.cardNumber}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.creditCard.expirationMonth">Expiration Month</span></dt>
+        <dd>
+            <span>{{creditCard.expirationMonth}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.creditCard.expirationYear">Expiration Year</span></dt>
+        <dd>
+            <span>{{creditCard.expirationYear}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.creditCard.cvc">Cvc</span></dt>
+        <dd>
+            <span>{{creditCard.cvc}}</span>
         </dd>
         <dt><span jhiTranslate="mallApp.creditCard.account">Account</span></dt>
         <dd>

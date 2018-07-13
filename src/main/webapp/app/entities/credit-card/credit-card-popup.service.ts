@@ -2,7 +2,6 @@ import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { HttpResponse } from '@angular/common/http';
-import { DatePipe } from '@angular/common';
 import { CreditCard } from './credit-card.model';
 import { CreditCardService } from './credit-card.service';
 
@@ -11,7 +10,6 @@ export class CreditCardPopupService {
     private ngbModalRef: NgbModalRef;
 
     constructor(
-        private datePipe: DatePipe,
         private modalService: NgbModal,
         private router: Router,
         private creditCardService: CreditCardService
@@ -31,8 +29,6 @@ export class CreditCardPopupService {
                 this.creditCardService.find(id)
                     .subscribe((creditCardResponse: HttpResponse<CreditCard>) => {
                         const creditCard: CreditCard = creditCardResponse.body;
-                        creditCard.expireDate = this.datePipe
-                            .transform(creditCard.expireDate, 'yyyy-MM-ddTHH:mm:ss');
                         this.ngbModalRef = this.creditCardModalRef(component, creditCard);
                         resolve(this.ngbModalRef);
                     });

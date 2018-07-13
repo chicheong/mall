@@ -30,10 +30,11 @@
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
             <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="name"><span jhiTranslate="mallApp.creditCard.name">Name</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="value"><span jhiTranslate="mallApp.creditCard.value">Value</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="holderName"><span jhiTranslate="mallApp.creditCard.holderName">Holder Name</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="expireDate"><span jhiTranslate="mallApp.creditCard.expireDate">Expire Date</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="cardNumber"><span jhiTranslate="mallApp.creditCard.cardNumber">Card Number</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="expirationMonth"><span jhiTranslate="mallApp.creditCard.expirationMonth">Expiration Month</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="expirationYear"><span jhiTranslate="mallApp.creditCard.expirationYear">Expiration Year</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="cvc"><span jhiTranslate="mallApp.creditCard.cvc">Cvc</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="account.id"><span jhiTranslate="mallApp.creditCard.account">Account</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
@@ -41,10 +42,11 @@
             <tbody>
             <tr *ngFor="let creditCard of creditCards ;trackBy: trackId">
                 <td><a [routerLink]="['../credit-card', creditCard.id ]">{{creditCard.id}}</a></td>
-                <td>{{creditCard.name}}</td>
-                <td>{{creditCard.value}}</td>
                 <td>{{creditCard.holderName}}</td>
-                <td>{{creditCard.expireDate | date:'medium'}}</td>
+                <td>{{creditCard.cardNumber}}</td>
+                <td>{{creditCard.expirationMonth}}</td>
+                <td>{{creditCard.expirationYear}}</td>
+                <td>{{creditCard.cvc}}</td>
                 <td>
                     <div *ngIf="creditCard.account">
                         <a [routerLink]="['../my-account', creditCard.account?.id ]" >{{creditCard.account?.id}}</a>

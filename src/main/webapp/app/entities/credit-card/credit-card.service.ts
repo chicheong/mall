@@ -3,8 +3,6 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { SERVER_API_URL } from '../../app.constants';
 
-import { JhiDateUtils } from 'ng-jhipster';
-
 import { CreditCard } from './credit-card.model';
 import { createRequestOption } from '../../shared';
 
@@ -16,7 +14,7 @@ export class CreditCardService {
     private resourceUrl =  SERVER_API_URL + 'api/credit-cards';
     private resourceSearchUrl = SERVER_API_URL + 'api/_search/credit-cards';
 
-    constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }
+    constructor(private http: HttpClient) { }
 
     create(creditCard: CreditCard): Observable<EntityResponseType> {
         const copy = this.convert(creditCard);
@@ -70,8 +68,6 @@ export class CreditCardService {
      */
     private convertItemFromServer(creditCard: CreditCard): CreditCard {
         const copy: CreditCard = Object.assign({}, creditCard);
-        copy.expireDate = this.dateUtils
-            .convertDateTimeFromServer(creditCard.expireDate);
         return copy;
     }
 
@@ -80,8 +76,6 @@ export class CreditCardService {
      */
     private convert(creditCard: CreditCard): CreditCard {
         const copy: CreditCard = Object.assign({}, creditCard);
-
-        copy.expireDate = this.dateUtils.toDate(creditCard.expireDate);
         return copy;
     }
 }

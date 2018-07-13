@@ -7,7 +7,6 @@ import javax.persistence.*;
 
 import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.Objects;
 
 /**
@@ -25,17 +24,20 @@ public class CreditCard implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "name")
-    private String name;
-
-    @Column(name = "jhi_value")
-    private String value;
-
     @Column(name = "holder_name")
     private String holderName;
 
-    @Column(name = "expire_date")
-    private ZonedDateTime expireDate;
+    @Column(name = "card_number")
+    private String cardNumber;
+
+    @Column(name = "expiration_month")
+    private String expirationMonth;
+
+    @Column(name = "expiration_year")
+    private String expirationYear;
+
+    @Column(name = "cvc")
+    private String cvc;
 
     @ManyToOne
     private MyAccount account;
@@ -47,32 +49,6 @@ public class CreditCard implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public CreditCard name(String name) {
-        this.name = name;
-        return this;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getValue() {
-        return value;
-    }
-
-    public CreditCard value(String value) {
-        this.value = value;
-        return this;
-    }
-
-    public void setValue(String value) {
-        this.value = value;
     }
 
     public String getHolderName() {
@@ -88,17 +64,56 @@ public class CreditCard implements Serializable {
         this.holderName = holderName;
     }
 
-    public ZonedDateTime getExpireDate() {
-        return expireDate;
+    public String getCardNumber() {
+        return cardNumber;
     }
 
-    public CreditCard expireDate(ZonedDateTime expireDate) {
-        this.expireDate = expireDate;
+    public CreditCard cardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
         return this;
     }
 
-    public void setExpireDate(ZonedDateTime expireDate) {
-        this.expireDate = expireDate;
+    public void setCardNumber(String cardNumber) {
+        this.cardNumber = cardNumber;
+    }
+
+    public String getExpirationMonth() {
+        return expirationMonth;
+    }
+
+    public CreditCard expirationMonth(String expirationMonth) {
+        this.expirationMonth = expirationMonth;
+        return this;
+    }
+
+    public void setExpirationMonth(String expirationMonth) {
+        this.expirationMonth = expirationMonth;
+    }
+
+    public String getExpirationYear() {
+        return expirationYear;
+    }
+
+    public CreditCard expirationYear(String expirationYear) {
+        this.expirationYear = expirationYear;
+        return this;
+    }
+
+    public void setExpirationYear(String expirationYear) {
+        this.expirationYear = expirationYear;
+    }
+
+    public String getCvc() {
+        return cvc;
+    }
+
+    public CreditCard cvc(String cvc) {
+        this.cvc = cvc;
+        return this;
+    }
+
+    public void setCvc(String cvc) {
+        this.cvc = cvc;
     }
 
     public MyAccount getAccount() {
@@ -139,10 +154,11 @@ public class CreditCard implements Serializable {
     public String toString() {
         return "CreditCard{" +
             "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", value='" + getValue() + "'" +
             ", holderName='" + getHolderName() + "'" +
-            ", expireDate='" + getExpireDate() + "'" +
+            ", cardNumber='" + getCardNumber() + "'" +
+            ", expirationMonth='" + getExpirationMonth() + "'" +
+            ", expirationYear='" + getExpirationYear() + "'" +
+            ", cvc='" + getCvc() + "'" +
             "}";
     }
 }

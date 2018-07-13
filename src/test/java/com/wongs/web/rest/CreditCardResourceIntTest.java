@@ -22,13 +22,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
-import java.time.Instant;
-import java.time.ZonedDateTime;
-import java.time.ZoneOffset;
-import java.time.ZoneId;
 import java.util.List;
 
-import static com.wongs.web.rest.TestUtil.sameInstant;
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.hamcrest.Matchers.hasItem;
@@ -44,17 +39,20 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = MallApp.class)
 public class CreditCardResourceIntTest {
 
-    private static final String DEFAULT_NAME = "AAAAAAAAAA";
-    private static final String UPDATED_NAME = "BBBBBBBBBB";
-
-    private static final String DEFAULT_VALUE = "AAAAAAAAAA";
-    private static final String UPDATED_VALUE = "BBBBBBBBBB";
-
     private static final String DEFAULT_HOLDER_NAME = "AAAAAAAAAA";
     private static final String UPDATED_HOLDER_NAME = "BBBBBBBBBB";
 
-    private static final ZonedDateTime DEFAULT_EXPIRE_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
-    private static final ZonedDateTime UPDATED_EXPIRE_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
+    private static final String DEFAULT_CARD_NUMBER = "AAAAAAAAAA";
+    private static final String UPDATED_CARD_NUMBER = "BBBBBBBBBB";
+
+    private static final String DEFAULT_EXPIRATION_MONTH = "AAAAAAAAAA";
+    private static final String UPDATED_EXPIRATION_MONTH = "BBBBBBBBBB";
+
+    private static final String DEFAULT_EXPIRATION_YEAR = "AAAAAAAAAA";
+    private static final String UPDATED_EXPIRATION_YEAR = "BBBBBBBBBB";
+
+    private static final String DEFAULT_CVC = "AAAAAAAAAA";
+    private static final String UPDATED_CVC = "BBBBBBBBBB";
 
     @Autowired
     private CreditCardRepository creditCardRepository;
@@ -97,10 +95,11 @@ public class CreditCardResourceIntTest {
      */
     public static CreditCard createEntity(EntityManager em) {
         CreditCard creditCard = new CreditCard()
-            .name(DEFAULT_NAME)
-            .value(DEFAULT_VALUE)
             .holderName(DEFAULT_HOLDER_NAME)
-            .expireDate(DEFAULT_EXPIRE_DATE);
+            .cardNumber(DEFAULT_CARD_NUMBER)
+            .expirationMonth(DEFAULT_EXPIRATION_MONTH)
+            .expirationYear(DEFAULT_EXPIRATION_YEAR)
+            .cvc(DEFAULT_CVC);
         return creditCard;
     }
 
@@ -125,15 +124,15 @@ public class CreditCardResourceIntTest {
         List<CreditCard> creditCardList = creditCardRepository.findAll();
         assertThat(creditCardList).hasSize(databaseSizeBeforeCreate + 1);
         CreditCard testCreditCard = creditCardList.get(creditCardList.size() - 1);
-        assertThat(testCreditCard.getName()).isEqualTo(DEFAULT_NAME);
-        assertThat(testCreditCard.getValue()).isEqualTo(DEFAULT_VALUE);
         assertThat(testCreditCard.getHolderName()).isEqualTo(DEFAULT_HOLDER_NAME);
-        assertThat(testCreditCard.getExpireDate()).isEqualTo(DEFAULT_EXPIRE_DATE);
+        assertThat(testCreditCard.getCardNumber()).isEqualTo(DEFAULT_CARD_NUMBER);
+        assertThat(testCreditCard.getExpirationMonth()).isEqualTo(DEFAULT_EXPIRATION_MONTH);
+        assertThat(testCreditCard.getExpirationYear()).isEqualTo(DEFAULT_EXPIRATION_YEAR);
+        assertThat(testCreditCard.getCvc()).isEqualTo(DEFAULT_CVC);
 
         // Validate the CreditCard in Elasticsearch
         CreditCard creditCardEs = creditCardSearchRepository.findOne(testCreditCard.getId());
-        assertThat(testCreditCard.getExpireDate()).isEqualTo(testCreditCard.getExpireDate());
-        assertThat(creditCardEs).isEqualToIgnoringGivenFields(testCreditCard, "expireDate");
+        assertThat(creditCardEs).isEqualToIgnoringGivenFields(testCreditCard);
     }
 
     @Test
@@ -166,10 +165,11 @@ public class CreditCardResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(creditCard.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].value").value(hasItem(DEFAULT_VALUE.toString())))
             .andExpect(jsonPath("$.[*].holderName").value(hasItem(DEFAULT_HOLDER_NAME.toString())))
-            .andExpect(jsonPath("$.[*].expireDate").value(hasItem(sameInstant(DEFAULT_EXPIRE_DATE))));
+            .andExpect(jsonPath("$.[*].cardNumber").value(hasItem(DEFAULT_CARD_NUMBER.toString())))
+            .andExpect(jsonPath("$.[*].expirationMonth").value(hasItem(DEFAULT_EXPIRATION_MONTH.toString())))
+            .andExpect(jsonPath("$.[*].expirationYear").value(hasItem(DEFAULT_EXPIRATION_YEAR.toString())))
+            .andExpect(jsonPath("$.[*].cvc").value(hasItem(DEFAULT_CVC.toString())));
     }
 
     @Test
@@ -183,10 +183,11 @@ public class CreditCardResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(creditCard.getId().intValue()))
-            .andExpect(jsonPath("$.name").value(DEFAULT_NAME.toString()))
-            .andExpect(jsonPath("$.value").value(DEFAULT_VALUE.toString()))
             .andExpect(jsonPath("$.holderName").value(DEFAULT_HOLDER_NAME.toString()))
-            .andExpect(jsonPath("$.expireDate").value(sameInstant(DEFAULT_EXPIRE_DATE)));
+            .andExpect(jsonPath("$.cardNumber").value(DEFAULT_CARD_NUMBER.toString()))
+            .andExpect(jsonPath("$.expirationMonth").value(DEFAULT_EXPIRATION_MONTH.toString()))
+            .andExpect(jsonPath("$.expirationYear").value(DEFAULT_EXPIRATION_YEAR.toString()))
+            .andExpect(jsonPath("$.cvc").value(DEFAULT_CVC.toString()));
     }
 
     @Test
@@ -210,10 +211,11 @@ public class CreditCardResourceIntTest {
         // Disconnect from session so that the updates on updatedCreditCard are not directly saved in db
         em.detach(updatedCreditCard);
         updatedCreditCard
-            .name(UPDATED_NAME)
-            .value(UPDATED_VALUE)
             .holderName(UPDATED_HOLDER_NAME)
-            .expireDate(UPDATED_EXPIRE_DATE);
+            .cardNumber(UPDATED_CARD_NUMBER)
+            .expirationMonth(UPDATED_EXPIRATION_MONTH)
+            .expirationYear(UPDATED_EXPIRATION_YEAR)
+            .cvc(UPDATED_CVC);
 
         restCreditCardMockMvc.perform(put("/api/credit-cards")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -224,15 +226,15 @@ public class CreditCardResourceIntTest {
         List<CreditCard> creditCardList = creditCardRepository.findAll();
         assertThat(creditCardList).hasSize(databaseSizeBeforeUpdate);
         CreditCard testCreditCard = creditCardList.get(creditCardList.size() - 1);
-        assertThat(testCreditCard.getName()).isEqualTo(UPDATED_NAME);
-        assertThat(testCreditCard.getValue()).isEqualTo(UPDATED_VALUE);
         assertThat(testCreditCard.getHolderName()).isEqualTo(UPDATED_HOLDER_NAME);
-        assertThat(testCreditCard.getExpireDate()).isEqualTo(UPDATED_EXPIRE_DATE);
+        assertThat(testCreditCard.getCardNumber()).isEqualTo(UPDATED_CARD_NUMBER);
+        assertThat(testCreditCard.getExpirationMonth()).isEqualTo(UPDATED_EXPIRATION_MONTH);
+        assertThat(testCreditCard.getExpirationYear()).isEqualTo(UPDATED_EXPIRATION_YEAR);
+        assertThat(testCreditCard.getCvc()).isEqualTo(UPDATED_CVC);
 
         // Validate the CreditCard in Elasticsearch
         CreditCard creditCardEs = creditCardSearchRepository.findOne(testCreditCard.getId());
-        assertThat(testCreditCard.getExpireDate()).isEqualTo(testCreditCard.getExpireDate());
-        assertThat(creditCardEs).isEqualToIgnoringGivenFields(testCreditCard, "expireDate");
+        assertThat(creditCardEs).isEqualToIgnoringGivenFields(testCreditCard);
     }
 
     @Test
@@ -287,10 +289,11 @@ public class CreditCardResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(creditCard.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].value").value(hasItem(DEFAULT_VALUE.toString())))
             .andExpect(jsonPath("$.[*].holderName").value(hasItem(DEFAULT_HOLDER_NAME.toString())))
-            .andExpect(jsonPath("$.[*].expireDate").value(hasItem(sameInstant(DEFAULT_EXPIRE_DATE))));
+            .andExpect(jsonPath("$.[*].cardNumber").value(hasItem(DEFAULT_CARD_NUMBER.toString())))
+            .andExpect(jsonPath("$.[*].expirationMonth").value(hasItem(DEFAULT_EXPIRATION_MONTH.toString())))
+            .andExpect(jsonPath("$.[*].expirationYear").value(hasItem(DEFAULT_EXPIRATION_YEAR.toString())))
+            .andExpect(jsonPath("$.[*].cvc").value(hasItem(DEFAULT_CVC.toString())));
     }
 
     @Test

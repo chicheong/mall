@@ -68,7 +68,7 @@ class CreditCardGatlingTest extends Simulation {
             .exec(http("Create new creditCard")
             .post("/api/credit-cards")
             .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null, "name":"SAMPLE_TEXT", "value":"SAMPLE_TEXT", "holderName":"SAMPLE_TEXT", "expireDate":"2020-01-01T00:00:00.000Z"}""")).asJSON
+            .body(StringBody("""{"id":null, "holderName":"SAMPLE_TEXT", "cardNumber":"SAMPLE_TEXT", "expirationMonth":"SAMPLE_TEXT", "expirationYear":"SAMPLE_TEXT", "cvc":"SAMPLE_TEXT"}""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_creditCard_url"))).exitHereIfFailed
             .pause(10)

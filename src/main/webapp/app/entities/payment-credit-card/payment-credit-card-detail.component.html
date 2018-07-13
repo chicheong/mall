@@ -4,21 +4,25 @@
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="mallApp.paymentCreditCard.name">Name</span></dt>
-        <dd>
-            <span>{{paymentCreditCard.name}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.paymentCreditCard.value">Value</span></dt>
-        <dd>
-            <span>{{paymentCreditCard.value}}</span>
-        </dd>
         <dt><span jhiTranslate="mallApp.paymentCreditCard.holderName">Holder Name</span></dt>
         <dd>
             <span>{{paymentCreditCard.holderName}}</span>
         </dd>
-        <dt><span jhiTranslate="mallApp.paymentCreditCard.expireDate">Expire Date</span></dt>
+        <dt><span jhiTranslate="mallApp.paymentCreditCard.cardNumber">Card Number</span></dt>
         <dd>
-            <span>{{paymentCreditCard.expireDate | date:'medium'}}</span>
+            <span>{{paymentCreditCard.cardNumber}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.paymentCreditCard.expirationMonth">Expiration Month</span></dt>
+        <dd>
+            <span>{{paymentCreditCard.expirationMonth}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.paymentCreditCard.expirationYear">Expiration Year</span></dt>
+        <dd>
+            <span>{{paymentCreditCard.expirationYear}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.paymentCreditCard.cvc">Cvc</span></dt>
+        <dd>
+            <span>{{paymentCreditCard.cvc}}</span>
         </dd>
         <dt><span jhiTranslate="mallApp.paymentCreditCard.payment">Payment</span></dt>
         <dd>

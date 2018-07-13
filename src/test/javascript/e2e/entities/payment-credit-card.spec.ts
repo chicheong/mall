@@ -33,15 +33,16 @@ describe('PaymentCreditCard e2e test', () => {
 
     it('should create and save PaymentCreditCards', () => {
         paymentCreditCardComponentsPage.clickOnCreateButton();
-        paymentCreditCardDialogPage.setNameInput('name');
-        expect(paymentCreditCardDialogPage.getNameInput()).toMatch('name');
-        paymentCreditCardDialogPage.setValueInput('value');
-        expect(paymentCreditCardDialogPage.getValueInput()).toMatch('value');
         paymentCreditCardDialogPage.setHolderNameInput('holderName');
         expect(paymentCreditCardDialogPage.getHolderNameInput()).toMatch('holderName');
-        paymentCreditCardDialogPage.setExpireDateInput(12310020012301);
-        expect(paymentCreditCardDialogPage.getExpireDateInput()).toMatch('2001-12-31T02:30');
-        paymentCreditCardDialogPage.paymentSelectLastOption();
+        paymentCreditCardDialogPage.setCardNumberInput('cardNumber');
+        expect(paymentCreditCardDialogPage.getCardNumberInput()).toMatch('cardNumber');
+        paymentCreditCardDialogPage.setExpirationMonthInput('expirationMonth');
+        expect(paymentCreditCardDialogPage.getExpirationMonthInput()).toMatch('expirationMonth');
+        paymentCreditCardDialogPage.setExpirationYearInput('expirationYear');
+        expect(paymentCreditCardDialogPage.getExpirationYearInput()).toMatch('expirationYear');
+        paymentCreditCardDialogPage.setCvcInput('cvc');
+        expect(paymentCreditCardDialogPage.getCvcInput()).toMatch('cvc');
         paymentCreditCardDialogPage.save();
         expect(paymentCreditCardDialogPage.getSaveButton().isPresent()).toBeFalsy();
     });
@@ -68,31 +69,15 @@ export class PaymentCreditCardDialogPage {
     modalTitle = element(by.css('h4#myPaymentCreditCardLabel'));
     saveButton = element(by.css('.modal-footer .btn.btn-primary'));
     closeButton = element(by.css('button.close'));
-    nameInput = element(by.css('input#field_name'));
-    valueInput = element(by.css('input#field_value'));
     holderNameInput = element(by.css('input#field_holderName'));
-    expireDateInput = element(by.css('input#field_expireDate'));
-    paymentSelect = element(by.css('select#field_payment'));
+    cardNumberInput = element(by.css('input#field_cardNumber'));
+    expirationMonthInput = element(by.css('input#field_expirationMonth'));
+    expirationYearInput = element(by.css('input#field_expirationYear'));
+    cvcInput = element(by.css('input#field_cvc'));
 
     getModalTitle() {
         return this.modalTitle.getAttribute('jhiTranslate');
     }
-
-    setNameInput = function(name) {
-        this.nameInput.sendKeys(name);
-    };
-
-    getNameInput = function() {
-        return this.nameInput.getAttribute('value');
-    };
-
-    setValueInput = function(value) {
-        this.valueInput.sendKeys(value);
-    };
-
-    getValueInput = function() {
-        return this.valueInput.getAttribute('value');
-    };
 
     setHolderNameInput = function(holderName) {
         this.holderNameInput.sendKeys(holderName);
@@ -102,28 +87,36 @@ export class PaymentCreditCardDialogPage {
         return this.holderNameInput.getAttribute('value');
     };
 
-    setExpireDateInput = function(expireDate) {
-        this.expireDateInput.sendKeys(expireDate);
+    setCardNumberInput = function(cardNumber) {
+        this.cardNumberInput.sendKeys(cardNumber);
     };
 
-    getExpireDateInput = function() {
-        return this.expireDateInput.getAttribute('value');
+    getCardNumberInput = function() {
+        return this.cardNumberInput.getAttribute('value');
     };
 
-    paymentSelectLastOption = function() {
-        this.paymentSelect.all(by.tagName('option')).last().click();
+    setExpirationMonthInput = function(expirationMonth) {
+        this.expirationMonthInput.sendKeys(expirationMonth);
     };
 
-    paymentSelectOption = function(option) {
-        this.paymentSelect.sendKeys(option);
+    getExpirationMonthInput = function() {
+        return this.expirationMonthInput.getAttribute('value');
     };
 
-    getPaymentSelect = function() {
-        return this.paymentSelect;
+    setExpirationYearInput = function(expirationYear) {
+        this.expirationYearInput.sendKeys(expirationYear);
     };
 
-    getPaymentSelectedOption = function() {
-        return this.paymentSelect.element(by.css('option:checked')).getText();
+    getExpirationYearInput = function() {
+        return this.expirationYearInput.getAttribute('value');
+    };
+
+    setCvcInput = function(cvc) {
+        this.cvcInput.sendKeys(cvc);
+    };
+
+    getCvcInput = function() {
+        return this.cvcInput.getAttribute('value');
     };
 
     save() {

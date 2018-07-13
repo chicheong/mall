@@ -30,10 +30,11 @@
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
             <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="name"><span jhiTranslate="mallApp.paymentCreditCard.name">Name</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="value"><span jhiTranslate="mallApp.paymentCreditCard.value">Value</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="holderName"><span jhiTranslate="mallApp.paymentCreditCard.holderName">Holder Name</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="expireDate"><span jhiTranslate="mallApp.paymentCreditCard.expireDate">Expire Date</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="cardNumber"><span jhiTranslate="mallApp.paymentCreditCard.cardNumber">Card Number</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="expirationMonth"><span jhiTranslate="mallApp.paymentCreditCard.expirationMonth">Expiration Month</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="expirationYear"><span jhiTranslate="mallApp.paymentCreditCard.expirationYear">Expiration Year</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="cvc"><span jhiTranslate="mallApp.paymentCreditCard.cvc">Cvc</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="payment.id"><span jhiTranslate="mallApp.paymentCreditCard.payment">Payment</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
@@ -41,10 +42,11 @@
             <tbody>
             <tr *ngFor="let paymentCreditCard of paymentCreditCards ;trackBy: trackId">
                 <td><a [routerLink]="['../payment-credit-card', paymentCreditCard.id ]">{{paymentCreditCard.id}}</a></td>
-                <td>{{paymentCreditCard.name}}</td>
-                <td>{{paymentCreditCard.value}}</td>
                 <td>{{paymentCreditCard.holderName}}</td>
-                <td>{{paymentCreditCard.expireDate | date:'medium'}}</td>
+                <td>{{paymentCreditCard.cardNumber}}</td>
+                <td>{{paymentCreditCard.expirationMonth}}</td>
+                <td>{{paymentCreditCard.expirationYear}}</td>
+                <td>{{paymentCreditCard.cvc}}</td>
                 <td>
                     <div *ngIf="paymentCreditCard.payment">
                         <a [routerLink]="['../payment', paymentCreditCard.payment?.id ]" >{{paymentCreditCard.payment?.id}}</a>

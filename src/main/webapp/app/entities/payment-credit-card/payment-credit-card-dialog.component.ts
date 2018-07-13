@@ -33,19 +33,21 @@ export class PaymentCreditCardDialogComponent implements OnInit {
 
     ngOnInit() {
         this.isSaving = false;
-        this.paymentService
-            .query({filter: 'paymentcreditcard-is-null'})
-            .subscribe((res: HttpResponse<Payment[]>) => {
-                if (!this.paymentCreditCard.payment || !this.paymentCreditCard.payment.id) {
-                    this.payments = res.body;
-                } else {
-                    this.paymentService
-                        .find(this.paymentCreditCard.payment.id)
-                        .subscribe((subRes: HttpResponse<Payment>) => {
-                            this.payments = [subRes.body].concat(res.body);
-                        }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
-                }
-            }, (res: HttpErrorResponse) => this.onError(res.message));
+        this.paymentService.query()
+            .subscribe((res: HttpResponse<Payment[]>) => { this.payments = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
+        // this.paymentService
+        //    .query({filter: 'paymentcreditcard-is-null'})
+        //    .subscribe((res: HttpResponse<Payment[]>) => {
+        //        if (!this.paymentCreditCard.payment || !this.paymentCreditCard.payment.id) {
+        //            this.payments = res.body;
+        //        } else {
+        //            this.paymentService
+        //                .find(this.paymentCreditCard.payment.id)
+        //                .subscribe((subRes: HttpResponse<Payment>) => {
+        //                    this.payments = [subRes.body].concat(res.body);
+        //                }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
+        //        }
+        //    }, (res: HttpErrorResponse) => this.onError(res.message));*/            
     }
 
     clear() {

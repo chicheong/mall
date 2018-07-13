@@ -33,14 +33,16 @@ describe('CreditCard e2e test', () => {
 
     it('should create and save CreditCards', () => {
         creditCardComponentsPage.clickOnCreateButton();
-        creditCardDialogPage.setNameInput('name');
-        expect(creditCardDialogPage.getNameInput()).toMatch('name');
-        creditCardDialogPage.setValueInput('value');
-        expect(creditCardDialogPage.getValueInput()).toMatch('value');
         creditCardDialogPage.setHolderNameInput('holderName');
         expect(creditCardDialogPage.getHolderNameInput()).toMatch('holderName');
-        creditCardDialogPage.setExpireDateInput(12310020012301);
-        expect(creditCardDialogPage.getExpireDateInput()).toMatch('2001-12-31T02:30');
+        creditCardDialogPage.setCardNumberInput('cardNumber');
+        expect(creditCardDialogPage.getCardNumberInput()).toMatch('cardNumber');
+        creditCardDialogPage.setExpirationMonthInput('expirationMonth');
+        expect(creditCardDialogPage.getExpirationMonthInput()).toMatch('expirationMonth');
+        creditCardDialogPage.setExpirationYearInput('expirationYear');
+        expect(creditCardDialogPage.getExpirationYearInput()).toMatch('expirationYear');
+        creditCardDialogPage.setCvcInput('cvc');
+        expect(creditCardDialogPage.getCvcInput()).toMatch('cvc');
         creditCardDialogPage.accountSelectLastOption();
         creditCardDialogPage.save();
         expect(creditCardDialogPage.getSaveButton().isPresent()).toBeFalsy();
@@ -68,31 +70,16 @@ export class CreditCardDialogPage {
     modalTitle = element(by.css('h4#myCreditCardLabel'));
     saveButton = element(by.css('.modal-footer .btn.btn-primary'));
     closeButton = element(by.css('button.close'));
-    nameInput = element(by.css('input#field_name'));
-    valueInput = element(by.css('input#field_value'));
     holderNameInput = element(by.css('input#field_holderName'));
-    expireDateInput = element(by.css('input#field_expireDate'));
+    cardNumberInput = element(by.css('input#field_cardNumber'));
+    expirationMonthInput = element(by.css('input#field_expirationMonth'));
+    expirationYearInput = element(by.css('input#field_expirationYear'));
+    cvcInput = element(by.css('input#field_cvc'));
     accountSelect = element(by.css('select#field_account'));
 
     getModalTitle() {
         return this.modalTitle.getAttribute('jhiTranslate');
     }
-
-    setNameInput = function(name) {
-        this.nameInput.sendKeys(name);
-    };
-
-    getNameInput = function() {
-        return this.nameInput.getAttribute('value');
-    };
-
-    setValueInput = function(value) {
-        this.valueInput.sendKeys(value);
-    };
-
-    getValueInput = function() {
-        return this.valueInput.getAttribute('value');
-    };
 
     setHolderNameInput = function(holderName) {
         this.holderNameInput.sendKeys(holderName);
@@ -102,12 +89,36 @@ export class CreditCardDialogPage {
         return this.holderNameInput.getAttribute('value');
     };
 
-    setExpireDateInput = function(expireDate) {
-        this.expireDateInput.sendKeys(expireDate);
+    setCardNumberInput = function(cardNumber) {
+        this.cardNumberInput.sendKeys(cardNumber);
     };
 
-    getExpireDateInput = function() {
-        return this.expireDateInput.getAttribute('value');
+    getCardNumberInput = function() {
+        return this.cardNumberInput.getAttribute('value');
+    };
+
+    setExpirationMonthInput = function(expirationMonth) {
+        this.expirationMonthInput.sendKeys(expirationMonth);
+    };
+
+    getExpirationMonthInput = function() {
+        return this.expirationMonthInput.getAttribute('value');
+    };
+
+    setExpirationYearInput = function(expirationYear) {
+        this.expirationYearInput.sendKeys(expirationYear);
+    };
+
+    getExpirationYearInput = function() {
+        return this.expirationYearInput.getAttribute('value');
+    };
+
+    setCvcInput = function(cvc) {
+        this.cvcInput.sendKeys(cvc);
+    };
+
+    getCvcInput = function() {
+        return this.cvcInput.getAttribute('value');
     };
 
     accountSelectLastOption = function() {

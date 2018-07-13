@@ -230,10 +230,11 @@ entity Url {
 }
 
 entity CreditCard {
-	name String,
-	value String,
 	holderName String,
-	expireDate ZonedDateTime
+	cardNumber String,
+	expirationMonth String,
+	expirationYear String,
+	cvc String
 }
 
 entity Shipping {
@@ -272,10 +273,11 @@ entity Payment {
 }
 
 entity PaymentCreditCard {
-	name String,
-	value String,
 	holderName String,
-	expireDate ZonedDateTime
+	cardNumber String,
+	expirationMonth String,
+	expirationYear String,
+	cvc String
 }
 
 enum PaymentType {
