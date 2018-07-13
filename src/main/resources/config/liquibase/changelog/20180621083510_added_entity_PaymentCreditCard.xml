@@ -41,6 +41,10 @@
             <column name="cvc" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
+            
+			<column name="payment_id" type="bigint">
+                <constraints unique="false" nullable="true" />
+            </column>
 
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>

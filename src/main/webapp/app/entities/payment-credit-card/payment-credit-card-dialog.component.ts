@@ -47,7 +47,7 @@ export class PaymentCreditCardDialogComponent implements OnInit {
         //                    this.payments = [subRes.body].concat(res.body);
         //                }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
         //        }
-        //    }, (res: HttpErrorResponse) => this.onError(res.message));*/            
+        //    }, (res: HttpErrorResponse) => this.onError(res.message));*/
     }
 
     clear() {
