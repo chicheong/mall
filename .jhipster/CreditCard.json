@@ -10,20 +10,24 @@
     ],
     "fields": [
         {
-            "fieldName": "name",
-            "fieldType": "String"
-        },
-        {
-            "fieldName": "value",
-            "fieldType": "String"
-        },
-        {
             "fieldName": "holderName",
             "fieldType": "String"
+        },	
+        {
+            "fieldName": "cardNumber",
+            "fieldType": "String"
         },
         {
-            "fieldName": "expireDate",
-            "fieldType": "ZonedDateTime"
+            "fieldName": "expirationMonth",
+            "fieldType": "String"
+        },
+		{
+            "fieldName": "expirationYear",
+            "fieldType": "String"
+        },		
+        {
+            "fieldName": "cvc",
+            "fieldType": "String"
         }
     ],
     "changelogDate": "20180621083505",

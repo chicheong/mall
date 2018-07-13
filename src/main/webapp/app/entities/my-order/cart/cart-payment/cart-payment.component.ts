@@ -21,6 +21,13 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
     isSaving: boolean;
     selectedMethod: string;
 
+cardNumber: string;
+expiryMonth: string;
+expiryYear: string;
+cvc: string;
+
+message: string;
+
 /********** For Paypal starts **********/
     payPaylButtonLoaded = false;
     paypalConfig = {
@@ -118,6 +125,25 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
         });
     }
 /********** For Paypal ends **********/
+
+/********** For Stripe credit card starts **********/
+    openCheckout() {
+        const handler = (<any>window).StripeCheckout.configure({
+          key: 'pk_test_oi0sKPJYLGjdvOXOM8tE8cMa',
+          locale: 'auto',
+          token: function (token: any) {
+              alert('token: ' + token.id);
+            // You can access the token ID with `token.id`.
+            // Get the token ID to your server-side code for use.
+          }
+        });
+        handler.open({
+            name: 'Demo Site',
+            description: '2 widgets',
+            amount: 2000
+        });
+    }
+/********** For Stripe credit card ends **********/
 
     constructor(
         protected eventManager: JhiEventManager,

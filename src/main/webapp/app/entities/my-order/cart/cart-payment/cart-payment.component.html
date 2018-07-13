@@ -45,39 +45,39 @@
 						<input id="payme" name="paymentMethod" type="radio"	class="custom-control-input" required 
 							[value]="'payme'" [(ngModel)]="selectedMethod" (click)="onSelectionChange('payme')">
 						<label class="custom-control-label" for="payme">Payme</label>
-					</div>					
+					</div>
 				</div>
 				<div [hidden]="selectedMethod !== 'credit'">
+					<button (click)="openCheckout()">Purchase</button>
+					
 					<div class="row">
-						<div class="col-md-6 mb-3">
-							<label for="cc-name">Name on card</label> <input type="text"
-								class="form-control" id="cc-name" placeholder="" required>
+<span class="payment-message">{{message}}</span>
+						<div class="col-md-6 col-md-offset-3">
+							<label for="field_holderName">Holder name</label>
+							<input type="text" class="form-control" name="holderName" id="field_holderName" placeholder="Chan Tai Man" required [(ngModel)]="myOrder.payment.remark">
 							<small class="text-muted">Full name as displayed on card</small>
 							<div class="invalid-feedback">Name on card is required</div>
 						</div>
-						<div class="col-md-6 mb-3">
-							<label for="cc-number">Credit card number</label> <input
-								type="text" class="form-control" id="cc-number" placeholder=""
-								required>
-							<div class="invalid-feedback">Credit card number is required
-							</div>
+						<div class="col-md-6 col-md-offset-3">
+							<label for="field_cardNumber">Card number</label> 
+							<input type="text" size="20" class="form-control" name="cardNumber" id="field_cardNumber" placeholder="" required [(ngModel)]="myOrder.shipping.receiver" data-stripe="number">
+							<div class="invalid-feedback">Card number is required</div>
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-3 mb-3">
-							<label for="cc-expiration">Expiration</label> <input type="text"
-								class="form-control" id="cc-expiration" placeholder="" required>
+						<div class="col-md-4 mb-3">
+							<label for="field_expiration">Expiration (MM/YY)</label>
+							<input type="text" class="form-control" name="expiration" id="field_expiration" placeholder="" required>
 							<div class="invalid-feedback">Expiration date required</div>
 						</div>
-						<div class="col-md-3 mb-3">
-							<label for="cc-expiration">CVV</label> <input type="text"
-								class="form-control" id="cc-cvv" placeholder="" required>
+						<div class="col-md-4 mb-3">
+							<label for="field_cvc">CVC</label>
+							<input type="text" size="4" class="form-control" name="cvc" id="field_cvc" placeholder="" required>
 							<div class="invalid-feedback">Security code required</div>
 						</div>
 					</div>
 					<hr class="mb-4">
-					<button class="btn btn-primary btn-lg btn-block" type="submit">Continue
-						to checkout</button>
+					<button class="btn btn-primary btn-lg btn-block" type="submit">Continue	to checkout</button>
 				</div>
 				<div [hidden]="selectedMethod !== 'paypal'">
 					<div id="paypal-checkout-btn"></div>
