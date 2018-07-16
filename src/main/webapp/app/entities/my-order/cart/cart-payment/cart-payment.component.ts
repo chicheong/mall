@@ -7,6 +7,7 @@ import { JhiEventManager } from 'ng-jhipster';
 
 import { MyOrder } from './../../my-order.model';
 import { MyOrderService } from './../../my-order.service';
+import { PaymentCreditCard } from './../../../payment-credit-card';
 
 import { CartComponent } from './../../cart.component';
 
@@ -20,6 +21,10 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
 
     isSaving: boolean;
     selectedMethod: string;
+
+    /** For Stripe */
+    paymentCreditCard: PaymentCreditCard;
+    /** For Stripe */
 
 cardNumber: string;
 expiryMonth: string;
@@ -161,6 +166,8 @@ message: string;
                 this.payPaylButtonLoaded = true;
             });
         }
+        this.paymentCreditCard = Object.assign(new PaymentCreditCard());
+        this.paymentCreditCard.holderName = 'Chan Chan Chan';
     }
 
     onSelectionChange(entry) {

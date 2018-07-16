@@ -84,13 +84,13 @@
 <span class="payment-message">{{message}}</span>
 						<div class="col-md-6 col-md-offset-3">
 							<label for="field_holderName">Holder name</label>
-							<input type="text" class="form-control" name="holderName" id="field_holderName" placeholder="Chan Tai Man" required [(ngModel)]="myOrder.payment.remark">
+							<input type="text" class="form-control" name="holderName" id="field_holderName" placeholder="Chan Tai Man" required [(ngModel)]="paymentCreditCard.holderName">
 							<small class="text-muted">Full name as displayed on card</small>
 							<div class="invalid-feedback">Name on card is required</div>
 						</div>
 						<div class="col-md-6 col-md-offset-3">
 							<label for="field_cardNumber">Card number</label> 
-							<input type="text" size="20" class="form-control" name="cardNumber" id="field_cardNumber" placeholder="" required [(ngModel)]="myOrder.shipping.receiver" data-stripe="number">
+							<input type="text" size="20" class="form-control" name="cardNumber" id="field_cardNumber" placeholder="" required [(ngModel)]="paymentCreditCard.cardNumber" data-stripe="number">
 							<div class="invalid-feedback">Card number is required</div>
 						</div>
 					</div>
@@ -102,7 +102,7 @@
 						</div>
 						<div class="col-md-4 mb-3">
 							<label for="field_cvc">CVC</label>
-							<input type="text" size="4" class="form-control" name="cvc" id="field_cvc" placeholder="" required>
+							<input type="text" size="4" class="form-control" name="cvc" id="field_cvc" placeholder="" required [(ngModel)]="paymentCreditCard.cvc" data-stripe="cvc">
 							<div class="invalid-feedback">Security code required</div>
 						</div>
 					</div>

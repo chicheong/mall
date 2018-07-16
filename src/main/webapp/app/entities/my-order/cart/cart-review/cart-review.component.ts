@@ -75,13 +75,13 @@ export class CartReviewComponent extends CartComponent implements OnInit, OnDest
                 total += item.quantity;
             });
             if (total > 0) {
-                console.error('canGoNext: true');
+                // console.error('canGoNext: true');
                 return true;
             } else {
                 return false;
             }
         } else {
-            console.error('canGoNext: false');
+            // console.error('canGoNext: false');
             return false;
         }
     }
