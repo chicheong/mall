@@ -7,6 +7,7 @@ import {
     MallSharedLibsModule,
     JhiLanguageHelper,
     FindLanguageFromKeyPipe,
+    FormatNumberPipe,
     JhiAlertComponent,
     JhiAlertErrorComponent
 } from './';
@@ -17,6 +18,7 @@ import {
     ],
     declarations: [
         FindLanguageFromKeyPipe,
+        FormatNumberPipe,
         JhiAlertComponent,
         JhiAlertErrorComponent
     ],
@@ -31,6 +33,7 @@ import {
     exports: [
         MallSharedLibsModule,
         FindLanguageFromKeyPipe,
+        FormatNumberPipe,
         JhiAlertComponent,
         JhiAlertErrorComponent
     ]
