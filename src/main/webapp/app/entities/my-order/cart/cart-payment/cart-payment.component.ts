@@ -164,6 +164,7 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
                 this.chargeCard(token);
             } else {
                 console.log(response.error.message);
+                this.isSaving = false;
             }
         });
     }
@@ -174,6 +175,7 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
         //    console.log(resp);
         // })
         console.error('token: ' + token);
+        this.isSaving = false;
     }
     /********** For Stripe credit card ends **********/
 
@@ -210,8 +212,6 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
             if (this.selectedMethod === 'credit') {
                 console.error('ready for credit card payment.');
                 this.chargeCreditCard();
-
-                this.isSaving = false;
             } else if (this.selectedMethod === 'payme') {
                 this.subscribeToSaveResponse(
                         this.myOrderService.update(this.myOrder));

@@ -96,6 +96,7 @@ export class CartComponent implements OnInit, OnDestroy {
 
     previousState() {
         // this.save(false);
+        // console.error('calling previousState()');
         this.myOrderService.doCartBackAction(this.myOrder, this.path);
     }
 

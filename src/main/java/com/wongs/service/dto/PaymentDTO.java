@@ -4,14 +4,15 @@ package com.wongs.service.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
+import java.util.Set;
 
 import com.wongs.domain.MyOrder;
 import com.wongs.domain.Payment;
+import com.wongs.domain.PaymentStatusHistory;
 import com.wongs.domain.enumeration.CurrencyType;
-import com.wongs.domain.enumeration.PaymentType;
 import com.wongs.domain.enumeration.PaymentStatus;
+import com.wongs.domain.enumeration.PaymentType;
 
 /**
  * A DTO for the Payment entity.
@@ -32,6 +33,8 @@ public class PaymentDTO implements Serializable {
 
     private MyOrder order;
     
+    private Set<PaymentStatusHistory> statusHistories = new HashSet<>();
+    
     public PaymentDTO() {
         // Empty constructor needed for Jackson.
 	}
@@ -44,6 +47,7 @@ public class PaymentDTO implements Serializable {
 		this.remark = payment.getRemark();
 		this.status = payment.getStatus();
 		this.order = payment.getOrder();
+		this.statusHistories = payment.getStatusHistories();
 	}
 
     public Long getId() {
@@ -102,7 +106,15 @@ public class PaymentDTO implements Serializable {
 		this.order = order;
 	}
 
-    @Override
+    public Set<PaymentStatusHistory> getStatusHistories() {
+		return statusHistories;
+	}
+
+	public void setStatusHistories(Set<PaymentStatusHistory> statusHistories) {
+		this.statusHistories = statusHistories;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

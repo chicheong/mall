@@ -18,7 +18,7 @@
 				<button type="button" [disabled]="isSaving" class="btn btn-info"
 					(click)="previousState()">
 					<span class="fa fa-arrow-left"></span>&nbsp;<span
-						jhiTranslate="entity.action.back"> Back</span>
+						jhiTranslate="entity.action.back">Back</span>
 				</button>
 				<button type="button"
 					[disabled]="editForm.form.invalid || isSaving || !canGoNext()" [hidden]="!showContinue"
@@ -81,7 +81,7 @@
 						</div>
 					</div>
 					<hr class="mb-4">
-					<button class="btn btn-primary btn-lg btn-block" type="submit">Continue	to checkout</button>
+					<!-- <button class="btn btn-primary btn-lg btn-block" type="submit">Continue	to checkout</button> -->
 				</div>
 				<div [hidden]="selectedMethod !== 'paypal'">
 					<div id="paypal-checkout-btn"></div>
