@@ -83,7 +83,7 @@
 				<span *ngIf="myOrder.items"
 					jhiTranslate="mallApp.myOrder.cart.review.currentTotal">Current
 					Total</span>&nbsp;&nbsp;({{myOrder.currency}}):
-				<h3 style="display: inline;" class="font-weight-bold">{{sumAll()}}&nbsp;&nbsp;&nbsp;</h3>
+				<h3 style="display: inline;" class="font-weight-bold">{{sumAll() | currency}}&nbsp;&nbsp;&nbsp;</h3>
 			</div>
 		</div>
 	</form>

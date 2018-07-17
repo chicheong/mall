@@ -59,7 +59,7 @@ export class CartComponent implements OnInit, OnDestroy {
                 } else if (!this.myOrder.shipping) {
                     const shipping: Shipping = Object.assign(new Shipping());
                     shipping.status = ShippingStatus.PENDING;
-                    shipping.currency = this.myOrder.currency;
+                    // shipping.currency = this.myOrder.currency;
                     shipping.price = 0;
                     const address: Address = Object.assign(new Address());
                     shipping.shippingAddress = address;
@@ -88,7 +88,6 @@ export class CartComponent implements OnInit, OnDestroy {
                 } else if (!this.myOrder.payment) {
                     const payment: Payment = Object.assign(new Payment());
                     payment.status = PaymentStatus.PENDING;
-                    payment.currency = this.myOrder.currency;
                     this.myOrder.payment = payment;
                 }
                 this.cartControl = this.myOrderService.getCartControl(this.myOrder, this.path);

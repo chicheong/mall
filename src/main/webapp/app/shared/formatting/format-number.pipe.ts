@@ -5,27 +5,25 @@ import 'rxjs/util/isNumeric';
 export class FormatNumberPipe implements PipeTransform {
     private DEFAULT_SEPARATOR: string;
     private DEFAULT_PARTLENGTH: number;
-    private DEFAULT_TOTALLENGTH: number;
-    private regex: RegExp = new RegExp(/[^\d]/g);
+    private regex: RegExp = new RegExp(/[^\dA-Z]/g);
 
     constructor() {
       // TODO comes from configuration settings
-      this.DEFAULT_SEPARATOR = '-';
+      this.DEFAULT_SEPARATOR = ' ';
       this.DEFAULT_PARTLENGTH = 4;
-      this.DEFAULT_TOTALLENGTH = 16;
     }
-    transform(value: string, partLength: number, separater: string, totalLength: number): string {
+    transform(value: string, partLength: number, separater: string): string {
         if (value === undefined || !value || value.length <= 0) {
             return;
         }
-        let output = value.replace(this.regex, '');
-        console.error('value: ' + value);
-        // if (value.length > totalLength) {
-        //    value = value.slice(0, totalLength);
-        // }
-        console.error('output: ' + output);
-        for (let i = 0; i < value.length; i++) {
+        if (!separater) {
+            separater = this.DEFAULT_SEPARATOR;
         }
-        return output;
+        if (!partLength) {
+            partLength = this.DEFAULT_PARTLENGTH;
+        }
+        const partRegex: RegExp = new RegExp('(.{' + partLength + '})', 'g');
+        value = value.replace(this.regex, '').replace(partRegex, '$1' + separater).trim();
+        return value;
     }
 }

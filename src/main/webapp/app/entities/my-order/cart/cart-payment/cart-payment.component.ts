@@ -8,6 +8,7 @@ import { JhiEventManager } from 'ng-jhipster';
 import { MyOrder } from './../../my-order.model';
 import { MyOrderService } from './../../my-order.service';
 import { PaymentCreditCard } from './../../../payment-credit-card';
+import { Payment, PaymentType, PaymentStatus } from './../../../payment';
 
 import { CartComponent } from './../../cart.component';
 
@@ -21,19 +22,14 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
 
     isSaving: boolean;
     selectedMethod: string;
+    showContinue: boolean;
 
-    /** For Stripe */
+    /********** For Stripe credit card starts **********/
     paymentCreditCard: PaymentCreditCard;
-    /** For Stripe */
+    message: string;
+    /********** For Stripe credit card ends **********/
 
-cardNumber: string;
-expiryMonth: string;
-expiryYear: string;
-cvc: string;
-
-message: string;
-
-/********** For Paypal starts **********/
+    /********** For Paypal starts **********/
     payPaylButtonLoaded = false;
     paypalConfig = {
         env: 'sandbox',
@@ -116,39 +112,16 @@ message: string;
             return actions.payment.execute().then((payment) => {
                 // Do something when payment is successful.
                 window.alert('Thank you for your purchase! with payment: ' + payment);
+                this.myOrder.payment.type = PaymentType.PAYPAL;
+                this.myOrder.payment.amount = this.myOrder.total;
+                this.myOrder.payment.currency = this.myOrder.currency;
+                this.myOrder.payment.status = PaymentStatus.PAID;
+                this.subscribeToSaveResponse(
+                        this.myOrderService.update(this.myOrder));
             });
         }
     };
-    addPaypalScript() {
-        return new Promise((resolve, reject) => {
-            if (!this.myOrderService.paypalScriptTagElement) {
-                this.myOrderService.paypalScriptTagElement = document.createElement('script');
-                this.myOrderService.paypalScriptTagElement.src = 'https://www.paypalobjects.com/api/checkout.js';
-                this.myOrderService.paypalScriptTagElement.onload = resolve;
-                document.body.appendChild(this.myOrderService.paypalScriptTagElement);
-            }
-        });
-    }
-/********** For Paypal ends **********/
-
-/********** For Stripe credit card starts **********/
-    openCheckout() {
-        const handler = (<any>window).StripeCheckout.configure({
-          key: 'pk_test_oi0sKPJYLGjdvOXOM8tE8cMa',
-          locale: 'auto',
-          token: function (token: any) {
-              alert('token: ' + token.id);
-            // You can access the token ID with `token.id`.
-            // Get the token ID to your server-side code for use.
-          }
-        });
-        handler.open({
-            name: 'Demo Site',
-            description: '2 widgets',
-            amount: 2000
-        });
-    }
-/********** For Stripe credit card ends **********/
+    /********** For Paypal ends **********/
 
     constructor(
         protected eventManager: JhiEventManager,
@@ -160,6 +133,7 @@ message: string;
     ngOnInit() {
         super.ngOnInit();
         this.isSaving = false;
+        this.showContinue = false;
         if (!this.myOrderService.paypalScriptTagElement) {
             this.addPaypalScript().then(() => {
                 paypal.Button.render(this.paypalConfig, '#paypal-checkout-btn');
@@ -170,21 +144,79 @@ message: string;
         this.paymentCreditCard.holderName = 'Chan Chan Chan';
     }
 
+    /********** For Stripe credit card starts **********/
+    chargeCreditCard() {
+        (<any>window).Stripe.card.createToken({
+            number: this.paymentCreditCard.cardNumber,
+            exp_month: this.paymentCreditCard.expirationMonth,
+            exp_year: this.paymentCreditCard.expirationYear,
+            cvc: this.paymentCreditCard.cvc
+        }, (status: number, response: any) => {
+            if (status === 200) {
+                const token = response.id;
+                // update Payment
+                this.myOrder.payment.type = PaymentType.CREDIT_CARD;
+                this.myOrder.payment.amount = this.myOrder.total;
+                this.myOrder.payment.currency = this.myOrder.currency;
+                this.myOrder.payment.status = PaymentStatus.PENDING;
+                this.subscribeToSaveResponse(
+                        this.myOrderService.update(this.myOrder));
+                this.chargeCard(token);
+            } else {
+                console.log(response.error.message);
+            }
+        });
+    }
+    chargeCard(token: string) {
+        // const headers = new Headers({'token': token, 'amount': 100});
+        // this.http.post('http://localhost:8080/payment/charge', {}, {headers: headers})
+        // .subscribe(resp => {
+        //    console.log(resp);
+        // })
+        console.error('token: ' + token);
+    }
+    /********** For Stripe credit card ends **********/
+
+    /********** For Paypal starts **********/
+    addPaypalScript() {
+        return new Promise((resolve, reject) => {
+            if (!this.myOrderService.paypalScriptTagElement) {
+                this.myOrderService.paypalScriptTagElement = document.createElement('script');
+                this.myOrderService.paypalScriptTagElement.src = 'https://www.paypalobjects.com/api/checkout.js';
+                this.myOrderService.paypalScriptTagElement.onload = resolve;
+                document.body.appendChild(this.myOrderService.paypalScriptTagElement);
+            }
+        });
+    }
+    /********** For Paypal ends **********/
+
     onSelectionChange(entry) {
         if (entry === 'credit') {
+            this.showContinue = true;
         } else if (entry === 'paypal') {
             if (!this.payPaylButtonLoaded) {
                 paypal.Button.render(this.paypalConfig, '#paypal-checkout-btn');
                 this.payPaylButtonLoaded = true;
             }
+            this.showContinue = false;
         } else if (entry === 'payme') {
+            this.showContinue = true;
         }
     }
 
     save() {
         this.isSaving = true;
-        this.subscribeToSaveResponse(
-                this.myOrderService.update(this.myOrder));
+        if (this.selectedMethod) {
+            if (this.selectedMethod === 'credit') {
+                console.error('ready for credit card payment.');
+                this.chargeCreditCard();
+
+                this.isSaving = false;
+            } else if (this.selectedMethod === 'payme') {
+                this.subscribeToSaveResponse(
+                        this.myOrderService.update(this.myOrder));
+            }
+        }
     }
 
     private subscribeToSaveResponse(result: Observable<HttpResponse<MyOrder>>) {
@@ -209,7 +241,7 @@ message: string;
     }
 
     canGoNext() {
-        if (this.myOrder && this.myOrder.items && this.myOrder.items.length > 0 && this.myOrder.shipping && this.myOrder.payment && this.myOrder.payment.amount > 0) {
+        if (this.myOrder && this.myOrder.items && this.myOrder.items.length > 0 && this.myOrder.shipping && this.myOrder.payment) {
             return true;
         } else {
             return false;

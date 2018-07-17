@@ -1,0 +1,1 @@
+Update ngx-credit-cards to latest version to fix bug of "Payment.fns.restrictNumeric is not a function" or "ERROR RangeError: Maximum call stack size exceeded"

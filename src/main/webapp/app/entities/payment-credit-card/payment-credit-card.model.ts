@@ -9,6 +9,8 @@ export class PaymentCreditCard implements BaseEntity {
         public expirationYear?: string,
         public cvc?: string,
         public payment?: BaseEntity,
+        // For temporary storing expirationMonth and expirationYear
+        public expiration?: string,
     ) {
     }
 }

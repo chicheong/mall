@@ -3,12 +3,12 @@ import { MyOrder } from './../my-order';
 import { CurrencyType } from './../price';
 
 export const enum PaymentType {
-    'CREDIT_CARD',
-    'DEBIT_CARD',
-    'PAYPAL',
-    'PAYME',
-    'BANK_TRANSFER',
-    'ACCOUNT'
+    CREDIT_CARD = 'CREDIT_CARD',
+    DEBIT_CARD = 'DEBIT_CARD',
+    PAYPAL = 'PAYPAL',
+    PAYME = 'PAYME',
+    BANK_TRANSFER = 'BANK_TRANSFER',
+    ACCOUNT = 'ACCOUNT'
 }
 
 export const enum PaymentStatus {
