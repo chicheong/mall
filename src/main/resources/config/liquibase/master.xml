@@ -29,13 +29,13 @@
     <include file="config/liquibase/changelog/20171229082719_added_entity_ProductStyleHistory.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20170727090141_added_entity_Quantity.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180221114443_added_entity_Url.xml" relativeToChangelogFile="false"/>    
-    <include file="config/liquibase/changelog/20180621083505_added_entity_CreditCard.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180621083506_added_entity_Shipping.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180621083507_added_entity_ShippingType.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180621083508_added_entity_ShippingStatusHistory.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180621083509_added_entity_Payment.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20180621083510_added_entity_PaymentCreditCard.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180621083508_added_entity_PaymentStatusHistory.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180621083505_added_entity_Card.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180621083510_added_entity_PaymentCard.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20170727090126_added_entity_constraints_UserInfo.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180221114424_added_entity_constraints_MyAccount.xml" relativeToChangelogFile="false"/>
@@ -55,12 +55,11 @@
     <include file="config/liquibase/changelog/20170727090145_added_entity_constraints_OrderStatusHistory.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20171214063716_added_entity_constraints_MyOrder.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20171229082716_added_entity_constraints_ProductStyle.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20170727090141_added_entity_constraints_Quantity.xml" relativeToChangelogFile="false"/>    
-    <include file="config/liquibase/changelog/20180621083505_added_entity_constraints_CreditCard.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20170727090141_added_entity_constraints_Quantity.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180621083506_added_entity_constraints_Shipping.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180621083508_added_entity_constraints_ShippingStatusHistory.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180621083509_added_entity_constraints_Payment.xml" relativeToChangelogFile="false"/>
-    <include file="config/liquibase/changelog/20180621083510_added_entity_constraints_PaymentCreditCard.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180621083508_added_entity_constraints_PaymentStatusHistory.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180621083505_added_entity_constraints_Card.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

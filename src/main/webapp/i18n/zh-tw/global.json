@@ -31,13 +31,13 @@
                 "productStyleHistory": "Product Style History",
                 "quantity": "Quantity",
                 "url": "Url",
-                "creditCard": "Credit Card",
                 "shipping": "Shipping",
                 "shippingType": "Shipping Type",
                 "shippingStatusHistory": "Shipping Status History",
                 "payment": "Payment",
-                "paymentCreditCard": "Payment Credit Card",
                 "paymentStatusHistory": "Payment Status History",
+                "card": "Card",
+                "paymentCard": "Payment Card",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {

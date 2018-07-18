@@ -1,6 +1,7 @@
 import { BaseEntity } from './../../shared';
 import { MyOrder } from './../my-order';
 import { CurrencyType } from './../price';
+import { PaymentCard } from './../payment-card';
 
 export const enum PaymentType {
     CREDIT_CARD = 'CREDIT_CARD',
@@ -26,7 +27,10 @@ export class Payment implements BaseEntity {
         public remark?: string,
         public status?: PaymentStatus,
         public order?: MyOrder,
+        public token?: string,
+        public paymentCard?: PaymentCard,
         public statusHistories?: BaseEntity[],
+
     ) {
     }
 }

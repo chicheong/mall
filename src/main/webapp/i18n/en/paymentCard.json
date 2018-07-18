@@ -1,0 +1,28 @@
+
+{
+    "mallApp": {
+        "paymentCard" : {
+            "home": {
+                "title": "Payment Cards",
+                "createLabel": "Create a new Payment Card",
+                "createOrEditLabel": "Create or edit a Payment Card",
+                "search": "Search for Payment Card"
+            },
+            "created": "A new Payment Card is created with identifier {{ param }}",
+            "updated": "A Payment Card is updated with identifier {{ param }}",
+            "deleted": "A Payment Card is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Payment Card {{ id }}?"
+            },
+            "detail": {
+                "title": "Payment Card"
+            },
+            "holderName": "Holder Name",
+            "cardNumber": "Card Number",
+            "expirationMonth": "Expiration Month",
+            "expirationYear": "Expiration Year",
+            "cvc": "Cvc",
+            "payment": "Payment"
+        }
+    }
+}

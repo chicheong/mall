@@ -3,7 +3,7 @@
 	<form name="editForm" role="form" novalidate (ngSubmit)="save()"
 		#editForm="ngForm">
 		<div class="row">
-			<jhi-alert-error></jhi-alert-error>
+			<jhi-alert></jhi-alert>
 		</div>
 		<jhi-checkout-control [cartControl]="cartControl"
 			[myOrderId]="this.myOrder.id" [path]="path"> </jhi-checkout-control>
@@ -32,9 +32,9 @@
 			<div class="col-md-12">
 				<div class="d-block my-3">
 					<div class="custom-control custom-radio">
-						<input id="credit" name="paymentMethod" type="radio" class="custom-control-input" required 
-							[value]="'credit'" [(ngModel)]="selectedMethod" (click)="onSelectionChange('credit')"> 
-						<label class="custom-control-label" for="credit">Credit card</label>
+						<input id="card" name="paymentMethod" type="radio" class="custom-control-input" required 
+							[value]="'card'" [(ngModel)]="selectedMethod" (click)="onSelectionChange('card')"> 
+						<label class="custom-control-label" for="card">Credit card</label>
 					</div>
 					<div class="custom-control custom-radio">
 						<input id="paypal" name="paymentMethod" type="radio" class="custom-control-input" checked required 
@@ -47,20 +47,20 @@
 						<label class="custom-control-label" for="payme">Payme</label>
 					</div>
 				</div>
-				<div [hidden]="selectedMethod !== 'credit'">
+				<div [hidden]="selectedMethod !== 'card'">
 					<div class="row">
 <span class="payment-message">{{message}}</span>
 						<div class="col-md-6 col-md-offset-3">
 							<label for="field_holderName">Holder name</label>
 							<input type="text" class="form-control" name="holderName" id="field_holderName" placeholder="Chan Tai Man" required 
-								[(ngModel)]="paymentCreditCard.holderName">
+								[(ngModel)]="paymentCard.holderName">
 							<small class="text-muted">Full name as displayed on card</small>
 							<div class="invalid-feedback">Name on card is required</div>
 						</div>
 						<div class="col-md-6 col-md-offset-3">
 							<label for="field_cardNumber">Card number</label> 
 							<input type="tel" size="20" class="form-control" name="cardNumber" id="field_cardNumber" placeholder="" required data-stripe="number" 
-								ccNum [value]="paymentCreditCard.cardNumber" [(ngModel)]="paymentCreditCard.cardNumber">
+								ccNum [value]="paymentCard.cardNumber" [(ngModel)]="paymentCard.cardNumber">
 							<div class="invalid-feedback">Card number is required</div>
 						</div>
 						<div>	</div>
@@ -68,20 +68,19 @@
 					<div class="row">
 						<div class="col-md-4 mb-3">
 							<label for="field_expiration">Expiration (MM/YYYY)</label>
-							<input type="tel" class="form-control" name="expiration" id="field_expiration" size="6" placeholder="" required data-stripe="exp_month" 
-								ccExp [value]="paymentCreditCard.expiration" [(ngModel)]="paymentCreditCard.expiration"> 
-							<input type="tel" class="form-control" name="expirationYear" id="field_expirationYear" [value]="paymentCreditCard.expirationYear" size="2" placeholder="" required [(ngModel)]="paymentCreditCard.expirationYear" data-stripe="exp_year">
+							<input type="tel" class="form-control" name="expiration" id="field_expiration" size="6" placeholder="" required data-stripe="exp_monthYear" 
+								ccExp [value]="paymentCard.expiration" [(ngModel)]="paymentCard.expiration" (change)="expirationChange()"> 
 							<div class="invalid-feedback">Expiration date required</div>
 						</div>
 						<div class="col-md-4 mb-3">
 							<label for="field_cvc">CVC</label>
 							<input type="tel" size="4" class="form-control" name="cvc" id="field_cvc" placeholder="" required data-stripe="cvc" 
-								ccCvc [(ngModel)]="paymentCreditCard.cvc">
+								ccCvc [(ngModel)]="paymentCard.cvc">
 							<div class="invalid-feedback">Security code required</div>
 						</div>
 					</div>
-					<hr class="mb-4">
-					<!-- <button class="btn btn-primary btn-lg btn-block" type="submit">Continue	to checkout</button> -->
+					<!-- <hr class="mb-4">
+					<button class="btn btn-primary btn-lg btn-block" type="submit">Continue	to checkout</button> -->
 				</div>
 				<div [hidden]="selectedMethod !== 'paypal'">
 					<div id="paypal-checkout-btn"></div>

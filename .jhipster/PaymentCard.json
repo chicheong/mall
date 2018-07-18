@@ -1,0 +1,41 @@
+{
+    "fluentMethods": true,
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "payment",
+            "otherEntityName": "payment",
+            "otherEntityField": "id",
+            "ownerSide": false,
+            "otherEntityRelationshipName": "paymentCard"
+        }
+    ],
+    "fields": [
+        {
+            "fieldName": "holderName",
+            "fieldType": "String"
+        },	
+        {
+            "fieldName": "cardNumber",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "expirationMonth",
+            "fieldType": "String"
+        },
+		{
+            "fieldName": "expirationYear",
+            "fieldType": "String"
+        },		
+        {
+            "fieldName": "cvc",
+            "fieldType": "String"
+        }
+    ],
+    "changelogDate": "20180621083510",
+    "entityTableName": "payment_card",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "no",
+    "jpaMetamodelFiltering": false
+}

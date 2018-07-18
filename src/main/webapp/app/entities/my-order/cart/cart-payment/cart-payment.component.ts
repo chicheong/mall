@@ -3,11 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs/Observable';
 import { Subscription } from 'rxjs/Subscription';
-import { JhiEventManager } from 'ng-jhipster';
+import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
 import { MyOrder } from './../../my-order.model';
 import { MyOrderService } from './../../my-order.service';
-import { PaymentCreditCard } from './../../../payment-credit-card';
+import { PaymentCard } from './../../../payment-card';
 import { Payment, PaymentType, PaymentStatus } from './../../../payment';
 
 import { CartComponent } from './../../cart.component';
@@ -24,10 +24,10 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
     selectedMethod: string;
     showContinue: boolean;
 
-    /********** For Stripe credit card starts **********/
-    paymentCreditCard: PaymentCreditCard;
+    /********** For Stripe card starts **********/
+    paymentCard: PaymentCard;
     message: string;
-    /********** For Stripe credit card ends **********/
+    /********** For Stripe card ends **********/
 
     /********** For Paypal starts **********/
     payPaylButtonLoaded = false;
@@ -124,6 +124,7 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
     /********** For Paypal ends **********/
 
     constructor(
+        private jhiAlertService: JhiAlertService,
         protected eventManager: JhiEventManager,
         protected myOrderService: MyOrderService,
         protected route: ActivatedRoute,
@@ -140,44 +141,40 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
                 this.payPaylButtonLoaded = true;
             });
         }
-        this.paymentCreditCard = Object.assign(new PaymentCreditCard());
-        this.paymentCreditCard.holderName = 'Chan Chan Chan';
+        this.paymentCard = Object.assign(new PaymentCard());
+        this.paymentCard.holderName = 'Chan Chan Chan';
+        this.paymentCard.cardNumber = '5452 2904 0050 2323';
     }
 
-    /********** For Stripe credit card starts **********/
-    chargeCreditCard() {
+    /********** For Stripe card starts **********/
+    chargeCard() {
         (<any>window).Stripe.card.createToken({
-            number: this.paymentCreditCard.cardNumber,
-            exp_month: this.paymentCreditCard.expirationMonth,
-            exp_year: this.paymentCreditCard.expirationYear,
-            cvc: this.paymentCreditCard.cvc
+            number: this.paymentCard.cardNumber,
+            exp_month: Number(this.paymentCard.expirationMonth),
+            exp_year: Number(this.paymentCard.expirationYear),
+            cvc: this.paymentCard.cvc
         }, (status: number, response: any) => {
             if (status === 200) {
+                window.alert('token: ' + response.id);
                 const token = response.id;
                 // update Payment
                 this.myOrder.payment.type = PaymentType.CREDIT_CARD;
-                this.myOrder.payment.amount = this.myOrder.total;
-                this.myOrder.payment.currency = this.myOrder.currency;
-                this.myOrder.payment.status = PaymentStatus.PENDING;
+                // this.myOrder.payment.amount = this.myOrder.total;
+                // this.myOrder.payment.currency = this.myOrder.currency;
+                // this.myOrder.payment.status = PaymentStatus.PENDING;
+                this.myOrder.payment.token = token;
+                this.myOrder.payment.paymentCard = this.paymentCard;
                 this.subscribeToSaveResponse(
-                        this.myOrderService.update(this.myOrder));
-                this.chargeCard(token);
+                        this.myOrderService.charge(this.myOrder));
+                this.isSaving = false;
             } else {
-                console.log(response.error.message);
+                this.jhiAlertService.error(null, null, response.error.message);
+                // window.alert(response.error.message);
                 this.isSaving = false;
             }
         });
     }
-    chargeCard(token: string) {
-        // const headers = new Headers({'token': token, 'amount': 100});
-        // this.http.post('http://localhost:8080/payment/charge', {}, {headers: headers})
-        // .subscribe(resp => {
-        //    console.log(resp);
-        // })
-        console.error('token: ' + token);
-        this.isSaving = false;
-    }
-    /********** For Stripe credit card ends **********/
+    /********** For Stripe card ends **********/
 
     /********** For Paypal starts **********/
     addPaypalScript() {
@@ -193,7 +190,7 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
     /********** For Paypal ends **********/
 
     onSelectionChange(entry) {
-        if (entry === 'credit') {
+        if (entry === 'card') {
             this.showContinue = true;
         } else if (entry === 'paypal') {
             if (!this.payPaylButtonLoaded) {
@@ -206,12 +203,23 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
         }
     }
 
+    expirationChange() {
+    }
+
     save() {
-        this.isSaving = true;
+        // this.isSaving = true;
         if (this.selectedMethod) {
-            if (this.selectedMethod === 'credit') {
-                console.error('ready for credit card payment.');
-                this.chargeCreditCard();
+            if (this.selectedMethod === 'card') {
+                if (this.paymentCard.expiration) {
+                    if (this.paymentCard.expiration.indexOf('/') >= 0) {
+                        const monthYearPair = this.paymentCard.expiration.split('/');
+                        this.paymentCard.expirationMonth = monthYearPair[0];
+                        this.paymentCard.expirationYear = monthYearPair[1];
+                        // console.error('expirationMonth / expirationYear: ' + this.paymentCard.expirationMonth + '/' + this.paymentCard.expirationYear);
+                    }
+                }
+                console.error('ready for card payment.');
+                this.chargeCard();
             } else if (this.selectedMethod === 'payme') {
                 this.subscribeToSaveResponse(
                         this.myOrderService.update(this.myOrder));

@@ -9,6 +9,7 @@ import java.util.Set;
 
 import com.wongs.domain.MyOrder;
 import com.wongs.domain.Payment;
+import com.wongs.domain.PaymentCard;
 import com.wongs.domain.PaymentStatusHistory;
 import com.wongs.domain.enumeration.CurrencyType;
 import com.wongs.domain.enumeration.PaymentStatus;
@@ -32,6 +33,10 @@ public class PaymentDTO implements Serializable {
     private PaymentStatus status;
 
     private MyOrder order;
+    
+    private String token;
+    
+    private PaymentCard paymentCard;
     
     private Set<PaymentStatusHistory> statusHistories = new HashSet<>();
     
@@ -106,7 +111,23 @@ public class PaymentDTO implements Serializable {
 		this.order = order;
 	}
 
-    public Set<PaymentStatusHistory> getStatusHistories() {
+    public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
+	public PaymentCard getPaymentCard() {
+		return paymentCard;
+	}
+
+	public void setPaymentCard(PaymentCard paymentCard) {
+		this.paymentCard = paymentCard;
+	}
+
+	public Set<PaymentStatusHistory> getStatusHistories() {
 		return statusHistories;
 	}
 

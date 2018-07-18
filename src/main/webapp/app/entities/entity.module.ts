@@ -24,13 +24,13 @@ import { MallProductStyleModule } from './product-style/product-style.module';
 import { MallProductStyleHistoryModule } from './product-style-history/product-style-history.module';
 import { MallQuantityModule } from './quantity/quantity.module';
 import { MallUrlModule } from './url/url.module';
-import { MallCreditCardModule } from './credit-card/credit-card.module';
 import { MallShippingModule } from './shipping/shipping.module';
 import { MallShippingTypeModule } from './shipping-type/shipping-type.module';
 import { MallShippingStatusHistoryModule } from './shipping-status-history/shipping-status-history.module';
 import { MallPaymentModule } from './payment/payment.module';
-import { MallPaymentCreditCardModule } from './payment-credit-card/payment-credit-card.module';
 import { MallPaymentStatusHistoryModule } from './payment-status-history/payment-status-history.module';
+import { MallCardModule } from './card/card.module';
+import { MallPaymentCardModule } from './payment-card/payment-card.module';
 /* jhipster-needle-add-entity-module-import - JHipster will add entity modules imports here */
 
 @NgModule({
@@ -59,13 +59,13 @@ import { MallPaymentStatusHistoryModule } from './payment-status-history/payment
         MallProductStyleHistoryModule,
         MallQuantityModule,
         MallUrlModule,
-        MallCreditCardModule,
         MallShippingModule,
         MallShippingTypeModule,
         MallShippingStatusHistoryModule,
         MallPaymentModule,
-        MallPaymentCreditCardModule,
         MallPaymentStatusHistoryModule,
+        MallCardModule,
+        MallPaymentCardModule,
         /* jhipster-needle-add-entity-module - JHipster will add entity modules here */
     ],
     declarations: [],

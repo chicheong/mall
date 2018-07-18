@@ -229,7 +229,7 @@ entity Url {
 	lastModifiedDate ZonedDateTime
 }
 
-entity CreditCard {
+entity Card {
 	holderName String,
 	cardNumber String,
 	expirationMonth String,
@@ -272,7 +272,7 @@ entity Payment {
 	status PaymentStatus
 }
 
-entity PaymentCreditCard {
+entity PaymentCard {
 	holderName String,
 	cardNumber String,
 	expirationMonth String,
@@ -304,7 +304,7 @@ relationship OneToOne {
 	Shipping{shippingAddress} to Address,
 	Shipping{billingAddress} to Address,
 	Payment{order} to MyOrder,
-	PaymentCreditCard{payment} to Payment
+	PaymentCard{payment} to Payment
 }
 
 relationship OneToMany {
@@ -330,7 +330,7 @@ relationship ManyToOne {
 	State{country} to Country,
 	Category{parent} to Category,
 	Product{shop} to Shop,
-	CreditCard{account} to MyAccount,
+	Card{account} to MyAccount,
 	MyOrder{account} to MyAccount,
 	Shipping{type} to ShippingType
 
@@ -345,7 +345,7 @@ relationship ManyToMany {
 	Category{product} to Product{category}
 }
 
-paginate UserInfo, MyAccount, Company, Department, Office, Country, State, Shop, Category, Product, ProductItem, MyOrder, OrderItem, Price, Quantity, Url, CreditCard, Shipping, ShippingType, Payment, PaymentCreditCard with pagination
+paginate UserInfo, MyAccount, Company, Department, Office, Country, State, Shop, Category, Product, ProductItem, MyOrder, OrderItem, Price, Quantity, Url, Card, Shipping, ShippingType, Payment, PaymentCard with pagination
 paginate Address with pager
 paginate Delegation, OrderStatusHistory, ProductHistory, ProductItemHistory, ShippingStatusHistory, PaymentStatusHistory with infinite-scroll
 service UserInfo, MyAccount, Product, MyOrder, Shop, Url, Shipping, Payment, Address with serviceClass

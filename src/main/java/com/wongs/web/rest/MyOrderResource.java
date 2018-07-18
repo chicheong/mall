@@ -23,12 +23,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
+import com.stripe.model.Charge;
 import com.wongs.domain.OrderItem;
 import com.wongs.security.SecurityUtils;
 import com.wongs.service.MyAccountService;
 import com.wongs.service.MyOrderService;
 import com.wongs.service.PaymentService;
 import com.wongs.service.ShippingService;
+import com.wongs.service.StripeClient;
 import com.wongs.service.UserInfoService;
 import com.wongs.service.UserService;
 import com.wongs.service.dto.MyAccountDTO;
@@ -57,15 +59,19 @@ public class MyOrderResource {
     private final PaymentService paymentService;
     
     private final UserService userService;
+    
+    private final StripeClient stripeClient;
 
     public MyOrderResource(MyOrderService myOrderService, UserInfoService userInfoService, MyAccountService myAccountService, 
-    						UserService userService, ShippingService shippingService, PaymentService paymentService) {
+    						UserService userService, ShippingService shippingService, PaymentService paymentService,
+    						StripeClient stripeClient) {
     	this.myOrderService = myOrderService;
     	this.userInfoService = userInfoService;
     	this.myAccountService = myAccountService;
         this.userService = userService;
         this.shippingService = shippingService;
         this.paymentService = paymentService;
+        this.stripeClient = stripeClient;
     }
 
     /**
@@ -189,5 +195,32 @@ public class MyOrderResource {
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, myOrderDTO.getId().toString()))
             .body(myOrderDTO);
+    }
+    
+    /**
+     * PUT  /my-orders/charge : Charges an existing myOrder.
+     *
+     * @param myOrderDTO the myOrderDTO to charge and update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated myOrderDTO,
+     * or with status 400 (Bad Request) if the myOrderDTO is not valid,
+     * or with status 500 (Internal Server Error) if the myOrderDTO couldn't be charged and updated
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @PutMapping("/my-orders/charge")
+    @Timed
+    public ResponseEntity<MyOrderDTO> charge(@RequestBody MyOrderDTO myOrderDTO) throws URISyntaxException {
+        log.debug("REST request to charge MyOrder : {}", myOrderDTO);
+        if (myOrderDTO.getId() == null) {
+        	throw new BadRequestAlertException("No ID for the order to be charged", ENTITY_NAME, "chargeerror");
+        }
+        try {
+			Charge charge = stripeClient.chargeCard(myOrderDTO);
+		} catch (Exception e) {
+			throw new BadRequestAlertException(e.getMessage(), ENTITY_NAME, "chargeerror");
+		}
+        MyOrderDTO result = myOrderService.save(myOrderDTO);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, myOrderDTO.getId().toString()))
+            .body(result);
     }
 }

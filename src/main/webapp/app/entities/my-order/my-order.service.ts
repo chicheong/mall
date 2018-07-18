@@ -46,6 +46,12 @@ export class MyOrderService {
             .map((res: EntityResponseType) => this.convertResponse(res));
     }
 
+    charge(myOrder: MyOrder): Observable<EntityResponseType> {
+        const copy = this.convert(myOrder);
+        return this.http.put<MyOrder>(`${this.resourceUrl}/charge`, copy, { observe: 'response' })
+            .map((res: EntityResponseType) => this.convertResponse(res));
+    }
+
     find(id: number): Observable<EntityResponseType> {
         return this.http.get<MyOrder>(`${this.resourceUrl}/${id}`, { observe: 'response'})
             .map((res: EntityResponseType) => this.convertResponse(res));
