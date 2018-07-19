@@ -1,12 +1,12 @@
 
 <div *ngIf="myOrder">
 	<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
-	<div class="row">
-		<jhi-alert-error></jhi-alert-error>
-	</div>
 	<jhi-checkout-control [cartControl]="cartControl" [myOrderId]="this.myOrder.id" [path]="path">
 	</jhi-checkout-control>
     <hr>
+	<div class="row">
+		<jhi-alert-error></jhi-alert-error>
+	</div>    
 	<div class="row" *jhiHasAnyAuthority="'ROLE_USER'">
 		<div class="col-md-3"><h2><span jhiTranslate="mallApp.myOrder.cart.method.title">Shipping Method</span></h2></div>
 		<div class="col-md-9">

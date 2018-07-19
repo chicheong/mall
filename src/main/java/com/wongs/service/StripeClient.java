@@ -1,6 +1,8 @@
 package com.wongs.service;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -21,16 +23,18 @@ import com.wongs.service.dto.MyOrderDTO;
 public class StripeClient {
 
     private final Logger log = LoggerFactory.getLogger(StripeClient.class);
+    private final SimpleDateFormat FULL_FORMAT = new SimpleDateFormat("yyyyMMddHHmmssSSS");
     
     public StripeClient() {
     	Stripe.apiKey = "sk_test_6wGWsGOGRJtR2h12xeVBXGdW";
     }
 
-    public Charge chargeCard(MyOrderDTO myOrder) throws Exception {
+    public Charge chargeCard(MyOrderDTO myOrder, String login) throws Exception {
         Map<String, Object> chargeParams = new HashMap<String, Object>();
         chargeParams.put("amount", myOrder.getTotal().multiply(new BigDecimal(100)).intValue());
         chargeParams.put("currency", myOrder.getCurrency());
         chargeParams.put("source", myOrder.getPayment().getToken());
+        chargeParams.put("description", "Charge " + login + " @" + FULL_FORMAT.format(new Date()));
         Charge charge = Charge.create(chargeParams);
         return charge;
     }

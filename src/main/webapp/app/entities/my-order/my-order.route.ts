@@ -9,6 +9,7 @@ import { CartShippingComponent } from './cart/cart-shipping/cart-shipping.compon
 import { CartMethodComponent } from './cart/cart-method/cart-method.component';
 import { CartBillingComponent } from './cart/cart-billing/cart-billing.component';
 import { CartPaymentComponent } from './cart/cart-payment/cart-payment.component';
+import { CartConfirmationComponent } from './cart/cart-confirmation/cart-confirmation.component';
 import { MyOrderPopupComponent } from './my-order-dialog.component';
 import { MyOrderDeletePopupComponent } from './my-order-delete-dialog.component';
 import { CheckoutComponent } from './checkout.component';
@@ -47,7 +48,7 @@ export const myOrderRoute: Routes = [
         component: CartReviewComponent,
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.myOrder.home.title'
+            pageTitle: 'mallApp.myOrder.cart.review.title'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -56,7 +57,7 @@ export const myOrderRoute: Routes = [
         component: CartShippingComponent,
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.myOrder.checkout.title'
+            pageTitle: 'mallApp.myOrder.cart.shipping.title'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -65,7 +66,7 @@ export const myOrderRoute: Routes = [
         component: CartMethodComponent,
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.myOrder.checkout.title'
+            pageTitle: 'mallApp.myOrder.cart.method.title'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -74,7 +75,7 @@ export const myOrderRoute: Routes = [
         component: CartBillingComponent,
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.myOrder.checkout.title'
+            pageTitle: 'mallApp.myOrder.cart.billing.title'
         },
         canActivate: [UserRouteAccessService]
     },
@@ -83,7 +84,16 @@ export const myOrderRoute: Routes = [
         component: CartPaymentComponent,
         data: {
             authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.myOrder.checkout.title'
+            pageTitle: 'mallApp.myOrder.cart.payment.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: 'my-order/:id/confirmation',
+        component: CartConfirmationComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.myOrder.cart.confirmation.title'
         },
         canActivate: [UserRouteAccessService]
     }

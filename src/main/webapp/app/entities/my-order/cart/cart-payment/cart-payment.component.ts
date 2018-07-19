@@ -26,7 +26,11 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
 
     /********** For Stripe card starts **********/
     paymentCard: PaymentCard;
-    message: string;
+    stripeErrorCodePrefix = 'mallApp.myOrder.cart.payment.stripe.';
+    // these are the known stripe error code@20180719
+    stripeErrorCode = new Array('incorrect_number', 'invalid_number', 'invalid_expiry_month',
+            'invalid_expiry_year', 'invalid_cvc', 'expired_card', 'incorrect_cvc', 'incorrect_zip',
+            'card_declined', 'missing', 'processing_error', 'rate_limit');
     /********** For Stripe card ends **********/
 
     /********** For Paypal starts **********/
@@ -111,13 +115,13 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
         onAuthorize: (data, actions) => {
             return actions.payment.execute().then((payment) => {
                 // Do something when payment is successful.
-                window.alert('Thank you for your purchase! with payment: ' + payment);
+                // window.alert('Thank you for your purchase! with payment: ' + payment);
                 this.myOrder.payment.type = PaymentType.PAYPAL;
-                this.myOrder.payment.amount = this.myOrder.total;
-                this.myOrder.payment.currency = this.myOrder.currency;
-                this.myOrder.payment.status = PaymentStatus.PAID;
+                // this.myOrder.payment.amount = this.myOrder.total;
+                // this.myOrder.payment.currency = this.myOrder.currency;
+                // this.myOrder.payment.status = PaymentStatus.PAID;
                 this.subscribeToSaveResponse(
-                        this.myOrderService.update(this.myOrder));
+                        this.myOrderService.charge(this.myOrder), true);
             });
         }
     };
@@ -141,9 +145,16 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
                 this.payPaylButtonLoaded = true;
             });
         }
+        if (!this.myOrderService.stripeScriptTagElement) {
+            this.addStripeScript().then(() => {
+                const stripePublishableKey = document.createElement('script');
+                stripePublishableKey.innerHTML = 'Stripe.setPublishableKey("pk_test_YL2eKbUILQGVMcaai3EcSm1D");';
+                document.body.appendChild(stripePublishableKey);
+            });
+        }
         this.paymentCard = Object.assign(new PaymentCard());
         this.paymentCard.holderName = 'Chan Chan Chan';
-        this.paymentCard.cardNumber = '5452 2904 0050 2323';
+        this.paymentCard.cardNumber = '5555 5555 5555 4444';
     }
 
     /********** For Stripe card starts **********/
@@ -165,12 +176,29 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
                 this.myOrder.payment.token = token;
                 this.myOrder.payment.paymentCard = this.paymentCard;
                 this.subscribeToSaveResponse(
-                        this.myOrderService.charge(this.myOrder));
-                this.isSaving = false;
+                        this.myOrderService.charge(this.myOrder), true);
             } else {
-                this.jhiAlertService.error(null, null, response.error.message);
+                const errorCode = response.error.code;
+                let localizedCode: string;
+                // Unknown Codes are treated as 'Internal server error'
+                if (this.stripeErrorCode.indexOf(errorCode) >= 0) {
+                    localizedCode = this.stripeErrorCodePrefix + errorCode;
+                } else {
+                    localizedCode = 'error.internalServerError';
+                }
+                this.jhiAlertService.error(localizedCode, null, null);
                 // window.alert(response.error.message);
                 this.isSaving = false;
+            }
+        });
+    }
+    addStripeScript() {
+        return new Promise((resolve, reject) => {
+            if (!this.myOrderService.stripeScriptTagElement) {
+                this.myOrderService.stripeScriptTagElement = document.createElement('script');
+                this.myOrderService.stripeScriptTagElement.src = 'https://js.stripe.com/v2/';
+                this.myOrderService.stripeScriptTagElement.onload = resolve;
+                document.body.appendChild(this.myOrderService.stripeScriptTagElement);
             }
         });
     }
@@ -207,7 +235,7 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
     }
 
     save() {
-        // this.isSaving = true;
+        this.isSaving = true;
         if (this.selectedMethod) {
             if (this.selectedMethod === 'card') {
                 if (this.paymentCard.expiration) {
@@ -216,26 +244,31 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
                         this.paymentCard.expirationMonth = monthYearPair[0];
                         this.paymentCard.expirationYear = monthYearPair[1];
                         // console.error('expirationMonth / expirationYear: ' + this.paymentCard.expirationMonth + '/' + this.paymentCard.expirationYear);
+                    } else {
+                        this.paymentCard.expirationMonth = '';
+                        this.paymentCard.expirationYear = '';
                     }
                 }
-                console.error('ready for card payment.');
                 this.chargeCard();
             } else if (this.selectedMethod === 'payme') {
                 this.subscribeToSaveResponse(
-                        this.myOrderService.update(this.myOrder));
+                        this.myOrderService.update(this.myOrder), true);
             }
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<HttpResponse<MyOrder>>) {
+    private subscribeToSaveResponse(result: Observable<HttpResponse<MyOrder>>, goNext: boolean) {
         result.subscribe((res: HttpResponse<MyOrder>) =>
-            this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
+            this.onSaveSuccess(res.body, goNext), (res: HttpErrorResponse) => this.onSaveError());
     }
 
-    private onSaveSuccess(result: MyOrder) {
+    private onSaveSuccess(result: MyOrder, goNext: boolean) {
         this.myOrder = result;
         this.eventManager.broadcast({ name: 'myOrderModification', content: 'OK', obj: result});
         this.isSaving = false;
+        if (goNext) {
+            this.myOrderService.doCartNextAction(this.myOrder, this.path);
+        }
     }
 
     private onSaveError() {

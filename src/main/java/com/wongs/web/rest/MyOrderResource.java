@@ -24,7 +24,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
 import com.stripe.model.Charge;
+import com.wongs.domain.MyOrder;
 import com.wongs.domain.OrderItem;
+import com.wongs.domain.enumeration.PaymentStatus;
+import com.wongs.domain.enumeration.PaymentType;
 import com.wongs.security.SecurityUtils;
 import com.wongs.service.MyAccountService;
 import com.wongs.service.MyOrderService;
@@ -112,7 +115,7 @@ public class MyOrderResource {
         }
         MyOrderDTO result = myOrderService.save(myOrderDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, myOrderDTO.getId().toString()))
+            //.headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, myOrderDTO.getId().toString())) // suppress the update myOrder message in Cart Payment
             .body(result);
     }
 
@@ -213,12 +216,30 @@ public class MyOrderResource {
         if (myOrderDTO.getId() == null) {
         	throw new BadRequestAlertException("No ID for the order to be charged", ENTITY_NAME, "chargeerror");
         }
-        try {
-			Charge charge = stripeClient.chargeCard(myOrderDTO);
-		} catch (Exception e) {
-			throw new BadRequestAlertException(e.getMessage(), ENTITY_NAME, "chargeerror");
-		}
-        MyOrderDTO result = myOrderService.save(myOrderDTO);
+        PaymentType paymentType = myOrderDTO.getPayment().getType();
+        if (paymentType.equals(PaymentType.CREDIT_CARD)) {
+            try {
+    			Charge charge = stripeClient.chargeCard(myOrderDTO, SecurityUtils.getCurrentUserLogin().get());
+    			if (charge.getPaid()) {
+    	        	myOrderDTO.getPayment().setAmount(myOrderDTO.getTotal());
+    	        	myOrderDTO.getPayment().setCurrency(myOrderDTO.getCurrency());
+    	        	myOrderDTO.getPayment().setStatus(PaymentStatus.PAID);
+    			} else {
+    				throw new BadRequestAlertException("The card cannot be paid", ENTITY_NAME, "chargeerror");
+    			}
+    		} catch (Exception e) {
+    			throw new BadRequestAlertException(e.getMessage(), ENTITY_NAME, "chargeerror");
+    		}
+        } else if (paymentType.equals(PaymentType.PAYPAL)) {
+        	myOrderDTO.getPayment().setAmount(myOrderDTO.getTotal());
+        	myOrderDTO.getPayment().setCurrency(myOrderDTO.getCurrency());
+        	myOrderDTO.getPayment().setStatus(PaymentStatus.PAID);
+        } else if (paymentType.equals(PaymentType.PAYME)) {
+        	myOrderDTO.getPayment().setAmount(myOrderDTO.getTotal());
+        	myOrderDTO.getPayment().setCurrency(myOrderDTO.getCurrency());
+        	myOrderDTO.getPayment().setStatus(PaymentStatus.PENDING);
+        }
+        MyOrderDTO result = myOrderDTO; // myOrderService.save(myOrderDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, myOrderDTO.getId().toString()))
             .body(result);

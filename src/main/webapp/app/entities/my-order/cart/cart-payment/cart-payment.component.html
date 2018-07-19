@@ -2,12 +2,12 @@
 <div *ngIf="myOrder">
 	<form name="editForm" role="form" novalidate (ngSubmit)="save()"
 		#editForm="ngForm">
-		<div class="row">
-			<jhi-alert></jhi-alert>
-		</div>
 		<jhi-checkout-control [cartControl]="cartControl"
 			[myOrderId]="this.myOrder.id" [path]="path"> </jhi-checkout-control>
 		<hr>
+		<div class="row">
+			<jhi-alert></jhi-alert>
+		</div>		
 		<div class="row" *jhiHasAnyAuthority="'ROLE_USER'">
 			<div class="col-md-3">
 				<h2>
@@ -24,7 +24,7 @@
 					[disabled]="editForm.form.invalid || isSaving || !canGoNext()" [hidden]="!showContinue"
 					class="btn btn-primary" (click)="save()">
 					<span class="fa fa-chevron-circle-right"></span>&nbsp;<span
-						jhiTranslate="entity.action.continue">Continue to Checkout</span>
+						jhiTranslate="mallApp.myOrder.cart.payment.button.checkout">Continue to Checkout</span>
 				</button>
 			</div>
 		</div>
@@ -49,7 +49,6 @@
 				</div>
 				<div [hidden]="selectedMethod !== 'card'">
 					<div class="row">
-<span class="payment-message">{{message}}</span>
 						<div class="col-md-6 col-md-offset-3">
 							<label for="field_holderName">Holder name</label>
 							<input type="text" class="form-control" name="holderName" id="field_holderName" placeholder="Chan Tai Man" required 

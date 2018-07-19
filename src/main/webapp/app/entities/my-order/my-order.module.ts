@@ -25,6 +25,7 @@ import { CartPaymentComponent } from './cart/cart-payment/cart-payment.component
 import { CartReviewComponent } from './cart/cart-review/cart-review.component';
 import { CartMethodComponent } from './cart/cart-method/cart-method.component';
 import { CartShippingComponent } from './cart/cart-shipping/cart-shipping.component';
+import { CartConfirmationComponent } from './cart/cart-confirmation/cart-confirmation.component';
 
 const ENTITY_STATES = [
     ...myOrderRoute,
@@ -52,6 +53,7 @@ const ENTITY_STATES = [
         CartReviewComponent,
         CartMethodComponent,
         CartShippingComponent,
+        CartConfirmationComponent,
     ],
     entryComponents: [
         MyOrderComponent,
@@ -67,6 +69,7 @@ const ENTITY_STATES = [
         CartReviewComponent,
         CartMethodComponent,
         CartShippingComponent,
+        CartConfirmationComponent,
     ],
     providers: [
         MyOrderService,

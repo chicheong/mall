@@ -13,4 +13,5 @@ export * from './cart/cart-payment/cart-payment.component';
 export * from './cart/cart-review/cart-review.component';
 export * from './cart/cart-method/cart-method.component';
 export * from './cart/cart-shipping/cart-shipping.component';
+export * from './cart/cart-confirmation/cart-confirmation.component';
 export * from './my-order.route';

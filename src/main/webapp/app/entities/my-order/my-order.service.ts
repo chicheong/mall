@@ -31,6 +31,8 @@ export class MyOrderService {
 
     // Determine if paypal script is added to index or not
     public paypalScriptTagElement: any;
+    // Determine if stripe script is added to index or not
+    public stripeScriptTagElement: any;
 
     constructor(private http: HttpClient, private router: Router) { }
 
@@ -279,7 +281,7 @@ export class MyOrderService {
     }
 
     doCartPaymentNextAction(myOrder: MyOrder): void {
-        console.error('After Payment');
+        this.router.navigate(['/' + this.pathPrefix + '/' + myOrder.id + '/confirmation']);
     }
 
     doCartBackAction(myOrder: MyOrder, path: String): void {

@@ -1,0 +1,30 @@
+
+<div *ngIf="myOrder">
+	<form name="editForm" role="form" novalidate (ngSubmit)="save()"
+		#editForm="ngForm">
+		<div class="row">
+			<jhi-alert-error></jhi-alert-error>
+		</div>		
+		<div class="row" *jhiHasAnyAuthority="'ROLE_USER'">
+			<div class="col-md-3">
+				<h2>
+					<span jhiTranslate="mallApp.myOrder.cart.confirmation.title">Payment Confirmation</span>
+				</h2>
+			</div>
+			<div class="col-md-9">
+				<button type="button"
+					[disabled]="editForm.form.invalid || isSaving"
+					class="btn btn-success" (click)="save()">
+					<span class="fa fa-chevron-circle-right"></span>&nbsp;<span
+						jhiTranslate="mallApp.myOrder.cart.payment.confirmation.continueShopping">Continue Shopping</span>
+				</button>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col-md-12">
+				Thanks for your payment
+			</div>
+		</div>
+	</form>
+	<hr>
+</div>

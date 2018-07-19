@@ -40,6 +40,7 @@ import com.wongs.service.MyAccountService;
 import com.wongs.service.MyOrderService;
 import com.wongs.service.PaymentService;
 import com.wongs.service.ShippingService;
+import com.wongs.service.StripeClient;
 import com.wongs.service.UserInfoService;
 import com.wongs.service.UserService;
 import com.wongs.service.dto.MyOrderDTO;
@@ -92,6 +93,9 @@ public class MyOrderResourceIntTest {
 
     @Autowired
     private MyOrderSearchRepository myOrderSearchRepository;
+    
+    @Autowired
+    private StripeClient stripeClient;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -112,7 +116,7 @@ public class MyOrderResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final MyOrderResource myOrderResource = new MyOrderResource(myOrderService, userInfoService, myAccountService, userService, shippingService, paymentService);
+        final MyOrderResource myOrderResource = new MyOrderResource(myOrderService, userInfoService, myAccountService, userService, shippingService, paymentService, stripeClient);
         this.restMyOrderMockMvc = MockMvcBuilders.standaloneSetup(myOrderResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
