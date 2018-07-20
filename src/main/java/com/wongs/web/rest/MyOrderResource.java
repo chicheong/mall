@@ -240,6 +240,7 @@ public class MyOrderResource {
         	myOrderDTO.getPayment().setStatus(PaymentStatus.PENDING);
         }
         MyOrderDTO result = myOrderDTO; // myOrderService.save(myOrderDTO);
+        // Issue confirmation email
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, myOrderDTO.getId().toString()))
             .body(result);
