@@ -23,6 +23,8 @@ export * from './model/base-entity';
 export * from './random/uuid.service';
 export * from './draggable/draggable.module';
 export * from './formatting/format-number.pipe';
+export * from './banner/home-banner.component';
+export * from './banner/banner.service';
 export * from './shared-libs.module';
 export * from './shared-common.module';
 export * from './shared.module';

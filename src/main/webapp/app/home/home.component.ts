@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
@@ -6,6 +6,8 @@ import { Account, LoginModalService, Principal } from '../shared';
 
 import {HttpClient} from '@angular/common/http';
 import {map} from 'rxjs/operators';
+
+import { BannerService } from './../shared/banner/banner.service';
 
 @Component({
     selector: 'jhi-home',
@@ -15,7 +17,7 @@ import {map} from 'rxjs/operators';
     ]
 
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent implements OnInit, OnDestroy {
     account: Account;
     modalRef: NgbModalRef;
 
@@ -25,7 +27,8 @@ export class HomeComponent implements OnInit {
         private principal: Principal,
         private loginModalService: LoginModalService,
         private eventManager: JhiEventManager,
-        private _http: HttpClient
+        private _http: HttpClient,
+        private bannerService: BannerService
     ) {
     }
 
@@ -38,6 +41,7 @@ export class HomeComponent implements OnInit {
                        'https://www.w3schools.com/bootstrap/chicago.jpg',
                        'http://placehold.it/1900x1080&amp;text=Slide Three'];
         this.registerAuthenticationSuccess();
+        this.bannerService.showHomeBanner = true;
     }
 
     private _randomImageUrls(images: Array<{id: number}>): Array<string> {
@@ -63,5 +67,9 @@ export class HomeComponent implements OnInit {
 
     login() {
         this.modalRef = this.loginModalService.open();
+    }
+
+    ngOnDestroy() {
+        this.bannerService.showHomeBanner = false;
     }
 }

@@ -15,7 +15,9 @@ import {
     JhiLoginModalComponent,
     Principal,
     HasAnyAuthorityDirective,
-    UuidService
+    UuidService,
+    HomeBannerComponent,
+    BannerService
 } from './';
 
 @NgModule({
@@ -26,7 +28,8 @@ import {
     ],
     declarations: [
         JhiLoginModalComponent,
-        HasAnyAuthorityDirective
+        HasAnyAuthorityDirective,
+        HomeBannerComponent
     ],
     providers: [
         LoginService,
@@ -38,7 +41,8 @@ import {
         AuthServerProvider,
         UserService,
         DatePipe,
-        UuidService
+        UuidService,
+        BannerService
     ],
     entryComponents: [JhiLoginModalComponent],
     exports: [
@@ -46,7 +50,8 @@ import {
         DraggableModule,
         JhiLoginModalComponent,
         HasAnyAuthorityDirective,
-        DatePipe
+        DatePipe,
+        HomeBannerComponent
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 
