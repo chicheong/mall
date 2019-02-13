@@ -91,6 +91,38 @@ public class UserService {
                 userSearchRepository.save(user);
                 cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
                 cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
+                
+                UserInfoDTO userInfo = new UserInfoDTO();
+                userInfo.setUser(user);
+                userInfo = userInfoService.save(userInfo);
+                
+                MyAccountDTO myAccount = new MyAccountDTO();
+                myAccount.getUserInfos().add(userInfoMapper.toEntity(userInfo));
+                myAccount = myAccountService.save(myAccount);
+                
+                //Add shops for Testing only
+                ShopDTO shop1 = new ShopDTO();
+                shop1.setName("Shop001");
+                shop1.setCode("SHOP001");
+                shop1.getAccounts().add(myAccountMapper.toEntity(myAccount));
+                shop1 = shopService.save(shop1);
+                
+                ShopDTO shop2 = new ShopDTO();
+                shop2.setName("Shop002");
+                shop2.setCode("SHOP002");
+                shop2.getAccounts().add(myAccountMapper.toEntity(myAccount));
+                shop2 = shopService.save(shop2);
+                
+                userInfo.getAccounts().add(myAccount);
+                userInfo.setAccountId(myAccount.getId());
+                userInfo.setDefaultAccount(myAccountMapper.toEntity(myAccount));
+                userInfo.setShopId(shop1.getId());
+                userInfoService.save(userInfo);
+                
+                myAccount.getShops().add(shop1);
+                myAccount.getShops().add(shop2);
+                myAccountService.save(myAccount);
+                
                 log.debug("Activated user: {}", user);
                 return user;
             });
@@ -148,37 +180,6 @@ public class UserService {
         cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(newUser.getLogin());
         cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(newUser.getEmail());
         log.debug("Created Information for User: {}", newUser);
-        
-        UserInfoDTO userInfo = new UserInfoDTO();
-        userInfo.setUser(newUser);
-        userInfo = userInfoService.save(userInfo);
-        
-        MyAccountDTO myAccount = new MyAccountDTO();
-        myAccount.getUserInfos().add(userInfoMapper.toEntity(userInfo));
-        myAccount = myAccountService.save(myAccount);
-        
-        //Add shops for Testing only
-        ShopDTO shop1 = new ShopDTO();
-        shop1.setName("Shop001");
-        shop1.setCode("SHOP001");
-        shop1.getAccounts().add(myAccountMapper.toEntity(myAccount));
-        shop1 = shopService.save(shop1);
-        
-        ShopDTO shop2 = new ShopDTO();
-        shop2.setName("Shop002");
-        shop2.setCode("SHOP002");
-        shop2.getAccounts().add(myAccountMapper.toEntity(myAccount));
-        shop2 = shopService.save(shop2);
-        
-        userInfo.getAccounts().add(myAccount);
-        userInfo.setAccountId(myAccount.getId());
-        userInfo.setDefaultAccount(myAccountMapper.toEntity(myAccount));
-        userInfo.setShopId(shop1.getId());
-        userInfoService.save(userInfo);
-        
-        myAccount.getShops().add(shop1);
-        myAccount.getShops().add(shop2);
-        myAccountService.save(myAccount);
         
         return newUser;
     }

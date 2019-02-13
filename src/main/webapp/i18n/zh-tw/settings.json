@@ -7,7 +7,8 @@
             "lastname": "姓氏",
             "lastname.placeholder": "您的姓氏",
             "language": "語言",
-            "button": "儲存"
+            "save": "儲存",
+			"createmyshop": "開店"
         },
         "messages": {
             "error": {
