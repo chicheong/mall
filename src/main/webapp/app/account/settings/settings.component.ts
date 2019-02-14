@@ -1,7 +1,9 @@
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { JhiLanguageService } from 'ng-jhipster';
 
 import { Principal, AccountService, JhiLanguageHelper } from '../../shared';
+import { Shop, ShopService } from '../../entities/shop';
 
 @Component({
     selector: 'jhi-settings',
@@ -15,6 +17,7 @@ export class SettingsComponent implements OnInit {
 
     constructor(
         private account: AccountService,
+        private shopService: ShopService,
         private principal: Principal,
         private languageService: JhiLanguageService,
         private languageHelper: JhiLanguageHelper
@@ -46,6 +49,16 @@ export class SettingsComponent implements OnInit {
             this.success = null;
             this.error = 'ERROR';
         });
+    }
+
+    createMyShop() {
+        console.log('createMyShop');
+        const shop: Shop = Object.assign(new Shop());
+        shop.code = 'temp';
+        this.shopService.create(shop)
+            .subscribe((shopResponse: HttpResponse<Shop>) => {
+                console.log(shopResponse.body);
+            }, (res: HttpErrorResponse) => this.error = 'ERROR');
     }
 
     copyAccount(account) {
