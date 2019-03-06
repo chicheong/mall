@@ -47,7 +47,7 @@ describe('Component Tests', () => {
 
             // WHEN
             comp.settingsAccount = accountValues;
-            comp.save();
+            comp.saveBasic();
 
             // THEN
             expect(mockPrincipal.identitySpy).toHaveBeenCalled();
@@ -64,7 +64,7 @@ describe('Component Tests', () => {
             mockPrincipal.setResponse(accountValues);
 
             // WHEN
-            comp.save();
+            comp.saveBasic();
 
             // THEN
             expect(comp.error).toBeNull();
@@ -76,7 +76,7 @@ describe('Component Tests', () => {
             mockAuth.saveSpy.and.returnValue(Observable.throw('ERROR'));
 
             // WHEN
-            comp.save();
+            comp.saveBasic();
 
             // THEN
             expect(comp.error).toEqual('ERROR');
