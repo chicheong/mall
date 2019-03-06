@@ -96,7 +96,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
                 this.initObjects();
                 this.isEditing = true;
             } else {
-
+                // Not consider ATM
             }
         });
         this.registerChangeInProducts();

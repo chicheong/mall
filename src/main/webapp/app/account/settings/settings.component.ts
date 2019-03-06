@@ -10,9 +10,12 @@ import { Shop, ShopService } from '../../entities/shop';
     templateUrl: './settings.component.html'
 })
 export class SettingsComponent implements OnInit {
+
     error: string;
     success: string;
     settingsAccount: any;
+    isSavingBasic: boolean;
+    isEditingBasic: boolean;
     languages: any[];
 
     constructor(
@@ -31,9 +34,12 @@ export class SettingsComponent implements OnInit {
         this.languageHelper.getAll().then((languages) => {
             this.languages = languages;
         });
+        this.isSavingBasic = false;
+        this.isEditingBasic = false;
     }
 
-    save() {
+    saveBasic() {
+        this.isSavingBasic = true;
         this.account.save(this.settingsAccount).subscribe(() => {
             this.error = null;
             this.success = 'OK';
@@ -45,6 +51,8 @@ export class SettingsComponent implements OnInit {
                     this.languageService.changeLanguage(this.settingsAccount.langKey);
                 }
             });
+            this.isSavingBasic = false;
+            this.isEditingBasic = false;
         }, () => {
             this.success = null;
             this.error = 'ERROR';
