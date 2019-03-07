@@ -59,6 +59,17 @@ export class SettingsComponent implements OnInit {
         });
     }
 
+    editBasic() {
+        this.isEditingBasic = true;
+    }
+
+    cancelBasic() {
+        this.isEditingBasic = false;
+        this.principal.identity().then((account) => {
+            this.settingsAccount = this.copyAccount(account);
+        });
+    }
+
     createMyShop() {
         console.log('createMyShop');
         const shop: Shop = Object.assign(new Shop());
