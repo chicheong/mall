@@ -16,7 +16,6 @@ import { ProductStyle, ProductStyleType, ProductStylePopupService, ProductStyleD
 import { ProductItemsPopupService } from './product-items-popup.service';
 import { ProductItemsDialogComponent, ProductItemsDialogType } from './product-items-dialog.component';
 import { FileUploadPopupService } from './file-upload-popup.service';
-import { FileUploadDialogComponent } from './file-upload-dialog.component';
 
 import { MyOrderService, MyOrder } from './../my-order';
 import { Url, UrlPopupService, UrlDeleteDialogComponent } from './../url';
@@ -555,8 +554,11 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     }
 
     uploadMedia() {
-        const copyObj: Product = Object.assign(new Product(), this.product);
-        this.uploadMediaPopupService.open(FileUploadDialogComponent as Component, copyObj);
+        const url = new Url();
+        url.entityType = Product.name;
+        url.entityId = this.product.id;
+        url.sequence = this.product.urls ? (this.product.urls.length + 1) : 1;
+        this.modalRef = this.uploadMediaPopupService.open(url);
     }
 
     deleteMedia(url: Url) {

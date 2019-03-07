@@ -6,7 +6,6 @@ import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService, JhiAlert } from 'ng-jhipster';
 
-import { Product } from './product.model';
 import { Url } from './../url';
 
 @Component({
@@ -24,7 +23,7 @@ export class FileUploadDialogComponent implements OnInit {
     @Input() maxSize = 5; // 5MB
     // @Output() uploadStatus = new EventEmitter();
 
-    product: Product;
+    url: Url;
 
     constructor(
         public activeModal: NgbActiveModal,
@@ -34,6 +33,10 @@ export class FileUploadDialogComponent implements OnInit {
     }
 
     ngOnInit() {
+        if (!this.url) {
+            console.error('this.url does not exist!!');
+            this.url = new Url();
+        }
     }
 
     clear() {
@@ -78,10 +81,10 @@ export class FileUploadDialogComponent implements OnInit {
                 reader.readAsDataURL(file);
                 reader.onload = (thisEvent) => { // called once readAsDataURL is completed
                     const url = new Url();
-                    url.entityType = Product.name;
-                    url.entityId = this.product.id;
+                    url.entityType = this.url.entityType; // Product.name
+                    url.entityId = this.url.entityId;
                     url.fileName = file.name;
-                    url.sequence = this.product.urls ? (this.product.urls.length + 1 + i) : 1;
+                    url.sequence = this.url.sequence ? (this.url.sequence + i) : 1 + i;
                     url.path = (<FileReader>thisEvent.target).result;
                     urls.push(url);
                     counter++;
@@ -109,10 +112,10 @@ export class FileUploadDialogComponent implements OnInit {
                 reader.readAsDataURL(file);
                 reader.onload = (thisEvent) => { // called once readAsDataURL is completed
                     const url = new Url();
-                    url.entityType = Product.name;
-                    url.entityId = this.product.id;
+                    url.entityType = this.url.entityType;
+                    url.entityId = this.url.entityId;
                     url.fileName = file.name;
-                    url.sequence = this.product.urls ? (this.product.urls.length + 1 + i) : 1;
+                    url.sequence = this.url.sequence ? (this.url.sequence + i) : 1 + i;
                     url.path = (<FileReader>thisEvent.target).result;
                     urls.push(url);
                     counter++;
