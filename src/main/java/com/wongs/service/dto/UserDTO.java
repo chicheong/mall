@@ -40,7 +40,7 @@ public class UserDTO {
     @Size(min = 5, max = 100)
     private String email;
 
-    @Size(max = 256)
+    @Size(max = 5000000)
     private String imageUrl;
 
     private boolean activated = false;

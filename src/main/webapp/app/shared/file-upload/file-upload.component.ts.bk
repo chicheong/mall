@@ -2,12 +2,12 @@ import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@a
 
 @Component({
     selector: 'jhi-file-upload',
-    templateUrl: './file-upload.component.html',
+    templateUrl: './file-upload.component.html.html',
     styleUrls: [
       'file-upload.scss'
     ]
 })
-export class FileUploadComponent implements OnInit {
+export class FileUploadComponentTs implements OnInit {
     errors: Array<string> = [];
     dragAreaClass = 'dragarea';
     @Input() entityType: string;

@@ -8,14 +8,13 @@ import { JhiEventManager, JhiAlertService  } from 'ng-jhipster';
 
 import { Product } from './product.model';
 import { ProductService } from './product.service';
-import { LoginModalService, Principal, UuidService } from '../../shared';
+import { LoginModalService, Principal, UuidService, FileUploadModelService } from '../../shared';
 
 import { ProductItem } from './../product-item';
 import { ProductStyle, ProductStyleType, ProductStylePopupService, ProductStyleDialogComponent } from './../product-style';
 
 import { ProductItemsPopupService } from './product-items-popup.service';
 import { ProductItemsDialogComponent, ProductItemsDialogType } from './product-items-dialog.component';
-import { FileUploadPopupService } from './file-upload-popup.service';
 
 import { MyOrderService, MyOrder } from './../my-order';
 import { Url, UrlPopupService, UrlDeleteDialogComponent } from './../url';
@@ -57,7 +56,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         private productService: ProductService,
         private productStylePopupService: ProductStylePopupService,
         private productItemsPopupService: ProductItemsPopupService,
-        private uploadMediaPopupService: FileUploadPopupService,
+        private uploadMediaModelService: FileUploadModelService,
         private urlPopupService: UrlPopupService,
         private route: ActivatedRoute,
         private jhiAlertService: JhiAlertService,
@@ -558,7 +557,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         url.entityType = Product.name;
         url.entityId = this.product.id;
         url.sequence = this.product.urls ? (this.product.urls.length + 1) : 1;
-        this.modalRef = this.uploadMediaPopupService.open(url);
+        this.modalRef = this.uploadMediaModelService.open(url);
     }
 
     deleteMedia(url: Url) {

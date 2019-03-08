@@ -98,6 +98,8 @@ public class ProductResource {
             return createProduct(productDTO);
         }
         ProductDTO result = productService.save(productDTO);
+        // Get product with List after service committed
+        result = productService.findOneWithLists(result.getId());
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, productDTO.getId().toString()))
             .body(result);

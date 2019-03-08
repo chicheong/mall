@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { FileUploadDialogComponent } from './file-upload-dialog.component';
-import { Url } from './../url';
+import { Url } from '../../entities/url';
 
 @Injectable()
-export class FileUploadPopupService {
+export class FileUploadModelService {
     private isOpen = false;
 
     constructor(

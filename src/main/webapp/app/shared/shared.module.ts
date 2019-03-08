@@ -15,6 +15,8 @@ import {
     JhiLoginModalComponent,
     Principal,
     HasAnyAuthorityDirective,
+    FileUploadModelService,
+    FileUploadDialogComponent,
     UuidService,
     HomeBannerComponent,
     BannerService
@@ -28,6 +30,7 @@ import {
     ],
     declarations: [
         JhiLoginModalComponent,
+        FileUploadDialogComponent,
         HasAnyAuthorityDirective,
         HomeBannerComponent
     ],
@@ -41,14 +44,19 @@ import {
         AuthServerProvider,
         UserService,
         DatePipe,
+        FileUploadModelService,
         UuidService,
         BannerService
     ],
-    entryComponents: [JhiLoginModalComponent],
+    entryComponents: [
+        JhiLoginModalComponent,
+        FileUploadDialogComponent
+    ],
     exports: [
         MallSharedCommonModule,
         DraggableModule,
         JhiLoginModalComponent,
+        FileUploadDialogComponent,
         HasAnyAuthorityDirective,
         DatePipe,
         HomeBannerComponent

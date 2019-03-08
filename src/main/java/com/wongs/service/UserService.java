@@ -1,7 +1,12 @@
 package com.wongs.service;
 
+import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.Base64;
+import java.util.Base64.Decoder;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -9,6 +14,7 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
@@ -19,6 +25,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.google.common.io.Files;
 import com.wongs.config.Constants;
 import com.wongs.domain.Authority;
 import com.wongs.domain.MyAccount;
@@ -246,7 +253,17 @@ public class UserService {
                 user.setLastName(lastName);
                 user.setEmail(email);
                 user.setLangKey(langKey);
-                user.setImageUrl(imageUrl);
+                if (StringUtils.isNotBlank(imageUrl)){
+                	Decoder decoder = Base64.getDecoder();
+                	byte[] image = decoder.decode(imageUrl.substring(imageUrl.indexOf("base64,") + 7));
+                	Path targetPath = Paths.get("C:\\xampp\\htdocs\\img\\", user.getEmail());
+                	try {
+        				Files.write(image, targetPath.toFile());
+        				user.setImageUrl("http://localhost/img/" + user.getEmail());
+        			} catch (IOException e) {
+        				log.error(e.toString());
+        			}
+                }
                 userSearchRepository.save(user);
                 cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
                 cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());

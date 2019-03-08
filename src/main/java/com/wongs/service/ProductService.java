@@ -261,7 +261,8 @@ public class ProductService {
         oProductStyles.stream().filter(style -> !productStyleIds.contains(style.getId())).forEach(style -> productStyleRepository.delete(style));
         oUrls.stream().filter(url -> !urlIds.contains(url.getId())).forEach(url -> urlService.delete(url.getId()));
 //        return productMapper.toDto(product);
-        return this.findOneWithLists(product.getId());
+//        return this.findOneWithLists(product.getId());
+        return productDTO;
     }
     
 
@@ -304,7 +305,7 @@ public class ProductService {
         if (id == 0) { //TODO: remove this later
         	return productMapper.toDto(new Product());
         }else {
-	        Product product = productRepository.findOne(id);
+	        Product product = productRepository.findOneWithEagerRelationships(id);
 	        ProductDTO dto = productMapper.toDto(product);
 	        product.getStyles().stream().filter(style -> ProductStyleType.COLOR.equals(style.getType())).forEach(style -> dto.getColors().add(productStyleMapper.toDto(style)));
 	        product.getStyles().stream().filter(style -> ProductStyleType.SIZE.equals(style.getType())).forEach(style -> dto.getSizes().add(productStyleMapper.toDto(style)));

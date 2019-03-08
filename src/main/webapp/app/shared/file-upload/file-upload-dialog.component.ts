@@ -6,7 +6,7 @@ import { Observable } from 'rxjs/Observable';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService, JhiAlert } from 'ng-jhipster';
 
-import { Url } from './../url';
+import { Url } from '../../entities/url';
 
 @Component({
     selector: 'jhi-file-upload-dialog',

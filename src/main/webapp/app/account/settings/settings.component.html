@@ -6,19 +6,17 @@
 	<jhi-alert-error></jhi-alert-error>
 </div>
 <div *ngIf="settingsAccount" >
-    <form name="form" role="form" (ngSubmit)="saveBasic()" #settingsForm="ngForm" novalidate></form>
+    <form name="form" role="form" (ngSubmit)="saveBasic()" #settingsForm="ngForm" novalidate>
    		<div class="row">
-		    <button *ngIf="isEditingBasic" [disabled]="isSaving" class="btn btn-default" (click)="cancelBasic()">
+		    <button *ngIf="isEditingBasic" [disabled]="isSavingBasic" class="btn btn-default" (click)="cancelBasic()">
 	            <span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
 	        </button>			
-			<button *ngIf="isEditingBasic" [disabled]="isSaving || settingsForm.form.invalid" class="btn btn-primary" (click)="saveBasic()">
+			<button *ngIf="isEditingBasic" [disabled]="isSavingBasic || settingsForm.form.invalid" class="btn btn-primary" (click)="saveBasic()">
 				<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="settings.form.save">Save</span>
 			</button>
-			<button *ngIf="!isEditingBasic" [disabled]="isSaving" class="btn btn-primary" (click)="editBasic()">
+			<button *ngIf="!isEditingBasic" [disabled]="isSavingBasic" class="btn btn-primary" (click)="editBasic()">
 	            <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
 	        </button>
-	        
-	        <button [disabled]="settingsForm.form.invalid" class="btn btn-danger" jhiTranslate="settings.form.createmyshop" (click)="createMyShop()">Create My Shop</button>
 		</div>
 		<div class="row">
 		    <div class="col-md-9 order-2 order-md-1">	
@@ -95,16 +93,25 @@
 		        </div>
 	        </div>
 	        <div class="col-md-3 order-1 order-md-2">
-	            <div><img class="profile-image" src="http://bootdey.com/img/Content/avatar/avatar5.png" alt=""></div>
+	            <div>
+					<img [src]="settingsAccount.imageUrl"
+		          		class="profile-image"
+		          		alt="">
+	            </div>
+		        <div class="text-center">
+					<button *ngIf="isEditingBasic" type="button" [disabled]="isSavingBasic" class="btn btn-primary" (click)="uploadMedia()">
+				        <span class="fa fa-upload"></span>&nbsp;<span jhiTranslate="entity.action.upload"> Upload</span>
+				    </button>
+				</div>
 	        </div>
 	     </div>
     </form>
 </div>
-<div class="row">
-	<div>Other Settings</div>
-</div>          
-                            
-                            
+<div *ngIf="settingsAccount" class="row">
+	<button [disabled]="isSavingBasic" class="btn btn-danger" (click)="createMyShop()">
+		<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="settings.form.createmyshop">Create My Shop</span>
+	</button>
+</div>
 
 <div>
     <div class="row justify-content-center">

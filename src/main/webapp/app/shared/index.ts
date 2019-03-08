@@ -22,6 +22,8 @@ export * from './model/request-util';
 export * from './model/base-entity';
 export * from './random/uuid.service';
 export * from './draggable/draggable.module';
+export * from './file-upload/file-upload-dialog.component';
+export * from './file-upload/file-upload-model.service';
 export * from './formatting/format-number.pipe';
 export * from './banner/home-banner.component';
 export * from './banner/banner.service';

@@ -1,9 +1,13 @@
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { JhiLanguageService } from 'ng-jhipster';
+import { JhiLanguageService, JhiEventManager } from 'ng-jhipster';
+import { Subscription } from 'rxjs/Subscription';
 
-import { Principal, AccountService, JhiLanguageHelper } from '../../shared';
+import { Principal, AccountService, JhiLanguageHelper, FileUploadModelService } from '../../shared';
 import { Shop, ShopService } from '../../entities/shop';
+import { Url } from '../../entities/url';
+
+import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
     selector: 'jhi-settings',
@@ -17,13 +21,19 @@ export class SettingsComponent implements OnInit {
     isSavingBasic: boolean;
     isEditingBasic: boolean;
     languages: any[];
+    private subscription: Subscription;
+    private eventSubscriber: Subscription;
+
+    modalRef: NgbModalRef;
 
     constructor(
         private account: AccountService,
         private shopService: ShopService,
         private principal: Principal,
         private languageService: JhiLanguageService,
-        private languageHelper: JhiLanguageHelper
+        private languageHelper: JhiLanguageHelper,
+        private uploadMediaModelService: FileUploadModelService,
+        private eventManager: JhiEventManager
     ) {
     }
 
@@ -36,6 +46,7 @@ export class SettingsComponent implements OnInit {
         });
         this.isSavingBasic = false;
         this.isEditingBasic = false;
+        this.registerChangeInFiles();
     }
 
     saveBasic() {
@@ -90,5 +101,24 @@ export class SettingsComponent implements OnInit {
             login: account.login,
             imageUrl: account.imageUrl
         };
+    }
+
+    registerChangeInFiles() {
+        this.eventSubscriber = this.eventManager.subscribe(
+            'filesModification',
+            (response) => this.updateFiles(response.obj)
+        );
+    }
+
+    updateFiles(urls: Url[]) {
+        this.settingsAccount.imageUrl = urls[0].path;
+    }
+
+    uploadMedia() {
+        const url = new Url();
+        url.entityType = 'URL';
+        url.entityId = 1;
+        url.sequence = 1;
+        this.modalRef = this.uploadMediaModelService.open(url);
     }
 }
