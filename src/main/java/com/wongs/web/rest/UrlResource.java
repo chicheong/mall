@@ -144,4 +144,27 @@ public class UrlResource {
         return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
     }
 
+    /**
+     * POST  /urls : Create a new url.
+     *
+     * @param urlDTO the urlDTO to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new urlDTO, or with status 400 (Bad Request) if the url has already an ID
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @PostMapping("/urls")
+    @Timed
+    public ResponseEntity<UrlDTO[]> createUrls(@RequestBody UrlDTO[] urlDTOs) throws URISyntaxException {
+//        log.debug("REST request to save Url : {}", urlDTOs);
+        for (UrlDTO urlDTO : urlDTOs) {
+        	if (urlDTO.getId() != null) {
+                throw new BadRequestAlertException("A new url cannot already have an ID", ENTITY_NAME, "idexists");
+            }
+        }
+        for (UrlDTO urlDTO : urlDTOs) {
+            UrlDTO result = urlService.save(urlDTO);
+        }        
+        return ResponseEntity.created(new URI("/api/urls/"))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, ""))
+            .body(urlDTOs);
+    }
 }

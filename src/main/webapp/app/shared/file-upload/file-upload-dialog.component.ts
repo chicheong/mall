@@ -19,8 +19,9 @@ export class FileUploadDialogComponent implements OnInit {
     errors: Array<JhiAlert> = [];
     dragAreaClass = 'dragarea';
     @Input() fileExt = 'JPG, GIF, PNG';
-    @Input() maxFiles = 5;
+    @Input() maxFiles = 20;
     @Input() maxSize = 5; // 5MB
+    broadcastName = 'filesModification';
     // @Output() uploadStatus = new EventEmitter();
 
     url: Url;
@@ -34,7 +35,6 @@ export class FileUploadDialogComponent implements OnInit {
 
     ngOnInit() {
         if (!this.url) {
-            console.error('this.url does not exist!!');
             this.url = new Url();
         }
     }
@@ -89,7 +89,7 @@ export class FileUploadDialogComponent implements OnInit {
                     urls.push(url);
                     counter++;
                     if (counter === files.length) {
-                        this.eventManager.broadcast({ name: 'filesModification', content: 'OK', obj: urls});
+                        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: urls});
                         this.activeModal.dismiss('OK');
                     }
                 };
@@ -120,7 +120,7 @@ export class FileUploadDialogComponent implements OnInit {
                     urls.push(url);
                     counter++;
                     if (counter === files.length) {
-                        this.eventManager.broadcast({ name: 'filesModification', content: 'OK', obj: urls});
+                        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: urls});
                         this.activeModal.dismiss('OK');
                     }
                 };
@@ -149,7 +149,7 @@ export class FileUploadDialogComponent implements OnInit {
                 {
                     type: 'danger',
                     msg: 'mallApp.fileUpload.error.maxFile',
-                    params: { maxFile: this.maxFiles }
+                    params: { maxFiles: this.maxFiles }
                 }
             );
         }

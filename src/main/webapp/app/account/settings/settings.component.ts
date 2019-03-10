@@ -5,10 +5,14 @@ import { Subscription } from 'rxjs/Subscription';
 
 import { Principal, AccountService, JhiLanguageHelper, FileUploadModelService } from '../../shared';
 import { Shop, ShopService } from '../../entities/shop';
-import { Url } from '../../entities/url';
+import { Url, UrlService } from '../../entities/url';
 
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
+export const enum SettingsComponentUploadType {
+    USERIMAGE = 'userImageModification',
+    USERFILE = 'userFileModification',
+}
 @Component({
     selector: 'jhi-settings',
     templateUrl: './settings.component.html'
@@ -29,6 +33,7 @@ export class SettingsComponent implements OnInit {
     constructor(
         private account: AccountService,
         private shopService: ShopService,
+        private urlService: UrlService,
         private principal: Principal,
         private languageService: JhiLanguageService,
         private languageHelper: JhiLanguageHelper,
@@ -46,7 +51,8 @@ export class SettingsComponent implements OnInit {
         });
         this.isSavingBasic = false;
         this.isEditingBasic = false;
-        this.registerChangeInFiles();
+        this.registerChangeInUserImage();
+        this.registerChangeInUserFile();
     }
 
     saveBasic() {
@@ -103,22 +109,39 @@ export class SettingsComponent implements OnInit {
         };
     }
 
-    registerChangeInFiles() {
+    registerChangeInUserImage() {
         this.eventSubscriber = this.eventManager.subscribe(
-            'filesModification',
-            (response) => this.updateFiles(response.obj)
+            SettingsComponentUploadType.USERIMAGE,
+            (response) => this.updateUserImage(response.obj)
         );
     }
 
-    updateFiles(urls: Url[]) {
+    registerChangeInUserFile() {
+        this.eventSubscriber = this.eventManager.subscribe(
+            SettingsComponentUploadType.USERFILE,
+            (response) => this.updateUserFile(response.obj)
+        );
+    }
+
+    updateUserImage(urls: Url[]) {
         this.settingsAccount.imageUrl = urls[0].path;
     }
 
-    uploadMedia() {
+    updateUserFile(urls: Url[]) {
+        urls.forEach((url) => {
+            this.urlService.create(url);
+        });
+    }
+
+    uploadUserImage() {
+        this.modalRef = this.uploadMediaModelService.open(null, null, 1, null, SettingsComponentUploadType.USERIMAGE);
+    }
+
+    uploadFile() {
         const url = new Url();
-        url.entityType = 'URL';
+        url.entityType = 'User';
         url.entityId = 1;
         url.sequence = 1;
-        this.modalRef = this.uploadMediaModelService.open(url);
+        this.modalRef = this.uploadMediaModelService.open(url, null, null, null, SettingsComponentUploadType.USERFILE);
     }
 }

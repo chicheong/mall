@@ -99,7 +99,7 @@
 		          		alt="">
 	            </div>
 		        <div class="text-center">
-					<button *ngIf="isEditingBasic" type="button" [disabled]="isSavingBasic" class="btn btn-primary" (click)="uploadMedia()">
+					<button *ngIf="isEditingBasic" type="button" [disabled]="isSavingBasic" class="btn btn-primary" (click)="uploadUserImage()">
 				        <span class="fa fa-upload"></span>&nbsp;<span jhiTranslate="entity.action.upload"> Upload</span>
 				    </button>
 				</div>
@@ -108,9 +108,18 @@
     </form>
 </div>
 <div *ngIf="settingsAccount" class="row">
-	<button [disabled]="isSavingBasic" class="btn btn-danger" (click)="createMyShop()">
-		<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="settings.form.createmyshop">Create My Shop</span>
-	</button>
+    <div>
+        <button [disabled]="isSavingBasic" class="btn btn-primary" (click)="uploadFile()">
+            <span class="fa fa-upload"></span>&nbsp;<span jhiTranslate="entity.action.upload"> Upload</span>
+        </button>
+    </div>
+    &nbsp;&nbsp;
+    <div>
+        <button [disabled]="isSavingBasic" class="btn btn-danger" (click)="createMyShop()">
+            <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="settings.form.createmyshop">Create My Shop</span>
+        </button>
+    </div>   
+
 </div>
 
 <div>
