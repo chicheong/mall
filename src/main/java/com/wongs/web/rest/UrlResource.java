@@ -145,19 +145,18 @@ public class UrlResource {
     }
 
     /**
-     * POST  /urls : Create a new url.
+     * POST  /urls/multiple : Create new urls.
      *
      * @param urlDTO the urlDTO to create
      * @return the ResponseEntity with status 201 (Created) and with body the new urlDTO, or with status 400 (Bad Request) if the url has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
-    @PostMapping("/urls")
+    @PostMapping("/urls/multiple")
     @Timed
-    public ResponseEntity<UrlDTO[]> createUrls(@RequestBody UrlDTO[] urlDTOs) throws URISyntaxException {
-//        log.debug("REST request to save Url : {}", urlDTOs);
+    public ResponseEntity<List<UrlDTO>> createUrls(@RequestBody List<UrlDTO> urlDTOs) throws URISyntaxException {
         for (UrlDTO urlDTO : urlDTOs) {
         	if (urlDTO.getId() != null) {
-                throw new BadRequestAlertException("A new url cannot already have an ID", ENTITY_NAME, "idexists");
+                throw new BadRequestAlertException("new urls cannot already have ID(s)", ENTITY_NAME, "idexists");
             }
         }
         for (UrlDTO urlDTO : urlDTOs) {

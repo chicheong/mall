@@ -128,9 +128,9 @@ export class SettingsComponent implements OnInit {
     }
 
     updateUserFile(urls: Url[]) {
-        urls.forEach((url) => {
-            this.urlService.create(url);
-        });
+        this.urlService.createMultiple(urls).subscribe((urlsResponse: HttpResponse<Url[]>) => {
+            console.log(urlsResponse.body);
+        }, (res: HttpErrorResponse) => this.error = 'ERROR');
     }
 
     uploadUserImage() {

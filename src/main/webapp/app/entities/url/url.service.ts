@@ -24,6 +24,15 @@ export class UrlService {
             .map((res: EntityResponseType) => this.convertResponse(res));
     }
 
+    createMultiple(urls: Url[]): Observable<HttpResponse<Url[]>> {
+        const copies: Url[] = [];
+        urls.forEach((url) => {
+            copies.push(this.convert(url));
+        });
+        return this.http.post<Url[]>(this.resourceUrl + '/multiple', copies, { observe: 'response' })
+            .map((res: HttpResponse<Url[]>) => this.convertArrayResponse(res));
+    }
+
     update(url: Url): Observable<EntityResponseType> {
         const copy = this.convert(url);
         return this.http.put<Url>(this.resourceUrl, copy, { observe: 'response' })

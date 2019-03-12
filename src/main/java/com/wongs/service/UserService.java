@@ -43,7 +43,9 @@ import com.wongs.service.dto.UserInfoDTO;
 import com.wongs.service.mapper.MyAccountMapper;
 import com.wongs.service.mapper.ShopMapper;
 import com.wongs.service.mapper.UserInfoMapper;
+import com.wongs.service.util.FileUtil;
 import com.wongs.service.util.RandomUtil;
+import com.wongs.service.util.FileUtil.FILETYPE;
 
 /**
  * Service class for managing users.
@@ -254,12 +256,8 @@ public class UserService {
                 user.setEmail(email);
                 user.setLangKey(langKey);
                 if (StringUtils.isNotBlank(imageUrl)){
-                	Decoder decoder = Base64.getDecoder();
-                	byte[] image = decoder.decode(imageUrl.substring(imageUrl.indexOf("base64,") + 7));
-                	Path targetPath = Paths.get("C:\\xampp\\htdocs\\img\\", user.getEmail());
                 	try {
-        				Files.write(image, targetPath.toFile());
-        				user.setImageUrl("http://localhost/img/" + user.getEmail());
+                		user.setImageUrl(FileUtil.saveAndGetFilePath(FILETYPE.IMAGE, user.getEmail(), imageUrl));
         			} catch (IOException e) {
         				log.error(e.toString());
         			}

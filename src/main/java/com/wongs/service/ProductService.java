@@ -48,6 +48,8 @@ import com.wongs.service.mapper.ProductMapper;
 import com.wongs.service.mapper.ProductStyleMapper;
 import com.wongs.service.mapper.QuantityMapper;
 import com.wongs.service.mapper.UrlMapper;
+import com.wongs.service.util.FileUtil;
+import com.wongs.service.util.FileUtil.FILETYPE;
 
 /**
  * Service Implementation for managing Product.
@@ -223,15 +225,11 @@ public class ProductService {
 	        	quantities.stream().filter(quantity -> !quantityIds.contains(quantity.getId())).forEach(quantity -> quantityRepository.delete(quantity));
         	}
         }
-        Decoder decoder = Base64.getDecoder();
         for (UrlDTO urlDTO : productDTO.getUrls()) {
         	if (urlDTO.getId() == null) {
-        		byte[] image = decoder.decode(urlDTO.getPath().substring(urlDTO.getPath().indexOf("base64,") + 7));
-            	Path targetPath = Paths.get("C:\\xampp\\htdocs\\img\\", urlDTO.getFileName());
             	try {
-    				Files.write(image, targetPath.toFile());
     	        	urlDTO.setEntityId(product.getId());
-    	        	urlDTO.setPath("http://localhost/img/" + urlDTO.getFileName());
+    	        	urlDTO.setPath(FileUtil.saveAndGetFilePath(FILETYPE.IMAGE, urlDTO.getFileName(), urlDTO.getPath()));
     	        	urlDTO.setCreatedBy(product.getCreatedBy());
     	        	urlDTO.setCreatedDate(product.getCreatedDate());
     	        	urlDTO.setLastModifiedBy(product.getLastModifiedBy());
