@@ -31,6 +31,15 @@ public final class FileUtil {
     private FileUtil() {
     }
 
+    /**
+     * Passing the base 64 String from web, save it and return the path
+     * 
+     * @param fileType
+     * @param fileName
+     * @param base64String
+     * @return
+     * @throws IOException
+     */
     public static String saveAndGetFilePath(FILETYPE fileType, String fileName, String base64String) throws IOException {
     	Decoder decoder = Base64.getDecoder();
     	byte[] image = decoder.decode(base64String.substring(base64String.indexOf("base64,") + 7));
@@ -39,32 +48,5 @@ public final class FileUtil {
     	Files.write(image, targetPath.toFile());
     	
     	return String.format("http://localhost/%s/%s", fileType.getAbbreviation(), fileName);
-    }
-    
-    /**
-     * Generate a password.
-     *
-     * @return the generated password
-     */
-    public static String generatePassword() {
-        return RandomStringUtils.randomAlphanumeric(DEF_COUNT);
-    }
-
-    /**
-     * Generate an activation key.
-     *
-     * @return the generated activation key
-     */
-    public static String generateActivationKey() {
-        return RandomStringUtils.randomNumeric(DEF_COUNT);
-    }
-
-    /**
-     * Generate a reset key.
-     *
-     * @return the generated reset key
-     */
-    public static String generateResetKey() {
-        return RandomStringUtils.randomNumeric(DEF_COUNT);
     }
 }
