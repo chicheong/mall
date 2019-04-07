@@ -41,6 +41,8 @@ public class ProductDTO implements Serializable {
 
     private ProductStatus status;
 
+    private String permission;
+    
     private String createdBy;
 
     private ZonedDateTime createdDate;
@@ -144,9 +146,17 @@ public class ProductDTO implements Serializable {
 
     public void setStatus(ProductStatus status) {
         this.status = status;
-    }
+    }    
 
-    public String getCreatedBy() {
+    public String getPermission() {
+		return permission;
+	}
+
+	public void setPermission(String permission) {
+		this.permission = permission;
+	}
+
+	public String getCreatedBy() {
         return createdBy;
     }
 

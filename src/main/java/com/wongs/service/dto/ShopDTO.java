@@ -28,6 +28,8 @@ public class ShopDTO implements Serializable {
     private String description;
 
     private CommonStatus status;
+    
+    private String permission;
 
     private String createdBy;
 
@@ -96,6 +98,14 @@ public class ShopDTO implements Serializable {
     public void setStatus(CommonStatus status) {
         this.status = status;
     }
+    
+    public String getPermission() {
+		return permission;
+	}
+
+	public void setPermission(String permission) {
+		this.permission = permission;
+	}
 
     public String getCreatedBy() {
         return createdBy;

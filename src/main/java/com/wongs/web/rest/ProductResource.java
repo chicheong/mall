@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Calendar;
@@ -61,11 +62,11 @@ public class ProductResource {
         if (productDTO.getId() != null) {
             throw new BadRequestAlertException("A new product cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Date today = Calendar.getInstance().getTime();
+        Instant now = Instant.now();
         productDTO.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
-        productDTO.setCreatedDate(ZonedDateTime.ofInstant(today.toInstant(), ZoneId.systemDefault()));
+        productDTO.setCreatedDate(ZonedDateTime.ofInstant(now, ZoneId.systemDefault()));
         productDTO.setLastModifiedBy(SecurityUtils.getCurrentUserLogin().get());
-        productDTO.setLastModifiedDate(ZonedDateTime.ofInstant(today.toInstant(), ZoneId.systemDefault()));
+        productDTO.setLastModifiedDate(ZonedDateTime.ofInstant(now, ZoneId.systemDefault()));
         
         ProductDTO result = productService.save(productDTO);
         log.error(ResponseEntity.created(new URI("/api/products/" + result.getId()))
@@ -90,9 +91,8 @@ public class ProductResource {
     @Timed
     public ResponseEntity<ProductDTO> updateProduct(@Valid @RequestBody ProductDTO productDTO) throws URISyntaxException {
         log.debug("REST request to update Product : {}", productDTO);
-        Date today = Calendar.getInstance().getTime();
         productDTO.setLastModifiedBy(SecurityUtils.getCurrentUserLogin().get());
-        productDTO.setLastModifiedDate(ZonedDateTime.ofInstant(today.toInstant(), ZoneId.systemDefault()));
+        productDTO.setLastModifiedDate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
         
         if (productDTO.getId() == null) {
             return createProduct(productDTO);

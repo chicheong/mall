@@ -43,7 +43,7 @@ export const shopRoute: Routes = [
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.shop.home.title'
         },
-        canActivate: [UserRouteAccessService]
+        canActivate: []
     }
 ];
 

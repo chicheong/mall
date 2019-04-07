@@ -27,6 +27,7 @@ import com.wongs.domain.ProductItem;
 import com.wongs.domain.ProductStyle;
 import com.wongs.domain.Quantity;
 import com.wongs.domain.Url;
+import com.wongs.domain.User;
 import com.wongs.domain.enumeration.ProductStyleType;
 import com.wongs.repository.PriceRepository;
 import com.wongs.repository.ProductItemRepository;
@@ -38,6 +39,7 @@ import com.wongs.repository.search.ProductItemSearchRepository;
 import com.wongs.repository.search.ProductSearchRepository;
 import com.wongs.repository.search.ProductStyleSearchRepository;
 import com.wongs.repository.search.QuantitySearchRepository;
+import com.wongs.security.SecurityUtils;
 import com.wongs.service.dto.ProductDTO;
 import com.wongs.service.dto.ProductItemDTO;
 import com.wongs.service.dto.ProductStyleDTO;
@@ -356,5 +358,25 @@ public class ProductService {
         log.debug("Request to get Products By Shop Id : {}", id);
         Set<Product> products = productRepository.findByShopId(id);
         return productMapper.toDto(products);
+    }
+    
+    
+    /**
+     * @param id
+     * @return list of in-charge users
+     */
+    public Set<User> getUsersInCharge(Product product) {
+    	Set<User> usersInCharge = shopService.getUsersInCharge(product.getShop().getId());
+    	
+    	String permission = "";
+    	SecurityUtils.getCurrentUserLogin().ifPresent((login) -> {
+    		
+    		usersInCharge.forEach((user) -> {
+    			if(user.getLogin().equalsIgnoreCase(login))
+    				permission = 
+
+    		});
+    	});
+    	return usersInCharge;
     }
 }
