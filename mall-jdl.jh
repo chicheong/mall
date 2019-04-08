@@ -348,5 +348,5 @@ relationship ManyToMany {
 paginate UserInfo, MyAccount, Company, Department, Office, Country, State, Shop, Category, Product, ProductItem, MyOrder, OrderItem, Price, Quantity, Url, Card, Shipping, ShippingType, Payment, PaymentCard with pagination
 paginate Address with pager
 paginate Delegation, OrderStatusHistory, ProductHistory, ProductItemHistory, ShippingStatusHistory, PaymentStatusHistory with infinite-scroll
-service UserInfo, MyAccount, Product, MyOrder, Shop, Url, Shipping, Payment, Address with serviceClass
-dto UserInfo, MyAccount, Product, MyOrder, Shop, ProductItem, ProductStyle, Price, Quantity, Url, Shipping, Payment, Address with mapstruct
+service UserInfo, MyAccount, Product, MyOrder, Shop, Url, Shipping, Payment, Address, Delegation with serviceClass
+dto UserInfo, MyAccount, Product, MyOrder, Shop, ProductItem, ProductStyle, Price, Quantity, Url, Shipping, Payment, Address, Delegation with mapstruct

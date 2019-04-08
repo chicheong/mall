@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.google.common.io.Files;
+import com.wongs.domain.MyAccount;
 import com.wongs.domain.Price;
 import com.wongs.domain.Product;
 import com.wongs.domain.ProductItem;
@@ -365,18 +366,13 @@ public class ProductService {
      * @param id
      * @return list of in-charge users
      */
-    public Set<User> getUsersInCharge(Product product) {
-    	Set<User> usersInCharge = shopService.getUsersInCharge(product.getShop().getId());
+    public Set<MyAccount> getUsersInCharge(Product product) {
+    	Set<MyAccount> accountsInCharge = shopService.getAccountsInCharge(product.getShop().getId());
     	
     	String permission = "";
     	SecurityUtils.getCurrentUserLogin().ifPresent((login) -> {
-    		
-    		usersInCharge.forEach((user) -> {
-    			if(user.getLogin().equalsIgnoreCase(login))
-    				permission = 
 
-    		});
     	});
-    	return usersInCharge;
+    	return accountsInCharge;
     }
 }

@@ -1,5 +1,6 @@
 package com.wongs.service;
 
+import com.wongs.domain.MyAccount;
 import com.wongs.domain.Shop;
 import com.wongs.domain.User;
 import com.wongs.domain.enumeration.DelegationType;
@@ -9,7 +10,6 @@ import com.wongs.service.dto.ShopDTO;
 import com.wongs.service.mapper.ShopMapper;
 import com.wongs.service.util.DateUtil;
 
-import org.apache.hadoop.mapred.gethistory_jsp;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -146,25 +146,24 @@ public class ShopService {
     
     /**
      * @param id
-     * @return list of in-charge users
+     * @return list of in-charge accounts
      */
-    public Set<User> getUsersInCharge(Long id) {
+    public Set<MyAccount> getAccountsInCharge(Long id) {
     	Shop shop = shopRepository.findOne(id);
-    	Set<User> usersInCharge = new HashSet<User>();
+    	Set<MyAccount> accountsInCharge = new HashSet<MyAccount>();
+    	Set<Long> accountIdsInCharge = new HashSet<Long>();
     	shop.getAccounts().forEach((account) -> {
-    		account.getDelegations().stream()
-    			.filter(delegation -> DelegationType.ACCOUNT.equals(delegation.getType()))
-    			.filter(delegation -> DateUtil.withinRange(ZonedDateTime.now(ZoneId.systemDefault()), delegation.getFrom(), delegation.getTo()))
-    			.forEach(delegation -> {
-    				myAccountService.findOne(Long.valueOf(delegation.getDelegateId())).getUserInfos().forEach((userInfo) -> {
-    	    			usersInCharge.add(userInfo.getUser());
-    	    		});
-    			});
-    		
-    		account.getUserInfos().forEach((userInfo) -> {
-    			usersInCharge.add(userInfo.getUser());
-    		});
+//    		account.getDelegations().stream()
+//    			.filter(delegation -> DelegationType.ACCOUNT.equals(delegation.getType()))
+//    			.filter(delegation -> DateUtil.withinRange(ZonedDateTime.now(ZoneId.systemDefault()), delegation.getFrom(), delegation.getTo()))
+//    			.forEach(delegation -> {
+//    				myAccountService.findOne(Long.valueOf(delegation.getDelegateId())).getUserInfos().forEach((userInfo) -> {
+//    					accountsInCharge.add(userInfo.getUser());
+//    	    		});
+//    			});
+    		accountIdsInCharge.add(account.getId());
+    		accountsInCharge.add(account);
     	});
-    	return usersInCharge;
+    	return accountsInCharge;
     }
 }
