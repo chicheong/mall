@@ -36,6 +36,8 @@
     <include file="config/liquibase/changelog/20180621083508_added_entity_PaymentStatusHistory.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180621083505_added_entity_Card.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180621083510_added_entity_PaymentCard.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180221114432_added_entity_Delegation.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180221114444_added_entity_OrderItem.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-changelog - JHipster will add liquibase changelogs here -->
     <include file="config/liquibase/changelog/20170727090126_added_entity_constraints_UserInfo.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180221114424_added_entity_constraints_MyAccount.xml" relativeToChangelogFile="false"/>
@@ -61,5 +63,8 @@
     <include file="config/liquibase/changelog/20180621083509_added_entity_constraints_Payment.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180621083508_added_entity_constraints_PaymentStatusHistory.xml" relativeToChangelogFile="false"/>
     <include file="config/liquibase/changelog/20180621083505_added_entity_constraints_Card.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180221114432_added_entity_constraints_Delegation.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180221114444_added_entity_constraints_OrderItem.xml" relativeToChangelogFile="false"/>
+    <include file="config/liquibase/changelog/20180621083510_added_entity_constraints_PaymentCard.xml" relativeToChangelogFile="false"/>
     <!-- jhipster-needle-liquibase-add-constraints-changelog - JHipster will add liquibase constraints changelogs here -->
 </databaseChangeLog>

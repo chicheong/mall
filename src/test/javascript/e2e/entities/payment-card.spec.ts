@@ -43,6 +43,7 @@ describe('PaymentCard e2e test', () => {
         expect(paymentCardDialogPage.getExpirationYearInput()).toMatch('expirationYear');
         paymentCardDialogPage.setCvcInput('cvc');
         expect(paymentCardDialogPage.getCvcInput()).toMatch('cvc');
+        paymentCardDialogPage.paymentSelectLastOption();
         paymentCardDialogPage.save();
         expect(paymentCardDialogPage.getSaveButton().isPresent()).toBeFalsy();
     });
@@ -74,6 +75,7 @@ export class PaymentCardDialogPage {
     expirationMonthInput = element(by.css('input#field_expirationMonth'));
     expirationYearInput = element(by.css('input#field_expirationYear'));
     cvcInput = element(by.css('input#field_cvc'));
+    paymentSelect = element(by.css('select#field_payment'));
 
     getModalTitle() {
         return this.modalTitle.getAttribute('jhiTranslate');
@@ -117,6 +119,22 @@ export class PaymentCardDialogPage {
 
     getCvcInput = function() {
         return this.cvcInput.getAttribute('value');
+    };
+
+    paymentSelectLastOption = function() {
+        this.paymentSelect.all(by.tagName('option')).last().click();
+    };
+
+    paymentSelectOption = function(option) {
+        this.paymentSelect.sendKeys(option);
+    };
+
+    getPaymentSelect = function() {
+        return this.paymentSelect;
+    };
+
+    getPaymentSelectedOption = function() {
+        return this.paymentSelect.element(by.css('option:checked')).getText();
     };
 
     save() {

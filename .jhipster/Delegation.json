@@ -50,8 +50,8 @@
     ],
     "changelogDate": "20180221114432",
     "entityTableName": "delegation",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "infinite-scroll",
-    "service": "no",
+    "service": "serviceClass",
     "jpaMetamodelFiltering": false
 }

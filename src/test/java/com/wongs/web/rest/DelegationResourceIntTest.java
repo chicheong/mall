@@ -4,7 +4,10 @@ import com.wongs.MallApp;
 
 import com.wongs.domain.Delegation;
 import com.wongs.repository.DelegationRepository;
+import com.wongs.service.DelegationService;
 import com.wongs.repository.search.DelegationSearchRepository;
+import com.wongs.service.dto.DelegationDTO;
+import com.wongs.service.mapper.DelegationMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -77,6 +80,12 @@ public class DelegationResourceIntTest {
     private DelegationRepository delegationRepository;
 
     @Autowired
+    private DelegationMapper delegationMapper;
+
+    @Autowired
+    private DelegationService delegationService;
+
+    @Autowired
     private DelegationSearchRepository delegationSearchRepository;
 
     @Autowired
@@ -98,7 +107,7 @@ public class DelegationResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final DelegationResource delegationResource = new DelegationResource(delegationRepository, delegationSearchRepository);
+        final DelegationResource delegationResource = new DelegationResource(delegationService);
         this.restDelegationMockMvc = MockMvcBuilders.standaloneSetup(delegationResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -138,9 +147,10 @@ public class DelegationResourceIntTest {
         int databaseSizeBeforeCreate = delegationRepository.findAll().size();
 
         // Create the Delegation
+        DelegationDTO delegationDTO = delegationMapper.toDto(delegation);
         restDelegationMockMvc.perform(post("/api/delegations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(delegation)))
+            .content(TestUtil.convertObjectToJsonBytes(delegationDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Delegation in the database
@@ -173,11 +183,12 @@ public class DelegationResourceIntTest {
 
         // Create the Delegation with an existing ID
         delegation.setId(1L);
+        DelegationDTO delegationDTO = delegationMapper.toDto(delegation);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restDelegationMockMvc.perform(post("/api/delegations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(delegation)))
+            .content(TestUtil.convertObjectToJsonBytes(delegationDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the Delegation in the database
@@ -259,10 +270,11 @@ public class DelegationResourceIntTest {
             .createdDate(UPDATED_CREATED_DATE)
             .lastModifiedBy(UPDATED_LAST_MODIFIED_BY)
             .lastModifiedDate(UPDATED_LAST_MODIFIED_DATE);
+        DelegationDTO delegationDTO = delegationMapper.toDto(updatedDelegation);
 
         restDelegationMockMvc.perform(put("/api/delegations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedDelegation)))
+            .content(TestUtil.convertObjectToJsonBytes(delegationDTO)))
             .andExpect(status().isOk());
 
         // Validate the Delegation in the database
@@ -294,11 +306,12 @@ public class DelegationResourceIntTest {
         int databaseSizeBeforeUpdate = delegationRepository.findAll().size();
 
         // Create the Delegation
+        DelegationDTO delegationDTO = delegationMapper.toDto(delegation);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restDelegationMockMvc.perform(put("/api/delegations")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(delegation)))
+            .content(TestUtil.convertObjectToJsonBytes(delegationDTO)))
             .andExpect(status().isCreated());
 
         // Validate the Delegation in the database
@@ -364,5 +377,28 @@ public class DelegationResourceIntTest {
         assertThat(delegation1).isNotEqualTo(delegation2);
         delegation1.setId(null);
         assertThat(delegation1).isNotEqualTo(delegation2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(DelegationDTO.class);
+        DelegationDTO delegationDTO1 = new DelegationDTO();
+        delegationDTO1.setId(1L);
+        DelegationDTO delegationDTO2 = new DelegationDTO();
+        assertThat(delegationDTO1).isNotEqualTo(delegationDTO2);
+        delegationDTO2.setId(delegationDTO1.getId());
+        assertThat(delegationDTO1).isEqualTo(delegationDTO2);
+        delegationDTO2.setId(2L);
+        assertThat(delegationDTO1).isNotEqualTo(delegationDTO2);
+        delegationDTO1.setId(null);
+        assertThat(delegationDTO1).isNotEqualTo(delegationDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(delegationMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(delegationMapper.fromId(null)).isNull();
     }
 }
