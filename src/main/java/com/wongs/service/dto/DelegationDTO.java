@@ -6,7 +6,11 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.Objects;
+import java.util.Optional;
+
 import com.wongs.domain.enumeration.DelegationType;
+import com.wongs.domain.Delegation;
+import com.wongs.domain.MyOrder;
 import com.wongs.domain.enumeration.CommonStatus;
 
 /**
@@ -36,6 +40,24 @@ public class DelegationDTO implements Serializable {
 
     private Long accountId;
 
+    public DelegationDTO() {
+        // Empty constructor needed for Jackson.
+    }
+
+    public DelegationDTO(Delegation delegation) {
+        this.id = delegation.getId();
+    	this.from = delegation.getFrom();
+    	this.to = delegation.getTo();
+    	this.type = delegation.getType();
+    	this.delegateId = delegation.getDelegateId();
+    	this.status = delegation.getStatus();
+    	this.createdBy = delegation.getCreatedBy();
+    	this.createdDate = delegation.getCreatedDate();
+    	this.lastModifiedBy = delegation.getLastModifiedBy();
+    	this.lastModifiedDate = delegation.getLastModifiedDate();
+    	this.accountId = Optional.of(delegation.getAccount()).get().getId();
+    }
+    
     public Long getId() {
         return id;
     }
