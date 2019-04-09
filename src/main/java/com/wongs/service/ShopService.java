@@ -41,12 +41,15 @@ public class ShopService {
     private final ShopSearchRepository shopSearchRepository;
     
     private final MyAccountService myAccountService;
+    private final DelegationService delegationService;
 
-    public ShopService(ShopMapper shopMapper, ShopRepository shopRepository, ShopSearchRepository shopSearchRepository, MyAccountService myAccountService) {
+    public ShopService(ShopMapper shopMapper, ShopRepository shopRepository, ShopSearchRepository shopSearchRepository, 
+    					MyAccountService myAccountService, DelegationService delegationService) {
         this.shopMapper = shopMapper;
     	this.shopRepository = shopRepository;
         this.shopSearchRepository = shopSearchRepository;
         this.myAccountService = myAccountService;
+        this.delegationService = delegationService;
     }
 
     /**

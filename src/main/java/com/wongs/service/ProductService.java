@@ -364,9 +364,9 @@ public class ProductService {
     
     /**
      * @param id
-     * @return list of in-charge users
+     * @return list of in-charge accounts
      */
-    public Set<MyAccount> getUsersInCharge(Product product) {
+    public Set<MyAccount> getAccountsInCharge(Product product) {
     	Set<MyAccount> accountsInCharge = shopService.getAccountsInCharge(product.getShop().getId());
     	
     	String permission = "";
