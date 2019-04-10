@@ -3,10 +3,17 @@ package com.wongs.service;
 import com.wongs.domain.MyAccount;
 import com.wongs.domain.Shop;
 import com.wongs.domain.User;
+import com.wongs.domain.enumeration.CommonStatus;
 import com.wongs.domain.enumeration.DelegationType;
+import com.wongs.permission.PermissionsConstants;
+import com.wongs.repository.MyAccountRepository;
 import com.wongs.repository.ShopRepository;
 import com.wongs.repository.search.ShopSearchRepository;
+import com.wongs.security.AuthoritiesConstants;
+import com.wongs.security.SecurityUtils;
+import com.wongs.service.dto.MyAccountDTO;
 import com.wongs.service.dto.ShopDTO;
+import com.wongs.service.dto.UserInfoDTO;
 import com.wongs.service.mapper.ShopMapper;
 import com.wongs.service.util.DateUtil;
 
@@ -40,14 +47,17 @@ public class ShopService {
     private final ShopRepository shopRepository;
     private final ShopSearchRepository shopSearchRepository;
     
+    private final UserInfoService userInfoService;
     private final MyAccountService myAccountService;
     private final DelegationService delegationService;
 
     public ShopService(ShopMapper shopMapper, ShopRepository shopRepository, ShopSearchRepository shopSearchRepository, 
-    					MyAccountService myAccountService, DelegationService delegationService) {
+    					UserInfoService userInfoService, MyAccountService myAccountService, 
+    					DelegationService delegationService) {
         this.shopMapper = shopMapper;
     	this.shopRepository = shopRepository;
         this.shopSearchRepository = shopSearchRepository;
+        this.userInfoService = userInfoService;
         this.myAccountService = myAccountService;
         this.delegationService = delegationService;
     }
@@ -147,26 +157,39 @@ public class ShopService {
         return result.map(shopMapper::toDto);
     }
     
+    
     /**
-     * @param id
-     * @return list of in-charge accounts
+     * @param shopId
+     * @param accountId
+     * @return permission code
      */
-    public Set<MyAccount> getAccountsInCharge(Long id) {
-    	Shop shop = shopRepository.findOne(id);
-    	Set<MyAccount> accountsInCharge = new HashSet<MyAccount>();
-    	Set<Long> accountIdsInCharge = new HashSet<Long>();
-    	shop.getAccounts().forEach((account) -> {
-//    		account.getDelegations().stream()
-//    			.filter(delegation -> DelegationType.ACCOUNT.equals(delegation.getType()))
-//    			.filter(delegation -> DateUtil.withinRange(ZonedDateTime.now(ZoneId.systemDefault()), delegation.getFrom(), delegation.getTo()))
-//    			.forEach(delegation -> {
-//    				myAccountService.findOne(Long.valueOf(delegation.getDelegateId())).getUserInfos().forEach((userInfo) -> {
-//    					accountsInCharge.add(userInfo.getUser());
-//    	    		});
-//    			});
-    		accountIdsInCharge.add(account.getId());
-    		accountsInCharge.add(account);
-    	});
-    	return accountsInCharge;
+    public String getPermission(Long shopId) {
+    	// Admin has all rights
+    	if (SecurityUtils.isCurrentUserInRole(AuthoritiesConstants.ADMIN))
+    		return PermissionsConstants.ALL;
+    	
+    	Shop shop = shopRepository.findOne(shopId);
+    	
+    	// Check if current account is in-charge account and assign all rights
+    	if (SecurityUtils.isAuthenticated()) {
+    		String login = SecurityUtils.getCurrentUserLogin().get();
+    		UserInfoDTO userInfo = userInfoService.findOneWithAccountsByUserLogin(login);
+    		
+    		MyAccountDTO myAccount = myAccountService.findOne(userInfo.getAccountId());
+        	for (MyAccount inChargeAccount : shop.getAccounts()) {
+        		if (inChargeAccount.getId().equals(myAccount.getId()) || 
+        				myAccount.getDelegations().stream()
+        					.filter(delegation -> DelegationType.ACCOUNT.equals(delegation.getType()))
+        					.filter(delegation -> DateUtil.withinRange(ZonedDateTime.now(ZoneId.systemDefault()), delegation.getFrom(), delegation.getTo()))
+        					.anyMatch(delegation -> Long.valueOf(delegation.getDelegateId()).equals(inChargeAccount.getId()))) {
+        			return PermissionsConstants.ALL;
+        		}
+        	}
+    	}
+    	// if user is not logged in or do not have corresponding right
+    	if (shop.getStatus().equals(CommonStatus.INACTIVE))
+    		return null;
+    	else
+    		return PermissionsConstants.READ;
     }
 }

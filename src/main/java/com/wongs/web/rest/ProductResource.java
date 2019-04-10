@@ -1,6 +1,7 @@
 package com.wongs.web.rest;
 
 import com.codahale.metrics.annotation.Timed;
+import com.wongs.permission.PermissionUtils;
 import com.wongs.security.SecurityUtils;
 import com.wongs.service.ProductService;
 import com.wongs.web.rest.errors.BadRequestAlertException;
@@ -62,16 +63,22 @@ public class ProductResource {
         if (productDTO.getId() != null) {
             throw new BadRequestAlertException("A new product cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        // Check user permission
+        if (!(PermissionUtils.isCreatable(productService.getPermission(productDTO))))
+        	throw new BadRequestAlertException("You do not have permssion to create a product", ENTITY_NAME, "permission");
+        
         Instant now = Instant.now();
         productDTO.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
         productDTO.setCreatedDate(ZonedDateTime.ofInstant(now, ZoneId.systemDefault()));
         productDTO.setLastModifiedBy(SecurityUtils.getCurrentUserLogin().get());
         productDTO.setLastModifiedDate(ZonedDateTime.ofInstant(now, ZoneId.systemDefault()));
-        
+
         ProductDTO result = productService.save(productDTO);
+        // Get product with List after service committed
+        result = productService.findOneWithLists(result.getId());
         log.error(ResponseEntity.created(new URI("/api/products/" + result.getId()))
-        .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-        .body(result).toString());
+	        .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+	        .body(result).toString());
         
         return ResponseEntity.created(new URI("/api/products/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
@@ -91,6 +98,11 @@ public class ProductResource {
     @Timed
     public ResponseEntity<ProductDTO> updateProduct(@Valid @RequestBody ProductDTO productDTO) throws URISyntaxException {
         log.debug("REST request to update Product : {}", productDTO);
+        
+        // Check user permission
+        if (!(PermissionUtils.isUpdatable(productService.getPermission(productDTO))))
+        	throw new BadRequestAlertException("You do not have permssion to update a product", ENTITY_NAME, "permission");
+        
         productDTO.setLastModifiedBy(SecurityUtils.getCurrentUserLogin().get());
         productDTO.setLastModifiedDate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
         
@@ -144,6 +156,11 @@ public class ProductResource {
     @Timed
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         log.debug("REST request to delete Product : {}", id);
+        
+        // Check user permission
+        if (!(PermissionUtils.isDeletable(productService.getPermission(id))))
+        	throw new BadRequestAlertException("You do not have permssion to delete a product", ENTITY_NAME, "permission");
+        
         productService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }

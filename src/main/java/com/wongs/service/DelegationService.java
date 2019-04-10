@@ -109,7 +109,7 @@ public class DelegationService {
         return result.map(delegationMapper::toDto);
     }
     
-    
+    // not in use
     @Transactional(readOnly = true)
     public Set<Delegation> findByTypeAndDelegationIdList(String type, Collection<String> ids) {
         log.debug("Request to find Delegations for type {} and {}", type, ids);

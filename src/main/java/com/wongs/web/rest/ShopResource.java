@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.codahale.metrics.annotation.Timed;
 import com.wongs.domain.Product;
+import com.wongs.permission.PermissionUtils;
 import com.wongs.service.ProductService;
 import com.wongs.service.ShopService;
 import com.wongs.service.UrlService;
@@ -76,6 +77,7 @@ public class ShopResource {
         if (shopDTO.getId() != null) {
             throw new BadRequestAlertException("A new shop cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        
         ShopDTO result = shopService.save(shopDTO);
         return ResponseEntity.created(new URI("/api/shops/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
@@ -95,6 +97,10 @@ public class ShopResource {
     @Timed
     public ResponseEntity<ShopDTO> updateShop(@Valid @RequestBody ShopDTO shopDTO) throws URISyntaxException {
         log.debug("REST request to update Shop : {}", shopDTO);
+        // Check user permission
+        if (!(PermissionUtils.isUpdatable(shopService.getPermission(shopDTO.getId()))))
+        	throw new BadRequestAlertException("You do not have permssion to update a shop", ENTITY_NAME, "permission");
+        
         if (shopDTO.getId() == null) {
             return createShop(shopDTO);
         }
@@ -167,6 +173,10 @@ public class ShopResource {
     @Timed
     public ResponseEntity<Void> deleteShop(@PathVariable Long id) {
         log.debug("REST request to delete Shop : {}", id);
+        // Check user permission
+        if (!(PermissionUtils.isDeletable(shopService.getPermission(id))))
+        	throw new BadRequestAlertException("You do not have permssion to delete a shop", ENTITY_NAME, "permission");
+        
         shopService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }

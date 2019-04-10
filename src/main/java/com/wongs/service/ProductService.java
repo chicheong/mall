@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -318,6 +319,7 @@ public class ProductService {
 	        });
 	        Set<Url> urls = urlService.findByEntityTypeAndEntityId(Product.class.getSimpleName(), id);
 	        urls.forEach(url -> dto.getUrls().add(urlMapper.toDto(url)));
+	        dto.setPermission(this.getPermission(dto));
 	        return dto;
         }
     }
@@ -361,18 +363,23 @@ public class ProductService {
         return productMapper.toDto(products);
     }
     
+    /**
+     * product rights are determined by shop in-charge
+     * 
+     * @param product
+     * @return permission code
+     */
+    public String getPermission(ProductDTO product) {
+    	return shopService.getPermission(product.getShopId());
+    }
     
     /**
-     * @param id
-     * @return list of in-charge accounts
+     * product rights are determined by shop in-charge
+     * 
+     * @param product
+     * @return permission code
      */
-    public Set<MyAccount> getAccountsInCharge(Product product) {
-    	Set<MyAccount> accountsInCharge = shopService.getAccountsInCharge(product.getShop().getId());
-    	
-    	String permission = "";
-    	SecurityUtils.getCurrentUserLogin().ifPresent((login) -> {
-
-    	});
-    	return accountsInCharge;
+    public String getPermission(Long productId) {
+    	return this.getPermission(this.findOne(productId));
     }
 }

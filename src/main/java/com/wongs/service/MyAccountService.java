@@ -89,6 +89,7 @@ public class MyAccountService {
         MyAccountDTO myAccountDTO = myAccountMapper.toDto(myAccount);
         myAccountDTO.setShops(shopMapper.toDto(myAccount.getShops()));
         myAccountDTO.setMyOrder(myOrderService.findByAccountAndStatus(myAccount, OrderStatus.PENDING));
+        myAccountDTO.setDelegations(myAccount.getDelegations());
         return myAccountDTO;
     }
     

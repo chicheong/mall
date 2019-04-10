@@ -7,7 +7,7 @@ public final class PermissionsConstants {
 
     public static final String CREATE = "C";
 
-    public static final String REARD = "R";
+    public static final String READ = "R";
 
     public static final String UPDATE = "U";
     

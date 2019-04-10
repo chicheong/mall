@@ -15,21 +15,34 @@ public final class PermissionUtils {
     }
 
     /**
-     * Get the login of the current user.
-     *
-     * @return the login of the current user
+     * @param permissionCode
+     * @return
      */
-    public static Optional<String> getCurrentUserLogin() {
-        SecurityContext securityContext = SecurityContextHolder.getContext();
-        return Optional.ofNullable(securityContext.getAuthentication())
-            .map(authentication -> {
-                if (authentication.getPrincipal() instanceof UserDetails) {
-                    UserDetails springSecurityUser = (UserDetails) authentication.getPrincipal();
-                    return springSecurityUser.getUsername();
-                } else if (authentication.getPrincipal() instanceof String) {
-                    return (String) authentication.getPrincipal();
-                }
-                return null;
-            });
+    public static boolean isCreatable(String permissionCode) {
+    	return Optional.ofNullable(permissionCode).map(code ->  code.contains(PermissionsConstants.CREATE)).orElse(false);
+    }
+    
+    /**
+     * @param permissionCode
+     * @return
+     */
+    public static boolean isReadable(String permissionCode) {
+    	return Optional.ofNullable(permissionCode).map(code ->  code.contains(PermissionsConstants.READ)).orElse(false);
+    }
+    
+    /**
+     * @param permissionCode
+     * @return
+     */
+    public static boolean isUpdatable(String permissionCode) {
+    	return Optional.ofNullable(permissionCode).map(code ->  code.contains(PermissionsConstants.UPDATE)).orElse(false);
+    }
+    
+    /**
+     * @param permissionCode
+     * @return
+     */
+    public static boolean isDeletable(String permissionCode) {
+    	return Optional.ofNullable(permissionCode).map(code ->  code.contains(PermissionsConstants.DELETE)).orElse(false);
     }
 }
