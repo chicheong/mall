@@ -187,7 +187,7 @@ public class ShopService {
         	}
     	}
     	// if user is not logged in or do not have corresponding right
-    	if (shop.getStatus().equals(CommonStatus.INACTIVE))
+    	if (CommonStatus.INACTIVE.equals(shop.getStatus()))
     		return null;
     	else
     		return PermissionsConstants.READ;

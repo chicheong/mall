@@ -264,7 +264,7 @@ public class ProductService {
         oUrls.stream().filter(url -> !urlIds.contains(url.getId())).forEach(url -> urlService.delete(url.getId()));
 //        return productMapper.toDto(product);
 //        return this.findOneWithLists(product.getId());
-        return productDTO;
+        return productMapper.toDto(product);
     }
     
 

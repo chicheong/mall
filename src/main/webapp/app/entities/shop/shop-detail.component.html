@@ -35,7 +35,7 @@
 			<div class="row">
 				<div class="card col-lg-3 col-md-4 col-sm-6 col-xs-12 thumb" *ngFor="let product of shop.products ;trackBy: trackId">
 	                <a class="thumbnail" target="_self" [routerLink]="['../../product', product.id ]">
-	                    <img class="img-fluid" [src]="product.urls[0].path" alt="" />
+	                    <img class="img-fluid" [src]="product.urls[0]?.path" alt="" />
 	                    <div style="overflow: hidden; height:80px"><h3>{{product.name}}</h3></div>
 	                </a>
             	</div>
