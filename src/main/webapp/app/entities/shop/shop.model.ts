@@ -13,6 +13,7 @@ export class Shop implements BaseEntity {
         public name?: string,
         public description?: string,
         public status?: CommonStatus,
+        public permission?: string,
         public createdBy?: string,
         public createdDate?: any,
         public lastModifiedBy?: string,

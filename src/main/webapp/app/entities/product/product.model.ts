@@ -19,6 +19,7 @@ export class Product implements BaseEntity {
         public content?: string,
         public remark?: string,
         public status?: ProductStatus,
+        public permission?: string,
         public createdBy?: string,
         public createdDate?: any,
         public lastModifiedBy?: string,
