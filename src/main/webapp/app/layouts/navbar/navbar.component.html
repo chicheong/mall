@@ -1,3 +1,16 @@
+<div class="navbar navbar-fixed-top py-0">
+	<div class="navbar-header pull-left py-0">
+      <a class="navbar-brand py-0" href="#">&nbsp;</a>
+    </div>
+	<div class="pull-right" *ngIf="languages && languages.length > 1">
+		<span *ngFor="let language of languages">
+			<button type="button" class="btn btn-outline-secondary btn-xs py-0" [jhiActiveMenu]="language" (click)="changeLanguage(language);collapseNavbar();">
+				<span class="d-none d-md-block">{{language | findLanguageFromKey}}</span>
+				<span class="d-md-none">{{language | findLanguageFromKey: true}}</span>
+			</button>
+		</span>
+	</div>
+</div>
 <nav class="navbar navbar-dark navbar-expand-md jh-navbar">
     <div class="jh-logo-container float-left">
         <a class="jh-navbar-toggler d-lg-none float-right" href="javascript:void(0);" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation" (click)="toggleNavbar()">
@@ -10,14 +23,14 @@
     </div>
     <div class="navbar-collapse collapse" id="navbarResponsive" [ngbCollapse]="isNavbarCollapsed" [ngSwitch]="isAuthenticated()">
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <!-- <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                 <a class="nav-link" routerLink="/" (click)="collapseNavbar()">
                     <span>
                         <i class="fa fa-home" aria-hidden="true"></i>
                         <span jhiTranslate="global.menu.home">Home</span>
                     </span>
                 </a>
-            </li>
+            </li> -->
             <li ngbDropdown class="nav-item dropdown pointer" *ngSwitchCase="true">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="languagesnavBarDropdown" *ngIf="myAccount && myAccount.shops && myAccount.shops.length > 0">
                     <span>
@@ -88,12 +101,6 @@
                         <a class="dropdown-item" routerLink="state" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
                             <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
                             <span jhiTranslate="global.menu.entities.state">State</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a class="dropdown-item" routerLink="shop" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
-                            <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
-                            <span jhiTranslate="global.menu.entities.shop">Shop</span>
                         </a>
                     </li>
                     <li>
@@ -193,9 +200,9 @@
                         </a>
                     </li>                    
                     <li>
-                        <a class="dropdown-item" routerLink="credit-card" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
+                        <a class="dropdown-item" routerLink="card" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }" (click)="collapseNavbar()">
                             <i class="fa fa-fw fa-asterisk" aria-hidden="true"></i>
-                            <span jhiTranslate="global.menu.entities.creditCard">Credit Card</span>
+                            <span jhiTranslate="global.menu.entities.card">Card</span>
                         </a>
                     </li>
                     <li>
@@ -296,7 +303,7 @@
                     </li>
                 </ul>
             </li>
-            <li ngbDropdown class="nav-item dropdown pointer" *ngIf="languages">
+            <!-- <li ngbDropdown class="nav-item dropdown pointer" *ngIf="languages">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="languagesnavBarDropdown" *ngIf="languages.length > 1">
                     <span>
                         <i class="fa fa-flag" aria-hidden="true"></i>
@@ -308,7 +315,7 @@
                         <a class="dropdown-item" [jhiActiveMenu]="language" href="javascript:void(0);" (click)="changeLanguage(language);collapseNavbar();">{{language | findLanguageFromKey}}</a>
                     </li>
                 </ul>
-            </li>
+            </li> -->
             <li ngbDropdown class="nav-item dropdown pointer" placement="bottom-right" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="account-menu">
                   <span *ngIf="!getImageUrl()">

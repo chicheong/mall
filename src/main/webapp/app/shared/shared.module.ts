@@ -17,9 +17,8 @@ import {
     HasAnyAuthorityDirective,
     FileUploadModelService,
     FileUploadDialogComponent,
-    UuidService,
-    HomeBannerComponent,
-    BannerService
+    PermissionService,
+    UuidService
 } from './';
 
 @NgModule({
@@ -31,8 +30,7 @@ import {
     declarations: [
         JhiLoginModalComponent,
         FileUploadDialogComponent,
-        HasAnyAuthorityDirective,
-        HomeBannerComponent
+        HasAnyAuthorityDirective
     ],
     providers: [
         LoginService,
@@ -45,8 +43,8 @@ import {
         UserService,
         DatePipe,
         FileUploadModelService,
-        UuidService,
-        BannerService
+        PermissionService,
+        UuidService
     ],
     entryComponents: [
         JhiLoginModalComponent,
@@ -58,8 +56,7 @@ import {
         JhiLoginModalComponent,
         FileUploadDialogComponent,
         HasAnyAuthorityDirective,
-        DatePipe,
-        HomeBannerComponent
+        DatePipe
     ],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 

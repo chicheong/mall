@@ -8,7 +8,7 @@ import { JhiEventManager, JhiAlertService  } from 'ng-jhipster';
 
 import { Product } from './product.model';
 import { ProductService } from './product.service';
-import { LoginModalService, Principal, UuidService, FileUploadModelService } from '../../shared';
+import { LoginModalService, Principal, UuidService, FileUploadModelService, PermissionService } from '../../shared';
 
 import { ProductItem } from './../product-item';
 import { ProductStyle, ProductStyleType, ProductStylePopupService, ProductStyleDialogComponent } from './../product-style';
@@ -48,6 +48,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     selectedSize: ProductStyle = {};
     selectedItem: ProductItem = {};
     selectedUrl: Url;
+    isEditable: boolean;
 
     modalRef: NgbModalRef;
 
@@ -64,6 +65,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         private principal: Principal,
         private loginModalService: LoginModalService,
         private myOrderService: MyOrderService,
+        private permissionService: PermissionService,
         private uuidService: UuidService,
     ) {
     }
@@ -73,6 +75,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.isSaving = false;
         this.isEditing = false;
         this.isSorted = false;
+        this.isEditable = false;
         this.subscription = this.route.params.subscribe((params) => {
             if ((params['id'])) {
                 if ((params['id']) === 'new') {
@@ -159,6 +162,8 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.productService.find(id)
             .subscribe((productResponse: HttpResponse<Product>) => {
                 this.product = productResponse.body;
+                console.log('this.product.permission: ' + this.product.permission);
+                this.assignPermission(this.product.permission);
                 this.resetSelectedUrl();
             });
         this.selectedColor = {};
@@ -215,6 +220,12 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
             'deleteUrlModification',
             (response) => this.deleteUrl(response.obj)
         );
+    }
+
+    assignPermission(permissionCode: string) {
+        if (this.permissionService.isUpdatable(permissionCode)) {
+            this.isEditable = true;
+        }
     }
 
     updateItems(product: Product) {

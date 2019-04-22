@@ -4,10 +4,9 @@ import { JhiEventManager } from 'ng-jhipster';
 
 import { Account, LoginModalService, Principal } from '../shared';
 
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpResponse, HttpErrorResponse} from '@angular/common/http';
 import {map} from 'rxjs/operators';
-
-import { BannerService } from './../shared/banner/banner.service';
+import { ProductService, Product } from '../entities/product';
 
 @Component({
     selector: 'jhi-home',
@@ -21,6 +20,7 @@ export class HomeComponent implements OnInit, OnDestroy {
     account: Account;
     modalRef: NgbModalRef;
 
+    products: Product[];
     images: Array<string>;
 
     constructor(
@@ -28,20 +28,25 @@ export class HomeComponent implements OnInit, OnDestroy {
         private loginModalService: LoginModalService,
         private eventManager: JhiEventManager,
         private _http: HttpClient,
-        private bannerService: BannerService
+        private productService: ProductService,
     ) {
     }
 
     ngOnInit() {
-        // this._http.get('https://picsum.photos/list')
-        // .pipe(map((images: Array<{id: number}>) => this._randomImageUrls(images)))
-        // .subscribe((images) => this.images = images);
-
-        this.images = ['http://placehold.it/1900x1080&amp;text=Slide One',
-                       'https://www.w3schools.com/bootstrap/chicago.jpg',
-                       'http://placehold.it/1900x1080&amp;text=Slide Three'];
+        this.productService.query({
+            page: 0,
+            size: 100,
+            sort: this.sort()}).subscribe(
+                (res: HttpResponse<Product[]>) => this.products = res.body,
+                (res: HttpErrorResponse) => console.error(res.message)
+        );
         this.registerAuthenticationSuccess();
-        this.bannerService.showHomeBanner = true;
+    }
+
+    sort() {
+        const result = ['desc'];
+        result.push('id');
+        return result;
     }
 
     private _randomImageUrls(images: Array<{id: number}>): Array<string> {
@@ -70,6 +75,5 @@ export class HomeComponent implements OnInit, OnDestroy {
     }
 
     ngOnDestroy() {
-        this.bannerService.showHomeBanner = false;
     }
 }

@@ -174,17 +174,18 @@ public class ShopService {
     	if (SecurityUtils.isAuthenticated()) {
     		String login = SecurityUtils.getCurrentUserLogin().get();
     		UserInfoDTO userInfo = userInfoService.findOneWithAccountsByUserLogin(login);
-    		
-    		MyAccountDTO myAccount = myAccountService.findOne(userInfo.getAccountId());
-        	for (MyAccount inChargeAccount : shop.getAccounts()) {
-        		if (inChargeAccount.getId().equals(myAccount.getId()) || 
-        				myAccount.getDelegations().stream()
-        					.filter(delegation -> DelegationType.ACCOUNT.equals(delegation.getType()))
-        					.filter(delegation -> DateUtil.withinRange(ZonedDateTime.now(ZoneId.systemDefault()), delegation.getFrom(), delegation.getTo()))
-        					.anyMatch(delegation -> Long.valueOf(delegation.getDelegateId()).equals(inChargeAccount.getId()))) {
-        			return PermissionsConstants.ALL;
-        		}
-        	}
+    		if (userInfo != null) {
+        		MyAccountDTO myAccount = myAccountService.findOne(userInfo.getAccountId());
+            	for (MyAccount inChargeAccount : shop.getAccounts()) {
+            		if (inChargeAccount.getId().equals(myAccount.getId()) || 
+            				myAccount.getDelegations().stream()
+            					.filter(delegation -> DelegationType.ACCOUNT.equals(delegation.getType()))
+            					.filter(delegation -> DateUtil.withinRange(ZonedDateTime.now(ZoneId.systemDefault()), delegation.getFrom(), delegation.getTo()))
+            					.anyMatch(delegation -> Long.valueOf(delegation.getDelegateId()).equals(inChargeAccount.getId()))) {
+            			return PermissionsConstants.ALL;
+            		}
+            	}
+    		}
     	}
     	// if user is not logged in or do not have corresponding right
     	if (CommonStatus.INACTIVE.equals(shop.getStatus()))

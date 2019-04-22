@@ -2,29 +2,18 @@
 <div>
     <!-- <div class="row justify-content-center"> 
         <div class="col-md-12">-->
-	<ngb-carousel *ngIf="images">
-		<ng-template ngbSlide>
-			<img [src]="images[0]" alt="Random first slide">
-			<div class="carousel-caption">
-			<h3>First slide label</h3>
-			<p>Nulla vitae elit libero, a pharetra augue mollis interdum.</p>
-			</div>
-		</ng-template>
-		<ng-template ngbSlide>
-			<img [src]="images[1]" alt="Random second slide">
-			<div class="carousel-caption">
-			<h3>Second slide label</h3>
-			<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-			</div>
-		</ng-template>
-		<ng-template ngbSlide>
-			<img [src]="images[2]" alt="Random third slide">
-			<div class="carousel-caption">
-			<h3>Third slide label</h3>
-			<p>Praesent commodo cursus magna, vel scelerisque nisl consectetur.</p>
-		</div>
-		</ng-template>
-	</ngb-carousel>
+
+<div *ngIf="products">
+	<div class="row">
+		<div class="card col-lg-3 col-md-4 col-sm-6 col-xs-12 thumb" *ngFor="let product of products ;trackBy: trackId">
+            <a class="thumbnail" target="_self" [routerLink]="['../../product', product.id ]">
+                <img class="img-fluid" [src]="product.urls[0]?.path" alt="" />
+                <div style="overflow: hidden; height:80px"><h3>{{product.name}}</h3></div>
+            </a>
+       	</div>
+	</div>
+</div>
+
 	<!-- </div>
 	</div> -->
 	
