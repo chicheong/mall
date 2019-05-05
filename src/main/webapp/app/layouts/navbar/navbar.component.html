@@ -31,6 +31,11 @@
                     </span>
                 </a>
             </li> -->
+            
+			<span class="btn-group">
+				<input type="text" class="form-control" placeholder="What you want to find out today?" id="query" name="query" value="">
+				<button type="button" class="btn btn-light"><span class="fa fa-search"></span></button>
+			</span>         
             <li ngbDropdown class="nav-item dropdown pointer" *ngSwitchCase="true">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="languagesnavBarDropdown" *ngIf="myAccount && myAccount.shops && myAccount.shops.length > 0">
                     <span>

@@ -4,6 +4,7 @@ import { JhiPaginationUtil } from 'ng-jhipster';
 
 import { UserRouteAccessService } from '../../shared';
 import { MyOrderComponent } from './my-order.component';
+import { CartPendingComponent } from './cart/cart-pending/cart-pending.component';
 import { CartReviewComponent } from './cart/cart-review/cart-review.component';
 import { CartShippingComponent } from './cart/cart-shipping/cart-shipping.component';
 import { CartMethodComponent } from './cart/cart-method/cart-method.component';
@@ -40,6 +41,15 @@ export const myOrderRoute: Routes = [
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.myOrder.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: 'my-order/:id/pending',
+        component: CartPendingComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.myOrder.cart.pending.title'
         },
         canActivate: [UserRouteAccessService]
     },

@@ -10,6 +10,7 @@ export * from './cart/cart-control/cart-control.component';
 export * from './cart/cart-summary/cart-summary.component';
 export * from './cart/cart-billing/cart-billing.component';
 export * from './cart/cart-payment/cart-payment.component';
+export * from './cart/cart-pending/cart-pending.component';
 export * from './cart/cart-review/cart-review.component';
 export * from './cart/cart-method/cart-method.component';
 export * from './cart/cart-shipping/cart-shipping.component';

@@ -22,6 +22,7 @@ import { CartControlComponent } from './cart/cart-control/cart-control.component
 import { CartSummaryComponent } from './cart/cart-summary/cart-summary.component';
 import { CartBillingComponent } from './cart/cart-billing/cart-billing.component';
 import { CartPaymentComponent } from './cart/cart-payment/cart-payment.component';
+import { CartPendingComponent } from './cart/cart-pending/cart-pending.component';
 import { CartReviewComponent } from './cart/cart-review/cart-review.component';
 import { CartMethodComponent } from './cart/cart-method/cart-method.component';
 import { CartShippingComponent } from './cart/cart-shipping/cart-shipping.component';
@@ -50,6 +51,7 @@ const ENTITY_STATES = [
         CartSummaryComponent,
         CartBillingComponent,
         CartPaymentComponent,
+        CartPendingComponent,
         CartReviewComponent,
         CartMethodComponent,
         CartShippingComponent,
@@ -66,6 +68,7 @@ const ENTITY_STATES = [
         CartSummaryComponent,
         CartBillingComponent,
         CartPaymentComponent,
+        CartPendingComponent,
         CartReviewComponent,
         CartMethodComponent,
         CartShippingComponent,
