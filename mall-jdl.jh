@@ -195,10 +195,19 @@ entity CurrencyRate {
 }
 
 entity MyOrder {
+	receiver String,
 	total BigDecimal,
 	currency CurrencyType,
+	contactNum String,
+	email String,
 	remark String,
 	status OrderStatus
+}
+
+entity OrderShop {
+	total BigDecimal,
+	currency CurrencyType,
+	remark String
 }
 
 enum OrderStatus {
@@ -241,11 +250,13 @@ entity Shipping {
 	price BigDecimal,
 	currency CurrencyType,
 	date ZonedDateTime,
-	receiver String,
-	contactNum String,
-	email String,
-	remark String,
 	status ShippingStatus
+}
+
+entity ShippingPriceRule {
+	type String,
+	value BigDecimal,
+	price BigDecimal
 }
 
 entity ShippingType {
@@ -300,9 +311,9 @@ relationship OneToOne {
 	ProductItem{color} to ProductStyle,
 	ProductItem{size} to ProductStyle,
 	OrderItem{productItem} to ProductItem,
-	Shipping{order} to MyOrder,
-	Shipping{shippingAddress} to Address,
-	Shipping{billingAddress} to Address,
+	Shipping{shop} to OrderShop,
+	MyOrder{shippingAddress} to Address,
+	MyOrder{billingAddress} to Address,
 	Payment{order} to MyOrder,
 	PaymentCard{payment} to Payment
 }
@@ -311,7 +322,8 @@ relationship OneToMany {
 	MyAccount{delegation} to Delegation{account},
 	Product{style} to ProductStyle{product},
 	Product{item} to ProductItem{product},
-	MyOrder{item} to OrderItem{order},
+	MyOrder{shop} to OrderShop{order},
+	OrderShop{item} to OrderItem{shop}
 	MyOrder{statusHistory} to OrderStatusHistory{order},
 	Shipping{statusHistory} to ShippingStatusHistory{shipping},
 	ProductItem{price} to Price{item},
