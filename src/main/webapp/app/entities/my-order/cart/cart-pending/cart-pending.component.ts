@@ -8,7 +8,10 @@ import { JhiEventManager } from 'ng-jhipster';
 import { MyOrder } from './../../my-order.model';
 import { MyOrderService } from './../../my-order.service';
 
-import { CartComponent } from './../../cart.component';
+import { Shipping, ShippingStatus } from '../../../shipping';
+import { Address } from '../../../address';
+import { Payment, PaymentStatus } from '../../../payment';
+import { ShippingType } from '../../../shipping-type';
 
 @Component({
     selector: 'jhi-pending-cart',
@@ -35,7 +38,7 @@ export class CartPendingComponent implements OnInit, OnDestroy {
         this.registerChangeInMyOrders();
         this.isSaving = false;
     }
-    
+
     load(id) {
         this.myOrderService.find(id)
             .subscribe((myOrderResponse: HttpResponse<MyOrder>) => {
@@ -80,7 +83,6 @@ export class CartPendingComponent implements OnInit, OnDestroy {
                     payment.status = PaymentStatus.PENDING;
                     this.myOrder.payment = payment;
                 }
-                this.cartControl = this.myOrderService.getCartControl(this.myOrder, this.path);
             });
     }
 
@@ -108,7 +110,6 @@ export class CartPendingComponent implements OnInit, OnDestroy {
         this.eventManager.broadcast({ name: 'myOrderModification', content: 'OK', obj: result});
         this.isSaving = false;
         if (goNext) {
-            this.myOrderService.doCartNextAction(this.myOrder, this.path);
         }
     }
 
