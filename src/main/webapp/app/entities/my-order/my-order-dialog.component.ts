@@ -21,9 +21,9 @@ export class MyOrderDialogComponent implements OnInit {
     myOrder: MyOrder;
     isSaving: boolean;
 
-    shippingaddresses: Address[];
+    shippingAddresses: Address[];
 
-    billingaddresses: Address[];
+    billingAddresses: Address[];
 
     myaccounts: MyAccount[];
 
@@ -42,11 +42,11 @@ export class MyOrderDialogComponent implements OnInit {
         this.addressService
             .query({filter: 'shipping-is-null'})
             .subscribe((res: HttpResponse<Address[]>) => {
-                if (!this.shipping.shippingAddress || !this.shipping.shippingAddress.id) {
+                if (!this.myOrder.shippingAddress || !this.myOrder.shippingAddress.id) {
                     this.shippingAddresses = res.body;
                 } else {
                     this.addressService
-                        .find(this.shipping.shippingAddress.id)
+                        .find(this.myOrder.shippingAddress.id)
                         .subscribe((subRes: HttpResponse<Address>) => {
                             this.shippingAddresses = [subRes.body].concat(res.body);
                         }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
@@ -55,11 +55,11 @@ export class MyOrderDialogComponent implements OnInit {
         this.addressService
             .query({filter: 'shipping-is-null'})
             .subscribe((res: HttpResponse<Address[]>) => {
-                if (!this.shipping.billingAddress || !this.shipping.billingAddress.id) {
+                if (!this.myOrder.billingAddress || !this.myOrder.billingAddress.id) {
                     this.billingAddresses = res.body;
                 } else {
                     this.addressService
-                        .find(this.shipping.billingAddress.id)
+                        .find(this.myOrder.billingAddress.id)
                         .subscribe((subRes: HttpResponse<Address>) => {
                             this.billingAddresses = [subRes.body].concat(res.body);
                         }, (subRes: HttpErrorResponse) => this.onError(subRes.message));

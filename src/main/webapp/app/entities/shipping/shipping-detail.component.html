@@ -20,12 +20,6 @@
         <dd>
             <span jhiTranslate="{{'mallApp.ShippingStatus.' + shipping.status}}">{{shipping.status}}</span>
         </dd>
-        <dt><span jhiTranslate="mallApp.shipping.shop">Shop</span></dt>
-        <dd>
-            <div *ngIf="shipping.shop">
-                <a [routerLink]="['/order-shop', shipping.shop?.id]">{{shipping.shop?.id}}</a>
-            </div>
-        </dd>
         <dt><span jhiTranslate="mallApp.shipping.type">Type</span></dt>
         <dd>
             <div *ngIf="shipping.type">

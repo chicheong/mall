@@ -47,10 +47,6 @@ public class Shipping implements Serializable {
     @Column(name = "status")
     private ShippingStatus status;
 
-    @OneToOne
-    @JoinColumn(unique = true)
-    private OrderShop shop;
-
     @OneToMany(mappedBy = "shipping")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -118,19 +114,6 @@ public class Shipping implements Serializable {
 
     public void setStatus(ShippingStatus status) {
         this.status = status;
-    }
-
-    public OrderShop getShop() {
-        return shop;
-    }
-
-    public Shipping shop(OrderShop orderShop) {
-        this.shop = orderShop;
-        return this;
-    }
-
-    public void setShop(OrderShop orderShop) {
-        this.shop = orderShop;
     }
 
     public Set<ShippingStatusHistory> getStatusHistories() {

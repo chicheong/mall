@@ -13,12 +13,12 @@
                                  constraintName="fk_order_item_product_item_id"
                                  referencedColumnNames="id"
                                  referencedTableName="product_item"/>
-
-        <addForeignKeyConstraint baseColumnNames="order_id"
+        
+        <addForeignKeyConstraint baseColumnNames="shop_id"
                                  baseTableName="order_item"
-                                 constraintName="fk_order_item_order_id"
+                                 constraintName="fk_order_item_shop_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="my_order"/>
+                                 referencedTableName="order_shop"/>
 
     </changeSet>
 </databaseChangeLog>

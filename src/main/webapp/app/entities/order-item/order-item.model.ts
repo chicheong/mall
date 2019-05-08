@@ -9,7 +9,7 @@ export class OrderItem implements BaseEntity {
         public price?: number,
         public currency?: CurrencyType,
         public productItem?: ProductItem,
-        public order?: BaseEntity,
+        public shop?: BaseEntity,
     ) {
     }
 }

@@ -16,6 +16,12 @@
         <dd>
             <span>{{orderShop.remark}}</span>
         </dd>
+        <dt><span jhiTranslate="mallApp.orderShop.shipping">Shipping</span></dt>
+        <dd>
+            <div *ngIf="orderShop.shipping">
+                <a [routerLink]="['/shipping', orderShop.shipping?.id]">{{orderShop.shipping?.id}}</a>
+            </div>
+        </dd>
         <dt><span jhiTranslate="mallApp.orderShop.shop">Shop</span></dt>
         <dd>
             <div *ngIf="orderShop.shop">

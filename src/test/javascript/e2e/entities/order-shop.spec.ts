@@ -38,6 +38,7 @@ describe('OrderShop e2e test', () => {
         orderShopDialogPage.currencySelectLastOption();
         orderShopDialogPage.setRemarkInput('remark');
         expect(orderShopDialogPage.getRemarkInput()).toMatch('remark');
+        orderShopDialogPage.shippingSelectLastOption();
         orderShopDialogPage.shopSelectLastOption();
         orderShopDialogPage.orderSelectLastOption();
         orderShopDialogPage.save();
@@ -69,6 +70,7 @@ export class OrderShopDialogPage {
     totalInput = element(by.css('input#field_total'));
     currencySelect = element(by.css('select#field_currency'));
     remarkInput = element(by.css('input#field_remark'));
+    shippingSelect = element(by.css('select#field_shipping'));
     shopSelect = element(by.css('select#field_shop'));
     orderSelect = element(by.css('select#field_order'));
 
@@ -101,6 +103,22 @@ export class OrderShopDialogPage {
 
     getRemarkInput = function() {
         return this.remarkInput.getAttribute('value');
+    };
+
+    shippingSelectLastOption = function() {
+        this.shippingSelect.all(by.tagName('option')).last().click();
+    };
+
+    shippingSelectOption = function(option) {
+        this.shippingSelect.sendKeys(option);
+    };
+
+    getShippingSelect = function() {
+        return this.shippingSelect;
+    };
+
+    getShippingSelectedOption = function() {
+        return this.shippingSelect.element(by.css('option:checked')).getText();
     };
 
     shopSelectLastOption = function() {

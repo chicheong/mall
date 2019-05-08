@@ -11,8 +11,8 @@
         },
         {
             "relationshipType": "many-to-one",
-            "relationshipName": "order",
-            "otherEntityName": "myOrder",
+            "relationshipName": "shop",
+            "otherEntityName": "orderShop",
             "otherEntityField": "id"
         }
     ],
@@ -31,7 +31,7 @@
             "fieldValues": "HKD,CNY,USD,EUR,JPY,KRW,TWD"
         }
     ],
-    "changelogDate": "20180221114444",
+    "changelogDate": "20190508141134",
     "entityTableName": "order_item",
     "dto": "no",
     "pagination": "pagination",

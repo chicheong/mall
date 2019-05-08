@@ -1,5 +1,6 @@
 package com.wongs.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -37,12 +38,12 @@ public class OrderItem implements Serializable {
     @Column(name = "currency")
     private CurrencyType currency;
 
-    @OneToOne
-    @JoinColumn(unique = false)
+    @OneToOne //(mappedBy = "orderItem")
+    @JoinColumn(unique = false) //@JsonIgnore
     private ProductItem productItem;
 
     @ManyToOne
-    private MyOrder order;
+    private OrderShop shop;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -105,17 +106,17 @@ public class OrderItem implements Serializable {
         this.productItem = productItem;
     }
 
-    public MyOrder getOrder() {
-        return order;
+    public OrderShop getShop() {
+        return shop;
     }
 
-    public OrderItem order(MyOrder myOrder) {
-        this.order = myOrder;
+    public OrderItem shop(OrderShop orderShop) {
+        this.shop = orderShop;
         return this;
     }
 
-    public void setOrder(MyOrder myOrder) {
-        this.order = myOrder;
+    public void setShop(OrderShop orderShop) {
+        this.shop = orderShop;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

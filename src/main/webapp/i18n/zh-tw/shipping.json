@@ -21,7 +21,6 @@
             "currency": "Currency",
             "date": "Date",
             "status": "Status",
-            "shop": "Shop",
             "statusHistory": "Status History",
             "type": "Type"
         }

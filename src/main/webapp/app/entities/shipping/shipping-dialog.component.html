@@ -47,13 +47,6 @@
         </div>
 
         <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.shipping.shop" for="field_shop">Shop</label>
-            <select class="form-control" id="field_shop" name="shop" [(ngModel)]="shipping.shop">
-                <option [ngValue]="null"></option>
-                <option [ngValue]="orderShopOption.id === shipping.shop?.id ? shipping.shop : orderShopOption" *ngFor="let orderShopOption of shops; trackBy: trackOrderShopById">{{orderShopOption.id}}</option>
-            </select>
-        </div>
-        <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.shipping.type" for="field_type">Type</label>
             <select class="form-control" id="field_type" name="type" [(ngModel)]="shipping.type" >
                 <option [ngValue]="null"></option>

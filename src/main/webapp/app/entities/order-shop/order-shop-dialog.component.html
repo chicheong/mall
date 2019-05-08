@@ -36,6 +36,13 @@
         </div>
 
         <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.orderShop.shipping" for="field_shipping">Shipping</label>
+            <select class="form-control" id="field_shipping" name="shipping" [(ngModel)]="orderShop.shipping">
+                <option [ngValue]="null"></option>
+                <option [ngValue]="shippingOption.id === orderShop.shipping?.id ? orderShop.shipping : shippingOption" *ngFor="let shippingOption of shippings; trackBy: trackShippingById">{{shippingOption.id}}</option>
+            </select>
+        </div>
+        <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.orderShop.shop" for="field_shop">Shop</label>
             <select class="form-control" id="field_shop" name="shop" [(ngModel)]="orderShop.shop">
                 <option [ngValue]="null"></option>

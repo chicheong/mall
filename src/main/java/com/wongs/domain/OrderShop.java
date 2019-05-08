@@ -42,6 +42,10 @@ public class OrderShop implements Serializable {
 
     @OneToOne
     @JoinColumn(unique = true)
+    private Shipping shipping;
+
+    @OneToOne
+    @JoinColumn(unique = true)
     private Shop shop;
 
     @OneToMany(mappedBy = "shop")
@@ -98,6 +102,19 @@ public class OrderShop implements Serializable {
 
     public void setRemark(String remark) {
         this.remark = remark;
+    }
+
+    public Shipping getShipping() {
+        return shipping;
+    }
+
+    public OrderShop shipping(Shipping shipping) {
+        this.shipping = shipping;
+        return this;
+    }
+
+    public void setShipping(Shipping shipping) {
+        this.shipping = shipping;
     }
 
     public Shop getShop() {

@@ -21,11 +21,11 @@
             <div *ngIf="orderItem.productItem">
                 <a [routerLink]="['/product-item', orderItem.productItem?.id]">{{orderItem.productItem?.id}}</a>
             </div>
-        </dd>
-        <dt><span jhiTranslate="mallApp.orderItem.order">Order</span></dt>
+        </dd>        
+        <dt><span jhiTranslate="mallApp.orderItem.shop">Shop</span></dt>
         <dd>
-            <div *ngIf="orderItem.order">
-                <a [routerLink]="['/my-order', orderItem.order?.id]">{{orderItem.order?.id}}</a>
+            <div *ngIf="orderItem.shop">
+                <a [routerLink]="['/order-shop', orderItem.shop?.id]">{{orderItem.shop?.id}}</a>
             </div>
         </dd>
     </dl>

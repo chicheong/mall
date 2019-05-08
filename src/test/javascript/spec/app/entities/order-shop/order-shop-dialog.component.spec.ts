@@ -9,6 +9,7 @@ import { MallTestModule } from '../../../test.module';
 import { OrderShopDialogComponent } from '../../../../../../main/webapp/app/entities/order-shop/order-shop-dialog.component';
 import { OrderShopService } from '../../../../../../main/webapp/app/entities/order-shop/order-shop.service';
 import { OrderShop } from '../../../../../../main/webapp/app/entities/order-shop/order-shop.model';
+import { ShippingService } from '../../../../../../main/webapp/app/entities/shipping';
 import { ShopService } from '../../../../../../main/webapp/app/entities/shop';
 import { MyOrderService } from '../../../../../../main/webapp/app/entities/my-order';
 
@@ -26,6 +27,7 @@ describe('Component Tests', () => {
                 imports: [MallTestModule],
                 declarations: [OrderShopDialogComponent],
                 providers: [
+                    ShippingService,
                     ShopService,
                     MyOrderService,
                     OrderShopService

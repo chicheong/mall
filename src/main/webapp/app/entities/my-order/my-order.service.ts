@@ -343,7 +343,7 @@ export class MyOrderService {
         }
     }
 
-    sumAll(myOrder: MyOrder): number {
+    getTotalProductPrice(myOrder: MyOrder): number {
         if (myOrder.shops) {
             let total = 0;
             myOrder.shops.forEach((shop) => {
@@ -356,14 +356,16 @@ export class MyOrderService {
         return 0;
     }
 
-    getTotal(myOrder: MyOrder): number {
+    getTotalPrice(myOrder: MyOrder): number {
         let shippingTotal = 0;
-        if (myOrder.shipping) {
-            if (myOrder.shipping.price) {
-                shippingTotal = myOrder.shipping.price;
-            }
+        if (myOrder.shops) {
+            myOrder.shops.forEach((shop) => {
+                if (shop.shipping) {
+                  shippingTotal += shop.shipping.price;
+                }
+            });
         }
-        return this.sumAll(myOrder) + shippingTotal;
+        return this.getTotalProductPrice(myOrder) + shippingTotal;
     }
 
     getTotalQuantity(myOrder: MyOrder): number {

@@ -9,6 +9,7 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { OrderShop } from './order-shop.model';
 import { OrderShopPopupService } from './order-shop-popup.service';
 import { OrderShopService } from './order-shop.service';
+import { Shipping, ShippingService } from '../shipping';
 import { Shop, ShopService } from '../shop';
 import { MyOrder, MyOrderService } from '../my-order';
 
@@ -21,6 +22,8 @@ export class OrderShopDialogComponent implements OnInit {
     orderShop: OrderShop;
     isSaving: boolean;
 
+    shippings: Shipping[];
+
     shops: Shop[];
 
     myorders: MyOrder[];
@@ -29,6 +32,7 @@ export class OrderShopDialogComponent implements OnInit {
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
         private orderShopService: OrderShopService,
+        private shippingService: ShippingService,
         private shopService: ShopService,
         private myOrderService: MyOrderService,
         private eventManager: JhiEventManager
@@ -37,6 +41,19 @@ export class OrderShopDialogComponent implements OnInit {
 
     ngOnInit() {
         this.isSaving = false;
+        this.shippingService
+            .query({filter: 'ordershop-is-null'})
+            .subscribe((res: HttpResponse<Shipping[]>) => {
+                if (!this.orderShop.shipping || !this.orderShop.shipping.id) {
+                    this.shippings = res.body;
+                } else {
+                    this.shippingService
+                        .find(this.orderShop.shipping.id)
+                        .subscribe((subRes: HttpResponse<Shipping>) => {
+                            this.shippings = [subRes.body].concat(res.body);
+                        }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
+                }
+            }, (res: HttpErrorResponse) => this.onError(res.message));
         this.shopService
             .query({filter: 'ordershop-is-null'})
             .subscribe((res: HttpResponse<Shop[]>) => {
@@ -86,6 +103,10 @@ export class OrderShopDialogComponent implements OnInit {
 
     private onError(error: any) {
         this.jhiAlertService.error(error.message, null, null);
+    }
+
+    trackShippingById(index: number, item: Shipping) {
+        return item.id;
     }
 
     trackShopById(index: number, item: Shop) {

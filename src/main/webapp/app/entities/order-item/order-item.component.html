@@ -34,7 +34,7 @@
             <th jhiSortBy="price"><span jhiTranslate="mallApp.orderItem.price">Price</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="currency"><span jhiTranslate="mallApp.orderItem.currency">Currency</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="productItem.id"><span jhiTranslate="mallApp.orderItem.productItem">Product Item</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="order.id"><span jhiTranslate="mallApp.orderItem.order">Order</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="shop.id"><span jhiTranslate="mallApp.orderItem.shop">Shop</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
             </thead>
@@ -50,8 +50,8 @@
                     </div>
                 </td>
                 <td>
-                    <div *ngIf="orderItem.order">
-                        <a [routerLink]="['../my-order', orderItem.order?.id ]" >{{orderItem.order?.id}}</a>
+                    <div *ngIf="orderItem.shop">
+                        <a [routerLink]="['../order-shop', orderItem.shop?.id ]" >{{orderItem.shop?.id}}</a>
                     </div>
                 </td>
                 <td class="text-right">

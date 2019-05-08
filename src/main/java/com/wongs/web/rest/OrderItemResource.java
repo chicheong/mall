@@ -96,11 +96,19 @@ public class OrderItemResource {
      * GET  /order-items : get all the orderItems.
      *
      * @param pageable the pagination information
+     * @param filter the filter of the request
      * @return the ResponseEntity with status 200 (OK) and the list of orderItems in body
      */
     @GetMapping("/order-items")
     @Timed
-    public ResponseEntity<List<OrderItem>> getAllOrderItems(Pageable pageable) {
+    public ResponseEntity<List<OrderItem>> getAllOrderItems(Pageable pageable, @RequestParam(required = false) String filter) {
+        if ("productitem-is-null".equals(filter)) {
+            log.debug("REST request to get all OrderItems where productItem is null");
+            return new ResponseEntity<>(StreamSupport
+                .stream(orderItemRepository.findAll().spliterator(), false)
+                .filter(orderItem -> orderItem.getProductItem() == null)
+                .collect(Collectors.toList()), HttpStatus.OK);
+        }
         log.debug("REST request to get a page of OrderItems");
         Page<OrderItem> page = orderItemRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/order-items");

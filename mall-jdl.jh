@@ -311,7 +311,7 @@ relationship OneToOne {
 	ProductItem{color} to ProductStyle,
 	ProductItem{size} to ProductStyle,
 	OrderItem{productItem} to ProductItem,
-	Shipping{shop} to OrderShop,
+	OrderShop{shipping} to Shipping,
 	OrderShop{shop} to Shop,
 	MyOrder{shippingAddress} to Address,
 	MyOrder{billingAddress} to Address,

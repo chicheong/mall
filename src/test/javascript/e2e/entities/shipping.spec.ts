@@ -39,7 +39,6 @@ describe('Shipping e2e test', () => {
         shippingDialogPage.setDateInput(12310020012301);
         expect(shippingDialogPage.getDateInput()).toMatch('2001-12-31T02:30');
         shippingDialogPage.statusSelectLastOption();
-        shippingDialogPage.shopSelectLastOption();
         shippingDialogPage.typeSelectLastOption();
         shippingDialogPage.save();
         expect(shippingDialogPage.getSaveButton().isPresent()).toBeFalsy();
@@ -71,7 +70,6 @@ export class ShippingDialogPage {
     currencySelect = element(by.css('select#field_currency'));
     dateInput = element(by.css('input#field_date'));
     statusSelect = element(by.css('select#field_status'));
-    shopSelect = element(by.css('select#field_shop'));
     typeSelect = element(by.css('select#field_type'));
 
     getModalTitle() {
@@ -116,22 +114,6 @@ export class ShippingDialogPage {
     statusSelectLastOption = function() {
         this.statusSelect.all(by.tagName('option')).last().click();
     };
-    shopSelectLastOption = function() {
-        this.shopSelect.all(by.tagName('option')).last().click();
-    };
-
-    shopSelectOption = function(option) {
-        this.shopSelect.sendKeys(option);
-    };
-
-    getShopSelect = function() {
-        return this.shopSelect;
-    };
-
-    getShopSelectedOption = function() {
-        return this.shopSelect.element(by.css('option:checked')).getText();
-    };
-
     typeSelectLastOption = function() {
         this.typeSelect.all(by.tagName('option')).last().click();
     };

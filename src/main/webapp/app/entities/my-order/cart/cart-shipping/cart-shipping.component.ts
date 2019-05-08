@@ -59,7 +59,7 @@ export class CartShippingComponent extends CartComponent implements OnInit, OnDe
     }
 
     canGoNext() {
-        if (this.myOrder && this.myOrder.items && this.myOrder.shipping && this.myOrder.shipping.shippingAddress) {
+        if (this.myOrder && this.myOrder.shops && this.myOrder.shippingAddress) {
             return true;
         } else {
             return false;

@@ -37,23 +37,12 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
     load(id) {
         this.myOrderService.find(id)
-            .subscribe((myOrderResponse: HttpResponse<MyOrder>) => {
-                this.myOrder = myOrderResponse.body;
-                this.myOrder.items.forEach((item) => {
-                   console.error('item.price: ' + item.price + ', item.quantity: ' + item.quantity);
-                });
+        .subscribe((myOrderResponse: HttpResponse<MyOrder>) => {
+            this.myOrder = myOrderResponse.body;
+            this.myOrder.shops.forEach((shop) => {
+//              console.error('item.price: ' + item.price + ', item.quantity: ' + item.quantity);
             });
-    }
-
-    sumAll(): number {
-        if (this.myOrder.items) {
-            let total = 0;
-            this.myOrder.items.forEach((item) => {
-                total += (item.quantity * item.price);
-            });
-            return total;
-        }
-        return 0;
+        });
     }
 
     updateMyOrder() {
@@ -104,7 +93,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
     }
 
     canCheckout() {
-        if (this.myOrder && this.myOrder.items && this.myOrder.items.length > 0) {
+        if (this.myOrder && this.myOrder.shops && this.myOrder.shops.length > 0) {
             return true;
         } else {
             return false;

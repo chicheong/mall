@@ -43,38 +43,39 @@ export class CartPendingComponent implements OnInit, OnDestroy {
         this.myOrderService.find(id)
             .subscribe((myOrderResponse: HttpResponse<MyOrder>) => {
                 this.myOrder = myOrderResponse.body;
-                this.myOrder.items.forEach((item) => {
-                   console.error('item.price: ' + item.price + ', item.quantity: ' + item.quantity);
+                this.myOrder.shops.forEach((shop) => {
+//                   console.error('item.price: ' + item.price + ', item.quantity: ' + item.quantity);
                 });
                 // Initialize Shipping if not exist
                 if (!this.myOrder) {
                     console.error('!this.myOrder');
-                } else if (!this.myOrder.shipping) {
-                    const shipping: Shipping = Object.assign(new Shipping());
-                    shipping.status = ShippingStatus.PENDING;
-                    // shipping.currency = this.myOrder.currency;
-                    shipping.price = 0;
-                    const address: Address = Object.assign(new Address());
-                    shipping.shippingAddress = address;
-                    const shippingType: ShippingType = Object.assign(new ShippingType());
-                    shippingType.id = 1;
-                    shippingType.price = 0;
-                    shippingType.currency = this.myOrder.currency;
-                    shipping.type = shippingType;
-                    this.myOrder.shipping = shipping;
-                } else if (!this.myOrder.shipping.shippingAddress || !this.myOrder.shipping.type) {
-                    if (!this.myOrder.shipping.shippingAddress) {
-                        const address: Address = Object.assign(new Address());
-                        this.myOrder.shipping.shippingAddress = address;
-                    }
-                    if (!this.myOrder.shipping.type) {
-                        const shippingType: ShippingType = Object.assign(new ShippingType());
-                        shippingType.id = 1;
-                        shippingType.price = 0;
-                        shippingType.currency = this.myOrder.currency;
-                        this.myOrder.shipping.type = shippingType;
-                    }
                 }
+//                } else if (!this.myOrder.shipping) {
+//                    const shipping: Shipping = Object.assign(new Shipping());
+//                    shipping.status = ShippingStatus.PENDING;
+//                    // shipping.currency = this.myOrder.currency;
+//                    shipping.price = 0;
+//                    const address: Address = Object.assign(new Address());
+//                    shipping.shippingAddress = address;
+//                    const shippingType: ShippingType = Object.assign(new ShippingType());
+//                    shippingType.id = 1;
+//                    shippingType.price = 0;
+//                    shippingType.currency = this.myOrder.currency;
+//                    shipping.type = shippingType;
+//                    this.myOrder.shipping = shipping;
+//                } else if (!this.myOrder.shipping.shippingAddress || !this.myOrder.shipping.type) {
+//                    if (!this.myOrder.shipping.shippingAddress) {
+//                        const address: Address = Object.assign(new Address());
+//                        this.myOrder.shipping.shippingAddress = address;
+//                    }
+//                    if (!this.myOrder.shipping.type) {
+//                        const shippingType: ShippingType = Object.assign(new ShippingType());
+//                        shippingType.id = 1;
+//                        shippingType.price = 0;
+//                        shippingType.currency = this.myOrder.currency;
+//                        this.myOrder.shipping.type = shippingType;
+//                    }
+//                }
                 // Initialize Payment if not exist
                 if (!this.myOrder) {
                     console.error('!this.myOrder');
@@ -87,7 +88,7 @@ export class CartPendingComponent implements OnInit, OnDestroy {
     }
 
     sumAll(): number {
-        return this.myOrderService.sumAll(this.myOrder);
+        return this.myOrderService.getTotalProductPrice(this.myOrder);
     }
 
     updateMyOrder() {
@@ -95,7 +96,7 @@ export class CartPendingComponent implements OnInit, OnDestroy {
 
     save(goNext: boolean) {
         this.isSaving = true;
-        this.myOrder.total = this.myOrderService.getTotal(this.myOrder);
+        this.myOrder.total = this.myOrderService.getTotalPrice(this.myOrder);
         this.subscribeToSaveResponse(
                 this.myOrderService.update(this.myOrder), goNext);
     }

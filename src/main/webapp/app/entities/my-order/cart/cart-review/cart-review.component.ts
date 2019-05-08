@@ -31,7 +31,7 @@ export class CartReviewComponent extends CartComponent implements OnInit, OnDest
     }
 
     sumAll(): number {
-        return this.myOrderService.sumAll(this.myOrder);
+        return this.myOrderService.getTotalProductPrice(this.myOrder);
     }
 
     updateMyOrder() {
@@ -39,7 +39,7 @@ export class CartReviewComponent extends CartComponent implements OnInit, OnDest
 
     save(goNext: boolean) {
         this.isSaving = true;
-        this.myOrder.total = this.myOrderService.getTotal(this.myOrder);
+        this.myOrder.total = this.myOrderService.getTotalPrice(this.myOrder);
         this.subscribeToSaveResponse(
                 this.myOrderService.update(this.myOrder), goNext);
     }
@@ -69,11 +69,8 @@ export class CartReviewComponent extends CartComponent implements OnInit, OnDest
     }
 
     canGoNext() {
-        if (this.myOrder && this.myOrder.items) {
-            let total = 0;
-            this.myOrder.items.forEach((item) => {
-                total += item.quantity;
-            });
+        if (this.myOrder && this.myOrder.shops) {
+            let total = this.myOrderService.getTotalQuantity(this.myOrder);
             if (total > 0) {
                 // console.error('canGoNext: true');
                 return true;

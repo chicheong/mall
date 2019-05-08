@@ -2,14 +2,6 @@
     "fluentMethods": true,
     "relationships": [
         {
-            "relationshipType": "one-to-one",
-            "relationshipName": "shop",
-            "otherEntityName": "orderShop",
-            "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "shipping"
-        },
-        {
             "relationshipType": "one-to-many",
             "relationshipName": "statusHistory",
             "otherEntityName": "shippingStatusHistory",
@@ -42,7 +34,7 @@
             "fieldValues": "PENDING,SHIPPED,COMPLETED,CANCELLED"
         }
     ],
-    "changelogDate": "20190508041427",
+    "changelogDate": "20190508141138",
     "entityTableName": "shipping",
     "dto": "mapstruct",
     "pagination": "pagination",

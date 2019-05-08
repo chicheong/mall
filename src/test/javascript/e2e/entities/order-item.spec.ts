@@ -38,8 +38,8 @@ describe('OrderItem e2e test', () => {
         orderItemDialogPage.setPriceInput('5');
         expect(orderItemDialogPage.getPriceInput()).toMatch('5');
         orderItemDialogPage.currencySelectLastOption();
-        orderItemDialogPage.productItemSelectLastOption();
-        orderItemDialogPage.orderSelectLastOption();
+		orderItemDialogPage.productItemSelectLastOption();
+        orderItemDialogPage.shopSelectLastOption();
         orderItemDialogPage.save();
         expect(orderItemDialogPage.getSaveButton().isPresent()).toBeFalsy();
     });
@@ -69,8 +69,8 @@ export class OrderItemDialogPage {
     quantityInput = element(by.css('input#field_quantity'));
     priceInput = element(by.css('input#field_price'));
     currencySelect = element(by.css('select#field_currency'));
-    productItemSelect = element(by.css('select#field_productItem'));
-    orderSelect = element(by.css('select#field_order'));
+	productItemSelect = element(by.css('select#field_productItem'));
+    shopSelect = element(by.css('select#field_shop'));
 
     getModalTitle() {
         return this.modalTitle.getAttribute('jhiTranslate');
@@ -103,36 +103,20 @@ export class OrderItemDialogPage {
     currencySelectLastOption = function() {
         this.currencySelect.all(by.tagName('option')).last().click();
     };
-    productItemSelectLastOption = function() {
-        this.productItemSelect.all(by.tagName('option')).last().click();
+    shopSelectLastOption = function() {
+        this.shopSelect.all(by.tagName('option')).last().click();
     };
 
-    productItemSelectOption = function(option) {
-        this.productItemSelect.sendKeys(option);
+    shopSelectOption = function(option) {
+        this.shopSelect.sendKeys(option);
     };
 
-    getProductItemSelect = function() {
-        return this.productItemSelect;
+    getShopSelect = function() {
+        return this.shopSelect;
     };
 
-    getProductItemSelectedOption = function() {
-        return this.productItemSelect.element(by.css('option:checked')).getText();
-    };
-
-    orderSelectLastOption = function() {
-        this.orderSelect.all(by.tagName('option')).last().click();
-    };
-
-    orderSelectOption = function(option) {
-        this.orderSelect.sendKeys(option);
-    };
-
-    getOrderSelect = function() {
-        return this.orderSelect;
-    };
-
-    getOrderSelectedOption = function() {
-        return this.orderSelect.element(by.css('option:checked')).getText();
+    getShopSelectedOption = function() {
+        return this.shopSelect.element(by.css('option:checked')).getText();
     };
 
     save() {

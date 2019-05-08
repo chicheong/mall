@@ -21,7 +21,7 @@
             "price": "Price",
             "currency": "Currency",
             "productItem": "Product Item",
-            "order": "Order"
+            "shop": "Shop"
         }
     }
 }

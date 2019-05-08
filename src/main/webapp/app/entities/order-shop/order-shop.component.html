@@ -33,6 +33,7 @@
             <th jhiSortBy="total"><span jhiTranslate="mallApp.orderShop.total">Total</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="currency"><span jhiTranslate="mallApp.orderShop.currency">Currency</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="remark"><span jhiTranslate="mallApp.orderShop.remark">Remark</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="shipping.id"><span jhiTranslate="mallApp.orderShop.shipping">Shipping</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="shop.id"><span jhiTranslate="mallApp.orderShop.shop">Shop</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="order.id"><span jhiTranslate="mallApp.orderShop.order">Order</span> <span class="fa fa-sort"></span></th>
             <th></th>
@@ -44,6 +45,11 @@
                 <td>{{orderShop.total}}</td>
                 <td jhiTranslate="{{'mallApp.CurrencyType.' + orderShop.currency}}">{{orderShop.currency}}</td>
                 <td>{{orderShop.remark}}</td>
+                <td>
+                    <div *ngIf="orderShop.shipping">
+                        <a [routerLink]="['../shipping', orderShop.shipping?.id ]" >{{orderShop.shipping?.id}}</a>
+                    </div>
+                </td>
                 <td>
                     <div *ngIf="orderShop.shop">
                         <a [routerLink]="['../shop', orderShop.shop?.id ]" >{{orderShop.shop?.id}}</a>

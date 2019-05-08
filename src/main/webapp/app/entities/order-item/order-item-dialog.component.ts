@@ -10,7 +10,7 @@ import { OrderItem } from './order-item.model';
 import { OrderItemPopupService } from './order-item-popup.service';
 import { OrderItemService } from './order-item.service';
 import { ProductItem, ProductItemService } from '../product-item';
-import { MyOrder, MyOrderService } from '../my-order';
+import { OrderShop, OrderShopService } from '../order-shop';
 
 @Component({
     selector: 'jhi-order-item-dialog',
@@ -23,21 +23,23 @@ export class OrderItemDialogComponent implements OnInit {
 
     productitems: ProductItem[];
 
-    myorders: MyOrder[];
+    ordershops: OrderShop[];
 
     constructor(
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
         private orderItemService: OrderItemService,
         private productItemService: ProductItemService,
-        private myOrderService: MyOrderService,
+        private orderShopService: OrderShopService,
         private eventManager: JhiEventManager
     ) {
     }
 
     ngOnInit() {
         this.isSaving = false;
-        this.productItemService
+        this.productItemService.query()
+            .subscribe((res: HttpResponse<ProductItem[]>) => { this.productitems = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
+        /**this.productItemService
             .query({filter: 'orderitem-is-null'})
             .subscribe((res: HttpResponse<ProductItem[]>) => {
                 if (!this.orderItem.productItem || !this.orderItem.productItem.id) {
@@ -49,9 +51,9 @@ export class OrderItemDialogComponent implements OnInit {
                             this.productitems = [subRes.body].concat(res.body);
                         }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
                 }
-            }, (res: HttpErrorResponse) => this.onError(res.message));
-        this.myOrderService.query()
-            .subscribe((res: HttpResponse<MyOrder[]>) => { this.myorders = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
+            }, (res: HttpErrorResponse) => this.onError(res.message)); */
+        this.orderShopService.query()
+            .subscribe((res: HttpResponse<OrderShop[]>) => { this.ordershops = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -92,7 +94,7 @@ export class OrderItemDialogComponent implements OnInit {
         return item.id;
     }
 
-    trackMyOrderById(index: number, item: MyOrder) {
+    trackOrderShopById(index: number, item: OrderShop) {
         return item.id;
     }
 }

@@ -10,7 +10,7 @@ import { OrderItemDialogComponent } from '../../../../../../main/webapp/app/enti
 import { OrderItemService } from '../../../../../../main/webapp/app/entities/order-item/order-item.service';
 import { OrderItem } from '../../../../../../main/webapp/app/entities/order-item/order-item.model';
 import { ProductItemService } from '../../../../../../main/webapp/app/entities/product-item';
-import { MyOrderService } from '../../../../../../main/webapp/app/entities/my-order';
+import { OrderShopService } from '../../../../../../main/webapp/app/entities/order-shop';
 
 describe('Component Tests', () => {
 
@@ -27,7 +27,7 @@ describe('Component Tests', () => {
                 declarations: [OrderItemDialogComponent],
                 providers: [
                     ProductItemService,
-                    MyOrderService,
+                    OrderShopService,
                     OrderItemService
                 ]
             })

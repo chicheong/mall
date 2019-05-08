@@ -9,7 +9,6 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { Shipping } from './shipping.model';
 import { ShippingPopupService } from './shipping-popup.service';
 import { ShippingService } from './shipping.service';
-import { OrderShop, OrderShopService } from '../order-shop';
 import { ShippingType, ShippingTypeService } from '../shipping-type';
 
 @Component({
@@ -21,15 +20,12 @@ export class ShippingDialogComponent implements OnInit {
     shipping: Shipping;
     isSaving: boolean;
 
-    shops: OrderShop[];
-
     shippingtypes: ShippingType[];
 
     constructor(
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
         private shippingService: ShippingService,
-        private orderShopService: OrderShopService,
         private shippingTypeService: ShippingTypeService,
         private eventManager: JhiEventManager
     ) {
@@ -37,19 +33,6 @@ export class ShippingDialogComponent implements OnInit {
 
     ngOnInit() {
         this.isSaving = false;
-        this.orderShopService
-            .query({filter: 'shipping-is-null'})
-            .subscribe((res: HttpResponse<OrderShop[]>) => {
-                if (!this.shipping.shop || !this.shipping.shop.id) {
-                    this.shops = res.body;
-                } else {
-                    this.orderShopService
-                        .find(this.shipping.shop.id)
-                        .subscribe((subRes: HttpResponse<OrderShop>) => {
-                            this.shops = [subRes.body].concat(res.body);
-                        }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
-                }
-            }, (res: HttpErrorResponse) => this.onError(res.message));
         this.shippingTypeService.query()
             .subscribe((res: HttpResponse<ShippingType[]>) => { this.shippingtypes = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
@@ -86,10 +69,6 @@ export class ShippingDialogComponent implements OnInit {
 
     private onError(error: any) {
         this.jhiAlertService.error(error.message, null, null);
-    }
-
-    trackOrderShopById(index: number, item: OrderShop) {
-        return item.id;
     }
 
     trackShippingTypeById(index: number, item: ShippingType) {

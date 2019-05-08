@@ -37,9 +37,7 @@
             <column name="status" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="shop_id" type="bigint">
-                <constraints unique="true" nullable="true" />
-            </column>
+
             <column name="type_id" type="bigint">
                 <constraints nullable="true" />
             </column>
