@@ -59,6 +59,12 @@ entity Shop {
 	lastModifiedDate ZonedDateTime
 }
 
+entity ShippingPriceRule {
+	type String,
+	value BigDecimal,
+	price BigDecimal
+}
+
 entity Delegation {
 	from ZonedDateTime,
 	to ZonedDateTime,
@@ -253,12 +259,6 @@ entity Shipping {
 	status ShippingStatus
 }
 
-entity ShippingPriceRule {
-	type String,
-	value BigDecimal,
-	price BigDecimal
-}
-
 entity ShippingType {
 	name String,
 	description String,
@@ -312,6 +312,7 @@ relationship OneToOne {
 	ProductItem{size} to ProductStyle,
 	OrderItem{productItem} to ProductItem,
 	Shipping{shop} to OrderShop,
+	OrderShop{shop} to Shop,
 	MyOrder{shippingAddress} to Address,
 	MyOrder{billingAddress} to Address,
 	Payment{order} to MyOrder,
@@ -328,7 +329,8 @@ relationship OneToMany {
 	Shipping{statusHistory} to ShippingStatusHistory{shipping},
 	ProductItem{price} to Price{item},
 	ProductItem{quantity} to Quantity{item},
-	Payment{statusHistory} to PaymentStatusHistory{payment}
+	Payment{statusHistory} to PaymentStatusHistory{payment},
+	Shop{shippingPriceRule} to ShippingPriceRule
 }
 
 relationship ManyToOne {
@@ -345,7 +347,6 @@ relationship ManyToOne {
 	Card{account} to MyAccount,
 	MyOrder{account} to MyAccount,
 	Shipping{type} to ShippingType
-
 }
 
 relationship ManyToMany {
