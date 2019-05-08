@@ -1,0 +1,28 @@
+
+{
+    "mallApp": {
+        "orderShop" : {
+            "home": {
+                "title": "Order Shops",
+                "createLabel": "Create a new Order Shop",
+                "createOrEditLabel": "Create or edit a Order Shop",
+                "search": "Search for Order Shop"
+            },
+            "created": "A new Order Shop is created with identifier {{ param }}",
+            "updated": "A Order Shop is updated with identifier {{ param }}",
+            "deleted": "A Order Shop is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Order Shop {{ id }}?"
+            },
+            "detail": {
+                "title": "Order Shop"
+            },
+            "total": "Total",
+            "currency": "Currency",
+            "remark": "Remark",
+            "shop": "Shop",
+            "item": "Item",
+            "order": "Order"
+        }
+    }
+}

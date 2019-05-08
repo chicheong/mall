@@ -3,26 +3,10 @@
     "relationships": [
         {
             "relationshipType": "one-to-one",
-            "relationshipName": "order",
-            "otherEntityName": "myOrder",
+            "relationshipName": "shop",
+            "otherEntityName": "orderShop",
             "otherEntityField": "id",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "shipping"
-        },
-        {
-            "relationshipType": "one-to-one",
-            "relationshipName": "shippingAddress",
-            "otherEntityName": "address",
-            "otherEntityField": "id",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "shipping"
-        },
-        {
-            "relationshipType": "one-to-one",
-            "relationshipName": "billingAddress",
-            "otherEntityName": "address",
-            "otherEntityField": "id",
-            "ownerSide": false,
+            "ownerSide": true,
             "otherEntityRelationshipName": "shipping"
         },
         {
@@ -53,28 +37,12 @@
             "fieldType": "ZonedDateTime"
         },
         {
-            "fieldName": "receiver",
-            "fieldType": "String"
-        },
-        {
-            "fieldName": "contactNum",
-            "fieldType": "String"
-        },
-        {
-            "fieldName": "email",
-            "fieldType": "String"
-        },
-        {
-            "fieldName": "remark",
-            "fieldType": "String"
-        },
-        {
             "fieldName": "status",
             "fieldType": "ShippingStatus",
             "fieldValues": "PENDING,SHIPPED,COMPLETED,CANCELLED"
         }
     ],
-    "changelogDate": "20180621083506",
+    "changelogDate": "20190508041427",
     "entityTableName": "shipping",
     "dto": "mapstruct",
     "pagination": "pagination",

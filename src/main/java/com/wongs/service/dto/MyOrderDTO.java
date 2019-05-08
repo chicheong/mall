@@ -4,14 +4,8 @@ package com.wongs.service.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
-
-import com.wongs.domain.MyOrder;
-import com.wongs.domain.OrderItem;
-import com.wongs.domain.OrderStatusHistory;
-import com.wongs.domain.Shipping;
+import java.util.Objects;
 import com.wongs.domain.enumeration.CurrencyType;
 import com.wongs.domain.enumeration.OrderStatus;
 
@@ -22,26 +16,33 @@ public class MyOrderDTO implements Serializable {
 
     private Long id;
 
+    private String receiver;
+
     private BigDecimal total;
 
     private CurrencyType currency;
+
+    private String contactNum;
+
+    private String email;
 
     private String remark;
 
     private OrderStatus status;
 
+    private Address shippingAddress;
+
+    private Address billingAddress;
+    
     private Long accountId;
     
-    private ShippingDTO shipping;
     private PaymentDTO payment;
-    
-    private Set<OrderItem> items = new HashSet<>();
     private Set<OrderStatusHistory> statusHistories = new HashSet<>();
 
     public MyOrderDTO() {
         // Empty constructor needed for Jackson.
     }
-
+    
     public MyOrderDTO(MyOrder myOrder) {
         this.id = myOrder.getId();
     	this.total = myOrder.getTotal();
@@ -52,14 +53,25 @@ public class MyOrderDTO implements Serializable {
     	this.items = myOrder.getItems();
     	this.statusHistories = myOrder.getStatusHistories();
     	this.accountId = Optional.of(myOrder.getAccount()).get().getId();
+    	
+		this.shippingAddress = myOrder.getShippingAddress();
+		this.billingAddress = myOrder.getBillingAddress();
     }
-    
+
     public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
     }
 
     public BigDecimal getTotal() {
@@ -78,6 +90,22 @@ public class MyOrderDTO implements Serializable {
         this.currency = currency;
     }
 
+    public String getContactNum() {
+        return contactNum;
+    }
+
+    public void setContactNum(String contactNum) {
+        this.contactNum = contactNum;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getRemark() {
         return remark;
     }
@@ -94,22 +122,26 @@ public class MyOrderDTO implements Serializable {
         this.status = status;
     }
 
+	public Address getShippingAddress() {
+		return shippingAddress;
+	}
+
+	public void setShippingAddress(Address shippingAddress) {
+		this.shippingAddress = shippingAddress;
+	}
+
+	public Address getBillingAddress() {
+		return billingAddress;
+	}
+
+	public void setBillingAddress(Address billingAddress) {
+		this.billingAddress = billingAddress;
+	}
+
     public Long getAccountId() {
         return accountId;
     }
-
-    public void setAccountId(Long myAccountId) {
-        this.accountId = myAccountId;
-    }
-
-	public ShippingDTO getShipping() {
-		return shipping;
-	}
-
-	public void setShipping(ShippingDTO shipping) {
-		this.shipping = shipping;
-	}
-
+    
 	public PaymentDTO getPayment() {
 		return payment;
 	}
@@ -117,15 +149,7 @@ public class MyOrderDTO implements Serializable {
 	public void setPayment(PaymentDTO payment) {
 		this.payment = payment;
 	}
-
-	public Set<OrderItem> getItems() {
-		return items;
-	}
-
-	public void setItems(Set<OrderItem> items) {
-		this.items = items;
-	}
-
+	
 	public Set<OrderStatusHistory> getStatusHistories() {
 		return statusHistories;
 	}
@@ -134,7 +158,11 @@ public class MyOrderDTO implements Serializable {
 		this.statusHistories = statusHistories;
 	}
 
-	@Override
+    public void setAccountId(Long myAccountId) {
+        this.accountId = myAccountId;
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -159,8 +187,11 @@ public class MyOrderDTO implements Serializable {
     public String toString() {
         return "MyOrderDTO{" +
             "id=" + getId() +
+            ", receiver='" + getReceiver() + "'" +
             ", total=" + getTotal() +
             ", currency='" + getCurrency() + "'" +
+            ", contactNum='" + getContactNum() + "'" +
+            ", email='" + getEmail() + "'" +
             ", remark='" + getRemark() + "'" +
             ", status='" + getStatus() + "'" +
             "}";

@@ -1,20 +1,14 @@
 package com.wongs.web.rest;
 
-import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.hamcrest.Matchers.hasItem;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import com.wongs.MallApp;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import javax.persistence.EntityManager;
+import com.wongs.domain.MyOrder;
+import com.wongs.repository.MyOrderRepository;
+import com.wongs.service.MyOrderService;
+import com.wongs.repository.search.MyOrderSearchRepository;
+import com.wongs.service.dto.MyOrderDTO;
+import com.wongs.service.mapper.MyOrderMapper;
+import com.wongs.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -30,22 +24,18 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.wongs.MallApp;
-import com.wongs.domain.MyOrder;
+import javax.persistence.EntityManager;
+import java.math.BigDecimal;
+import java.util.List;
+
+import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.Matchers.hasItem;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 import com.wongs.domain.enumeration.CurrencyType;
 import com.wongs.domain.enumeration.OrderStatus;
-import com.wongs.repository.MyOrderRepository;
-import com.wongs.repository.search.MyOrderSearchRepository;
-import com.wongs.service.MyAccountService;
-import com.wongs.service.MyOrderService;
-import com.wongs.service.PaymentService;
-import com.wongs.service.ShippingService;
-import com.wongs.service.StripeClient;
-import com.wongs.service.UserInfoService;
-import com.wongs.service.UserService;
-import com.wongs.service.dto.MyOrderDTO;
-import com.wongs.service.mapper.MyOrderMapper;
-import com.wongs.web.rest.errors.ExceptionTranslator;
 /**
  * Test class for the MyOrderResource REST controller.
  *
@@ -55,11 +45,20 @@ import com.wongs.web.rest.errors.ExceptionTranslator;
 @SpringBootTest(classes = MallApp.class)
 public class MyOrderResourceIntTest {
 
+    private static final String DEFAULT_RECEIVER = "AAAAAAAAAA";
+    private static final String UPDATED_RECEIVER = "BBBBBBBBBB";
+
     private static final BigDecimal DEFAULT_TOTAL = new BigDecimal(1);
     private static final BigDecimal UPDATED_TOTAL = new BigDecimal(2);
 
     private static final CurrencyType DEFAULT_CURRENCY = CurrencyType.HKD;
     private static final CurrencyType UPDATED_CURRENCY = CurrencyType.CNY;
+
+    private static final String DEFAULT_CONTACT_NUM = "AAAAAAAAAA";
+    private static final String UPDATED_CONTACT_NUM = "BBBBBBBBBB";
+
+    private static final String DEFAULT_EMAIL = "AAAAAAAAAA";
+    private static final String UPDATED_EMAIL = "BBBBBBBBBB";
 
     private static final String DEFAULT_REMARK = "AAAAAAAAAA";
     private static final String UPDATED_REMARK = "BBBBBBBBBB";
@@ -93,10 +92,10 @@ public class MyOrderResourceIntTest {
 
     @Autowired
     private MyOrderSearchRepository myOrderSearchRepository;
-    
+
     @Autowired
     private StripeClient stripeClient;
-
+    
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
 
@@ -132,8 +131,11 @@ public class MyOrderResourceIntTest {
      */
     public static MyOrder createEntity(EntityManager em) {
         MyOrder myOrder = new MyOrder()
+            .receiver(DEFAULT_RECEIVER)
             .total(DEFAULT_TOTAL)
             .currency(DEFAULT_CURRENCY)
+            .contactNum(DEFAULT_CONTACT_NUM)
+            .email(DEFAULT_EMAIL)
             .remark(DEFAULT_REMARK)
             .status(DEFAULT_STATUS);
         return myOrder;
@@ -161,8 +163,11 @@ public class MyOrderResourceIntTest {
         List<MyOrder> myOrderList = myOrderRepository.findAll();
         assertThat(myOrderList).hasSize(databaseSizeBeforeCreate + 1);
         MyOrder testMyOrder = myOrderList.get(myOrderList.size() - 1);
+        assertThat(testMyOrder.getReceiver()).isEqualTo(DEFAULT_RECEIVER);
         assertThat(testMyOrder.getTotal()).isEqualTo(DEFAULT_TOTAL);
         assertThat(testMyOrder.getCurrency()).isEqualTo(DEFAULT_CURRENCY);
+        assertThat(testMyOrder.getContactNum()).isEqualTo(DEFAULT_CONTACT_NUM);
+        assertThat(testMyOrder.getEmail()).isEqualTo(DEFAULT_EMAIL);
         assertThat(testMyOrder.getRemark()).isEqualTo(DEFAULT_REMARK);
         assertThat(testMyOrder.getStatus()).isEqualTo(DEFAULT_STATUS);
 
@@ -202,8 +207,11 @@ public class MyOrderResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(myOrder.getId().intValue())))
+            .andExpect(jsonPath("$.[*].receiver").value(hasItem(DEFAULT_RECEIVER.toString())))
             .andExpect(jsonPath("$.[*].total").value(hasItem(DEFAULT_TOTAL.intValue())))
             .andExpect(jsonPath("$.[*].currency").value(hasItem(DEFAULT_CURRENCY.toString())))
+            .andExpect(jsonPath("$.[*].contactNum").value(hasItem(DEFAULT_CONTACT_NUM.toString())))
+            .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL.toString())))
             .andExpect(jsonPath("$.[*].remark").value(hasItem(DEFAULT_REMARK.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
     }
@@ -219,8 +227,11 @@ public class MyOrderResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.id").value(myOrder.getId().intValue()))
+            .andExpect(jsonPath("$.receiver").value(DEFAULT_RECEIVER.toString()))
             .andExpect(jsonPath("$.total").value(DEFAULT_TOTAL.intValue()))
             .andExpect(jsonPath("$.currency").value(DEFAULT_CURRENCY.toString()))
+            .andExpect(jsonPath("$.contactNum").value(DEFAULT_CONTACT_NUM.toString()))
+            .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL.toString()))
             .andExpect(jsonPath("$.remark").value(DEFAULT_REMARK.toString()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
     }
@@ -246,8 +257,11 @@ public class MyOrderResourceIntTest {
         // Disconnect from session so that the updates on updatedMyOrder are not directly saved in db
         em.detach(updatedMyOrder);
         updatedMyOrder
+            .receiver(UPDATED_RECEIVER)
             .total(UPDATED_TOTAL)
             .currency(UPDATED_CURRENCY)
+            .contactNum(UPDATED_CONTACT_NUM)
+            .email(UPDATED_EMAIL)
             .remark(UPDATED_REMARK)
             .status(UPDATED_STATUS);
         MyOrderDTO myOrderDTO = myOrderMapper.toDto(updatedMyOrder);
@@ -261,8 +275,11 @@ public class MyOrderResourceIntTest {
         List<MyOrder> myOrderList = myOrderRepository.findAll();
         assertThat(myOrderList).hasSize(databaseSizeBeforeUpdate);
         MyOrder testMyOrder = myOrderList.get(myOrderList.size() - 1);
+        assertThat(testMyOrder.getReceiver()).isEqualTo(UPDATED_RECEIVER);
         assertThat(testMyOrder.getTotal()).isEqualTo(UPDATED_TOTAL);
         assertThat(testMyOrder.getCurrency()).isEqualTo(UPDATED_CURRENCY);
+        assertThat(testMyOrder.getContactNum()).isEqualTo(UPDATED_CONTACT_NUM);
+        assertThat(testMyOrder.getEmail()).isEqualTo(UPDATED_EMAIL);
         assertThat(testMyOrder.getRemark()).isEqualTo(UPDATED_REMARK);
         assertThat(testMyOrder.getStatus()).isEqualTo(UPDATED_STATUS);
 
@@ -324,8 +341,11 @@ public class MyOrderResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(myOrder.getId().intValue())))
+            .andExpect(jsonPath("$.[*].receiver").value(hasItem(DEFAULT_RECEIVER.toString())))
             .andExpect(jsonPath("$.[*].total").value(hasItem(DEFAULT_TOTAL.intValue())))
             .andExpect(jsonPath("$.[*].currency").value(hasItem(DEFAULT_CURRENCY.toString())))
+            .andExpect(jsonPath("$.[*].contactNum").value(hasItem(DEFAULT_CONTACT_NUM.toString())))
+            .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL.toString())))
             .andExpect(jsonPath("$.[*].remark").value(hasItem(DEFAULT_REMARK.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
     }

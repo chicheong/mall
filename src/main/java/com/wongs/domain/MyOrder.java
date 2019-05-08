@@ -32,12 +32,21 @@ public class MyOrder implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "receiver")
+    private String receiver;
+
     @Column(name = "total", precision=10, scale=2)
     private BigDecimal total;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "currency")
     private CurrencyType currency;
+
+    @Column(name = "contact_num")
+    private String contactNum;
+
+    @Column(name = "email")
+    private String email;
 
     @Column(name = "remark")
     private String remark;
@@ -46,10 +55,18 @@ public class MyOrder implements Serializable {
     @Column(name = "status")
     private OrderStatus status;
 
+    @OneToOne
+    @JoinColumn(unique = true)
+    private Address shippingAddress;
+
+    @OneToOne
+    @JoinColumn(unique = true)
+    private Address billingAddress;
+
     @OneToMany(mappedBy = "order")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<OrderItem> items = new HashSet<>();
+    private Set<OrderShop> shops = new HashSet<>();
 
     @OneToMany(mappedBy = "order")
     @JsonIgnore
@@ -66,6 +83,19 @@ public class MyOrder implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getReceiver() {
+        return receiver;
+    }
+
+    public MyOrder receiver(String receiver) {
+        this.receiver = receiver;
+        return this;
+    }
+
+    public void setReceiver(String receiver) {
+        this.receiver = receiver;
     }
 
     public BigDecimal getTotal() {
@@ -94,6 +124,32 @@ public class MyOrder implements Serializable {
         this.currency = currency;
     }
 
+    public String getContactNum() {
+        return contactNum;
+    }
+
+    public MyOrder contactNum(String contactNum) {
+        this.contactNum = contactNum;
+        return this;
+    }
+
+    public void setContactNum(String contactNum) {
+        this.contactNum = contactNum;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public MyOrder email(String email) {
+        this.email = email;
+        return this;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public String getRemark() {
         return remark;
     }
@@ -120,29 +176,55 @@ public class MyOrder implements Serializable {
         this.status = status;
     }
 
-    public Set<OrderItem> getItems() {
-        return items;
+    public Address getShippingAddress() {
+        return shippingAddress;
     }
 
-    public MyOrder items(Set<OrderItem> orderItems) {
-        this.items = orderItems;
+    public MyOrder shippingAddress(Address address) {
+        this.shippingAddress = address;
         return this;
     }
 
-    public MyOrder addItem(OrderItem orderItem) {
-        this.items.add(orderItem);
-        orderItem.setOrder(this);
+    public void setShippingAddress(Address address) {
+        this.shippingAddress = address;
+    }
+
+    public Address getBillingAddress() {
+        return billingAddress;
+    }
+
+    public MyOrder billingAddress(Address address) {
+        this.billingAddress = address;
         return this;
     }
 
-    public MyOrder removeItem(OrderItem orderItem) {
-        this.items.remove(orderItem);
-        orderItem.setOrder(null);
+    public void setBillingAddress(Address address) {
+        this.billingAddress = address;
+    }
+
+    public Set<OrderShop> getShops() {
+        return shops;
+    }
+
+    public MyOrder shops(Set<OrderShop> orderShops) {
+        this.shops = orderShops;
         return this;
     }
 
-    public void setItems(Set<OrderItem> orderItems) {
-        this.items = orderItems;
+    public MyOrder addShop(OrderShop orderShop) {
+        this.shops.add(orderShop);
+        orderShop.setOrder(this);
+        return this;
+    }
+
+    public MyOrder removeShop(OrderShop orderShop) {
+        this.shops.remove(orderShop);
+        orderShop.setOrder(null);
+        return this;
+    }
+
+    public void setShops(Set<OrderShop> orderShops) {
+        this.shops = orderShops;
     }
 
     public Set<OrderStatusHistory> getStatusHistories() {
@@ -208,8 +290,11 @@ public class MyOrder implements Serializable {
     public String toString() {
         return "MyOrder{" +
             "id=" + getId() +
+            ", receiver='" + getReceiver() + "'" +
             ", total=" + getTotal() +
             ", currency='" + getCurrency() + "'" +
+            ", contactNum='" + getContactNum() + "'" +
+            ", email='" + getEmail() + "'" +
             ", remark='" + getRemark() + "'" +
             ", status='" + getStatus() + "'" +
             "}";

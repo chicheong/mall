@@ -33,12 +33,20 @@ describe('MyOrder e2e test', () => {
 
     it('should create and save MyOrders', () => {
         myOrderComponentsPage.clickOnCreateButton();
+        myOrderDialogPage.setReceiverInput('receiver');
+        expect(myOrderDialogPage.getReceiverInput()).toMatch('receiver');
         myOrderDialogPage.setTotalInput('5');
         expect(myOrderDialogPage.getTotalInput()).toMatch('5');
         myOrderDialogPage.currencySelectLastOption();
+        myOrderDialogPage.setContactNumInput('contactNum');
+        expect(myOrderDialogPage.getContactNumInput()).toMatch('contactNum');
+        myOrderDialogPage.setEmailInput('email');
+        expect(myOrderDialogPage.getEmailInput()).toMatch('email');
         myOrderDialogPage.setRemarkInput('remark');
         expect(myOrderDialogPage.getRemarkInput()).toMatch('remark');
         myOrderDialogPage.statusSelectLastOption();
+        myOrderDialogPage.shippingAddressSelectLastOption();
+        myOrderDialogPage.billingAddressSelectLastOption();
         myOrderDialogPage.accountSelectLastOption();
         myOrderDialogPage.save();
         expect(myOrderDialogPage.getSaveButton().isPresent()).toBeFalsy();
@@ -66,15 +74,28 @@ export class MyOrderDialogPage {
     modalTitle = element(by.css('h4#myMyOrderLabel'));
     saveButton = element(by.css('.modal-footer .btn.btn-primary'));
     closeButton = element(by.css('button.close'));
+    receiverInput = element(by.css('input#field_receiver'));
     totalInput = element(by.css('input#field_total'));
     currencySelect = element(by.css('select#field_currency'));
+    contactNumInput = element(by.css('input#field_contactNum'));
+    emailInput = element(by.css('input#field_email'));
     remarkInput = element(by.css('input#field_remark'));
     statusSelect = element(by.css('select#field_status'));
+    shippingAddressSelect = element(by.css('select#field_shippingAddress'));
+    billingAddressSelect = element(by.css('select#field_billingAddress'));
     accountSelect = element(by.css('select#field_account'));
 
     getModalTitle() {
         return this.modalTitle.getAttribute('jhiTranslate');
     }
+
+    setReceiverInput = function(receiver) {
+        this.receiverInput.sendKeys(receiver);
+    };
+
+    getReceiverInput = function() {
+        return this.receiverInput.getAttribute('value');
+    };
 
     setTotalInput = function(total) {
         this.totalInput.sendKeys(total);
@@ -95,6 +116,22 @@ export class MyOrderDialogPage {
     currencySelectLastOption = function() {
         this.currencySelect.all(by.tagName('option')).last().click();
     };
+    setContactNumInput = function(contactNum) {
+        this.contactNumInput.sendKeys(contactNum);
+    };
+
+    getContactNumInput = function() {
+        return this.contactNumInput.getAttribute('value');
+    };
+
+    setEmailInput = function(email) {
+        this.emailInput.sendKeys(email);
+    };
+
+    getEmailInput = function() {
+        return this.emailInput.getAttribute('value');
+    };
+
     setRemarkInput = function(remark) {
         this.remarkInput.sendKeys(remark);
     };
@@ -114,6 +151,38 @@ export class MyOrderDialogPage {
     statusSelectLastOption = function() {
         this.statusSelect.all(by.tagName('option')).last().click();
     };
+    shippingAddressSelectLastOption = function() {
+        this.shippingAddressSelect.all(by.tagName('option')).last().click();
+    };
+
+    shippingAddressSelectOption = function(option) {
+        this.shippingAddressSelect.sendKeys(option);
+    };
+
+    getShippingAddressSelect = function() {
+        return this.shippingAddressSelect;
+    };
+
+    getShippingAddressSelectedOption = function() {
+        return this.shippingAddressSelect.element(by.css('option:checked')).getText();
+    };
+
+    billingAddressSelectLastOption = function() {
+        this.billingAddressSelect.all(by.tagName('option')).last().click();
+    };
+
+    billingAddressSelectOption = function(option) {
+        this.billingAddressSelect.sendKeys(option);
+    };
+
+    getBillingAddressSelect = function() {
+        return this.billingAddressSelect;
+    };
+
+    getBillingAddressSelectedOption = function() {
+        return this.billingAddressSelect.element(by.css('option:checked')).getText();
+    };
+
     accountSelectLastOption = function() {
         this.accountSelect.all(by.tagName('option')).last().click();
     };

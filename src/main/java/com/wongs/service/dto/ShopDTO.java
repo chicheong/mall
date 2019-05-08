@@ -38,7 +38,7 @@ public class ShopDTO implements Serializable {
     private String lastModifiedBy;
 
     private ZonedDateTime lastModifiedDate;
-    
+
     private Set<MyAccount> accounts = new HashSet<>();
 
     private Set<ProductDTO> products = null;
@@ -154,8 +154,8 @@ public class ShopDTO implements Serializable {
 	public void setProducts(Set<ProductDTO> products) {
 		this.products = products;
 	}
-
-	@Override
+	
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

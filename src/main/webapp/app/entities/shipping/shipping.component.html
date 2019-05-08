@@ -33,14 +33,8 @@
             <th jhiSortBy="price"><span jhiTranslate="mallApp.shipping.price">Price</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="currency"><span jhiTranslate="mallApp.shipping.currency">Currency</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="date"><span jhiTranslate="mallApp.shipping.date">Date</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="receiver"><span jhiTranslate="mallApp.shipping.receiver">Receiver</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="contactNum"><span jhiTranslate="mallApp.shipping.contactNum">Contact Num</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="email"><span jhiTranslate="mallApp.shipping.email">Email</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="remark"><span jhiTranslate="mallApp.shipping.remark">Remark</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="status"><span jhiTranslate="mallApp.shipping.status">Status</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="orderId"><span jhiTranslate="mallApp.shipping.order">Order</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="shippingAddressId"><span jhiTranslate="mallApp.shipping.shippingAddress">Shipping Address</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="billingAddressId"><span jhiTranslate="mallApp.shipping.billingAddress">Billing Address</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="shopId"><span jhiTranslate="mallApp.shipping.shop">Shop</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="typeId"><span jhiTranslate="mallApp.shipping.type">Type</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
@@ -51,27 +45,13 @@
                 <td>{{shipping.price}}</td>
                 <td jhiTranslate="{{'mallApp.CurrencyType.' + shipping.currency}}">{{shipping.currency}}</td>
                 <td>{{shipping.date | date:'medium'}}</td>
-                <td>{{shipping.receiver}}</td>
-                <td>{{shipping.contactNum}}</td>
-                <td>{{shipping.email}}</td>
-                <td>{{shipping.remark}}</td>
                 <td jhiTranslate="{{'mallApp.ShippingStatus.' + shipping.status}}">{{shipping.status}}</td>
                 <td>
-                    <div *ngIf="shipping.order">
-                        <a [routerLink]="['../my-order', shipping.order?.id  ]" >{{shipping.order?.id}}</a>
+                    <div *ngIf="shipping.shop">
+                        <a [routerLink]="['../order-shop', shipping.shop?.id  ]" >{{shipping.shop?.id}}</a>
                     </div>
                 </td>
-                <td>
-                    <div *ngIf="shipping.shippingAddress">
-                        <a [routerLink]="['../address', shipping.shippingAddress?.id  ]" >{{shipping.shippingAddress?.id}}</a>
-                    </div>
-                </td>
-                <td>
-                    <div *ngIf="shipping.billingAddress">
-                        <a [routerLink]="['../address', shipping.billingAddress?.id  ]" >{{shipping.billingAddress?.id}}</a>
-                    </div>
-                </td>
-                <td>
+                 <td>
                     <div *ngIf="shipping.type">
                         <a [routerLink]="['../shipping-type', shipping.type?.id  ]" >{{shipping.type?.id}}</a>
                     </div>

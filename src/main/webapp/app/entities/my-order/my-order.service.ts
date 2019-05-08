@@ -344,10 +344,12 @@ export class MyOrderService {
     }
 
     sumAll(myOrder: MyOrder): number {
-        if (myOrder.items) {
+        if (myOrder.shops) {
             let total = 0;
-            myOrder.items.forEach((item) => {
-                total += (item.quantity * item.price);
+            myOrder.shops.forEach((shop) => {
+               shop.items.forEach((item) => {
+                   total += (item.quantity * item.price);
+               });
             });
             return total;
         }
@@ -364,19 +366,34 @@ export class MyOrderService {
         return this.sumAll(myOrder) + shippingTotal;
     }
 
+    getTotalQuantity(myOrder: MyOrder): number {
+        if (myOrder.shops) {
+            let total = 0;
+            myOrder.shops.forEach((shop) => {
+               shop.items.forEach((item) => {
+                   total += item.quantity;
+               });
+            });
+            return total;
+        }
+        return 0;
+    }
+
     getPaypalOrderItems(myOrder: MyOrder): PaypalOrderItem[] {
         const paypalOrderItems: PaypalOrderItem[] = [];
-        if (myOrder.items) {
+        if (myOrder.shops) {
             let paypalOrderItem: PaypalOrderItem;
-            myOrder.items.forEach((item) => {
-                paypalOrderItem = Object.assign(new PaypalOrderItem());
-                paypalOrderItem.name = 'name' + item.id;
-                paypalOrderItem.description = 'product' + item.id;
-                paypalOrderItem.price = item.price;
-                paypalOrderItem.quantity = item.quantity;
-                paypalOrderItem.currency = item.currency;
-                paypalOrderItem.tax = 0;
-                paypalOrderItems.push(paypalOrderItem);
+            myOrder.shops.forEach((shop) => {
+                shop.items.forEach((item) => {
+                    paypalOrderItem = Object.assign(new PaypalOrderItem());
+                    paypalOrderItem.name = 'name' + item.id;
+                    paypalOrderItem.description = 'product' + item.id;
+                    paypalOrderItem.price = item.price;
+                    paypalOrderItem.quantity = item.quantity;
+                    paypalOrderItem.currency = item.currency;
+                    paypalOrderItem.tax = 0;
+                    paypalOrderItems.push(paypalOrderItem);
+                });
             });
         }
         console.error('paypalOrderItems: ' + paypalOrderItems);

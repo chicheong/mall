@@ -68,7 +68,7 @@ class ShippingGatlingTest extends Simulation {
             .exec(http("Create new shipping")
             .post("/api/shippings")
             .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null, "price":"0", "currency":null, "date":"2020-01-01T00:00:00.000Z", "receiver":"SAMPLE_TEXT", "contactNum":"SAMPLE_TEXT", "email":"SAMPLE_TEXT", "remark":"SAMPLE_TEXT", "status":null}""")).asJSON
+            .body(StringBody("""{"id":null, "price":"0", "currency":null, "date":"2020-01-01T00:00:00.000Z", "status":null}""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_shipping_url"))).exitHereIfFailed
             .pause(10)

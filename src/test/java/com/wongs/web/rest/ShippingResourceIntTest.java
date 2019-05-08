@@ -59,18 +59,6 @@ public class ShippingResourceIntTest {
     private static final ZonedDateTime DEFAULT_DATE = ZonedDateTime.ofInstant(Instant.ofEpochMilli(0L), ZoneOffset.UTC);
     private static final ZonedDateTime UPDATED_DATE = ZonedDateTime.now(ZoneId.systemDefault()).withNano(0);
 
-    private static final String DEFAULT_RECEIVER = "AAAAAAAAAA";
-    private static final String UPDATED_RECEIVER = "BBBBBBBBBB";
-
-    private static final String DEFAULT_CONTACT_NUM = "AAAAAAAAAA";
-    private static final String UPDATED_CONTACT_NUM = "BBBBBBBBBB";
-
-    private static final String DEFAULT_EMAIL = "AAAAAAAAAA";
-    private static final String UPDATED_EMAIL = "BBBBBBBBBB";
-
-    private static final String DEFAULT_REMARK = "AAAAAAAAAA";
-    private static final String UPDATED_REMARK = "BBBBBBBBBB";
-
     private static final ShippingStatus DEFAULT_STATUS = ShippingStatus.PENDING;
     private static final ShippingStatus UPDATED_STATUS = ShippingStatus.SHIPPED;
 
@@ -124,10 +112,6 @@ public class ShippingResourceIntTest {
             .price(DEFAULT_PRICE)
             .currency(DEFAULT_CURRENCY)
             .date(DEFAULT_DATE)
-            .receiver(DEFAULT_RECEIVER)
-            .contactNum(DEFAULT_CONTACT_NUM)
-            .email(DEFAULT_EMAIL)
-            .remark(DEFAULT_REMARK)
             .status(DEFAULT_STATUS);
         return shipping;
     }
@@ -157,10 +141,6 @@ public class ShippingResourceIntTest {
         assertThat(testShipping.getPrice()).isEqualTo(DEFAULT_PRICE);
         assertThat(testShipping.getCurrency()).isEqualTo(DEFAULT_CURRENCY);
         assertThat(testShipping.getDate()).isEqualTo(DEFAULT_DATE);
-        assertThat(testShipping.getReceiver()).isEqualTo(DEFAULT_RECEIVER);
-        assertThat(testShipping.getContactNum()).isEqualTo(DEFAULT_CONTACT_NUM);
-        assertThat(testShipping.getEmail()).isEqualTo(DEFAULT_EMAIL);
-        assertThat(testShipping.getRemark()).isEqualTo(DEFAULT_REMARK);
         assertThat(testShipping.getStatus()).isEqualTo(DEFAULT_STATUS);
 
         // Validate the Shipping in Elasticsearch
@@ -203,10 +183,6 @@ public class ShippingResourceIntTest {
             .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
             .andExpect(jsonPath("$.[*].currency").value(hasItem(DEFAULT_CURRENCY.toString())))
             .andExpect(jsonPath("$.[*].date").value(hasItem(sameInstant(DEFAULT_DATE))))
-            .andExpect(jsonPath("$.[*].receiver").value(hasItem(DEFAULT_RECEIVER.toString())))
-            .andExpect(jsonPath("$.[*].contactNum").value(hasItem(DEFAULT_CONTACT_NUM.toString())))
-            .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL.toString())))
-            .andExpect(jsonPath("$.[*].remark").value(hasItem(DEFAULT_REMARK.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
     }
 
@@ -224,10 +200,6 @@ public class ShippingResourceIntTest {
             .andExpect(jsonPath("$.price").value(DEFAULT_PRICE.intValue()))
             .andExpect(jsonPath("$.currency").value(DEFAULT_CURRENCY.toString()))
             .andExpect(jsonPath("$.date").value(sameInstant(DEFAULT_DATE)))
-            .andExpect(jsonPath("$.receiver").value(DEFAULT_RECEIVER.toString()))
-            .andExpect(jsonPath("$.contactNum").value(DEFAULT_CONTACT_NUM.toString()))
-            .andExpect(jsonPath("$.email").value(DEFAULT_EMAIL.toString()))
-            .andExpect(jsonPath("$.remark").value(DEFAULT_REMARK.toString()))
             .andExpect(jsonPath("$.status").value(DEFAULT_STATUS.toString()));
     }
 
@@ -255,10 +227,6 @@ public class ShippingResourceIntTest {
             .price(UPDATED_PRICE)
             .currency(UPDATED_CURRENCY)
             .date(UPDATED_DATE)
-            .receiver(UPDATED_RECEIVER)
-            .contactNum(UPDATED_CONTACT_NUM)
-            .email(UPDATED_EMAIL)
-            .remark(UPDATED_REMARK)
             .status(UPDATED_STATUS);
         ShippingDTO shippingDTO = shippingMapper.toDto(updatedShipping);
 
@@ -274,10 +242,6 @@ public class ShippingResourceIntTest {
         assertThat(testShipping.getPrice()).isEqualTo(UPDATED_PRICE);
         assertThat(testShipping.getCurrency()).isEqualTo(UPDATED_CURRENCY);
         assertThat(testShipping.getDate()).isEqualTo(UPDATED_DATE);
-        assertThat(testShipping.getReceiver()).isEqualTo(UPDATED_RECEIVER);
-        assertThat(testShipping.getContactNum()).isEqualTo(UPDATED_CONTACT_NUM);
-        assertThat(testShipping.getEmail()).isEqualTo(UPDATED_EMAIL);
-        assertThat(testShipping.getRemark()).isEqualTo(UPDATED_REMARK);
         assertThat(testShipping.getStatus()).isEqualTo(UPDATED_STATUS);
 
         // Validate the Shipping in Elasticsearch
@@ -342,10 +306,6 @@ public class ShippingResourceIntTest {
             .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
             .andExpect(jsonPath("$.[*].currency").value(hasItem(DEFAULT_CURRENCY.toString())))
             .andExpect(jsonPath("$.[*].date").value(hasItem(sameInstant(DEFAULT_DATE))))
-            .andExpect(jsonPath("$.[*].receiver").value(hasItem(DEFAULT_RECEIVER.toString())))
-            .andExpect(jsonPath("$.[*].contactNum").value(hasItem(DEFAULT_CONTACT_NUM.toString())))
-            .andExpect(jsonPath("$.[*].email").value(hasItem(DEFAULT_EMAIL.toString())))
-            .andExpect(jsonPath("$.[*].remark").value(hasItem(DEFAULT_REMARK.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
     }
 

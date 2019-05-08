@@ -43,33 +43,13 @@ public class Shipping implements Serializable {
     @Column(name = "jhi_date")
     private ZonedDateTime date;
 
-    @Column(name = "receiver")
-    private String receiver;
-
-    @Column(name = "contact_num")
-    private String contactNum;
-
-    @Column(name = "email")
-    private String email;
-
-    @Column(name = "remark")
-    private String remark;
-
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
     private ShippingStatus status;
 
     @OneToOne
-    @JoinColumn(unique = false)
-    private MyOrder order;
-
-    @OneToOne
-    @JoinColumn(unique = false)
-    private Address shippingAddress;
-
-    @OneToOne
-    @JoinColumn(unique = false)
-    private Address billingAddress;
+    @JoinColumn(unique = true)
+    private OrderShop shop;
 
     @OneToMany(mappedBy = "shipping")
     @JsonIgnore
@@ -127,58 +107,6 @@ public class Shipping implements Serializable {
         this.date = date;
     }
 
-    public String getReceiver() {
-        return receiver;
-    }
-
-    public Shipping receiver(String receiver) {
-        this.receiver = receiver;
-        return this;
-    }
-
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
-    }
-
-    public String getContactNum() {
-        return contactNum;
-    }
-
-    public Shipping contactNum(String contactNum) {
-        this.contactNum = contactNum;
-        return this;
-    }
-
-    public void setContactNum(String contactNum) {
-        this.contactNum = contactNum;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public Shipping email(String email) {
-        this.email = email;
-        return this;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public Shipping remark(String remark) {
-        this.remark = remark;
-        return this;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
     public ShippingStatus getStatus() {
         return status;
     }
@@ -192,43 +120,17 @@ public class Shipping implements Serializable {
         this.status = status;
     }
 
-    public MyOrder getOrder() {
-        return order;
+    public OrderShop getShop() {
+        return shop;
     }
 
-    public Shipping order(MyOrder myOrder) {
-        this.order = myOrder;
+    public Shipping shop(OrderShop orderShop) {
+        this.shop = orderShop;
         return this;
     }
 
-    public void setOrder(MyOrder myOrder) {
-        this.order = myOrder;
-    }
-
-    public Address getShippingAddress() {
-        return shippingAddress;
-    }
-
-    public Shipping shippingAddress(Address address) {
-        this.shippingAddress = address;
-        return this;
-    }
-
-    public void setShippingAddress(Address address) {
-        this.shippingAddress = address;
-    }
-
-    public Address getBillingAddress() {
-        return billingAddress;
-    }
-
-    public Shipping billingAddress(Address address) {
-        this.billingAddress = address;
-        return this;
-    }
-
-    public void setBillingAddress(Address address) {
-        this.billingAddress = address;
+    public void setShop(OrderShop orderShop) {
+        this.shop = orderShop;
     }
 
     public Set<ShippingStatusHistory> getStatusHistories() {
@@ -297,10 +199,6 @@ public class Shipping implements Serializable {
             ", price=" + getPrice() +
             ", currency='" + getCurrency() + "'" +
             ", date='" + getDate() + "'" +
-            ", receiver='" + getReceiver() + "'" +
-            ", contactNum='" + getContactNum() + "'" +
-            ", email='" + getEmail() + "'" +
-            ", remark='" + getRemark() + "'" +
             ", status='" + getStatus() + "'" +
             "}";
     }

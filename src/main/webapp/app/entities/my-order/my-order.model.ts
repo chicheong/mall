@@ -2,6 +2,8 @@ import { BaseEntity } from './../../shared';
 import { OrderItem } from './../order-item';
 import { Shipping } from './../shipping';
 import { Payment } from './../payment';
+import { Address } from './../address';
+import { OrderShop } from './../order-shop';
 import { CurrencyType } from './../price';
 
 export const enum OrderStatus {
@@ -14,16 +16,19 @@ export const enum OrderStatus {
 export class MyOrder implements BaseEntity {
     constructor(
         public id?: number,
+        public receiver?: string,
         public total?: number,
         public currency?: CurrencyType,
+        public contactNum?: string,
+        public email?: string,
         public remark?: string,
         public status?: OrderStatus,
-        public accountId?: number,
-        public shipping?: Shipping,
+		public accountId?: number,
+        public shippingAddress?: Address,
+        public billingAddress?: Address,
         public payment?: Payment,
-        public items?: OrderItem[],
-        public statusHistories?: BaseEntity[],
-
+        public shops?: OrderShop[],
+        public statusHistories?: BaseEntity[]
     ) {
     }
 }

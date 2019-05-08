@@ -1,18 +1,12 @@
 package com.wongs.service.dto;
 
 
+import java.time.ZonedDateTime;
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.time.ZonedDateTime;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
-
-import com.wongs.domain.Address;
-import com.wongs.domain.MyOrder;
-import com.wongs.domain.Shipping;
-import com.wongs.domain.ShippingStatusHistory;
-import com.wongs.domain.ShippingType;
+import java.util.Objects;
 import com.wongs.domain.enumeration.CurrencyType;
 import com.wongs.domain.enumeration.ShippingStatus;
 
@@ -29,26 +23,14 @@ public class ShippingDTO implements Serializable {
 
     private ZonedDateTime date;
 
-    private String receiver;
-
-    private String contactNum;
-
-    private String email;
-
-    private String remark;
-
     private ShippingStatus status;
 
-    private MyOrder order;
-
-    private Address shippingAddress;
-
-    private Address billingAddress;
+    private OrderShop orderShop;
 
     private ShippingType type;
-
-    private Set<ShippingStatusHistory> statusHistories = new HashSet<>();
     
+    private Set<ShippingStatusHistory> statusHistories = new HashSet<>();
+
     public ShippingDTO() {
         // Empty constructor needed for Jackson.
 	}
@@ -102,38 +84,6 @@ public class ShippingDTO implements Serializable {
         this.date = date;
     }
 
-    public String getReceiver() {
-        return receiver;
-    }
-
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
-    }
-
-    public String getContactNum() {
-        return contactNum;
-    }
-
-    public void setContactNum(String contactNum) {
-        this.contactNum = contactNum;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getRemark() {
-        return remark;
-    }
-
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
-
     public ShippingStatus getStatus() {
         return status;
     }
@@ -142,29 +92,13 @@ public class ShippingDTO implements Serializable {
         this.status = status;
     }
 
-    public MyOrder getOrder() {
-		return order;
-	}
+    public OrderShop getOrderShop() {
+        return orderShop;
+    }
 
-	public void setOrder(MyOrder order) {
-		this.order = order;
-	}
-
-	public Address getShippingAddress() {
-		return shippingAddress;
-	}
-
-	public void setShippingAddress(Address shippingAddress) {
-		this.shippingAddress = shippingAddress;
-	}
-
-	public Address getBillingAddress() {
-		return billingAddress;
-	}
-
-	public void setBillingAddress(Address billingAddress) {
-		this.billingAddress = billingAddress;
-	}
+    public void setOrderShop(OrderShop orderShop) {
+        this.orderShop = orderShop;
+    }
 
 	public ShippingType getType() {
 		return type;
@@ -174,15 +108,8 @@ public class ShippingDTO implements Serializable {
 		this.type = type;
 	}
 
-	public Set<ShippingStatusHistory> getStatusHistories() {
-		return statusHistories;
-	}
 
-	public void setStatusHistories(Set<ShippingStatusHistory> statusHistories) {
-		this.statusHistories = statusHistories;
-	}
-
-	@Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -210,10 +137,6 @@ public class ShippingDTO implements Serializable {
             ", price=" + getPrice() +
             ", currency='" + getCurrency() + "'" +
             ", date='" + getDate() + "'" +
-            ", receiver='" + getReceiver() + "'" +
-            ", contactNum='" + getContactNum() + "'" +
-            ", email='" + getEmail() + "'" +
-            ", remark='" + getRemark() + "'" +
             ", status='" + getStatus() + "'" +
             "}";
     }

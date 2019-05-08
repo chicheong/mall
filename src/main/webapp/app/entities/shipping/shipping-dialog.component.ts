@@ -9,8 +9,7 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { Shipping } from './shipping.model';
 import { ShippingPopupService } from './shipping-popup.service';
 import { ShippingService } from './shipping.service';
-import { MyOrder, MyOrderService } from '../my-order';
-import { Address, AddressService } from '../address';
+import { OrderShop, OrderShopService } from '../order-shop';
 import { ShippingType, ShippingTypeService } from '../shipping-type';
 
 @Component({
@@ -22,11 +21,7 @@ export class ShippingDialogComponent implements OnInit {
     shipping: Shipping;
     isSaving: boolean;
 
-    orders: MyOrder[];
-
-    shippingAddresses: Address[];
-
-    billingAddresses: Address[];
+    shops: OrderShop[];
 
     shippingtypes: ShippingType[];
 
@@ -34,8 +29,7 @@ export class ShippingDialogComponent implements OnInit {
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
         private shippingService: ShippingService,
-        private myOrderService: MyOrderService,
-        private addressService: AddressService,
+        private orderShopService: OrderShopService,
         private shippingTypeService: ShippingTypeService,
         private eventManager: JhiEventManager
     ) {
@@ -43,42 +37,16 @@ export class ShippingDialogComponent implements OnInit {
 
     ngOnInit() {
         this.isSaving = false;
-        this.myOrderService
+        this.orderShopService
             .query({filter: 'shipping-is-null'})
-            .subscribe((res: HttpResponse<MyOrder[]>) => {
-                if (!this.shipping.order || !this.shipping.order.id) {
-                    this.orders = res.body;
+            .subscribe((res: HttpResponse<OrderShop[]>) => {
+                if (!this.shipping.shop || !this.shipping.shop.id) {
+                    this.shops = res.body;
                 } else {
-                    this.myOrderService
-                        .find(this.shipping.order.id)
-                        .subscribe((subRes: HttpResponse<MyOrder>) => {
-                            this.orders = [subRes.body].concat(res.body);
-                        }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
-                }
-            }, (res: HttpErrorResponse) => this.onError(res.message));
-        this.addressService
-            .query({filter: 'shipping-is-null'})
-            .subscribe((res: HttpResponse<Address[]>) => {
-                if (!this.shipping.shippingAddress || !this.shipping.shippingAddress.id) {
-                    this.shippingAddresses = res.body;
-                } else {
-                    this.addressService
-                        .find(this.shipping.shippingAddress.id)
-                        .subscribe((subRes: HttpResponse<Address>) => {
-                            this.shippingAddresses = [subRes.body].concat(res.body);
-                        }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
-                }
-            }, (res: HttpErrorResponse) => this.onError(res.message));
-        this.addressService
-            .query({filter: 'shipping-is-null'})
-            .subscribe((res: HttpResponse<Address[]>) => {
-                if (!this.shipping.billingAddress || !this.shipping.billingAddress.id) {
-                    this.billingAddresses = res.body;
-                } else {
-                    this.addressService
-                        .find(this.shipping.billingAddress.id)
-                        .subscribe((subRes: HttpResponse<Address>) => {
-                            this.billingAddresses = [subRes.body].concat(res.body);
+                    this.orderShopService
+                        .find(this.shipping.shop.id)
+                        .subscribe((subRes: HttpResponse<OrderShop>) => {
+                            this.shops = [subRes.body].concat(res.body);
                         }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
                 }
             }, (res: HttpErrorResponse) => this.onError(res.message));
@@ -120,11 +88,7 @@ export class ShippingDialogComponent implements OnInit {
         this.jhiAlertService.error(error.message, null, null);
     }
 
-    trackMyOrderById(index: number, item: MyOrder) {
-        return item.id;
-    }
-
-    trackAddressById(index: number, item: Address) {
+    trackOrderShopById(index: number, item: OrderShop) {
         return item.id;
     }
 

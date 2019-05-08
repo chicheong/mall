@@ -62,7 +62,7 @@
 						"continueShopping": "Continue Shopping"
 	            	}
             	}
-            },
+            },            
             "created": "A new My Order is created with identifier {{ param }}",
             "updated": "A My Order is updated with identifier {{ param }}",
             "deleted": "A My Order is deleted with identifier {{ param }}",
@@ -72,11 +72,16 @@
             "detail": {
                 "title": "My Order"
             },
+            "receiver": "Receiver",
             "total": "Total",
             "currency": "Currency",
+            "contactNum": "Contact Num",
+            "email": "Email",
             "remark": "Remark",
             "status": "Status",
-            "item": "Item",
+            "shippingAddress": "Shipping Address",
+            "billingAddress": "Billing Address",
+            "shop": "Shop",
             "statusHistory": "Status History",
             "account": "Account"
         }

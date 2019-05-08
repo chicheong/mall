@@ -9,6 +9,7 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 import { MyOrder } from './my-order.model';
 import { MyOrderPopupService } from './my-order-popup.service';
 import { MyOrderService } from './my-order.service';
+import { Address, AddressService } from '../address';
 import { MyAccount, MyAccountService } from '../my-account';
 
 @Component({
@@ -20,12 +21,17 @@ export class MyOrderDialogComponent implements OnInit {
     myOrder: MyOrder;
     isSaving: boolean;
 
+    shippingaddresses: Address[];
+
+    billingaddresses: Address[];
+
     myaccounts: MyAccount[];
 
     constructor(
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
         private myOrderService: MyOrderService,
+        private addressService: AddressService,
         private myAccountService: MyAccountService,
         private eventManager: JhiEventManager
     ) {
@@ -33,6 +39,32 @@ export class MyOrderDialogComponent implements OnInit {
 
     ngOnInit() {
         this.isSaving = false;
+        this.addressService
+            .query({filter: 'shipping-is-null'})
+            .subscribe((res: HttpResponse<Address[]>) => {
+                if (!this.shipping.shippingAddress || !this.shipping.shippingAddress.id) {
+                    this.shippingAddresses = res.body;
+                } else {
+                    this.addressService
+                        .find(this.shipping.shippingAddress.id)
+                        .subscribe((subRes: HttpResponse<Address>) => {
+                            this.shippingAddresses = [subRes.body].concat(res.body);
+                        }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
+                }
+            }, (res: HttpErrorResponse) => this.onError(res.message));
+        this.addressService
+            .query({filter: 'shipping-is-null'})
+            .subscribe((res: HttpResponse<Address[]>) => {
+                if (!this.shipping.billingAddress || !this.shipping.billingAddress.id) {
+                    this.billingAddresses = res.body;
+                } else {
+                    this.addressService
+                        .find(this.shipping.billingAddress.id)
+                        .subscribe((subRes: HttpResponse<Address>) => {
+                            this.billingAddresses = [subRes.body].concat(res.body);
+                        }, (subRes: HttpErrorResponse) => this.onError(subRes.message));
+                }
+            }, (res: HttpErrorResponse) => this.onError(res.message));
         this.myAccountService.query()
             .subscribe((res: HttpResponse<MyAccount[]>) => { this.myaccounts = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
@@ -69,6 +101,10 @@ export class MyOrderDialogComponent implements OnInit {
 
     private onError(error: any) {
         this.jhiAlertService.error(error.message, null, null);
+    }
+
+    trackAddressById(index: number, item: Address) {
+        return item.id;
     }
 
     trackMyAccountById(index: number, item: MyAccount) {

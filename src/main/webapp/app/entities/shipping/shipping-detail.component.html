@@ -16,42 +16,14 @@
         <dd>
             <span>{{shipping.date | date:'medium'}}</span>
         </dd>
-        <dt><span jhiTranslate="mallApp.shipping.receiver">Receiver</span></dt>
-        <dd>
-            <span>{{shipping.receiver}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.shipping.contactNum">Contact Num</span></dt>
-        <dd>
-            <span>{{shipping.contactNum}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.shipping.email">Email</span></dt>
-        <dd>
-            <span>{{shipping.email}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.shipping.remark">Remark</span></dt>
-        <dd>
-            <span>{{shipping.remark}}</span>
-        </dd>
         <dt><span jhiTranslate="mallApp.shipping.status">Status</span></dt>
         <dd>
             <span jhiTranslate="{{'mallApp.ShippingStatus.' + shipping.status}}">{{shipping.status}}</span>
         </dd>
-        <dt><span jhiTranslate="mallApp.shipping.order">Order</span></dt>
+        <dt><span jhiTranslate="mallApp.shipping.shop">Shop</span></dt>
         <dd>
-            <div *ngIf="shipping.order">
-                <a [routerLink]="['/my-order', shipping.order?.id]">{{shipping.order?.id}}</a>
-            </div>
-        </dd>
-        <dt><span jhiTranslate="mallApp.shipping.shippingAddress">Shipping Address</span></dt>
-        <dd>
-            <div *ngIf="shipping.shippingAddress">
-                <a [routerLink]="['/address', shipping.shippingAddress?.id]">{{shipping.shippingAddress?.id}}</a>
-            </div>
-        </dd>
-        <dt><span jhiTranslate="mallApp.shipping.billingAddress">Billing Address</span></dt>
-        <dd>
-            <div *ngIf="shipping.billingAddress">
-                <a [routerLink]="['/address', shipping.billingAddress?.id]">{{shipping.billingAddress?.id}}</a>
+            <div *ngIf="shipping.shop">
+                <a [routerLink]="['/order-shop', shipping.shop?.id]">{{shipping.shop?.id}}</a>
             </div>
         </dd>
         <dt><span jhiTranslate="mallApp.shipping.type">Type</span></dt>

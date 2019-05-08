@@ -9,8 +9,7 @@ import { MallTestModule } from '../../../test.module';
 import { ShippingDialogComponent } from '../../../../../../main/webapp/app/entities/shipping/shipping-dialog.component';
 import { ShippingService } from '../../../../../../main/webapp/app/entities/shipping/shipping.service';
 import { Shipping } from '../../../../../../main/webapp/app/entities/shipping/shipping.model';
-import { MyOrderService } from '../../../../../../main/webapp/app/entities/my-order';
-import { AddressService } from '../../../../../../main/webapp/app/entities/address';
+import { OrderShopService } from '../../../../../../main/webapp/app/entities/order-shop';
 import { ShippingTypeService } from '../../../../../../main/webapp/app/entities/shipping-type';
 
 describe('Component Tests', () => {
@@ -27,8 +26,7 @@ describe('Component Tests', () => {
                 imports: [MallTestModule],
                 declarations: [ShippingDialogComponent],
                 providers: [
-                    MyOrderService,
-                    AddressService,
+                    OrderShopService,
                     ShippingTypeService,
                     ShippingService
                 ]

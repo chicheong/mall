@@ -13,6 +13,11 @@
                    [(ngModel)]="myOrder.id" readonly />
         </div>
         <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.myOrder.receiver" for="field_receiver">Receiver</label>
+            <input type="text" class="form-control" name="receiver" id="field_receiver"
+                [(ngModel)]="myOrder.receiver" />
+        </div>
+        <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.myOrder.total" for="field_total">Total</label>
             <input type="number" class="form-control" name="total" id="field_total"
                 [(ngModel)]="myOrder.total" />
@@ -30,6 +35,16 @@
             </select>
         </div>
         <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.myOrder.contactNum" for="field_contactNum">Contact Num</label>
+            <input type="text" class="form-control" name="contactNum" id="field_contactNum"
+                [(ngModel)]="myOrder.contactNum" />
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.myOrder.email" for="field_email">Email</label>
+            <input type="text" class="form-control" name="email" id="field_email"
+                [(ngModel)]="myOrder.email" />
+        </div>
+        <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.myOrder.remark" for="field_remark">Remark</label>
             <input type="text" class="form-control" name="remark" id="field_remark"
                 [(ngModel)]="myOrder.remark" />
@@ -44,6 +59,20 @@
             </select>
         </div>
 
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.shipping.shippingAddress" for="field_shippingAddress">Shipping Address</label>
+            <select class="form-control" id="field_shippingAddress" name="shippingAddress" [(ngModel)]="shipping.shippingAddress">
+                <option [ngValue]="null"></option>
+                <option [ngValue]="addressOption.id === shipping.shippingAddress?.id ? shipping.shippingAddress : addressOption" *ngFor="let addressOption of shippingAddresses; trackBy: trackAddressById">{{addressOption.id}}</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label class="form-control-label" jhiTranslate="mallApp.shipping.billingAddress" for="field_billingAddress">Billing Address</label>
+            <select class="form-control" id="field_billingAddress" name="billingAddress" [(ngModel)]="shipping.billingAddress">
+                <option [ngValue]="null"></option>
+                <option [ngValue]="addressOption.id === shipping.billingAddress?.id ? shipping.billingAddress : addressOption" *ngFor="let addressOption of billingAddresses; trackBy: trackAddressById">{{addressOption.id}}</option>
+            </select>
+        </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.myOrder.account" for="field_account">Account</label>
             <select class="form-control" id="field_account" name="account" [(ngModel)]="myOrder.accountId" >

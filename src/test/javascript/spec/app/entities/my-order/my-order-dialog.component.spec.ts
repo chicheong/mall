@@ -9,6 +9,7 @@ import { MallTestModule } from '../../../test.module';
 import { MyOrderDialogComponent } from '../../../../../../main/webapp/app/entities/my-order/my-order-dialog.component';
 import { MyOrderService } from '../../../../../../main/webapp/app/entities/my-order/my-order.service';
 import { MyOrder } from '../../../../../../main/webapp/app/entities/my-order/my-order.model';
+import { AddressService } from '../../../../../../main/webapp/app/entities/address';
 import { MyAccountService } from '../../../../../../main/webapp/app/entities/my-account';
 
 describe('Component Tests', () => {
@@ -25,6 +26,7 @@ describe('Component Tests', () => {
                 imports: [MallTestModule],
                 declarations: [MyOrderDialogComponent],
                 providers: [
+                    AddressService,
                     MyAccountService,
                     MyOrderService
                 ]

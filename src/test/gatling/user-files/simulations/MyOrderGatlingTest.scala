@@ -68,7 +68,7 @@ class MyOrderGatlingTest extends Simulation {
             .exec(http("Create new myOrder")
             .post("/api/my-orders")
             .headers(headers_http_authenticated)
-            .body(StringBody("""{"id":null, "total":"0", "currency":null, "remark":"SAMPLE_TEXT", "status":null}""")).asJSON
+            .body(StringBody("""{"id":null, "receiver":"SAMPLE_TEXT", "total":"0", "currency":null, "contactNum":"SAMPLE_TEXT", "email":"SAMPLE_TEXT", "remark":"SAMPLE_TEXT", "status":null}""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_myOrder_url"))).exitHereIfFailed
             .pause(10)

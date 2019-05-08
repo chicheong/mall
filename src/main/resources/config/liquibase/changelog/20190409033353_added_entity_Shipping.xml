@@ -34,31 +34,11 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="receiver" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-
-            <column name="contact_num" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-
-            <column name="email" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-
-            <column name="remark" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-
             <column name="status" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="order_id" type="bigint">
-                <constraints unique="false" nullable="true" />
-            </column>            <column name="shipping_address_id" type="bigint">
-                <constraints unique="false" nullable="true" />
-            </column>            <column name="billing_address_id" type="bigint">
-                <constraints unique="false" nullable="true" />
+            <column name="shop_id" type="bigint">
+                <constraints unique="true" nullable="true" />
             </column>
             <column name="type_id" type="bigint">
                 <constraints nullable="true" />

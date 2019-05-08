@@ -12,7 +12,7 @@ import { VERSION } from '../../app.constants';
 
 import { MyAccount, MyAccountService } from '../../entities/my-account';
 import { Shop } from '../../entities/shop';
-import { MyOrder } from '../../entities/my-order';
+import { MyOrder, MyOrderService } from '../../entities/my-order';
 
 @Component({
     selector: 'jhi-navbar',
@@ -41,7 +41,8 @@ export class NavbarComponent implements OnInit, OnDestroy {
         private profileService: ProfileService,
         private router: Router,
         private eventManager: JhiEventManager,
-        private myAccountService: MyAccountService
+        private myAccountService: MyAccountService,
+        private myOrderService: MyOrderService
     ) {
         this.version = VERSION ? 'v' + VERSION : '';
         this.isNavbarCollapsed = true;
@@ -114,13 +115,9 @@ export class NavbarComponent implements OnInit, OnDestroy {
 
     calculateMyOrderTotalItems() {
         console.error('calculateMyOrderTotalItems()');
-        if (this.myAccount.myOrder && this.myAccount.myOrder.items) {
-            let total = 0;
-            this.myAccount.myOrder.items.forEach((item) => {
-                total += item.quantity;
-            });
-            console.error('this.noOfItems: ' + total);
-            this.noOfItems = total;
+        if (this.myAccount.myOrder && this.myAccount.myOrder.shops) {
+            this.noOfItems = this.myOrderService.getTotalQuantity(this.myAccount.myOrder);
+            console.error('this.noOfItems: ' + this.noOfItems);
         } else {
             this.noOfItems = 0;
         }

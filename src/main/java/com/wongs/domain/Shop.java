@@ -57,6 +57,11 @@ public class Shop implements Serializable {
     @Column(name = "last_modified_date")
     private ZonedDateTime lastModifiedDate;
 
+    @OneToMany(mappedBy = "shop")
+    @JsonIgnore
+    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    private Set<ShippingPriceRule> shippingPriceRules = new HashSet<>();
+
     @ManyToMany(mappedBy = "shops")
     @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
@@ -173,6 +178,31 @@ public class Shop implements Serializable {
 
     public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public Set<ShippingPriceRule> getShippingPriceRules() {
+        return shippingPriceRules;
+    }
+
+    public Shop shippingPriceRules(Set<ShippingPriceRule> shippingPriceRules) {
+        this.shippingPriceRules = shippingPriceRules;
+        return this;
+    }
+
+    public Shop addShippingPriceRule(ShippingPriceRule shippingPriceRule) {
+        this.shippingPriceRules.add(shippingPriceRule);
+        shippingPriceRule.setShop(this);
+        return this;
+    }
+
+    public Shop removeShippingPriceRule(ShippingPriceRule shippingPriceRule) {
+        this.shippingPriceRules.remove(shippingPriceRule);
+        shippingPriceRule.setShop(null);
+        return this;
+    }
+
+    public void setShippingPriceRules(Set<ShippingPriceRule> shippingPriceRules) {
+        this.shippingPriceRules = shippingPriceRules;
     }
 
     public Set<MyAccount> getAccounts() {

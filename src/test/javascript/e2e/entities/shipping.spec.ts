@@ -38,18 +38,8 @@ describe('Shipping e2e test', () => {
         shippingDialogPage.currencySelectLastOption();
         shippingDialogPage.setDateInput(12310020012301);
         expect(shippingDialogPage.getDateInput()).toMatch('2001-12-31T02:30');
-        shippingDialogPage.setReceiverInput('receiver');
-        expect(shippingDialogPage.getReceiverInput()).toMatch('receiver');
-        shippingDialogPage.setContactNumInput('contactNum');
-        expect(shippingDialogPage.getContactNumInput()).toMatch('contactNum');
-        shippingDialogPage.setEmailInput('email');
-        expect(shippingDialogPage.getEmailInput()).toMatch('email');
-        shippingDialogPage.setRemarkInput('remark');
-        expect(shippingDialogPage.getRemarkInput()).toMatch('remark');
         shippingDialogPage.statusSelectLastOption();
-        shippingDialogPage.orderSelectLastOption();
-        shippingDialogPage.shippingAddressSelectLastOption();
-        shippingDialogPage.billingAddressSelectLastOption();
+        shippingDialogPage.shopSelectLastOption();
         shippingDialogPage.typeSelectLastOption();
         shippingDialogPage.save();
         expect(shippingDialogPage.getSaveButton().isPresent()).toBeFalsy();
@@ -80,14 +70,8 @@ export class ShippingDialogPage {
     priceInput = element(by.css('input#field_price'));
     currencySelect = element(by.css('select#field_currency'));
     dateInput = element(by.css('input#field_date'));
-    receiverInput = element(by.css('input#field_receiver'));
-    contactNumInput = element(by.css('input#field_contactNum'));
-    emailInput = element(by.css('input#field_email'));
-    remarkInput = element(by.css('input#field_remark'));
     statusSelect = element(by.css('select#field_status'));
-    orderSelect = element(by.css('select#field_order'));
-    shippingAddressSelect = element(by.css('select#field_shippingAddress'));
-    billingAddressSelect = element(by.css('select#field_billingAddress'));
+    shopSelect = element(by.css('select#field_shop'));
     typeSelect = element(by.css('select#field_type'));
 
     getModalTitle() {
@@ -121,38 +105,6 @@ export class ShippingDialogPage {
         return this.dateInput.getAttribute('value');
     };
 
-    setReceiverInput = function(receiver) {
-        this.receiverInput.sendKeys(receiver);
-    };
-
-    getReceiverInput = function() {
-        return this.receiverInput.getAttribute('value');
-    };
-
-    setContactNumInput = function(contactNum) {
-        this.contactNumInput.sendKeys(contactNum);
-    };
-
-    getContactNumInput = function() {
-        return this.contactNumInput.getAttribute('value');
-    };
-
-    setEmailInput = function(email) {
-        this.emailInput.sendKeys(email);
-    };
-
-    getEmailInput = function() {
-        return this.emailInput.getAttribute('value');
-    };
-
-    setRemarkInput = function(remark) {
-        this.remarkInput.sendKeys(remark);
-    };
-
-    getRemarkInput = function() {
-        return this.remarkInput.getAttribute('value');
-    };
-
     setStatusSelect = function(status) {
         this.statusSelect.sendKeys(status);
     };
@@ -164,52 +116,20 @@ export class ShippingDialogPage {
     statusSelectLastOption = function() {
         this.statusSelect.all(by.tagName('option')).last().click();
     };
-    orderSelectLastOption = function() {
-        this.orderSelect.all(by.tagName('option')).last().click();
+    shopSelectLastOption = function() {
+        this.shopSelect.all(by.tagName('option')).last().click();
     };
 
-    orderSelectOption = function(option) {
-        this.orderSelect.sendKeys(option);
+    shopSelectOption = function(option) {
+        this.shopSelect.sendKeys(option);
     };
 
-    getOrderSelect = function() {
-        return this.orderSelect;
+    getShopSelect = function() {
+        return this.shopSelect;
     };
 
-    getOrderSelectedOption = function() {
-        return this.orderSelect.element(by.css('option:checked')).getText();
-    };
-
-    shippingAddressSelectLastOption = function() {
-        this.shippingAddressSelect.all(by.tagName('option')).last().click();
-    };
-
-    shippingAddressSelectOption = function(option) {
-        this.shippingAddressSelect.sendKeys(option);
-    };
-
-    getShippingAddressSelect = function() {
-        return this.shippingAddressSelect;
-    };
-
-    getShippingAddressSelectedOption = function() {
-        return this.shippingAddressSelect.element(by.css('option:checked')).getText();
-    };
-
-    billingAddressSelectLastOption = function() {
-        this.billingAddressSelect.all(by.tagName('option')).last().click();
-    };
-
-    billingAddressSelectOption = function(option) {
-        this.billingAddressSelect.sendKeys(option);
-    };
-
-    getBillingAddressSelect = function() {
-        return this.billingAddressSelect;
-    };
-
-    getBillingAddressSelectedOption = function() {
-        return this.billingAddressSelect.element(by.css('option:checked')).getText();
+    getShopSelectedOption = function() {
+        return this.shopSelect.element(by.css('option:checked')).getText();
     };
 
     typeSelectLastOption = function() {

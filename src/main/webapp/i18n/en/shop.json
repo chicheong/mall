@@ -25,6 +25,7 @@
             "createdDate": "Created Date",
             "lastModifiedBy": "Last Modified By",
             "lastModifiedDate": "Last Modified Date",
+            "shippingPriceRule": "Shipping Price Rule",
             "account": "Account"
         }
     }

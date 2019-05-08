@@ -1,0 +1,26 @@
+
+{
+    "mallApp": {
+        "shippingPriceRule" : {
+            "home": {
+                "title": "Shipping Price Rules",
+                "createLabel": "Create a new Shipping Price Rule",
+                "createOrEditLabel": "Create or edit a Shipping Price Rule",
+                "search": "Search for Shipping Price Rule"
+            },
+            "created": "A new Shipping Price Rule is created with identifier {{ param }}",
+            "updated": "A Shipping Price Rule is updated with identifier {{ param }}",
+            "deleted": "A Shipping Price Rule is deleted with identifier {{ param }}",
+            "delete": {
+                "question": "Are you sure you want to delete Shipping Price Rule {{ id }}?"
+            },
+            "detail": {
+                "title": "Shipping Price Rule"
+            },
+            "type": "Type",
+            "value": "Value",
+            "price": "Price",
+            "shop": "Shop"
+        }
+    }
+}

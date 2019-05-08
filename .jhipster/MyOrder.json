@@ -2,9 +2,25 @@
     "fluentMethods": true,
     "relationships": [
         {
+            "relationshipType": "one-to-one",
+            "relationshipName": "shippingAddress",
+            "otherEntityName": "address",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "myOrder"
+        },
+        {
+            "relationshipType": "one-to-one",
+            "relationshipName": "billingAddress",
+            "otherEntityName": "address",
+            "otherEntityField": "id",
+            "ownerSide": true,
+            "otherEntityRelationshipName": "myOrder"
+        },
+        {
             "relationshipType": "one-to-many",
-            "relationshipName": "item",
-            "otherEntityName": "orderItem",
+            "relationshipName": "shop",
+            "otherEntityName": "orderShop",
             "otherEntityRelationshipName": "order"
         },
         {
@@ -22,6 +38,10 @@
     ],
     "fields": [
         {
+            "fieldName": "receiver",
+            "fieldType": "String"
+        },
+        {
             "fieldName": "total",
             "fieldType": "BigDecimal"
         },
@@ -29,6 +49,14 @@
             "fieldName": "currency",
             "fieldType": "CurrencyType",
             "fieldValues": "HKD,CNY,USD,EUR,JPY,KRW,TWD"
+        },
+        {
+            "fieldName": "contactNum",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "email",
+            "fieldType": "String"
         },
         {
             "fieldName": "remark",
@@ -40,7 +68,7 @@
             "fieldValues": "PENDING,COMFIRMED,COMPLETED,CANCELLED"
         }
     ],
-    "changelogDate": "20180221114443",
+    "changelogDate": "20190508041421",
     "entityTableName": "my_order",
     "dto": "mapstruct",
     "pagination": "pagination",

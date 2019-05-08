@@ -18,6 +18,7 @@ export class Shop implements BaseEntity {
         public createdDate?: any,
         public lastModifiedBy?: string,
         public lastModifiedDate?: any,
+        public shippingPriceRules?: BaseEntity[],
         public accounts?: BaseEntity[],
         public products?: Product[],
     ) {

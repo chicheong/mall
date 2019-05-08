@@ -92,7 +92,7 @@ public class ShopResourceIntTest {
     
     @Autowired
     private UrlMapper urlMapper;
-
+    
     @Autowired
     private ShopSearchRepository shopSearchRepository;
 

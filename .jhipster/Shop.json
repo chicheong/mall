@@ -2,6 +2,12 @@
     "fluentMethods": true,
     "relationships": [
         {
+            "relationshipType": "one-to-many",
+            "relationshipName": "shippingPriceRule",
+            "otherEntityName": "shippingPriceRule",
+            "otherEntityRelationshipName": "shop"
+        },
+        {
             "relationshipType": "many-to-many",
             "relationshipName": "account",
             "otherEntityName": "myAccount",
@@ -47,7 +53,7 @@
             "fieldType": "ZonedDateTime"
         }
     ],
-    "changelogDate": "20180221114431",
+    "changelogDate": "20190508041408",
     "entityTableName": "shop",
     "dto": "mapstruct",
     "pagination": "pagination",

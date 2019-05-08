@@ -4,6 +4,10 @@
     <hr>
     <jhi-alert-error></jhi-alert-error>
     <dl class="row-md jh-entity-details">
+        <dt><span jhiTranslate="mallApp.myOrder.receiver">Receiver</span></dt>
+        <dd>
+            <span>{{myOrder.receiver}}</span>
+        </dd>
         <dt><span jhiTranslate="mallApp.myOrder.total">Total</span></dt>
         <dd>
             <span>{{myOrder.total}}</span>
@@ -12,6 +16,14 @@
         <dd>
             <span jhiTranslate="{{'mallApp.CurrencyType.' + myOrder.currency}}">{{myOrder.currency}}</span>
         </dd>
+        <dt><span jhiTranslate="mallApp.myOrder.contactNum">Contact Num</span></dt>
+        <dd>
+            <span>{{myOrder.contactNum}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.myOrder.email">Email</span></dt>
+        <dd>
+            <span>{{myOrder.email}}</span>
+        </dd>
         <dt><span jhiTranslate="mallApp.myOrder.remark">Remark</span></dt>
         <dd>
             <span>{{myOrder.remark}}</span>
@@ -19,6 +31,18 @@
         <dt><span jhiTranslate="mallApp.myOrder.status">Status</span></dt>
         <dd>
             <span jhiTranslate="{{'mallApp.OrderStatus.' + myOrder.status}}">{{myOrder.status}}</span>
+        </dd>
+        <dt><span jhiTranslate="mallApp.myOrder.shippingAddress">Shipping Address</span></dt>
+        <dd>
+            <div *ngIf="myOrder.shippingAddressId">
+                <a [routerLink]="['/address', myOrder.shippingAddressId]">{{myOrder.shippingAddressId}}</a>
+            </div>
+        </dd>
+        <dt><span jhiTranslate="mallApp.myOrder.billingAddress">Billing Address</span></dt>
+        <dd>
+            <div *ngIf="myOrder.billingAddressId">
+                <a [routerLink]="['/address', myOrder.billingAddressId]">{{myOrder.billingAddressId}}</a>
+            </div>
         </dd>
         <dt><span jhiTranslate="mallApp.myOrder.account">Account</span></dt>
         <dd>

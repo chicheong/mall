@@ -8,23 +8,11 @@
     -->
     <changeSet id="20190409033353-2" author="jhipster">
         
-        <addForeignKeyConstraint baseColumnNames="order_id"
+        <addForeignKeyConstraint baseColumnNames="shop_id"
                                  baseTableName="shipping"
-                                 constraintName="fk_shipping_order_id"
+                                 constraintName="fk_shipping_shop_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="my_order"/>
-
-        <addForeignKeyConstraint baseColumnNames="shipping_address_id"
-                                 baseTableName="shipping"
-                                 constraintName="fk_shipping_shipping_address_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="address"/>
-
-        <addForeignKeyConstraint baseColumnNames="billing_address_id"
-                                 baseTableName="shipping"
-                                 constraintName="fk_shipping_billing_address_id"
-                                 referencedColumnNames="id"
-                                 referencedTableName="address"/>
+                                 referencedTableName="order_shop"/>
 
         <addForeignKeyConstraint baseColumnNames="type_id"
                                  baseTableName="shipping"

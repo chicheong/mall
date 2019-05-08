@@ -30,10 +30,15 @@
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
             <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="receiver"><span jhiTranslate="mallApp.myOrder.receiver">Receiver</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="total"><span jhiTranslate="mallApp.myOrder.total">Total</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="currency"><span jhiTranslate="mallApp.myOrder.currency">Currency</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="contactNum"><span jhiTranslate="mallApp.myOrder.contactNum">Contact Num</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="email"><span jhiTranslate="mallApp.myOrder.email">Email</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="remark"><span jhiTranslate="mallApp.myOrder.remark">Remark</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="status"><span jhiTranslate="mallApp.myOrder.status">Status</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="shippingAddressId"><span jhiTranslate="mallApp.shipping.shippingAddress">Shipping Address</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="billingAddressId"><span jhiTranslate="mallApp.shipping.billingAddress">Billing Address</span> <span class="fa fa-sort"></span></th>
             <th jhiSortBy="accountId"><span jhiTranslate="mallApp.myOrder.account">Account</span> <span class="fa fa-sort"></span></th>
             <th></th>
             </tr>
@@ -41,8 +46,11 @@
             <tbody>
             <tr *ngFor="let myOrder of myOrders ;trackBy: trackId">
                 <td><a [routerLink]="['../my-order', myOrder.id ]">{{myOrder.id}}</a></td>
+                <td>{{myOrder.receiver}}</td>
                 <td>{{myOrder.total}}</td>
                 <td jhiTranslate="{{'mallApp.CurrencyType.' + myOrder.currency}}">{{myOrder.currency}}</td>
+                <td>{{myOrder.contactNum}}</td>
+                <td>{{myOrder.email}}</td>
                 <td>{{myOrder.remark}}</td>
                 <td jhiTranslate="{{'mallApp.OrderStatus.' + myOrder.status}}">{{myOrder.status}}</td>
                 <td>
@@ -50,6 +58,16 @@
                         <a [routerLink]="['../my-account', myOrder.accountId  ]" >{{myOrder.accountId}}</a>
                     </div>
                 </td>
+                <td>
+                    <div *ngIf="myOrder.shippingAddress">
+                        <a [routerLink]="['../address', myOrder.shippingAddress?.id  ]" >{{myOrder.shippingAddress?.id}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="myOrder.billingAddress">
+                        <a [routerLink]="['../address', myOrder.billingAddress?.id  ]" >{{myOrder.billingAddress?.id}}</a>
+                    </div>
+                </td>                
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"

@@ -72,11 +72,16 @@
             "detail": {
                 "title": "My Order"
             },
+			"receiver": "Receiver",
             "total": "總數",
             "currency": "Currency",
+            "contactNum": "Contact Num",
+            "email": "Email",
             "remark": "Remark",
             "status": "Status",
-            "item": "Item",
+            "shippingAddress": "Shipping Address",
+            "billingAddress": "Billing Address",
+            "shop": "Shop",
             "statusHistory": "Status History",
             "account": "Account"
         }

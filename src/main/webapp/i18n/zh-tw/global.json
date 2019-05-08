@@ -38,6 +38,8 @@
                 "paymentStatusHistory": "Payment Status History",
                 "card": "Card",
                 "paymentCard": "Payment Card",
+                "shippingPriceRule": "Shipping Price Rule",
+                "orderShop": "Order Shop",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {
