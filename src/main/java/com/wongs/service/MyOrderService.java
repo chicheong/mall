@@ -2,6 +2,7 @@ package com.wongs.service;
 
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
+import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.Set;
 
@@ -15,12 +16,16 @@ import org.springframework.transaction.annotation.Transactional;
 import com.wongs.domain.MyAccount;
 import com.wongs.domain.MyOrder;
 import com.wongs.domain.OrderItem;
+import com.wongs.domain.OrderShop;
+import com.wongs.domain.Shop;
 import com.wongs.domain.enumeration.CurrencyType;
 import com.wongs.domain.enumeration.OrderStatus;
 import com.wongs.repository.MyOrderRepository;
 import com.wongs.repository.OrderItemRepository;
+import com.wongs.repository.OrderShopRepository;
 import com.wongs.repository.search.MyOrderSearchRepository;
 import com.wongs.repository.search.OrderItemSearchRepository;
+import com.wongs.repository.search.OrderShopSearchRepository;
 import com.wongs.service.dto.AddressDTO;
 import com.wongs.service.dto.MyAccountDTO;
 import com.wongs.service.dto.MyOrderDTO;
@@ -44,27 +49,36 @@ public class MyOrderService {
     private final MyOrderRepository myOrderRepository;
     private final MyOrderSearchRepository myOrderSearchRepository;
     
+    private final OrderShopRepository orderShopRepository;
+    private final OrderShopSearchRepository orderShopSearchRepository;
+    
     private final OrderItemRepository orderItemRepository;
     private final OrderItemSearchRepository orderItemSearchRepository;
     
     private final ShippingService shippingService;
     private final PaymentService paymentService;
     private final AddressService addressService;
+    private final ShopService shopService;
 
     public MyOrderService(MyOrderMapper myOrderMapper, MyAccountMapper myAccountMapper, AddressMapper addressMapper,
     						MyOrderRepository myOrderRepository, MyOrderSearchRepository myOrderSearchRepository,
+    						OrderShopRepository orderShopRepository, OrderShopSearchRepository orderShopSearchRepository,
     						OrderItemRepository orderItemRepository, OrderItemSearchRepository orderItemSearchRepository,
-    						ShippingService shippingService, PaymentService paymentService, AddressService addressService) {
+    						ShippingService shippingService, PaymentService paymentService, AddressService addressService,
+    						ShopService shopService) {
         this.myOrderMapper = myOrderMapper;
         this.myAccountMapper = myAccountMapper;
         this.addressMapper = addressMapper;
     	this.myOrderRepository = myOrderRepository;
         this.myOrderSearchRepository = myOrderSearchRepository;
+        this.orderShopRepository = orderShopRepository;
+        this.orderShopSearchRepository = orderShopSearchRepository;
         this.orderItemRepository = orderItemRepository;
         this.orderItemSearchRepository = orderItemSearchRepository;
         this.shippingService = shippingService;
         this.paymentService = paymentService;
         this.addressService = addressService;
+        this.shopService = shopService;
     }
 
     /**
@@ -76,31 +90,30 @@ public class MyOrderService {
     public MyOrderDTO save(MyOrderDTO myOrderDTO) {
         log.debug("Request to save MyOrder : {}", myOrderDTO);
         MyOrder myOrder = myOrderMapper.toEntity(myOrderDTO);
-        myOrder.setItems(myOrderDTO.getItems());
+        myOrder.setShops(myOrderDTO.getShops());
         myOrder.setStatusHistories(myOrderDTO.getStatusHistories());
         MyOrder result = myOrderRepository.save(myOrder);
 //        MyOrderDTO result = myOrderMapper.toDto(myOrder);
         myOrderSearchRepository.save(myOrder);
-        myOrderDTO.getItems().forEach((item) -> {
-        	//item.setOrder(myOrder);
-        	orderItemRepository.save(item);
-        	orderItemSearchRepository.save(item);
+        myOrderDTO.getShops().forEach((shop) -> {
+        	orderShopRepository.save(shop);
+        	orderShopSearchRepository.save(shop);
         });
-        Optional.ofNullable(myOrderDTO.getShipping()).ifPresent(shippingDTO -> {
-        	Optional.ofNullable(shippingDTO.getShippingAddress()).ifPresent(address -> {
-        		if (address.getId() == null) {
-        			shippingDTO.setShippingAddress(addressService.save(address));
-        		} else {
-        			AddressDTO oAddressDTO = addressService.findOne(address.getId());
-        			AddressDTO nAddressDTO = addressMapper.toDto(address);
-        			if (!(oAddressDTO.equals(nAddressDTO))) {
-        				shippingDTO.setShippingAddress(addressService.save(address));
-        			}
-        		}
-        	});
-        	shippingDTO.setOrder(result);
-        	shippingService.save(shippingDTO);
-        });
+//        Optional.ofNullable(myOrderDTO.getShipping()).ifPresent(shippingDTO -> {
+//        	Optional.ofNullable(shippingDTO.getShippingAddress()).ifPresent(address -> {
+//        		if (address.getId() == null) {
+//        			shippingDTO.setShippingAddress(addressService.save(address));
+//        		} else {
+//        			AddressDTO oAddressDTO = addressService.findOne(address.getId());
+//        			AddressDTO nAddressDTO = addressMapper.toDto(address);
+//        			if (!(oAddressDTO.equals(nAddressDTO))) {
+//        				shippingDTO.setShippingAddress(addressService.save(address));
+//        			}
+//        		}
+//        	});
+//        	shippingDTO.setOrder(result);
+//        	shippingService.save(shippingDTO);
+//        });
         Optional.ofNullable(myOrderDTO.getPayment()).ifPresent(paymentDTO -> {
         	paymentDTO.setOrder(result);
         	paymentService.save(paymentDTO);
@@ -115,23 +128,52 @@ public class MyOrderService {
      * @return the persisted entity
      */
     public MyOrderDTO addToCart(MyAccountDTO myAccountDTO, final OrderItem orderItem) {
-        log.debug("Request to add ProductItem : {} ", orderItem);
+        log.debug("Request to add OrderItem : {} ", orderItem);
         MyAccount myAccount = myAccountMapper.toEntity(myAccountDTO);
         MyOrder myOrder = this.findEntityByAccountAndStatus(myAccount, OrderStatus.PENDING).orElseGet(() -> {
         	return this.createPendingOrder(myAccount, orderItem.getCurrency());	
         });
-        myOrder.getItems().stream().filter(item -> orderItem.getProductItem().equals(item.getProductItem())).findFirst().map(item -> {
-        	item.setQuantity(item.getQuantity() + orderItem.getQuantity());
-        	orderItemRepository.save(item);
-        	return item; 
+        Shop shop = shopService.findByProductItem(orderItem.getProductItem());
+        myOrder.getShops().stream().filter(orderShop -> shop.getId().equals(orderShop.getId())).findFirst().map(orderShop -> {
+        	orderShop.getItems().stream().filter(item -> orderItem.getProductItem().equals(item.getProductItem())).findFirst().map(item -> {
+            	item.setQuantity(item.getQuantity() + orderItem.getQuantity());
+            	orderItemRepository.save(item);
+            	return item; 
+        	}).orElseGet(() -> {
+            	orderItem.setShop(orderShop);
+            	orderItemRepository.save(orderItem);
+            	orderShop.getItems().add(orderItem);
+            	orderShopRepository.save(orderShop);
+            	orderShopSearchRepository.save(orderShop);
+            	return orderItem;
+            });
+        	return orderShop;
         }).orElseGet(() -> {
-        	orderItem.setOrder(myOrder);
+        	OrderShop orderShop = new OrderShop();
+        	orderShop.setOrder(myOrder);
+        	orderShop.setShop(shop);
+        	orderShop.getItems().add(orderItem);
+        	orderShop.setCurrency(orderItem.getCurrency());
+        	orderShop.setTotal(this.calculateTotalPrice(orderItem));
+        	orderShop = orderShopRepository.save(orderShop);
+        	orderShopSearchRepository.save(orderShop);
+        	orderItem.setShop(orderShop);
         	orderItemRepository.save(orderItem);
-        	myOrder.getItems().add(orderItem);
-            myOrderRepository.save(myOrder);
-            myOrderSearchRepository.save(myOrder);     
-        	return orderItem;
+        	return orderShop;
         });
+        
+//        myOrder.getItems().stream().filter(item -> orderItem.getProductItem().equals(item.getProductItem())).findFirst().map(item -> {
+//        	item.setQuantity(item.getQuantity() + orderItem.getQuantity());
+//        	orderItemRepository.save(item);
+//        	return item; 
+//        }).orElseGet(() -> {
+//        	orderItem.setOrder(myOrder);
+//        	orderItemRepository.save(orderItem);
+//        	myOrder.getItems().add(orderItem);
+//            myOrderRepository.save(myOrder);
+//            myOrderSearchRepository.save(myOrder);     
+//        	return orderItem;
+//        });
 //        boolean itemFound = false;
 //        for (OrderItem item : myOrder.getItems()){
 //        	if (orderItem.getProductItem().equals(item.getProductItem())) {
@@ -148,7 +190,6 @@ public class MyOrderService {
 //        	myOrderRepository.save(myOrder);
 //        	myOrderSearchRepository.save(myOrder); 
 //        }
-        
         return this.findOne(myOrder.getId());
     }
 
@@ -160,7 +201,7 @@ public class MyOrderService {
         myOrder = myOrderRepository.save(myOrder);
         myOrderSearchRepository.save(myOrder);
         
-        shippingService.create(myOrder);
+//        shippingService.create(myOrder);
         paymentService.create(myOrder);
         
     	return myOrder;
@@ -211,16 +252,24 @@ public class MyOrderService {
         	return null;
         
         MyOrderDTO myOrderDTO = myOrderMapper.toDto(myOrder);
-        myOrder.getItems().forEach((item) -> {
-        	myOrderDTO.getItems().add(item);
+        myOrder.getShops().forEach((shop) -> {
+//        	shop.getItems();
+        	myOrderDTO.getShops().add(shop);
         });
+//        myOrder.getItems().forEach((item) -> {
+//        	myOrderDTO.getItems().add(item);
+//        });
         myOrder.getStatusHistories().forEach((statusHistory) -> {
         	myOrderDTO.getStatusHistories().add(statusHistory);
         });
         
-        myOrderDTO.setShipping(shippingService.findByOrder(myOrder));
+//        myOrderDTO.setShipping(shippingService.findByOrder(myOrder));
         myOrderDTO.setPayment(paymentService.findByOrder(myOrder));
         return myOrderDTO;
+    }
+    
+    public BigDecimal calculateTotalPrice(OrderItem orderItem) {
+    	return orderItem.getPrice().multiply(new BigDecimal(orderItem.getQuantity()));
     }
     
     /**

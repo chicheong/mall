@@ -41,14 +41,14 @@ export class CartMethodComponent extends CartComponent implements OnInit, OnDest
 
     onSelectionChange(entry) {
         const shippingType: ShippingType = Object.assign({}, entry);
-        this.myOrder.shipping.type = shippingType;
-        this.myOrder.shipping.price = shippingType.price;
-        this.myOrder.shipping.currency = shippingType.currency;
+//        this.myOrder.shipping.type = shippingType;
+//        this.myOrder.shipping.price = shippingType.price;
+//        this.myOrder.shipping.currency = shippingType.currency;
     }
 
     save() {
         this.isSaving = true;
-        this.myOrder.total = this.myOrderService.getTotal(this.myOrder);
+        this.myOrder.total = this.myOrderService.calculateTotalPrice(this.myOrder);
         this.subscribeToSaveResponse(
                 this.myOrderService.update(this.myOrder));
     }
@@ -80,7 +80,7 @@ export class CartMethodComponent extends CartComponent implements OnInit, OnDest
     }
 
     canGoNext() {
-        if (this.myOrder && this.myOrder.items && this.myOrder.items.length > 0 && this.myOrder.shipping.type) {
+        if (this.myOrder && this.myOrder.shops && this.myOrder.shops.length > 0 ) { // this.myOrder.shipping.type
             return true;
         } else {
             return false;

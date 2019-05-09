@@ -38,7 +38,7 @@ describe('OrderItem e2e test', () => {
         orderItemDialogPage.setPriceInput('5');
         expect(orderItemDialogPage.getPriceInput()).toMatch('5');
         orderItemDialogPage.currencySelectLastOption();
-		orderItemDialogPage.productItemSelectLastOption();
+//		orderItemDialogPage.productItemSelectLastOption();
         orderItemDialogPage.shopSelectLastOption();
         orderItemDialogPage.save();
         expect(orderItemDialogPage.getSaveButton().isPresent()).toBeFalsy();

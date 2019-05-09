@@ -42,12 +42,17 @@ public class MyOrderMapper {
         } else {
         	MyOrder myOrder = new MyOrder();
         	myOrder.setId(myOrderDTO.getId());
+        	myOrder.setReceiver(myOrderDTO.getReceiver());
         	myOrder.setTotal(myOrderDTO.getTotal());
         	myOrder.setCurrency(myOrderDTO.getCurrency());
+        	myOrder.setContactNum(myOrderDTO.getContactNum());
+        	myOrder.setEmail(myOrderDTO.getEmail());
         	myOrder.setRemark(myOrderDTO.getRemark());
         	myOrder.setStatus(myOrderDTO.getStatus());
+        	myOrder.setShippingAddress(myOrderDTO.getShippingAddress());
+        	myOrder.setBillingAddress(myOrderDTO.getBillingAddress());
         	
-        	myOrder.setItems(myOrderDTO.getItems());
+        	myOrder.setShops(myOrderDTO.getShops());
         	myOrder.setStatusHistories(myOrderDTO.getStatusHistories());
         	myOrder.setAccount(this.myAccountFromId(myOrderDTO.getAccountId()));
         	

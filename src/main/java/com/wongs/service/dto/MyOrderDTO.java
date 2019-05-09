@@ -4,8 +4,14 @@ package com.wongs.service.dto;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+
+import com.wongs.domain.Address;
+import com.wongs.domain.MyOrder;
+import com.wongs.domain.OrderShop;
+import com.wongs.domain.OrderStatusHistory;
 import com.wongs.domain.enumeration.CurrencyType;
 import com.wongs.domain.enumeration.OrderStatus;
 
@@ -34,10 +40,13 @@ public class MyOrderDTO implements Serializable {
 
     private Address billingAddress;
     
+    private Set<OrderShop> shops = new HashSet<>();
+
+    private Set<OrderStatusHistory> statusHistories = new HashSet<>();
+
     private Long accountId;
     
     private PaymentDTO payment;
-    private Set<OrderStatusHistory> statusHistories = new HashSet<>();
 
     public MyOrderDTO() {
         // Empty constructor needed for Jackson.
@@ -45,82 +54,84 @@ public class MyOrderDTO implements Serializable {
     
     public MyOrderDTO(MyOrder myOrder) {
         this.id = myOrder.getId();
+        this.receiver = myOrder.getReceiver();
     	this.total = myOrder.getTotal();
     	this.currency = myOrder.getCurrency();
+    	this.contactNum = myOrder.getContactNum();
+    	this.email = myOrder.getEmail();
     	this.remark = myOrder.getRemark();
     	this.status = myOrder.getStatus();
-    	
-    	this.items = myOrder.getItems();
-    	this.statusHistories = myOrder.getStatusHistories();
-    	this.accountId = Optional.of(myOrder.getAccount()).get().getId();
-    	
 		this.shippingAddress = myOrder.getShippingAddress();
 		this.billingAddress = myOrder.getBillingAddress();
+    	
+    	this.shops = myOrder.getShops();
+    	this.statusHistories = myOrder.getStatusHistories();
+    	this.accountId = Optional.of(myOrder.getAccount()).get().getId();
     }
 
     public Long getId() {
-        return id;
-    }
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getReceiver() {
-        return receiver;
-    }
+	public String getReceiver() {
+		return receiver;
+	}
 
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
-    }
+	public void setReceiver(String receiver) {
+		this.receiver = receiver;
+	}
 
-    public BigDecimal getTotal() {
-        return total;
-    }
+	public BigDecimal getTotal() {
+		return total;
+	}
 
-    public void setTotal(BigDecimal total) {
-        this.total = total;
-    }
+	public void setTotal(BigDecimal total) {
+		this.total = total;
+	}
 
-    public CurrencyType getCurrency() {
-        return currency;
-    }
+	public CurrencyType getCurrency() {
+		return currency;
+	}
 
-    public void setCurrency(CurrencyType currency) {
-        this.currency = currency;
-    }
+	public void setCurrency(CurrencyType currency) {
+		this.currency = currency;
+	}
 
-    public String getContactNum() {
-        return contactNum;
-    }
+	public String getContactNum() {
+		return contactNum;
+	}
 
-    public void setContactNum(String contactNum) {
-        this.contactNum = contactNum;
-    }
+	public void setContactNum(String contactNum) {
+		this.contactNum = contactNum;
+	}
 
-    public String getEmail() {
-        return email;
-    }
+	public String getEmail() {
+		return email;
+	}
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+	public void setEmail(String email) {
+		this.email = email;
+	}
 
-    public String getRemark() {
-        return remark;
-    }
+	public String getRemark() {
+		return remark;
+	}
 
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 
-    public OrderStatus getStatus() {
-        return status;
-    }
+	public OrderStatus getStatus() {
+		return status;
+	}
 
-    public void setStatus(OrderStatus status) {
-        this.status = status;
-    }
+	public void setStatus(OrderStatus status) {
+		this.status = status;
+	}
 
 	public Address getShippingAddress() {
 		return shippingAddress;
@@ -138,18 +149,14 @@ public class MyOrderDTO implements Serializable {
 		this.billingAddress = billingAddress;
 	}
 
-    public Long getAccountId() {
-        return accountId;
-    }
-    
-	public PaymentDTO getPayment() {
-		return payment;
+	public Set<OrderShop> getShops() {
+		return shops;
 	}
 
-	public void setPayment(PaymentDTO payment) {
-		this.payment = payment;
+	public void setShops(Set<OrderShop> shops) {
+		this.shops = shops;
 	}
-	
+
 	public Set<OrderStatusHistory> getStatusHistories() {
 		return statusHistories;
 	}
@@ -158,11 +165,23 @@ public class MyOrderDTO implements Serializable {
 		this.statusHistories = statusHistories;
 	}
 
-    public void setAccountId(Long myAccountId) {
-        this.accountId = myAccountId;
-    }
+	public Long getAccountId() {
+		return accountId;
+	}
 
-    @Override
+	public void setAccountId(Long accountId) {
+		this.accountId = accountId;
+	}
+
+	public PaymentDTO getPayment() {
+		return payment;
+	}
+
+	public void setPayment(PaymentDTO payment) {
+		this.payment = payment;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

@@ -88,7 +88,7 @@ export class CartPendingComponent implements OnInit, OnDestroy {
     }
 
     sumAll(): number {
-        return this.myOrderService.getTotalProductPrice(this.myOrder);
+        return this.myOrderService.calculateTotalProductPrice(this.myOrder);
     }
 
     updateMyOrder() {
@@ -96,7 +96,7 @@ export class CartPendingComponent implements OnInit, OnDestroy {
 
     save(goNext: boolean) {
         this.isSaving = true;
-        this.myOrder.total = this.myOrderService.getTotalPrice(this.myOrder);
+        this.myOrder.total = this.myOrderService.calculateTotalPrice(this.myOrder);
         this.subscribeToSaveResponse(
                 this.myOrderService.update(this.myOrder), goNext);
     }
@@ -131,11 +131,8 @@ export class CartPendingComponent implements OnInit, OnDestroy {
     }
 
     canGoNext() {
-        if (this.myOrder && this.myOrder.items) {
-            let total = 0;
-            this.myOrder.items.forEach((item) => {
-                total += item.quantity;
-            });
+        if (this.myOrder && this.myOrder.shops) {
+            const total = this.myOrderService.calculateTotalQuantity(this.myOrder);
             if (total > 0) {
                 // console.error('canGoNext: true');
                 return true;

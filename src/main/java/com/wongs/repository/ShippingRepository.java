@@ -15,5 +15,5 @@ import com.wongs.domain.Shipping;
 @Repository
 public interface ShippingRepository extends JpaRepository<Shipping, Long> {
 
-	Shipping findByOrder(MyOrder myOrder);
+//	Shipping findByOrder(MyOrder myOrder);
 }

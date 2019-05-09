@@ -1,12 +1,17 @@
 package com.wongs.service.dto;
 
 
-import java.time.ZonedDateTime;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.time.ZonedDateTime;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
+import java.util.Set;
+
+import com.wongs.domain.OrderShop;
+import com.wongs.domain.Shipping;
+import com.wongs.domain.ShippingStatusHistory;
+import com.wongs.domain.ShippingType;
 import com.wongs.domain.enumeration.CurrencyType;
 import com.wongs.domain.enumeration.ShippingStatus;
 
@@ -40,65 +45,59 @@ public class ShippingDTO implements Serializable {
 		this.price = shipping.getPrice();
 		this.currency = shipping.getCurrency();
 		this.date = shipping.getDate();
-		this.receiver = shipping.getReceiver();
-		this.contactNum = shipping.getContactNum();
-		this.email = shipping.getEmail();
-		this.remark = shipping.getRemark();
 		this.status = shipping.getStatus();
-		this.order = shipping.getOrder();
-		this.shippingAddress = shipping.getShippingAddress();
-		this.billingAddress = shipping.getBillingAddress();
+//		this.orderShop = shipping.getOrderShop();
 		this.type = shipping.getType();
 		this.statusHistories = shipping.getStatusHistories();
 	}
-    
+
     public Long getId() {
-        return id;
-    }
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public BigDecimal getPrice() {
-        return price;
-    }
+	public BigDecimal getPrice() {
+		return price;
+	}
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
 
-    public CurrencyType getCurrency() {
-        return currency;
-    }
+	public CurrencyType getCurrency() {
+		return currency;
+	}
 
-    public void setCurrency(CurrencyType currency) {
-        this.currency = currency;
-    }
+	public void setCurrency(CurrencyType currency) {
+		this.currency = currency;
+	}
 
-    public ZonedDateTime getDate() {
-        return date;
-    }
+	public ZonedDateTime getDate() {
+		return date;
+	}
 
-    public void setDate(ZonedDateTime date) {
-        this.date = date;
-    }
+	public void setDate(ZonedDateTime date) {
+		this.date = date;
+	}
 
-    public ShippingStatus getStatus() {
-        return status;
-    }
+	public ShippingStatus getStatus() {
+		return status;
+	}
 
-    public void setStatus(ShippingStatus status) {
-        this.status = status;
-    }
+	public void setStatus(ShippingStatus status) {
+		this.status = status;
+	}
 
-    public OrderShop getOrderShop() {
-        return orderShop;
-    }
+	public OrderShop getOrderShop() {
+		return orderShop;
+	}
 
-    public void setOrderShop(OrderShop orderShop) {
-        this.orderShop = orderShop;
-    }
+	public void setOrderShop(OrderShop orderShop) {
+		this.orderShop = orderShop;
+	}
 
 	public ShippingType getType() {
 		return type;
@@ -108,8 +107,15 @@ public class ShippingDTO implements Serializable {
 		this.type = type;
 	}
 
+	public Set<ShippingStatusHistory> getStatusHistories() {
+		return statusHistories;
+	}
 
-    @Override
+	public void setStatusHistories(Set<ShippingStatusHistory> statusHistories) {
+		this.statusHistories = statusHistories;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;

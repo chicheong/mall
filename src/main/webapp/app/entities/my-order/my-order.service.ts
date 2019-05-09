@@ -343,42 +343,44 @@ export class MyOrderService {
         }
     }
 
-    getTotalProductPrice(myOrder: MyOrder): number {
+    calculateTotalProductPrice(myOrder: MyOrder): number {
+        let total = 0;
         if (myOrder.shops) {
-            let total = 0;
             myOrder.shops.forEach((shop) => {
                shop.items.forEach((item) => {
                    total += (item.quantity * item.price);
                });
             });
-            return total;
         }
-        return 0;
+        return total;
     }
 
-    getTotalPrice(myOrder: MyOrder): number {
-        let shippingTotal = 0;
+    calculateTotalShippingPrice(myOrder: MyOrder): number {
+        let total = 0;
         if (myOrder.shops) {
             myOrder.shops.forEach((shop) => {
                 if (shop.shipping) {
-                  shippingTotal += shop.shipping.price;
+                    total += shop.shipping.price;
                 }
             });
         }
-        return this.getTotalProductPrice(myOrder) + shippingTotal;
+        return total;
     }
 
-    getTotalQuantity(myOrder: MyOrder): number {
+    calculateTotalPrice(myOrder: MyOrder): number {
+        return this.calculateTotalProductPrice(myOrder) + this.calculateTotalShippingPrice(myOrder);
+    }
+
+    calculateTotalQuantity(myOrder: MyOrder): number {
+        let total = 0;
         if (myOrder.shops) {
-            let total = 0;
             myOrder.shops.forEach((shop) => {
                shop.items.forEach((item) => {
                    total += item.quantity;
                });
             });
-            return total;
         }
-        return 0;
+        return total;
     }
 
     getPaypalOrderItems(myOrder: MyOrder): PaypalOrderItem[] {

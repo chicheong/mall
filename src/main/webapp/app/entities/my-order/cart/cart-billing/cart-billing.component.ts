@@ -59,7 +59,7 @@ export class CartBillingComponent extends CartComponent implements OnInit, OnDes
     }
 
     canGoNext() {
-        if (this.myOrder && this.myOrder.items && this.myOrder.items.length > 0) {
+        if (this.myOrder && this.myOrder.shops && this.myOrder.shops.length > 0) {
             return true;
         } else {
             return false;

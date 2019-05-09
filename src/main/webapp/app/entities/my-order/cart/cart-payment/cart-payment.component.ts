@@ -56,9 +56,9 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
                                total: this.myOrder.total,
                                currency: this.myOrder.currency,
                                details: {
-                                   subtotal: this.myOrderService.sumAll(this.myOrder),
+                                   subtotal: this.myOrderService.calculateTotalProductPrice(this.myOrder),
                                    tax: '0', // 0.07
-                                   shipping: this.myOrder.shipping.price,
+                                   shipping: this.myOrderService.calculateTotalShippingPrice(this.myOrder),
                                    handling_fee: '0',
                                    shipping_discount: '0', // -1.00
                                    insurance: '0' // 0.01
@@ -96,13 +96,13 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
                               ],
                               */
                               shipping_address: {
-                                   recipient_name: this.myOrder.shipping.receiver,
-                                   line1: this.myOrder.shipping.shippingAddress.line1,
-                                   line2: this.myOrder.shipping.shippingAddress.line2,
+                                   recipient_name: this.myOrder.receiver,
+                                   line1: this.myOrder.shippingAddress.line1,
+                                   line2: this.myOrder.shippingAddress.line2,
                                    city: 'HK',
                                    country_code: 'HK', // 'US'
-                                   postal_code: this.myOrder.shipping.shippingAddress.postalCode,
-                                   phone: this.myOrder.shipping.contactNum,
+                                   postal_code: this.myOrder.shippingAddress.postalCode,
+                                   phone: this.myOrder.contactNum,
                                    state: '' // 'CA'
                               }
                            }
@@ -282,7 +282,7 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
     }
 
     canGoNext() {
-        if (this.myOrder && this.myOrder.items && this.myOrder.items.length > 0 && this.myOrder.shipping && this.myOrder.payment) {
+        if (this.myOrder && this.myOrder.shops && this.myOrder.shops.length > 0 && this.myOrder.payment) {
             return true;
         } else {
             return false;

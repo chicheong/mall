@@ -46,14 +46,8 @@ public class ShippingMapper {
         	shipping.setPrice(shippingDTO.getPrice());
         	shipping.setCurrency(shippingDTO.getCurrency());
         	shipping.setDate(shippingDTO.getDate());
-        	shipping.setReceiver(shippingDTO.getReceiver());
-    		shipping.setContactNum(shippingDTO.getContactNum());
-    		shipping.setEmail(shippingDTO.getEmail());
-    		shipping.setRemark(shippingDTO.getRemark());
     		shipping.setStatus(shippingDTO.getStatus());
-    		shipping.setOrder(shippingDTO.getOrder());
-    		shipping.setShippingAddress(shippingDTO.getShippingAddress());
-    		shipping.setBillingAddress(shippingDTO.getBillingAddress());
+//    		shipping.setOrderShop(shippingDTO.getOrderShop());
     		shipping.setType(shippingDTO.getType());
     		shipping.setStatusHistories(shippingDTO.getStatusHistories());
     		

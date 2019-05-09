@@ -71,18 +71,18 @@ public class ShippingService {
      * @param shippingDTO the entity to create
      * @return the persisted entity
      */
-    public ShippingDTO create(MyOrder myOrder) {
-        log.debug("Request to create Shipping from MyOrder : {}", myOrder);
-        ShippingDTO shipping = new ShippingDTO();
-        shipping.setOrder(myOrder);
-        shipping.setCurrency(myOrder.getCurrency());
-        shipping.setStatus(ShippingStatus.PENDING);
-        shipping.setPrice(new BigDecimal(0));
-        AddressDTO shippingAddress = new AddressDTO();
-        shippingAddress = addressService.save(shippingAddress);
-        shipping.setShippingAddress(addressMapper.toEntity(shippingAddress));
-        return this.save(shipping);
-    }
+//    public ShippingDTO create(MyOrder myOrder) {
+//        log.debug("Request to create Shipping from MyOrder : {}", myOrder);
+//        ShippingDTO shipping = new ShippingDTO();
+//        shipping.setOrder(myOrder);
+//        shipping.setCurrency(myOrder.getCurrency());
+//        shipping.setStatus(ShippingStatus.PENDING);
+//        shipping.setPrice(new BigDecimal(0));
+//        AddressDTO shippingAddress = new AddressDTO();
+//        shippingAddress = addressService.save(shippingAddress);
+//        shipping.setShippingAddress(addressMapper.toEntity(shippingAddress));
+//        return this.save(shipping);
+//    }
 
     /**
      * Get all the shippings.
@@ -116,12 +116,12 @@ public class ShippingService {
      * @param MyOrder
      * @return the entity
      */
-    @Transactional(readOnly = true)
-    public ShippingDTO findByOrder(MyOrder myOrder) {
-        log.debug("Request to get Shipping from MyOrder : {}", myOrder);
-        Shipping shipping = shippingRepository.findByOrder(myOrder);
-        return shippingMapper.toDto(shipping);
-    }
+//    @Transactional(readOnly = true)
+//    public ShippingDTO findByOrder(MyOrder myOrder) {
+//        log.debug("Request to get Shipping from MyOrder : {}", myOrder);
+//        Shipping shipping = shippingRepository.findByOrder(myOrder);
+//        return shippingMapper.toDto(shipping);
+//    }
     
     /**
      * Delete the shipping by id.

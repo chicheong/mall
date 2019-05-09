@@ -116,7 +116,7 @@ export class NavbarComponent implements OnInit, OnDestroy {
     calculateMyOrderTotalItems() {
         console.error('calculateMyOrderTotalItems()');
         if (this.myAccount.myOrder && this.myAccount.myOrder.shops) {
-            this.noOfItems = this.myOrderService.getTotalQuantity(this.myAccount.myOrder);
+            this.noOfItems = this.myOrderService.calculateTotalQuantity(this.myAccount.myOrder);
             console.error('this.noOfItems: ' + this.noOfItems);
         } else {
             this.noOfItems = 0;

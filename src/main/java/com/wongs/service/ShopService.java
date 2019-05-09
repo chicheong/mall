@@ -1,6 +1,7 @@
 package com.wongs.service;
 
 import com.wongs.domain.MyAccount;
+import com.wongs.domain.ProductItem;
 import com.wongs.domain.Shop;
 import com.wongs.domain.User;
 import com.wongs.domain.enumeration.CommonStatus;
@@ -130,6 +131,12 @@ public class ShopService {
         Shop shop = shopRepository.findByCode(code);
         ShopDTO shopDTO = shopMapper.toDto(shop);
         return shopDTO;
+    }
+    
+    @Transactional(readOnly = true)
+    public Shop findByProductItem(ProductItem productItem) {
+    	// Need to check if product or shop is null
+    	return productItem.getProduct().getShop();
     }
     
     /**
