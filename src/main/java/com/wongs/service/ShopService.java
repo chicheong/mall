@@ -4,11 +4,13 @@ import com.wongs.domain.MyAccount;
 import com.wongs.domain.ProductItem;
 import com.wongs.domain.Shop;
 import com.wongs.domain.User;
+import com.wongs.domain.UserInfo;
 import com.wongs.domain.enumeration.CommonStatus;
 import com.wongs.domain.enumeration.DelegationType;
 import com.wongs.permission.PermissionsConstants;
 import com.wongs.repository.MyAccountRepository;
 import com.wongs.repository.ShopRepository;
+import com.wongs.repository.UserInfoRepository;
 import com.wongs.repository.search.ShopSearchRepository;
 import com.wongs.security.AuthoritiesConstants;
 import com.wongs.security.SecurityUtils;
@@ -47,19 +49,20 @@ public class ShopService {
     
     private final ShopRepository shopRepository;
     private final ShopSearchRepository shopSearchRepository;
+    private final MyAccountRepository myAccountRepository;
+    private final UserInfoRepository userInfoRepository;
     
-    private final UserInfoService userInfoService;
-    private final MyAccountService myAccountService;
     private final DelegationService delegationService;
 
     public ShopService(ShopMapper shopMapper, ShopRepository shopRepository, ShopSearchRepository shopSearchRepository, 
-    					UserInfoService userInfoService, MyAccountService myAccountService, 
+    					MyAccountRepository myAccountRepository, UserInfoRepository userInfoRepository, 
     					DelegationService delegationService) {
         this.shopMapper = shopMapper;
     	this.shopRepository = shopRepository;
         this.shopSearchRepository = shopSearchRepository;
-        this.userInfoService = userInfoService;
-        this.myAccountService = myAccountService;
+        this.myAccountRepository = myAccountRepository;
+        this.userInfoRepository = userInfoRepository;
+//        this.myAccountService = myAccountService;
         this.delegationService = delegationService;
     }
 
@@ -180,9 +183,9 @@ public class ShopService {
     	// Check if current account is in-charge account and assign all rights
     	if (SecurityUtils.isAuthenticated()) {
     		String login = SecurityUtils.getCurrentUserLogin().get();
-    		UserInfoDTO userInfo = userInfoService.findOneWithAccountsByUserLogin(login);
+    		UserInfo userInfo = userInfoRepository.findOneWithAccountsByUserLogin(login);
     		if (userInfo != null) {
-        		MyAccountDTO myAccount = myAccountService.findOne(userInfo.getAccountId());
+        		MyAccount myAccount = myAccountRepository.findOne(userInfo.getAccountId());
             	for (MyAccount inChargeAccount : shop.getAccounts()) {
             		if (inChargeAccount.getId().equals(myAccount.getId()) || 
             				myAccount.getDelegations().stream()
