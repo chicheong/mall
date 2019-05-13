@@ -375,9 +375,12 @@ export class MyOrderService {
         let total = 0;
         if (myOrder.shops) {
             myOrder.shops.forEach((shop) => {
-               shop.items.forEach((item) => {
-                   total += item.quantity;
-               });
+               console.error('shop.items: ' + shop.items);
+               if (shop.items) {
+                   shop.items.forEach((item) => {
+                       total += item.quantity;
+                   });
+               }
             });
         }
         return total;

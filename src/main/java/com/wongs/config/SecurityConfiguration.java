@@ -74,7 +74,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/swagger-ui/index.html")
             .antMatchers("/test/**")
             .antMatchers("/h2-console/**");
-//            .antMatchers(HttpMethod.GET, "/api/products/**")
+//            .antMatchers(HttpMethod.GET, "/api/products/**"),
 //            .antMatchers(HttpMethod.GET, "/api/shops/**");
     }
 
@@ -102,14 +102,14 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/account/reset-password/init").permitAll()
             .antMatchers("/api/account/reset-password/finish").permitAll()
             .antMatchers("/api/profile-info").permitAll()
+            .antMatchers("/api/products/**").permitAll()
+            .antMatchers("/api/shops/**").permitAll()
             .antMatchers("/api/**").authenticated()
             .antMatchers("/management/health").permitAll()
             .antMatchers("/management/**").hasAuthority(AuthoritiesConstants.ADMIN)
             .antMatchers("/v2/api-docs/**").permitAll()
             .antMatchers("/swagger-resources/configuration/ui").permitAll()
             .antMatchers("/swagger-ui/index.html").hasAuthority(AuthoritiesConstants.ADMIN)
-            .antMatchers("/api/products/**").permitAll()
-            .antMatchers("/api/shops/**").permitAll()
         .and()
             .apply(securityConfigurerAdapter());
 

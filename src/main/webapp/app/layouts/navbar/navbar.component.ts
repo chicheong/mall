@@ -82,6 +82,18 @@ export class NavbarComponent implements OnInit, OnDestroy {
                     if (account.myAccount) {
                         this.myAccount = account.myAccount;
                         this.calculateMyOrderTotalItems();
+                        if (this.myAccount) {
+                            if (this.myAccount.myOrder.shops) {
+                                this.myAccount.myOrder.shops.forEach((shop) => {
+                                    console.error('shop: ' + shop.items);
+                                    if (shop.items) {
+                                        shop.items.forEach((item) => {
+                                            console.error('item: ' + item.id);
+                                        });
+                                    }
+                                });
+                            }
+                        }
                     } else {
                         this.myAccount = undefined;
                     }

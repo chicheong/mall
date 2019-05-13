@@ -3,9 +3,11 @@ package com.wongs.service;
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import org.hibernate.Hibernate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -244,6 +246,13 @@ public class MyOrderService {
         log.debug("Request to get MyOrder : {}", account, status);
         Set<MyOrder> myOrders = myOrderRepository.findByAccountAndStatus(account, status);
         MyOrder myOrder = myOrders.stream().findFirst().orElse(null);
+        myOrder.getShops().forEach((shop) -> {
+        	shop.getItems().forEach((item) -> {
+        		log.error("item.getPrice(): " + item.getPrice());
+        		Hibernate.initialize(item);
+        	});
+        	Hibernate.initialize(shop.getItems());
+        });
         return this.toDTOWithDetail(myOrder);
     }
     
@@ -252,13 +261,12 @@ public class MyOrderService {
         	return null;
         
         MyOrderDTO myOrderDTO = myOrderMapper.toDto(myOrder);
-        myOrder.getShops().forEach((shop) -> {
-//        	shop.getItems();
-        	myOrderDTO.getShops().add(shop);
+        myOrderDTO.getShops().forEach((shop) -> {
+        	shop.getItems().forEach((item) -> {
+        		log.error("item: " + item);
+        	});
+        	log.error("shop.getItems().size(): " + shop.getItems().size());
         });
-//        myOrder.getItems().forEach((item) -> {
-//        	myOrderDTO.getItems().add(item);
-//        });
         myOrder.getStatusHistories().forEach((statusHistory) -> {
         	myOrderDTO.getStatusHistories().add(statusHistory);
         });
