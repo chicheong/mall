@@ -77,9 +77,16 @@ public class MyOrderDTO implements Serializable {
     		orderShop.setTotal(shop.getTotal());
     		orderShop.setItems(new HashSet<OrderItem>());
     		shop.getItems().forEach(item -> {
-    			orderShop.getItems().add(item);
+    			OrderItem orderItem = new OrderItem();
+    			orderItem.setCurrency(item.getCurrency());
+    			orderItem.setId(item.getId());
+    			orderItem.setPrice(item.getPrice());
+    			orderItem.setProductItem(item.getProductItem());
+    			orderItem.setQuantity(item.getQuantity());
+    			orderItem.setShop(item.getShop());
+    			orderShop.getItems().add(orderItem);
     		});
-    		this.shops.add(shop);
+    		this.shops.add(orderShop);
     	});
     	this.statusHistories = myOrder.getStatusHistories();
     	this.accountId = Optional.of(myOrder.getAccount()).get().getId();
