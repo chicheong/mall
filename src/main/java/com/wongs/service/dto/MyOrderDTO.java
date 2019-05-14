@@ -10,6 +10,7 @@ import java.util.Set;
 
 import com.wongs.domain.Address;
 import com.wongs.domain.MyOrder;
+import com.wongs.domain.OrderItem;
 import com.wongs.domain.OrderShop;
 import com.wongs.domain.OrderStatusHistory;
 import com.wongs.domain.enumeration.CurrencyType;
@@ -64,7 +65,22 @@ public class MyOrderDTO implements Serializable {
 		this.shippingAddress = myOrder.getShippingAddress();
 		this.billingAddress = myOrder.getBillingAddress();
     	
-    	this.shops = myOrder.getShops();
+    	this.shops = new HashSet<OrderShop>();
+    	myOrder.getShops().forEach(shop -> {
+    		OrderShop orderShop = new OrderShop();
+    		orderShop.setCurrency(shop.getCurrency());
+    		orderShop.setId(shop.getId());
+    		orderShop.setOrder(shop.getOrder());
+    		orderShop.setRemark(shop.getRemark());
+    		orderShop.setShipping(shop.getShipping());
+    		orderShop.setShop(shop.getShop());
+    		orderShop.setTotal(shop.getTotal());
+    		orderShop.setItems(new HashSet<OrderItem>());
+    		shop.getItems().forEach(item -> {
+    			orderShop.getItems().add(item);
+    		});
+    		this.shops.add(shop);
+    	});
     	this.statusHistories = myOrder.getStatusHistories();
     	this.accountId = Optional.of(myOrder.getAccount()).get().getId();
     }

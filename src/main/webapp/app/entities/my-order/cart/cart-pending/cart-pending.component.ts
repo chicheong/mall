@@ -144,4 +144,8 @@ export class CartPendingComponent implements OnInit, OnDestroy {
             return false;
         }
     }
+
+    previousState() {
+        window.history.back();
+    }
 }
