@@ -246,13 +246,14 @@ public class MyOrderService {
         log.debug("Request to get MyOrder : {}", account, status);
         Set<MyOrder> myOrders = myOrderRepository.findByAccountAndStatus(account, status);
         MyOrder myOrder = myOrders.stream().findFirst().orElse(null);
-        myOrder.getShops().forEach((shop) -> {
-        	shop.getItems().forEach((item) -> {
-        		log.error("item.getPrice(): " + item.getPrice());
-        		Hibernate.initialize(item);
-        	});
-        	Hibernate.initialize(shop.getItems());
-        });
+        if (myOrder != null)
+	        myOrder.getShops().forEach((shop) -> {
+	        	shop.getItems().forEach((item) -> {
+	        		log.error("item.getPrice(): " + item.getPrice());
+	        		Hibernate.initialize(item);
+	        	});
+	        	Hibernate.initialize(shop.getItems());
+	        });
         return this.toDTOWithDetail(myOrder);
     }
     

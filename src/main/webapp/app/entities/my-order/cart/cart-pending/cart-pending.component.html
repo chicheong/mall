@@ -33,100 +33,61 @@
 		</div>
 		<div class="row" class="d-none d-sm-flex">
 			<div class="col-sm-6 text-center">Item</div>
-			<div class="col-sm-2">Unit Price</div>
-			<div class="col-sm-2 text-center">Quantity</div>
-			<div class="col-sm-2 text-right">Subtotal&nbsp;&nbsp;&nbsp;</div>
+			<div class="col-sm-1">Unit Price</div>
+			<div class="col-sm-1 text-center">Quantity</div>
+			<div class="col-sm-1 text-right">Subtotal&nbsp;&nbsp;&nbsp;</div>
+			<div class="col-sm-1 text-center">Action</div>
 		</div>
 		<hr>
-<div class="row">
-  <div class="col-sm-9">
-    Level 1: .col-sm-9
-    <div class="row">
-      <div class="col-8 col-sm-6">
-        Level 2: .col-8 .col-sm-6
-      </div>
-      <div class="col-4 col-sm-6">
-        Level 2: .col-4 .col-sm-6
-      </div>
-    </div>
-    <div class="row">
-      <div class="col-8 col-sm-6">
-        Level 2: .col-8 .col-sm-6
-      </div>
-      <div class="col-4 col-sm-6">
-        Level 2: .col-4 .col-sm-6
-      </div>
-    </div>    
-  </div>
-</div>
-		
-		
-		
-		<!-- hide on screens smaller than sm -->
-		<div *ngFor="let item of myOrder.items" class="d-none d-sm-block">
-			<div class="row">
-				<div class="col-sm-9">
-				{{item.productItem.product.shop.name}}
-					<div class="row">
-						<div class="col-sm-2">
-							<span class="hipster img-fluid img-rounded">{{item.productItem.product.name}}</span>
-						</div>
-						<div class="col-sm-4">
-							<span class="hipster img-fluid img-rounded font-weight-bold">{{item.productItem.color.name
-								+ ' ' + item.productItem.size.name}}</span>
-						</div>
-						<div class="col-sm-2">
-							<span class="hipster img-fluid img-rounded font-weight-bold">{{item.price}}</span>
-						</div>
-						<div class="col-sm-2">
-							<span class="hipster img-fluid img-rounded"> <input
-								type="number" class="form-control font-weight-bold"
-								name="price{{item.id}}" (change)="updateMyOrder()"
-								[(ngModel)]="item.quantity" />
-							</span>
-						</div>
-						<div class="col-sm-2 text-right">
-							<span class="hipster img-fluid img-rounded font-weight-bold">{{item.price
-								* item.quantity}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-						</div>
-					</div>						
+		<div *ngFor="let shop of myOrder.shops" class="row">
+			<div class="col-sm-9">
+				<div class="form-check">
+					<input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
+					<label class="form-check-label" for="defaultCheck1">
+						Select Me
+					</label>
 				</div>
-			</div>
-			<hr>
-		</div>
-		<!-- hide on screens wider than sm -->
-		<div *ngFor="let item of myOrder.items" class="d-sm-none">
-			<div class="row">
-				<div class="col-xs-2">
-					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-					<span class="hipster img-fluid img-rounded"></span>
-					<span>
-						<img src="http://placehold.it/100x100&amp;text=Slide One" />
-					</span>
-				</div>
-				<div class="col-xs-10">
-					<span class="hipster font-weight-bold">{{item.productItem.color.name
-						+ ' ' + item.productItem.size.name}}</span>
-					<div class="row">
-						<div class="col text-right">
-							<span class="hipster font-weight-bold">{{item.price}}</span>
-						</div>
-						<div class="col">
-							<span class="hipster"> <input
-								type="number" class="form-control font-weight-bold"
-								name="price{{item.id}}" (change)="updateMyOrder()"
-								[(ngModel)]="item.quantity" />						
-							</span>
-						</div>
+				{{shop.name}}
+				Level 1: .col-sm-9
+				<div *ngFor="let item of shop.items" class="row">
+					<div class="form-check col-2 col-sm-1">
+						<input class="form-check-input" type="checkbox" value="" id="defaultCheck2">
+						<label class="form-check-label" for="defaultCheck2">
+							S
+						</label>
+					</div>		
+					<div class="col-10 col-sm-5">
+						<span class="hipster img-fluid img-rounded">{{item.productItem.product.name}}{{item.productItem.color.name
+							+ ' ' + item.productItem.size.name}}</span>
 					</div>
-					<div class="text-right">
-						<span class="hipster font-weight-bold text-right">{{item.price
+					<div class="col-2 col-sm-1">
+						<span class="hipster img-fluid img-rounded font-weight-bold">{{item.price}}</span>
+					</div>
+					<div class="col-2 col-sm-1">
+						<span class="hipster img-fluid img-rounded"> <input
+							type="number" class="form-control font-weight-bold"
+							name="price{{item.id}}" (change)="updateMyOrder()"
+							[(ngModel)]="item.quantity" />
+						</span>
+					</div>
+					<div class="col-2 col-sm-1 text-right">
+						<span class="hipster img-fluid img-rounded font-weight-bold">{{item.price
 							* item.quantity}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
-					</div>					
+					</div>
+					<div class="col-4 col-sm-2">
+						<span class="hipster img-fluid img-rounded font-weight-bold">Actions</span>
+					</div>			
 				</div>
+			    <!-- <div class="row">
+			      <div class="col-8 col-sm-6">
+			        Level 2: .col-8 .col-sm-6
+			      </div>
+			      <div class="col-4 col-sm-6">
+			        Level 2: .col-4 .col-sm-6
+			      </div>
+			    </div>  -->   
 			</div>
-			<hr>
-		</div>		
+		</div>
 		<hr>
 		<div class="row">
 			<div class="col-md-6">
