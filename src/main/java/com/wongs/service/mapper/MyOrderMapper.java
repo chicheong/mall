@@ -52,7 +52,7 @@ public class MyOrderMapper {
         	myOrder.setShippingAddress(myOrderDTO.getShippingAddress());
         	myOrder.setBillingAddress(myOrderDTO.getBillingAddress());
         	
-        	myOrder.setShops(myOrderDTO.getShops());
+//        	myOrder.setShops(myOrderDTO.getShops());
         	myOrder.setStatusHistories(myOrderDTO.getStatusHistories());
         	myOrder.setAccount(this.myAccountFromId(myOrderDTO.getAccountId()));
         	

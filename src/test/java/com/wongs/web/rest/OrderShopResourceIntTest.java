@@ -5,6 +5,8 @@ import com.wongs.MallApp;
 import com.wongs.domain.OrderShop;
 import com.wongs.repository.OrderShopRepository;
 import com.wongs.repository.search.OrderShopSearchRepository;
+import com.wongs.service.dto.OrderShopDTO;
+import com.wongs.service.mapper.OrderShopMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -54,6 +56,9 @@ public class OrderShopResourceIntTest {
     private OrderShopRepository orderShopRepository;
 
     @Autowired
+    private OrderShopMapper orderShopMapper;
+
+    @Autowired
     private OrderShopSearchRepository orderShopSearchRepository;
 
     @Autowired
@@ -75,7 +80,7 @@ public class OrderShopResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final OrderShopResource orderShopResource = new OrderShopResource(orderShopRepository, orderShopSearchRepository);
+        final OrderShopResource orderShopResource = new OrderShopResource(orderShopRepository, orderShopMapper, orderShopSearchRepository);
         this.restOrderShopMockMvc = MockMvcBuilders.standaloneSetup(orderShopResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -109,9 +114,10 @@ public class OrderShopResourceIntTest {
         int databaseSizeBeforeCreate = orderShopRepository.findAll().size();
 
         // Create the OrderShop
+        OrderShopDTO orderShopDTO = orderShopMapper.toDto(orderShop);
         restOrderShopMockMvc.perform(post("/api/order-shops")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(orderShop)))
+            .content(TestUtil.convertObjectToJsonBytes(orderShopDTO)))
             .andExpect(status().isCreated());
 
         // Validate the OrderShop in the database
@@ -134,11 +140,12 @@ public class OrderShopResourceIntTest {
 
         // Create the OrderShop with an existing ID
         orderShop.setId(1L);
+        OrderShopDTO orderShopDTO = orderShopMapper.toDto(orderShop);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restOrderShopMockMvc.perform(post("/api/order-shops")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(orderShop)))
+            .content(TestUtil.convertObjectToJsonBytes(orderShopDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the OrderShop in the database
@@ -202,10 +209,11 @@ public class OrderShopResourceIntTest {
             .total(UPDATED_TOTAL)
             .currency(UPDATED_CURRENCY)
             .remark(UPDATED_REMARK);
+        OrderShopDTO orderShopDTO = orderShopMapper.toDto(updatedOrderShop);
 
         restOrderShopMockMvc.perform(put("/api/order-shops")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedOrderShop)))
+            .content(TestUtil.convertObjectToJsonBytes(orderShopDTO)))
             .andExpect(status().isOk());
 
         // Validate the OrderShop in the database
@@ -227,11 +235,12 @@ public class OrderShopResourceIntTest {
         int databaseSizeBeforeUpdate = orderShopRepository.findAll().size();
 
         // Create the OrderShop
+        OrderShopDTO orderShopDTO = orderShopMapper.toDto(orderShop);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restOrderShopMockMvc.perform(put("/api/order-shops")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(orderShop)))
+            .content(TestUtil.convertObjectToJsonBytes(orderShopDTO)))
             .andExpect(status().isCreated());
 
         // Validate the OrderShop in the database
@@ -291,5 +300,28 @@ public class OrderShopResourceIntTest {
         assertThat(orderShop1).isNotEqualTo(orderShop2);
         orderShop1.setId(null);
         assertThat(orderShop1).isNotEqualTo(orderShop2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(OrderShopDTO.class);
+        OrderShopDTO orderShopDTO1 = new OrderShopDTO();
+        orderShopDTO1.setId(1L);
+        OrderShopDTO orderShopDTO2 = new OrderShopDTO();
+        assertThat(orderShopDTO1).isNotEqualTo(orderShopDTO2);
+        orderShopDTO2.setId(orderShopDTO1.getId());
+        assertThat(orderShopDTO1).isEqualTo(orderShopDTO2);
+        orderShopDTO2.setId(2L);
+        assertThat(orderShopDTO1).isNotEqualTo(orderShopDTO2);
+        orderShopDTO1.setId(null);
+        assertThat(orderShopDTO1).isNotEqualTo(orderShopDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(orderShopMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(orderShopMapper.fromId(null)).isNull();
     }
 }

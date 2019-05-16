@@ -5,6 +5,8 @@ import com.wongs.MallApp;
 import com.wongs.domain.OrderItem;
 import com.wongs.repository.OrderItemRepository;
 import com.wongs.repository.search.OrderItemSearchRepository;
+import com.wongs.service.dto.OrderItemDTO;
+import com.wongs.service.mapper.OrderItemMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -54,6 +56,9 @@ public class OrderItemResourceIntTest {
     private OrderItemRepository orderItemRepository;
 
     @Autowired
+    private OrderItemMapper orderItemMapper;
+
+    @Autowired
     private OrderItemSearchRepository orderItemSearchRepository;
 
     @Autowired
@@ -75,7 +80,7 @@ public class OrderItemResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final OrderItemResource orderItemResource = new OrderItemResource(orderItemRepository, orderItemSearchRepository);
+        final OrderItemResource orderItemResource = new OrderItemResource(orderItemRepository, orderItemMapper, orderItemSearchRepository);
         this.restOrderItemMockMvc = MockMvcBuilders.standaloneSetup(orderItemResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
@@ -109,9 +114,10 @@ public class OrderItemResourceIntTest {
         int databaseSizeBeforeCreate = orderItemRepository.findAll().size();
 
         // Create the OrderItem
+        OrderItemDTO orderItemDTO = orderItemMapper.toDto(orderItem);
         restOrderItemMockMvc.perform(post("/api/order-items")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(orderItem)))
+            .content(TestUtil.convertObjectToJsonBytes(orderItemDTO)))
             .andExpect(status().isCreated());
 
         // Validate the OrderItem in the database
@@ -134,11 +140,12 @@ public class OrderItemResourceIntTest {
 
         // Create the OrderItem with an existing ID
         orderItem.setId(1L);
+        OrderItemDTO orderItemDTO = orderItemMapper.toDto(orderItem);
 
         // An entity with an existing ID cannot be created, so this API call must fail
         restOrderItemMockMvc.perform(post("/api/order-items")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(orderItem)))
+            .content(TestUtil.convertObjectToJsonBytes(orderItemDTO)))
             .andExpect(status().isBadRequest());
 
         // Validate the OrderItem in the database
@@ -202,10 +209,11 @@ public class OrderItemResourceIntTest {
             .quantity(UPDATED_QUANTITY)
             .price(UPDATED_PRICE)
             .currency(UPDATED_CURRENCY);
+        OrderItemDTO orderItemDTO = orderItemMapper.toDto(updatedOrderItem);
 
         restOrderItemMockMvc.perform(put("/api/order-items")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(updatedOrderItem)))
+            .content(TestUtil.convertObjectToJsonBytes(orderItemDTO)))
             .andExpect(status().isOk());
 
         // Validate the OrderItem in the database
@@ -227,11 +235,12 @@ public class OrderItemResourceIntTest {
         int databaseSizeBeforeUpdate = orderItemRepository.findAll().size();
 
         // Create the OrderItem
+        OrderItemDTO orderItemDTO = orderItemMapper.toDto(orderItem);
 
         // If the entity doesn't have an ID, it will be created instead of just being updated
         restOrderItemMockMvc.perform(put("/api/order-items")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(orderItem)))
+            .content(TestUtil.convertObjectToJsonBytes(orderItemDTO)))
             .andExpect(status().isCreated());
 
         // Validate the OrderItem in the database
@@ -291,5 +300,28 @@ public class OrderItemResourceIntTest {
         assertThat(orderItem1).isNotEqualTo(orderItem2);
         orderItem1.setId(null);
         assertThat(orderItem1).isNotEqualTo(orderItem2);
+    }
+
+    @Test
+    @Transactional
+    public void dtoEqualsVerifier() throws Exception {
+        TestUtil.equalsVerifier(OrderItemDTO.class);
+        OrderItemDTO orderItemDTO1 = new OrderItemDTO();
+        orderItemDTO1.setId(1L);
+        OrderItemDTO orderItemDTO2 = new OrderItemDTO();
+        assertThat(orderItemDTO1).isNotEqualTo(orderItemDTO2);
+        orderItemDTO2.setId(orderItemDTO1.getId());
+        assertThat(orderItemDTO1).isEqualTo(orderItemDTO2);
+        orderItemDTO2.setId(2L);
+        assertThat(orderItemDTO1).isNotEqualTo(orderItemDTO2);
+        orderItemDTO1.setId(null);
+        assertThat(orderItemDTO1).isNotEqualTo(orderItemDTO2);
+    }
+
+    @Test
+    @Transactional
+    public void testEntityFromId() {
+        assertThat(orderItemMapper.fromId(42L).getId()).isEqualTo(42);
+        assertThat(orderItemMapper.fromId(null)).isNull();
     }
 }

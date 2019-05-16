@@ -8,6 +8,8 @@ import com.wongs.repository.search.OrderItemSearchRepository;
 import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
 import com.wongs.web.rest.util.PaginationUtil;
+import com.wongs.service.dto.OrderItemDTO;
+import com.wongs.service.mapper.OrderItemMapper;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,29 +43,34 @@ public class OrderItemResource {
 
     private final OrderItemRepository orderItemRepository;
 
+    private final OrderItemMapper orderItemMapper;
+
     private final OrderItemSearchRepository orderItemSearchRepository;
 
-    public OrderItemResource(OrderItemRepository orderItemRepository, OrderItemSearchRepository orderItemSearchRepository) {
+    public OrderItemResource(OrderItemRepository orderItemRepository, OrderItemMapper orderItemMapper, OrderItemSearchRepository orderItemSearchRepository) {
         this.orderItemRepository = orderItemRepository;
+        this.orderItemMapper = orderItemMapper;
         this.orderItemSearchRepository = orderItemSearchRepository;
     }
 
     /**
      * POST  /order-items : Create a new orderItem.
      *
-     * @param orderItem the orderItem to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new orderItem, or with status 400 (Bad Request) if the orderItem has already an ID
+     * @param orderItemDTO the orderItemDTO to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new orderItemDTO, or with status 400 (Bad Request) if the orderItem has already an ID
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/order-items")
     @Timed
-    public ResponseEntity<OrderItem> createOrderItem(@RequestBody OrderItem orderItem) throws URISyntaxException {
-        log.debug("REST request to save OrderItem : {}", orderItem);
-        if (orderItem.getId() != null) {
+    public ResponseEntity<OrderItemDTO> createOrderItem(@RequestBody OrderItemDTO orderItemDTO) throws URISyntaxException {
+        log.debug("REST request to save OrderItem : {}", orderItemDTO);
+        if (orderItemDTO.getId() != null) {
             throw new BadRequestAlertException("A new orderItem cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        OrderItem result = orderItemRepository.save(orderItem);
-        orderItemSearchRepository.save(result);
+        OrderItem orderItem = orderItemMapper.toEntity(orderItemDTO);
+        orderItem = orderItemRepository.save(orderItem);
+        OrderItemDTO result = orderItemMapper.toDto(orderItem);
+        orderItemSearchRepository.save(orderItem);
         return ResponseEntity.created(new URI("/api/order-items/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -72,23 +79,25 @@ public class OrderItemResource {
     /**
      * PUT  /order-items : Updates an existing orderItem.
      *
-     * @param orderItem the orderItem to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated orderItem,
-     * or with status 400 (Bad Request) if the orderItem is not valid,
-     * or with status 500 (Internal Server Error) if the orderItem couldn't be updated
+     * @param orderItemDTO the orderItemDTO to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated orderItemDTO,
+     * or with status 400 (Bad Request) if the orderItemDTO is not valid,
+     * or with status 500 (Internal Server Error) if the orderItemDTO couldn't be updated
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/order-items")
     @Timed
-    public ResponseEntity<OrderItem> updateOrderItem(@RequestBody OrderItem orderItem) throws URISyntaxException {
-        log.debug("REST request to update OrderItem : {}", orderItem);
-        if (orderItem.getId() == null) {
-            return createOrderItem(orderItem);
+    public ResponseEntity<OrderItemDTO> updateOrderItem(@RequestBody OrderItemDTO orderItemDTO) throws URISyntaxException {
+        log.debug("REST request to update OrderItem : {}", orderItemDTO);
+        if (orderItemDTO.getId() == null) {
+            return createOrderItem(orderItemDTO);
         }
-        OrderItem result = orderItemRepository.save(orderItem);
-        orderItemSearchRepository.save(result);
+        OrderItem orderItem = orderItemMapper.toEntity(orderItemDTO);
+        orderItem = orderItemRepository.save(orderItem);
+        OrderItemDTO result = orderItemMapper.toDto(orderItem);
+        orderItemSearchRepository.save(orderItem);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, orderItem.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, orderItemDTO.getId().toString()))
             .body(result);
     }
 
@@ -101,38 +110,40 @@ public class OrderItemResource {
      */
     @GetMapping("/order-items")
     @Timed
-    public ResponseEntity<List<OrderItem>> getAllOrderItems(Pageable pageable, @RequestParam(required = false) String filter) {
+    public ResponseEntity<List<OrderItemDTO>> getAllOrderItems(Pageable pageable, @RequestParam(required = false) String filter) {
         if ("productitem-is-null".equals(filter)) {
             log.debug("REST request to get all OrderItems where productItem is null");
             return new ResponseEntity<>(StreamSupport
                 .stream(orderItemRepository.findAll().spliterator(), false)
                 .filter(orderItem -> orderItem.getProductItem() == null)
+                .map(orderItemMapper::toDto)
                 .collect(Collectors.toList()), HttpStatus.OK);
         }
         log.debug("REST request to get a page of OrderItems");
         Page<OrderItem> page = orderItemRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/order-items");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(orderItemMapper.toDto(page.getContent()), headers, HttpStatus.OK);
     }
 
     /**
      * GET  /order-items/:id : get the "id" orderItem.
      *
-     * @param id the id of the orderItem to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the orderItem, or with status 404 (Not Found)
+     * @param id the id of the orderItemDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the orderItemDTO, or with status 404 (Not Found)
      */
     @GetMapping("/order-items/{id}")
     @Timed
-    public ResponseEntity<OrderItem> getOrderItem(@PathVariable Long id) {
+    public ResponseEntity<OrderItemDTO> getOrderItem(@PathVariable Long id) {
         log.debug("REST request to get OrderItem : {}", id);
         OrderItem orderItem = orderItemRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(orderItem));
+        OrderItemDTO orderItemDTO = orderItemMapper.toDto(orderItem);
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(orderItemDTO));
     }
 
     /**
      * DELETE  /order-items/:id : delete the "id" orderItem.
      *
-     * @param id the id of the orderItem to delete
+     * @param id the id of the orderItemDTO to delete
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/order-items/{id}")
@@ -154,11 +165,11 @@ public class OrderItemResource {
      */
     @GetMapping("/_search/order-items")
     @Timed
-    public ResponseEntity<List<OrderItem>> searchOrderItems(@RequestParam String query, Pageable pageable) {
+    public ResponseEntity<List<OrderItemDTO>> searchOrderItems(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of OrderItems for query {}", query);
         Page<OrderItem> page = orderItemSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/order-items");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return new ResponseEntity<>(orderItemMapper.toDto(page.getContent()), headers, HttpStatus.OK);
     }
 
 }

@@ -41,7 +41,7 @@ public class MyOrderDTO implements Serializable {
 
     private Address billingAddress;
     
-    private Set<OrderShop> shops = new HashSet<>();
+    private Set<OrderShopDTO> shops = new HashSet<>();
 
     private Set<OrderStatusHistory> statusHistories = new HashSet<>();
 
@@ -65,29 +65,29 @@ public class MyOrderDTO implements Serializable {
 		this.shippingAddress = myOrder.getShippingAddress();
 		this.billingAddress = myOrder.getBillingAddress();
     	
-    	this.shops = new HashSet<OrderShop>();
-    	myOrder.getShops().forEach(shop -> {
-    		OrderShop orderShop = new OrderShop();
-    		orderShop.setCurrency(shop.getCurrency());
-    		orderShop.setId(shop.getId());
-    		orderShop.setOrder(shop.getOrder());
-    		orderShop.setRemark(shop.getRemark());
-    		orderShop.setShipping(shop.getShipping());
-    		orderShop.setShop(shop.getShop());
-    		orderShop.setTotal(shop.getTotal());
-    		orderShop.setItems(new HashSet<OrderItem>());
-    		shop.getItems().forEach(item -> {
-    			OrderItem orderItem = new OrderItem();
-    			orderItem.setCurrency(item.getCurrency());
-    			orderItem.setId(item.getId());
-    			orderItem.setPrice(item.getPrice());
-    			orderItem.setProductItem(item.getProductItem());
-    			orderItem.setQuantity(item.getQuantity());
-    			orderItem.setShop(item.getShop());
-    			orderShop.getItems().add(orderItem);
-    		});
-    		this.shops.add(orderShop);
-    	});
+//    	this.shops = new HashSet<OrderShopDTO>();
+//    	myOrder.getShops().forEach(shop -> {
+//    		OrderShop orderShop = new OrderShop();
+//    		orderShop.setCurrency(shop.getCurrency());
+//    		orderShop.setId(shop.getId());
+//    		orderShop.setOrder(shop.getOrder());
+//    		orderShop.setRemark(shop.getRemark());
+//    		orderShop.setShipping(shop.getShipping());
+//    		orderShop.setShop(shop.getShop());
+//    		orderShop.setTotal(shop.getTotal());
+//    		orderShop.setItems(new HashSet<OrderItem>());
+//    		shop.getItems().forEach(item -> {
+//    			OrderItem orderItem = new OrderItem();
+//    			orderItem.setCurrency(item.getCurrency());
+//    			orderItem.setId(item.getId());
+//    			orderItem.setPrice(item.getPrice());
+//    			orderItem.setProductItem(item.getProductItem());
+//    			orderItem.setQuantity(item.getQuantity());
+//    			orderItem.setShop(item.getShop());
+//    			orderShop.getItems().add(orderItem);
+//    		});
+//    		this.shops.add(orderShop);
+//    	});
     	this.statusHistories = myOrder.getStatusHistories();
     	this.accountId = Optional.of(myOrder.getAccount()).get().getId();
     }
@@ -172,11 +172,11 @@ public class MyOrderDTO implements Serializable {
 		this.billingAddress = billingAddress;
 	}
 
-	public Set<OrderShop> getShops() {
+	public Set<OrderShopDTO> getShops() {
 		return shops;
 	}
 
-	public void setShops(Set<OrderShop> shops) {
+	public void setShops(Set<OrderShopDTO> shops) {
 		this.shops = shops;
 	}
 
