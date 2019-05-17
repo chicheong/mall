@@ -31,16 +31,16 @@
 				</button>
 			</div>
 		</div>
-		<div class="row" class="d-none d-sm-flex">
+		<div class="row d-none d-sm-flex">
 			<div class="col-sm-6 text-center">Item</div>
 			<div class="col-sm-1">Unit Price</div>
 			<div class="col-sm-1 text-center">Quantity</div>
 			<div class="col-sm-1 text-right">Subtotal&nbsp;&nbsp;&nbsp;</div>
-			<div class="col-sm-1 text-center">Action</div>
+			<div class="col-sm-2 text-center">Action</div>		
 		</div>
 		<hr>
 		<div *ngFor="let shop of myOrder.shops" class="row">
-			<div class="col-sm-9">
+			<div class="col-sm-12 border">
 				<div class="form-check">
 					<input class="form-check-input" type="checkbox" value="" id="defaultCheck1">
 					<label class="form-check-label" for="defaultCheck1">
@@ -50,13 +50,14 @@
 				{{shop.name}}
 				Level 1: .col-sm-9
 				<div *ngFor="let item of shop.items" class="row">
+					<div class="col-1 col-sm-1">&nbsp;</div>
 					<div class="form-check col-2 col-sm-1">
 						<input class="form-check-input" type="checkbox" value="" id="defaultCheck2">
 						<label class="form-check-label" for="defaultCheck2">
 							S
 						</label>
 					</div>		
-					<div class="col-10 col-sm-5">
+					<div class="col-9 col-sm-4">
 						<span class="hipster img-fluid img-rounded">{{item.productItem.product.name}}{{item.productItem.color.name
 							+ ' ' + item.productItem.size.name}}</span>
 					</div>
