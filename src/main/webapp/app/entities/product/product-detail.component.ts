@@ -15,6 +15,7 @@ import { ProductStyle, ProductStyleType, ProductStylePopupService, ProductStyleD
 
 import { ProductItemsPopupService } from './product-items-popup.service';
 import { ProductItemsDialogComponent, ProductItemsDialogType } from './product-items-dialog.component';
+import { ProductDetailOtherDialogComponent } from './product-detail-other-dialog.component';
 
 import { MyOrderService, MyOrder } from './../my-order';
 import { Url, UrlPopupService, UrlDeleteDialogComponent } from './../url';
@@ -106,6 +107,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.registerAuthenticationSuccess();
         this.registerChangeInFiles();
         this.registerDeleteUrl();
+        this.registerChangeInDetailOther();
     }
 
     initObjects() {
@@ -219,6 +221,13 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.eventSubscriber = this.eventManager.subscribe(
             'deleteUrlModification',
             (response) => this.deleteUrl(response.obj)
+        );
+    }
+
+    registerChangeInDetailOther() {
+        this.eventSubscriber = this.eventManager.subscribe(
+            'productDetailOtherModification',
+            (response) => this.updateDetailOther(response.obj)
         );
     }
 
@@ -377,6 +386,14 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.resetSelectedUrl();
     }
 
+    updateDetailOther(product: Product) {
+        this.product.name = product.name;
+        this.product.code = product.code;
+        this.product.brand = product.brand;
+        this.product.remark = product.remark;
+        this.product.status = product.status;
+    }
+
     save() {
         this.isSaving = true;
         if (this.isSorted) {
@@ -461,6 +478,11 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     editItems(type: ProductItemsDialogType) {
         const copyObj: Product = Object.assign(new Product(), this.product);
         this.productItemsPopupService.open(ProductItemsDialogComponent as Component, copyObj, type);
+    }
+
+    editOther() {
+        const copyObj: Product = Object.assign(new Product(), this.product);
+        this.productItemsPopupService.open(ProductDetailOtherDialogComponent as Component, copyObj, null);
     }
 
     changeStyle(productStyle: ProductStyle) {

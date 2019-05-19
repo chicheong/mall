@@ -11,5 +11,6 @@ export * from './product.component';
 export * from './product-items-dialog.component';
 export * from './prices-dialog.component';
 export * from './quantities-dialog.component';
+export * from './product-detail-other-dialog.component';
 export * from './product.route';
 export * from './get-item-from-color-size.pipe';

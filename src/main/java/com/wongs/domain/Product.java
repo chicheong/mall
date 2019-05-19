@@ -32,7 +32,7 @@ public class Product implements Serializable {
     private Long id;
 
     @NotNull
-    @Column(name = "name", nullable = false)
+    @Column(name = "name") //, nullable = false
     private String name;
 
     @Column(name = "code")

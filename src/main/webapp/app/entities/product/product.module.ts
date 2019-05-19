@@ -18,6 +18,7 @@ import {
     ProductItemsDialogComponent,
     PricesDialogComponent,
     QuantitiesDialogComponent,
+    ProductDetailOtherDialogComponent,
     productRoute,
     productPopupRoute,
     ProductResolvePagingParams,
@@ -46,6 +47,7 @@ const ENTITY_STATES = [
         PricesDialogComponent,
         QuantitiesDialogComponent,
         GetItemFromColorSizePipe,
+        ProductDetailOtherDialogComponent,
     ],
     entryComponents: [
         ProductComponent,
@@ -56,6 +58,7 @@ const ENTITY_STATES = [
         ProductItemsDialogComponent,
         PricesDialogComponent,
         QuantitiesDialogComponent,
+        ProductDetailOtherDialogComponent,
     ],
     providers: [
         ProductService,

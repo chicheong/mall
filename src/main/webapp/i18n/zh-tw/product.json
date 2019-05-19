@@ -15,7 +15,10 @@
                 "question": "您確定要刪除 Product {{ id }} 嗎?"
             },
             "detail": {
-                "title": "Product"
+                "title": "Product",
+                "other": {
+                	"title": "其他資料"
+                }
             },
             "name": "Name",
             "code": "Code",

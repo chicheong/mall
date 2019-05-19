@@ -62,7 +62,7 @@
 			  	</span>
 			</div>    
 		</div>
-		<div class="col-md-5">
+		<div class="col-md-6">
 			<div>
 				<button type="button" [disabled]="isSaving" class="btn btn-info" (click)="previousState()">
 			        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
@@ -77,23 +77,30 @@
 		            <span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
 		        </button>
 			</div>
-			<div>product description</div>
 			<div>
 			  	<div class="row-md jh-entity-details">
-			    	<div>
-			            <span *ngSwitchCase="false">{{product.description}}</span>
-			            <span *ngSwitchCase="true"><textarea class="form-control" name="description" id="field_description" [(ngModel)]="product.description" rows="5" cols="50"></textarea></span>
+			    	<div *ngSwitchCase="false">
+			            <span >{{product.name}}</span>
+			        </div>			  	
+			    	<div *ngSwitchCase="true">
+			            <span >Product Name</span>
+			            <span ><textarea class="form-control" name="name" id="field_name" [(ngModel)]="product.name" rows="5" cols="50"></textarea></span>
 			        </div>
-			    	<div>
+			    	<!-- <div>
 			            <span *ngIf="product.brand || isEditing==true">by </span><span *ngSwitchCase="false">{{product.brand}}</span>
 			            <span *ngSwitchCase="true"><input type="text" class="form-control" name="brand" id="field_brand" [(ngModel)]="product.brand"  /></span>
-			        </div>
+			        </div> -->
 			    	<div>
 			            <span>123 customer reviews</span>
 			        </div>
-		            <div>
-			  			&nbsp;
-			  		</div>
+			        <div class="border" *ngIf="selectedItem.id">
+						<div >
+				  			Price: <span>{{selectedItem?selectedItem.currency : 'Fuck you'}} {{selectedItem?selectedItem.price : 'asshole'}}</span>
+				  		</div>
+				  		<div>
+				  			You Save: $5.90 (28%)
+				  		</div>
+			        </div>
 			  		<div *ngSwitchCase="true">
 			  			<div *ngIf="product.colors">
 			  				<div>Color</div>
@@ -144,21 +151,19 @@
 					        </button>			        
 						</div>
 			  		</div>
-	
-		            <div>
-			  			&nbsp;
-			  		</div>
-			  		<div *ngIf="selectedItem.id">
-			  			Price:	<span>{{selectedItem?selectedItem.currency : 'Fuck you'}} {{selectedItem?selectedItem.price : 'asshole'}}</span>
-			  		</div>
-			  		<div>
-			  			You Save: $5.90 (28%)
-			  		</div>	  		  
 					<div *ngSwitchCase="false">
 					    <button type="button" [disabled]="isSaving || !(selectedItem && selectedItem.price)" class="btn btn-default" (click)="addToCart()">
 				            <span>Add to Cart</span>
 				        </button>
 					</div>
+					<div>&nbsp;</div>
+					<div>
+			            <span *ngSwitchCase="false">{{product.description}}</span>
+			            <span *ngSwitchCase="true"><textarea class="form-control" name="description" id="field_description" [(ngModel)]="product.description" rows="5" cols="50"></textarea></span>
+			        </div>
+					<button *ngSwitchCase="true" [disabled]="isSaving" type="button" class="btn btn-default" (click)="editOther()">
+			            <span>Other Information</span>
+			        </button>
 					
 					<div *ngIf="false">
 				  		In stock/Pre-order/Out-of-order
@@ -181,90 +186,10 @@
 			  	</div>
 			</div>
 		</div>
-		<div class="col-md-3">
+		<div class="col-md-2">
 			<div>other</div>
 			<div>other</div>
 		</div>
     </div>
-	<div class="row">
-		<div class="col-md-1"></div>
-		<div class="col-md-11">
-
-			<hr style='border-color: #5E5E5E;border-style: solid none;border-width: 2px 0;' />
-			<span>Stuffs below are for reference only, will not be shown on your product page</span><br/>
-			<span jhiTranslate="mallApp.product.detail.title">Product</span>&nbsp;&nbsp;&nbsp;&nbsp;
-			ID: {{product.id}}&nbsp;&nbsp;&nbsp;&nbsp;
-			<span jhiTranslate="mallApp.product.description">Description</span>: <span>{{product.description}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-			<span jhiTranslate="mallApp.product.content">Content</span>: <span>{{product.content}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-			<span jhiTranslate="mallApp.product.status">Status</span>: <span jhiTranslate="{{'mallApp.ProductStatus.' + product.status}}">{{product.status}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-			<!-- <span jhiTranslate="mallApp.product.userInfo">User Info</span>: 
-			<div *ngIf="product.userInfo">
-				<a [routerLink]="['/user-info', product.userInfo?.id]">{{product.userInfo?.id}}</a>
-			</div> -->
-
-
-			<dl *ngSwitchCase="true" class="row-md jh-entity-details">
-		        <dt><span jhiTranslate="mallApp.product.name">Name</span></dt>
-		        <dd>
-		            <input type="text" class="form-control" name="name" id="field_brand" [(ngModel)]="product.name"  />
-		        </dd>
-		        <dt><span jhiTranslate="mallApp.product.code">Code</span></dt>
-		        <dd>
-		            <input type="text" class="form-control" name="code" id="field_brand" [(ngModel)]="product.code"  />
-		        </dd>
-		        <dt><span jhiTranslate="mallApp.product.brand">Brand</span></dt>
-		        <dd>
-		            <span>{{product.brand}}</span>
-		        </dd>
-		        <dt><span jhiTranslate="mallApp.product.remark">Remark</span></dt>
-		        <dd>
-		            <input type="text" class="form-control" name="remark" id="field_brand" [(ngModel)]="product.remark"  />
-		        </dd>
-		        <dt><span jhiTranslate="mallApp.product.status">Status</span></dt>
-		        <dd>
-		            <select class="form-control" name="status" [(ngModel)]="product.status" id="field_status" >
-		                <option value="ACTIVE" jhiTranslate="mallApp.ProductStatus.ACTIVE">ACTIVE</option>
-		                <option value="RESTRICTED" jhiTranslate="mallApp.ProductStatus.RESTRICTED">RESTRICTED</option>
-		                <option value="INACTIVE" jhiTranslate="mallApp.ProductStatus.INACTIVE">INACTIVE</option>
-		            </select>
-		        </dd>
-				<!-- <dt><span jhiTranslate="mallApp.product.createdBy">Created By</span></dt>
-		        <dd>
-		        	<input type="text" class="form-control" name="createdBy" id="field_createdBy" [(ngModel)]="product.createdBy" />
-		        </dd>
-		        <dt><span jhiTranslate="mallApp.product.createdDate">Created Date</span></dt>
-		        <dd>
-                	<input id="field_createdDate" type="datetime-local" class="form-control" name="createdDate" [(ngModel)]="product.createdDate" />
-		        </dd>
-		        <dt><span jhiTranslate="mallApp.product.lastModifiedBy">Last Modified By</span></dt>
-		        <dd>
-		        	<input type="text" class="form-control" name="lastModifiedBy" id="field_lastModifiedBy" [(ngModel)]="product.lastModifiedBy" />
-		        </dd>
-		        <dt><span jhiTranslate="mallApp.product.lastModifiedDate">Last Modified Date</span></dt>
-		        <dd>
-		            <input id="field_lastModifiedDate" type="datetime-local" class="form-control" name="lastModifiedDate" [(ngModel)]="product.lastModifiedDate" />
-		        </dd>
-		        <dt><span jhiTranslate="mallApp.product.userInfo">User Info</span></dt>
-		        <dd>
-		            <div *ngIf="product.userInfo">
-		                <a [routerLink]="['/user-info', product.userInfo?.id]">{{product.userInfo?.id}}</a>
-		            </div>
-		        </dd>-->
-		        <dt><span jhiTranslate="mallApp.product.shop">Shop</span></dt>
-		        <dd>
-		            <div *ngIf="product.shopId">
-		                <a [routerLink]="['/shop', product.shopId]">{{product.shopId}}</a>
-		            </div>
-		        </dd>
-		    </dl>
-		    <hr style='border-color: #5E5E5E;border-style: solid none;border-width: 2px 0;' />
-		    <dl *ngSwitchCase="true" class="row-md jh-entity-details">
-		        <dd><span jhiTranslate="mallApp.product.createdBy">Created By</span>:&nbsp;<span>{{product.createdBy}}</span></dd>
-		        <dd><span jhiTranslate="mallApp.product.createdDate">Created Date</span>:&nbsp;<span>{{product.createdDate | date:'medium'}}</span></dd>
-		        <dd><span jhiTranslate="mallApp.product.lastModifiedBy">Last Modified By</span>:&nbsp;<span>{{product.lastModifiedBy}}</span></dd>
-		        <dd><span jhiTranslate="mallApp.product.lastModifiedDate">Last Modified Date</span>:&nbsp;<span>{{product.lastModifiedDate | date:'medium'}}</span></dd>
-		    </dl>
-		</div>
-	</div>
 	</form>
 </div>
