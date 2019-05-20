@@ -7,6 +7,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService, JhiAlert } from 'ng-jhipster';
 
 import { Url } from '../../entities/url';
+import { FileUploadResult } from './file-upload-result.model';
 
 @Component({
     selector: 'jhi-file-upload',
@@ -15,10 +16,6 @@ import { Url } from '../../entities/url';
         'file-upload.scss'
     ]
 })
-export class FileUploadResult {
-    errors: Array<JhiAlert> = [];
-    urls: Url[];
-}
 export class FileUploadComponent implements OnInit {
     errors: Array<JhiAlert> = [];
     dragAreaClass = 'dragarea';
@@ -26,16 +23,15 @@ export class FileUploadComponent implements OnInit {
     @Input() maxFiles = 20;
     @Input() maxSize = 5; // 5MB
     @Input() broadcastName = 'filesModification';
-    @Input() url: Url;
+    @Input() url;
     @Output() result = new EventEmitter();
 
-
-
     constructor(
-    ) {
-    }
+    ) { }
 
     ngOnInit() {
+        // console.error(`fileExt: ${this.fileExt}, maxFiles: ${this.maxFiles}, maxSize: ${this.maxSize}, broadcastName: ${this.broadcastName}`);
+        // console.error(`this.url: ${this.url.entityType}, ${this.url.entityId}, ${this.url.sequence}`);
         if (!this.url) {
             this.url = new Url();
         }
@@ -69,13 +65,10 @@ export class FileUploadComponent implements OnInit {
         if (this.isValidFiles(files)) {
             this.processFile(files);
         } else {
-//            this.errors.forEach((error) => {
-//                this.jhiAlertService.error(error.msg, error.params, null);
-//            });
             const result: FileUploadResult = Object.assign(new FileUploadResult());
             result.errors = this.errors;
             result.urls = null;
-            this.result.emit(result)
+            this.result.emit(result);
         }
     }
 
@@ -84,9 +77,6 @@ export class FileUploadComponent implements OnInit {
         if (this.isValidFiles(files)) {
             this.processFile(files);
         } else {
-//            this.errors.forEach((error) => {
-//                this.jhiAlertService.error(error.msg, error.params, null);
-//            });
             const result: FileUploadResult = Object.assign(new FileUploadResult());
             result.errors = this.errors;
             result.urls = null;
@@ -111,8 +101,6 @@ export class FileUploadComponent implements OnInit {
                 urls.push(url);
                 counter++;
                 if (counter === files.length) {
-//                    this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: urls});
-//                    this.activeModal.dismiss('OK');
                     const result: FileUploadResult = Object.assign(new FileUploadResult());
                     result.errors = this.errors;
                     result.urls = urls;

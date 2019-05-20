@@ -58,7 +58,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         private productService: ProductService,
         private productStylePopupService: ProductStylePopupService,
         private productItemsPopupService: ProductItemsPopupService,
-        private uploadMediaModelService: FileUploadModelService,
+        private fileUploadModelService: FileUploadModelService,
         private urlPopupService: UrlPopupService,
         private route: ActivatedRoute,
         private jhiAlertService: JhiAlertService,
@@ -590,7 +590,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         url.entityType = Product.name;
         url.entityId = this.product.id;
         url.sequence = this.product.urls ? (this.product.urls.length + 1) : 1;
-        this.modalRef = this.uploadMediaModelService.open(url);
+        this.modalRef = this.fileUploadModelService.open(url);
     }
 
     deleteMedia(url: Url) {

@@ -17,6 +17,7 @@ import {
     HasAnyAuthorityDirective,
     FileUploadModelService,
     FileUploadDialogComponent,
+    FileUploadComponent,
     PermissionService,
     UuidService
 } from './';
@@ -30,6 +31,7 @@ import {
     declarations: [
         JhiLoginModalComponent,
         FileUploadDialogComponent,
+        FileUploadComponent,
         HasAnyAuthorityDirective
     ],
     providers: [
@@ -48,13 +50,15 @@ import {
     ],
     entryComponents: [
         JhiLoginModalComponent,
-        FileUploadDialogComponent
+        FileUploadDialogComponent,
+        FileUploadComponent
     ],
     exports: [
         MallSharedCommonModule,
         DraggableModule,
         JhiLoginModalComponent,
         FileUploadDialogComponent,
+        FileUploadComponent,
         HasAnyAuthorityDirective,
         DatePipe
     ],

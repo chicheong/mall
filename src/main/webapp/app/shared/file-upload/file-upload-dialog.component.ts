@@ -7,7 +7,7 @@ import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService, JhiAlert } from 'ng-jhipster';
 
 import { Url } from '../../entities/url';
-import { FileUploadResult } from './file-upload.component';
+import { FileUploadResult } from './file-upload-result.model';
 
 @Component({
     selector: 'jhi-file-upload-dialog',
@@ -35,6 +35,8 @@ export class FileUploadDialogComponent implements OnInit {
     }
 
     ngOnInit() {
+        // console.error(`fileExt: ${this.fileExt}, maxFiles: ${this.maxFiles}, maxSize: ${this.maxSize}, broadcastName: ${this.broadcastName}`);
+        // console.error(`Dialog this.url: ${this.url.entityType}, ${this.url.entityId}, ${this.url.sequence}`);
         if (!this.url) {
             this.url = new Url();
         }
@@ -49,7 +51,7 @@ export class FileUploadDialogComponent implements OnInit {
     }
 
     getResult(result: FileUploadResult) {
-        if (!(result.errors)) {
+        if (result.errors === undefined || result.errors.length === 0) {
           this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: result.urls});
           this.activeModal.dismiss('OK');
         } else {

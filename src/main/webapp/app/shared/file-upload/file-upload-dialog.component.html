@@ -7,14 +7,14 @@
     <div class="modal-body">
         <jhi-alert></jhi-alert>
 		
-		<app-file-upload 
-			url="url"
-			maxFiles="maxFiles"
-			maxSize="maxSize"
-			fileExt="fileExt"
-			broadcastName="broadcastName"
+		<jhi-file-upload
+			[url]="url"
+			[maxFiles]="maxFiles"
+			[maxSize]="maxSize"
+			[fileExt]="fileExt"
+			[broadcastName]="broadcastName"
 			(result)="getResult($event)" >
-	    </app-file-upload>
+	    </jhi-file-upload>
 		
 		<br /><br />
     </div>
