@@ -7,21 +7,14 @@
     <div class="modal-body">
         <jhi-alert></jhi-alert>
 		
-		<div draggable="true" ngClass="{{dragAreaClass}}">
-			<div class="row">
-				<div class="col-md-12 text-center" >
-					<a href="javascript:void(0)" (click)="file.click()" >
-						Click to browse 
-					</a>
-					Or Drag & Drop to upload your files
-			        <input type="file" 
-			              #file 
-			              [multiple]="(maxFiles > 1)"
-			              (change) = "onFileChange($event)"
-			              style="display:none" />
-				</div>
-			</div>
-		</div>
+		<app-file-upload 
+			url="url"
+			maxFiles="maxFiles"
+			maxSize="maxSize"
+			fileExt="fileExt"
+			broadcastName="broadcastName"
+			(result)="getResult($event)" >
+	    </app-file-upload>
 		
 		<br /><br />
     </div>
