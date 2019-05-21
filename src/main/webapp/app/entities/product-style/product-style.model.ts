@@ -1,4 +1,5 @@
 import { BaseEntity } from './../../shared';
+import { Url } from './../url';
 
 export const enum ProductStyleType {
     COLOR = 'COLOR',
@@ -14,6 +15,8 @@ export class ProductStyle implements BaseEntity {
         public isDefault?: boolean,
         public type?: ProductStyleType,
         public product?: BaseEntity,
+        public url?: Url,
+        public dirtyUrl?: boolean,
         public disabled?: boolean,
     ) {
         this.isDefault = false;

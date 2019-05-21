@@ -43,7 +43,7 @@ public class ProductStyleMapper {
         	productStyle.setId(productStyleDTO.getId());
         	productStyle.setName(productStyleDTO.getName());
         	productStyle.setCode(productStyleDTO.getCode());
-        	productStyle.setIsDefault(productStyleDTO.isIsDefault());
+        	productStyle.setIsDefault(productStyleDTO.getIsDefault());
         	productStyle.setType(productStyleDTO.getType());
     		productStyle.setProduct(productStyleDTO.getProduct());
             return productStyle;

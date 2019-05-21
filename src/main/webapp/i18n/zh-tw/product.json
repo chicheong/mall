@@ -20,6 +20,11 @@
                 	"title": "其他資料"
                 }
             },
+            "items": {
+            	"url": {
+            		"title": "上載產品相片"
+            	}
+            },			
             "name": "Name",
             "code": "Code",
             "brand": "Brand",

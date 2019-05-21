@@ -20,6 +20,11 @@
                 	"title": "Other Information"
                 }
             },
+            "items": {
+            	"url": {
+            		"title": "Upload Item Photo"
+            	}
+            },
             "name": "Name",
             "code": "Code",
             "brand": "Brand",

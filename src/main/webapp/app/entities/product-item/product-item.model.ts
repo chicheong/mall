@@ -2,6 +2,7 @@ import { BaseEntity } from './../../shared';
 import { ProductStyle } from './../product-style';
 import { Price, CurrencyType } from './../price';
 import { Quantity } from './../quantity';
+import { Url } from './../url';
 
 export class ProductItem implements BaseEntity {
     constructor(
@@ -17,8 +18,10 @@ export class ProductItem implements BaseEntity {
         public prices?: Price[],
         public quantities?: Quantity[],
         public product?: BaseEntity,
+        public url?: Url,
         public dirtyPrices?: boolean,
         public dirtyQuantities?: boolean,
+        public dirtyUrl?: boolean,
     ) {
         this.isDefault = false;
     }

@@ -17,8 +17,6 @@ import { FileUploadResult } from './file-upload-result.model';
     ]
 })
 export class FileUploadDialogComponent implements OnInit {
-    errors: Array<JhiAlert> = [];
-    dragAreaClass = 'dragarea';
     fileExt = 'JPG, GIF, PNG';
     maxFiles = 20;
     maxSize = 5; // 5MB

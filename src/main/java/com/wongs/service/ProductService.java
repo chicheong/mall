@@ -206,6 +206,22 @@ public class ProductService {
         	ProductItem nProductItem = productItemRepository.save(productItem);
         	productItemSearchRepository.save(productItem);
         	productItemIds.add(nProductItem.getId());
+        	if (productItemDTO.isDirtyUrl()) {
+        		UrlDTO urlDTO = productItemDTO.getUrl();
+            	try {
+    	        	urlDTO.setEntityId(nProductItem.getId());
+    	        	urlDTO.setPath(FileUtil.saveAndGetFilePath(FILETYPE.IMAGE, urlDTO.getFileName(), urlDTO.getPath()));
+    	        	if (urlDTO.getId() == null) {
+    		        	urlDTO.setCreatedBy(product.getCreatedBy());
+    		        	urlDTO.setCreatedDate(product.getCreatedDate());
+    	        	}
+    	        	urlDTO.setLastModifiedBy(product.getLastModifiedBy());
+    	        	urlDTO.setLastModifiedDate(product.getLastModifiedDate());
+    	        	urlDTO = urlService.save(urlDTO);
+    			} catch (IOException e) {
+    				log.error(e.toString());
+    			}
+        	}
         	if (productItemDTO.isDirtyPrices()) {
         		List<Long> priceIds = new ArrayList<Long>();
 	        	productItemDTO.getPrices().forEach(priceDTO -> {
@@ -259,8 +275,8 @@ public class ProductService {
         	}
         }
         //delete items not in update list
-        oProductItems.stream().filter(item -> !productItemIds.contains(item.getId())).forEach(item -> productItemRepository.delete(item));
-        oProductStyles.stream().filter(style -> !productStyleIds.contains(style.getId())).forEach(style -> productStyleRepository.delete(style));
+        oProductItems.stream().filter(item -> !productItemIds.contains(item.getId())).forEach(item -> productItemRepository.delete(item)); //Cascade delete prices and quantities?
+        oProductStyles.stream().filter(style -> !productStyleIds.contains(style.getId())).forEach(style -> productStyleRepository.delete(style)); //Cascade delete item, prices and quantities?
         oUrls.stream().filter(url -> !urlIds.contains(url.getId())).forEach(url -> urlService.delete(url.getId()));
 //        return productMapper.toDto(product);
 //        return this.findOneWithLists(product.getId());

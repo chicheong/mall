@@ -26,6 +26,9 @@ public class ProductStyleDTO implements Serializable {
     private ProductStyleType type;
 
     private Product product;
+    
+    private UrlDTO url;
+    private boolean dirtyUrl = false;
 
     public ProductStyleDTO() {
         // Empty constructor needed for Jackson.
@@ -72,15 +75,15 @@ public class ProductStyleDTO implements Serializable {
         this.code = code;
     }
 
-    public Boolean isIsDefault() {
-        return isDefault;
-    }
+    public Boolean getIsDefault() {
+		return isDefault;
+	}
 
-    public void setIsDefault(Boolean isDefault) {
-        this.isDefault = isDefault;
-    }
+	public void setIsDefault(Boolean isDefault) {
+		this.isDefault = isDefault;
+	}
 
-    public ProductStyleType getType() {
+	public ProductStyleType getType() {
         return type;
     }
 
@@ -94,6 +97,22 @@ public class ProductStyleDTO implements Serializable {
 
 	public void setProduct(Product product) {
 		this.product = product;
+	}
+
+	public UrlDTO getUrl() {
+		return url;
+	}
+
+	public void setUrl(UrlDTO url) {
+		this.url = url;
+	}
+
+	public boolean isDirtyUrl() {
+		return dirtyUrl;
+	}
+
+	public void setDirtyUrl(boolean dirtyUrl) {
+		this.dirtyUrl = dirtyUrl;
 	}
 
 	@Override
@@ -112,7 +131,7 @@ public class ProductStyleDTO implements Serializable {
         return Objects.equals(getId(), productStyleDTO.getId()) &&
         		Objects.equals(getName(), productStyleDTO.getName()) &&
         		Objects.equals(getCode(), productStyleDTO.getCode()) &&
-        		Objects.equals(isIsDefault(), productStyleDTO.isIsDefault());
+        		Objects.equals(getIsDefault(), productStyleDTO.getIsDefault());
     }
 
     @Override
@@ -126,7 +145,7 @@ public class ProductStyleDTO implements Serializable {
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", code='" + getCode() + "'" +
-            ", isDefault='" + isIsDefault() + "'" +
+            ", isDefault='" + getIsDefault() + "'" +
             ", type='" + getType() + "'" +
             "}";
     }

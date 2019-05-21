@@ -16,6 +16,7 @@ import { ProductStyle, ProductStyleType, ProductStylePopupService, ProductStyleD
 import { ProductItemsPopupService } from './product-items-popup.service';
 import { ProductItemsDialogComponent, ProductItemsDialogType } from './product-items-dialog.component';
 import { ProductDetailOtherDialogComponent } from './product-detail-other-dialog.component';
+import { ProductItemsUrlDialogComponent } from './product-items-url-dialog.component';
 
 import { MyOrderService, MyOrder } from './../my-order';
 import { Url, UrlPopupService, UrlDeleteDialogComponent } from './../url';
@@ -478,6 +479,11 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
     editItems(type: ProductItemsDialogType) {
         const copyObj: Product = Object.assign(new Product(), this.product);
         this.productItemsPopupService.open(ProductItemsDialogComponent as Component, copyObj, type);
+    }
+
+    editItemsUrl() {
+        const copyObj: Product = Object.assign(new Product(), this.product);
+        this.productItemsPopupService.open(ProductItemsUrlDialogComponent as Component, copyObj, null);
     }
 
     editOther() {

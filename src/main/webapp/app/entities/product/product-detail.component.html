@@ -11,7 +11,8 @@
 					<img [src]="url.path"
 						class="img-thumbnail"
 						(click)="selectUrl(url)"
-		          		alt="">
+		          		alt=""
+		          		style="width: 100px">
 		          	<button type="button" [disabled]="isSaving" class="fa fa-remove close" (click)="deleteMedia(url)">
 					</button>
 					<div class="box movable" jhiSortable>
@@ -143,6 +144,11 @@
 				        	<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editItems('CODE')">
 					            <span>CODE</span>
 					        </button>
+					        <button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editItemsUrl()">
+					            <span>PHOTO</span>
+					        </button>		        
+						</div>
+			  			<div *ngIf="product.items">
 					        <button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editItems('PRICE')">
 					            <span>PRICE</span>
 					        </button>

@@ -42,7 +42,7 @@ public class ProductItemMapper {
         	ProductItem productItem = new ProductItem();
         	productItem.setId(productItemDTO.getId());
         	productItem.setCode(productItemDTO.getCode());
-        	productItem.setIsDefault(productItemDTO.isIsDefault());
+        	productItem.setIsDefault(productItemDTO.getIsDefault());
         	productItem.setQuantity(productItemDTO.getQuantity());
         	productItem.setCurrency(productItemDTO.getCurrency());
         	productItem.setPrice(productItemDTO.getPrice());

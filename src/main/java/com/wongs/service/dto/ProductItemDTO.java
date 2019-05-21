@@ -42,8 +42,11 @@ public class ProductItemDTO implements Serializable {
     private Set<PriceDTO> prices = new HashSet<>();
     private Set<QuantityDTO> quantities = new HashSet<>();
     
+    private UrlDTO url;
+    
     private boolean dirtyPrices = false;
     private boolean dirtyQuantities = false;
+    private boolean dirtyUrl = false;
     
     public ProductItemDTO() {
         // Empty constructor needed for Jackson.
@@ -89,15 +92,15 @@ public class ProductItemDTO implements Serializable {
         this.code = code;
     }
 
-    public Boolean isIsDefault() {
-        return isDefault;
-    }
+    public Boolean getIsDefault() {
+		return isDefault;
+	}
 
-    public void setIsDefault(Boolean isDefault) {
-        this.isDefault = isDefault;
-    }
+	public void setIsDefault(Boolean isDefault) {
+		this.isDefault = isDefault;
+	}
 
-    public Integer getQuantity() {
+	public Integer getQuantity() {
         return quantity;
     }
 
@@ -161,6 +164,14 @@ public class ProductItemDTO implements Serializable {
 		this.quantities = quantities;
 	}
 
+	public UrlDTO getUrl() {
+		return url;
+	}
+
+	public void setUrl(UrlDTO url) {
+		this.url = url;
+	}
+
 	public boolean isDirtyPrices() {
 		return dirtyPrices;
 	}
@@ -175,6 +186,14 @@ public class ProductItemDTO implements Serializable {
 
 	public void setDirtyQuantities(boolean dirtyQuantities) {
 		this.dirtyQuantities = dirtyQuantities;
+	}
+
+	public boolean isDirtyUrl() {
+		return dirtyUrl;
+	}
+
+	public void setDirtyUrl(boolean dirtyUrl) {
+		this.dirtyUrl = dirtyUrl;
 	}
 
 	@Override
@@ -203,7 +222,7 @@ public class ProductItemDTO implements Serializable {
         return "ProductItemDTO{" +
             "id=" + getId() +
             ", code='" + getCode() + "'" +
-            ", isDefault='" + isIsDefault() + "'" +
+            ", isDefault='" + getIsDefault() + "'" +
             ", quantity=" + getQuantity() +
             ", currency='" + getCurrency() + "'" +
             ", price=" + getPrice() +
