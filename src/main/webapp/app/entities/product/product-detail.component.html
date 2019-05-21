@@ -127,12 +127,12 @@
 						</div>
 			  		</div>
 			  		<div *ngSwitchCase="false">
-			  			<div *ngIf="product.colors">
+			  			<div *ngIf="product.colors" class="m-1">
 				        	<span *ngFor="let color of product.colors">
 				        		<button type="button" [disabled]="color.disabled" (click)="changeStyle(color)" [ngClass]="(this.selectedColor == color) ? 'btn-success' : 'btn-light'" class="btn btn-sm">{{color.name}}</button>
 				        	</span>
 						</div>
-						<div *ngIf="product.sizes">
+						<div *ngIf="product.sizes" class="m-1">
 				        	<span *ngFor="let size of product.sizes">
 								<button type="button" [disabled]="size.disabled" (click)="changeStyle(size)" [ngClass]="(this.selectedSize == size) ? 'btn-success' : 'btn-light'" class="btn btn-sm">{{size.name}}</button>
 				        	</span>
@@ -140,7 +140,7 @@
 			  		</div>
 			  		<div *ngSwitchCase="true">
 			  			<div>Item</div>
-			  			<div *ngIf="product.items">
+			  			<div *ngIf="product.items" class="m-1">
 				        	<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editItems('CODE')">
 					            <span>CODE</span>
 					        </button>
@@ -148,7 +148,7 @@
 					            <span>PHOTO</span>
 					        </button>		        
 						</div>
-			  			<div *ngIf="product.items">
+			  			<div *ngIf="product.items" class="m-1">
 					        <button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editItems('PRICE')">
 					            <span>PRICE</span>
 					        </button>
@@ -167,9 +167,11 @@
 			            <span *ngSwitchCase="false">{{product.description}}</span>
 			            <span *ngSwitchCase="true"><textarea class="form-control" name="description" id="field_description" [(ngModel)]="product.description" rows="5" cols="50"></textarea></span>
 			        </div>
-					<button *ngSwitchCase="true" [disabled]="isSaving" type="button" class="btn btn-default" (click)="editOther()">
-			            <span>Other Information</span>
-			        </button>
+			        <div class="m-1"> 
+						<button *ngSwitchCase="true" [disabled]="isSaving" type="button" class="btn btn-default" (click)="editOther()">
+				            <span>Other Information</span>
+				        </button>
+			        </div>
 					
 					<div *ngIf="false">
 				  		In stock/Pre-order/Out-of-order

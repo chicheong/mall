@@ -79,6 +79,20 @@ public class UrlService {
     }
     
     /**
+     * Get one url by entityType and entityId.
+     *
+     * @param entityType
+     * @param entityId
+     * @return an entity
+     */
+    @Transactional(readOnly = true)
+    public Url findOneByEntityTypeAndEntityId(String entityType, Long entityId) {
+        log.debug("Request to get Url by entityType : {}, and entityId : {}", entityType, entityId);
+        Set<Url> urls = this.findByEntityTypeAndEntityId(entityType, entityId);
+        return urls.stream().findFirst().orElse(null);
+    }
+    
+    /**
      * Get one url by id.
      *
      * @param id the id of the entity

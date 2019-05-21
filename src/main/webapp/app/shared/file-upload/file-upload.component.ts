@@ -22,7 +22,6 @@ export class FileUploadComponent implements OnInit {
     @Input() fileExt = 'JPG, GIF, PNG';
     @Input() maxFiles = 20;
     @Input() maxSize = 5; // 5MB
-    @Input() broadcastName = 'filesModification';
     @Input() url;
     @Output() result = new EventEmitter();
 

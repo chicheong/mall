@@ -331,6 +331,7 @@ public class ProductService {
 	        	ProductItemDTO productItemDTO = productItemMapper.toDto(item);
 	        	productItemDTO.setColor(productStyleMapper.toDto(item.getColor()));
 	        	productItemDTO.setSize(productStyleMapper.toDto(item.getSize()));
+	        	productItemDTO.setUrl(urlMapper.toDto(urlService.findOneByEntityTypeAndEntityId(ProductItem.class.getSimpleName(), productItemDTO.getId())));
 	        	dto.getItems().add(productItemDTO);
 	        });
 	        Set<Url> urls = urlService.findByEntityTypeAndEntityId(Product.class.getSimpleName(), id);

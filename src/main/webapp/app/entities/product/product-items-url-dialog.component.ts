@@ -14,7 +14,7 @@ import { Product } from './product.model';
 
 import { GetItemFromColorSizePipe } from './get-item-from-color-size.pipe';
 
-import { UuidService } from '../../shared';
+import { FileUploadResult } from '../../shared/file-upload/file-upload-result.model';
 
 @Component({
     selector: 'jhi-product-item-url-dialog',
@@ -31,13 +31,12 @@ export class ProductItemsUrlDialogComponent implements OnInit {
     fileExt = 'JPG, GIF, PNG';
     maxFiles = 1;
     maxSize = 5; // 5MB
-    broadcastName = 'filesModification';
+    broadcastName = 'productItemsUrlModification';
 
     constructor(
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
-        private eventManager: JhiEventManager,
-        private uuidService: UuidService
+        private eventManager: JhiEventManager
     ) {
     }
 
@@ -56,7 +55,17 @@ export class ProductItemsUrlDialogComponent implements OnInit {
 
     confirm() {
         this.product.items = this.productItems;
-        this.eventManager.broadcast({ name: 'productItemsUrlModification', content: 'OK', obj: this.product});
+        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.product});
         this.activeModal.dismiss('OK');
+    }
+
+    getResult(result: FileUploadResult) {
+        if (result.errors === undefined || result.errors.length === 0) {
+            // result.urls[0].entityId
+        } else {
+            result.errors.forEach((error) => {
+                this.jhiAlertService.error(error.msg, error.params, null);
+            });
+        }
     }
 }
