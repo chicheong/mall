@@ -28,6 +28,10 @@ export const enum ProductItemsDialogType {
     SINGLE = 'SINGLE',
     ALL = 'ALL'
 }
+export const enum ProductItemsBroadcastName {
+    PRICES = 'pricesModification',
+    QUANTITIES = 'quantitiesModification'
+}
 
 @Component({
     selector: 'jhi-product-item-dialog',
@@ -41,6 +45,7 @@ export class ProductItemsDialogComponent implements OnInit {
     sizes: ProductStyle[];
     type: ProductItemsDialogType = ProductItemsDialogType.CODE;
     private eventSubscriber: Subscription;
+    broadcastName: string;
 
     constructor(
         public activeModal: NgbActiveModal,
@@ -66,7 +71,7 @@ export class ProductItemsDialogComponent implements OnInit {
 
     registerChangeInPrices() {
         this.eventSubscriber = this.eventManager.subscribe(
-            'pricesModification', (response) => {
+            ProductItemsBroadcastName.PRICES, (response) => {
                 if (response.type === ProductItemsDialogType.SINGLE) {
                     this.updatePrices(response.obj);
                 } else if (response.type === ProductItemsDialogType.ALL) {
@@ -78,7 +83,7 @@ export class ProductItemsDialogComponent implements OnInit {
 
     registerChangeInQuantities() {
         this.eventSubscriber = this.eventManager.subscribe(
-            'quantitiesModification', (response) => {
+            ProductItemsBroadcastName.QUANTITIES, (response) => {
                 if (response.type === ProductItemsDialogType.SINGLE) {
                     this.updateQuantities(response.obj);
                 } else if (response.type === ProductItemsDialogType.ALL) {
@@ -172,7 +177,7 @@ export class ProductItemsDialogComponent implements OnInit {
 
     confirm() {
         this.product.items = this.productItems;
-        this.eventManager.broadcast({ name: 'productItemsModification', content: 'OK', obj: this.product});
+        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.product});
         this.activeModal.dismiss('OK');
     }
 

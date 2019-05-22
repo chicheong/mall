@@ -22,6 +22,7 @@ export class QuantitiesDialogComponent implements OnInit {
     productItem: ProductItem;
     productitems: ProductItem[];
     quantities: Quantity[];
+    broadcastName: string;
 
     constructor(
         public activeModal: NgbActiveModal,
@@ -92,13 +93,13 @@ export class QuantitiesDialogComponent implements OnInit {
 
     confirm() {
         this.productItem.quantities = this.quantities;
-        this.eventManager.broadcast({ name: 'quantitiesModification', content: 'OK', obj: this.productItem, type: ProductItemsDialogType.SINGLE});
+        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.productItem, type: ProductItemsDialogType.SINGLE});
         this.activeModal.dismiss('OK');
     }
 
     addAndCopyToAll() {
         this.productItem.quantities = this.quantities;
-        this.eventManager.broadcast({ name: 'quantitiesModification', content: 'OK', obj: this.productItem, type: ProductItemsDialogType.ALL});
+        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.productItem, type: ProductItemsDialogType.ALL});
         this.activeModal.dismiss('OK');
     }
 }

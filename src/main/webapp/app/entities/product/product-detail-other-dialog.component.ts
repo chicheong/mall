@@ -29,6 +29,7 @@ export class ProductDetailOtherDialogComponent implements OnInit {
 
     product: Product;
     private eventSubscriber: Subscription;
+    broadcastName: string;
 
     constructor(
         public activeModal: NgbActiveModal,
@@ -48,7 +49,7 @@ export class ProductDetailOtherDialogComponent implements OnInit {
     }
 
     confirm() {
-        this.eventManager.broadcast({ name: 'productDetailOtherModification', content: 'OK', obj: this.product});
+        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.product});
         this.activeModal.dismiss('OK');
     }
 }

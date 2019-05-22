@@ -9,7 +9,7 @@ import { ProductItem } from './../product-item/product-item.model';
 import { ProductStyle, ProductStyleType } from './../product-style';
 
 @Injectable()
-export class ProductItemsPopupService {
+export class ProductDetailPopupService {
     private ngbModalRef: NgbModalRef;
 
     constructor(
@@ -20,7 +20,7 @@ export class ProductItemsPopupService {
         this.ngbModalRef = null;
     }
 
-    open(component: Component, product?: Product, type?: ProductItemsDialogType): Promise<NgbModalRef> {
+    open(component: Component, product?: Product, broadcastName?: string, type?: ProductItemsDialogType): Promise<NgbModalRef> {
         return new Promise<NgbModalRef>((resolve, reject) => {
             const isOpen = this.ngbModalRef !== null;
             if (isOpen) {
@@ -28,21 +28,22 @@ export class ProductItemsPopupService {
             }
 
             if (product) {
-                this.ngbModalRef = this.productItemModalRef(component, product, type);
+                this.ngbModalRef = this.productItemModalRef(component, product, broadcastName, type);
                 resolve(this.ngbModalRef);
             } else {
                 // setTimeout used as a workaround for getting ExpressionChangedAfterItHasBeenCheckedError
                 setTimeout(() => {
-                    this.ngbModalRef = this.productItemModalRef(component, null, null);
+                    this.ngbModalRef = this.productItemModalRef(component, null, null, null);
                     resolve(this.ngbModalRef);
                 }, 0);
             }
         });
     }
 
-    productItemModalRef(component: Component, product: Product, type: ProductItemsDialogType): NgbModalRef {
+    productItemModalRef(component: Component, product: Product, broadcastName: string, type: ProductItemsDialogType): NgbModalRef {
         const modalRef = this.modalService.open(component, { size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.product = product;
+        modalRef.componentInstance.broadcastName = broadcastName;
         modalRef.componentInstance.type = type;
         modalRef.result.then((result) => {
             this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true, queryParamsHandling: 'merge' });

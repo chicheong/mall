@@ -11,6 +11,7 @@ import { ProductStyle } from '../product-style';
 import { Price } from '../price';
 import { Quantity } from '../quantity';
 import { Product } from './product.model';
+import { Url } from './../url';
 
 import { GetItemFromColorSizePipe } from './get-item-from-color-size.pipe';
 
@@ -31,7 +32,7 @@ export class ProductItemsUrlDialogComponent implements OnInit {
     fileExt = 'JPG, GIF, PNG';
     maxFiles = 1;
     maxSize = 5; // 5MB
-    broadcastName = 'productItemsUrlModification';
+    broadcastName: string;
 
     constructor(
         public activeModal: NgbActiveModal,
@@ -43,6 +44,13 @@ export class ProductItemsUrlDialogComponent implements OnInit {
     ngOnInit() {
         this.product.items.forEach((item) => {
             const productItem: ProductItem = Object.assign(new ProductItem(), item);
+            if (!(productItem.url)) {
+                const url = new Url();
+                url.entityType = ProductItem.name;
+                url.entityId = productItem.id ? productItem.id : productItem.tempId;
+                url.sequence = 1;
+                productItem.url = url;
+            }
             this.productItems.push(productItem);
         });
         this.colors = this.product.colors;
@@ -61,7 +69,10 @@ export class ProductItemsUrlDialogComponent implements OnInit {
 
     getResult(result: FileUploadResult) {
         if (result.errors === undefined || result.errors.length === 0) {
-            // result.urls[0].entityId
+            const url = result.urls[0];
+            const index = this.productItems.findIndex((item) => item.id ? item.id === url.entityId : item.tempId === url.entityId);
+            this.productItems[index].url = url;
+            this.productItems[index].dirtyUrl = true;
         } else {
             result.errors.forEach((error) => {
                 this.jhiAlertService.error(error.msg, error.params, null);

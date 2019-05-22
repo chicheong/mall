@@ -20,7 +20,7 @@ export class FileUploadDialogComponent implements OnInit {
     fileExt = 'JPG, GIF, PNG';
     maxFiles = 20;
     maxSize = 5; // 5MB
-    broadcastName = 'filesModification';
+    broadcastName: string;
     // @Output() uploadStatus = new EventEmitter();
 
     url: Url;

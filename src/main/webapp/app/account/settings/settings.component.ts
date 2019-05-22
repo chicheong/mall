@@ -10,8 +10,8 @@ import { Url, UrlService } from '../../entities/url';
 import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 export const enum SettingsComponentUploadType {
-    USERIMAGE = 'userImageModification',
-    USERFILE = 'userFileModification',
+    USER_IMAGE = 'userImageModification',
+    USER_FILE = 'userFileModification',
 }
 @Component({
     selector: 'jhi-settings',
@@ -111,14 +111,14 @@ export class SettingsComponent implements OnInit {
 
     registerChangeInUserImage() {
         this.eventSubscriber = this.eventManager.subscribe(
-            SettingsComponentUploadType.USERIMAGE,
+            SettingsComponentUploadType.USER_IMAGE,
             (response) => this.updateUserImage(response.obj)
         );
     }
 
     registerChangeInUserFile() {
         this.eventSubscriber = this.eventManager.subscribe(
-            SettingsComponentUploadType.USERFILE,
+            SettingsComponentUploadType.USER_FILE,
             (response) => this.updateUserFile(response.obj)
         );
     }
@@ -134,7 +134,7 @@ export class SettingsComponent implements OnInit {
     }
 
     uploadUserImage() {
-        this.modalRef = this.uploadMediaModelService.open(null, null, 1, null, SettingsComponentUploadType.USERIMAGE);
+        this.modalRef = this.uploadMediaModelService.open(null, null, 1, null, SettingsComponentUploadType.USER_IMAGE);
     }
 
     uploadFile() {
@@ -142,6 +142,6 @@ export class SettingsComponent implements OnInit {
         url.entityType = 'User';
         url.entityId = 1;
         url.sequence = 1;
-        this.modalRef = this.uploadMediaModelService.open(url, null, null, null, SettingsComponentUploadType.USERFILE);
+        this.modalRef = this.uploadMediaModelService.open(url, null, null, null, SettingsComponentUploadType.USER_FILE);
     }
 }

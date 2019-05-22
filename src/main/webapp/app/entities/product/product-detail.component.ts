@@ -13,7 +13,7 @@ import { LoginModalService, Principal, UuidService, FileUploadModelService, Perm
 import { ProductItem } from './../product-item';
 import { ProductStyle, ProductStyleType, ProductStylePopupService, ProductStyleDialogComponent } from './../product-style';
 
-import { ProductItemsPopupService } from './product-items-popup.service';
+import { ProductDetailPopupService } from './product-detail-popup.service';
 import { ProductItemsDialogComponent, ProductItemsDialogType } from './product-items-dialog.component';
 import { ProductDetailOtherDialogComponent } from './product-detail-other-dialog.component';
 import { ProductItemsUrlDialogComponent } from './product-items-url-dialog.component';
@@ -30,6 +30,15 @@ import { SortEvent } from './../../shared/draggable/sortable-list.directive';
 export const enum ProductDetailComponentType {
     CONFIRM = 'CONFIRM',
     DELETE = 'DELETE',
+}
+export const enum ProductDetailBroadcastName {
+    PRODUCT_LIST = 'productListModification',
+    PRODUCT_TTEM = 'productItemsModification',
+    PRODUCT_STYLE = 'productStyleModification',
+    PRODUCT_FILE = 'productFileModification',
+    DELETE_URL = 'deleteUrlModification',
+    PRODUCT_DETAIL_OTHER = 'productDetailOtherModification',
+    PRODUCT_ITEMS_URL = 'productItemsUrlModification'
 }
 @Component({
     selector: 'jhi-product-detail',
@@ -58,7 +67,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         private eventManager: JhiEventManager,
         private productService: ProductService,
         private productStylePopupService: ProductStylePopupService,
-        private productItemsPopupService: ProductItemsPopupService,
+        private productDetailPopupService: ProductDetailPopupService,
         private fileUploadModelService: FileUploadModelService,
         private urlPopupService: UrlPopupService,
         private route: ActivatedRoute,
@@ -106,9 +115,10 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.registerChangeInProductStyle();
         this.registerChangeInProductItems();
         this.registerAuthenticationSuccess();
-        this.registerChangeInFiles();
+        this.registerChangeInProductUrls();
         this.registerDeleteUrl();
         this.registerChangeInDetailOther();
+        this.registerChangeInItemsUrl();
     }
 
     initObjects() {
@@ -165,7 +175,6 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.productService.find(id)
             .subscribe((productResponse: HttpResponse<Product>) => {
                 this.product = productResponse.body;
-                console.log('this.product.permission: ' + this.product.permission);
                 this.assignPermission(this.product.permission);
                 this.resetSelectedUrl();
             });
@@ -186,21 +195,21 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
     registerChangeInProducts() {
         this.eventSubscriber = this.eventManager.subscribe(
-            'productListModification',
+            ProductDetailBroadcastName.PRODUCT_LIST,
             (response) => this.load(this.product.id)
         );
     }
 
     registerChangeInProductItems() {
         this.eventSubscriber = this.eventManager.subscribe(
-            'productItemsModification',
+            ProductDetailBroadcastName.PRODUCT_TTEM,
             (response) => this.updateItems(response.obj)
         );
     }
 
     registerChangeInProductStyle() {
         this.eventSubscriber = this.eventManager.subscribe(
-            'productStyleModification',
+            ProductDetailBroadcastName.PRODUCT_STYLE,
             (response) => {
                 if (response.type === ProductDetailComponentType.CONFIRM) {
                     this.updateStyle(response.obj);
@@ -211,24 +220,31 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         );
     }
 
-    registerChangeInFiles() {
+    registerChangeInProductUrls() {
         this.eventSubscriber = this.eventManager.subscribe(
-            'filesModification',
-            (response) => this.updateFiles(response.obj)
+            ProductDetailBroadcastName.PRODUCT_FILE,
+            (response) => this.updateProductUrls(response.obj)
         );
     }
 
     registerDeleteUrl() {
         this.eventSubscriber = this.eventManager.subscribe(
-            'deleteUrlModification',
+            ProductDetailBroadcastName.DELETE_URL,
             (response) => this.deleteUrl(response.obj)
         );
     }
 
     registerChangeInDetailOther() {
         this.eventSubscriber = this.eventManager.subscribe(
-            'productDetailOtherModification',
+            ProductDetailBroadcastName.PRODUCT_DETAIL_OTHER,
             (response) => this.updateDetailOther(response.obj)
+        );
+    }
+
+    registerChangeInItemsUrl() {
+        this.eventSubscriber = this.eventManager.subscribe(
+            ProductDetailBroadcastName.PRODUCT_ITEMS_URL,
+            (response) => this.updateItemsUrl(response.obj)
         );
     }
 
@@ -366,7 +382,7 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.product.items = this.product.items.filter((item) => productItems.indexOf(item) === -1);
     }
 
-    updateFiles(urls: Url[]) {
+    updateProductUrls(urls: Url[]) {
         urls.forEach((url) => {
             this.product.urls.push(url);
         });
@@ -393,6 +409,27 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         this.product.brand = product.brand;
         this.product.remark = product.remark;
         this.product.status = product.status;
+    }
+
+    updateItemsUrl(product: Product) {
+        let index: number;
+        product.items.forEach((nProductItem) => {
+            if (nProductItem.dirtyUrl) {
+                this.product.items.forEach((oProductItem) => {
+                    if (oProductItem.id && oProductItem.id === nProductItem.id) {
+                        index = this.product.items.indexOf(oProductItem);
+                        this.product.items[index].url = nProductItem.url;
+                        this.product.items[index].dirtyUrl = true;
+                        return;
+                    } else if (oProductItem.tempId && oProductItem.tempId === nProductItem.tempId) {
+                        index = this.product.items.indexOf(oProductItem);
+                        this.product.items[index].url = nProductItem.url;
+                        this.product.items[index].dirtyUrl = true;
+                        return;
+                    }
+                });
+            }
+        });
     }
 
     save() {
@@ -473,22 +510,22 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
 
     editStyle(obj: ProductStyle) {
         const copyObj: ProductStyle = Object.assign(new ProductStyle(), obj);
-        this.productStylePopupService.open(ProductStyleDialogComponent as Component, copyObj);
+        this.productStylePopupService.open(ProductStyleDialogComponent as Component, copyObj, ProductDetailBroadcastName.PRODUCT_STYLE);
     }
 
     editItems(type: ProductItemsDialogType) {
         const copyObj: Product = Object.assign(new Product(), this.product);
-        this.productItemsPopupService.open(ProductItemsDialogComponent as Component, copyObj, type);
+        this.productDetailPopupService.open(ProductItemsDialogComponent as Component, copyObj, ProductDetailBroadcastName.PRODUCT_TTEM, type);
     }
 
     editItemsUrl() {
         const copyObj: Product = Object.assign(new Product(), this.product);
-        this.productItemsPopupService.open(ProductItemsUrlDialogComponent as Component, copyObj, null);
+        this.productDetailPopupService.open(ProductItemsUrlDialogComponent as Component, copyObj, ProductDetailBroadcastName.PRODUCT_ITEMS_URL, null);
     }
 
     editOther() {
         const copyObj: Product = Object.assign(new Product(), this.product);
-        this.productItemsPopupService.open(ProductDetailOtherDialogComponent as Component, copyObj, null);
+        this.productDetailPopupService.open(ProductDetailOtherDialogComponent as Component, copyObj, ProductDetailBroadcastName.PRODUCT_DETAIL_OTHER, null);
     }
 
     changeStyle(productStyle: ProductStyle) {
@@ -591,15 +628,15 @@ export class ProductDetailComponent implements OnInit, OnDestroy {
         console.error('result.id=' + result.id);
     }
 
-    uploadMedia() {
+    uploadProductUrl() {
         const url = new Url();
         url.entityType = Product.name;
         url.entityId = this.product.id;
         url.sequence = this.product.urls ? (this.product.urls.length + 1) : 1;
-        this.modalRef = this.fileUploadModelService.open(url);
+        this.modalRef = this.fileUploadModelService.open(url, null, null, null, ProductDetailBroadcastName.PRODUCT_FILE);
     }
 
-    deleteMedia(url: Url) {
+    popupDeleteUrl(url: Url) {
         const copyObj: Url = Object.assign(new Url(), url);
         this.urlPopupService.open(UrlDeleteDialogComponent as Component, copyObj);
     }

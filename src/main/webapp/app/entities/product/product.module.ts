@@ -6,7 +6,7 @@ import { MallSharedModule } from '../../shared';
 import {
     ProductService,
     ProductPopupService,
-    ProductItemsPopupService,
+    ProductDetailPopupService,
     PricesPopupService,
     QuantitiesPopupService,
     ProductComponent,
@@ -67,7 +67,7 @@ const ENTITY_STATES = [
         ProductService,
         ProductPopupService,
         ProductResolvePagingParams,
-        ProductItemsPopupService,
+        ProductDetailPopupService,
         PricesPopupService,
         QuantitiesPopupService,
     ],

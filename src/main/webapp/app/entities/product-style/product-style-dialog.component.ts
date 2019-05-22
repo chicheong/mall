@@ -19,6 +19,7 @@ export class ProductStyleDialogComponent implements OnInit {
 
     productStyle: ProductStyle;
     isSaving: boolean;
+    broadcastName: string;
 
     products: Product[];
 
@@ -43,14 +44,14 @@ export class ProductStyleDialogComponent implements OnInit {
 
     confirm() {
         this.isSaving = true;
-        this.eventManager.broadcast({ name: 'productStyleModification', content: 'OK', obj: this.productStyle, type: ProductDetailComponentType.CONFIRM});
+        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.productStyle, type: ProductDetailComponentType.CONFIRM});
         this.isSaving = false;
         this.activeModal.dismiss(this.productStyle);
     }
 
     delete() {
         this.isSaving = true;
-        this.eventManager.broadcast({ name: 'productStyleModification', content: 'OK', obj: this.productStyle, type: ProductDetailComponentType.DELETE});
+        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.productStyle, type: ProductDetailComponentType.DELETE});
         this.isSaving = false;
         this.activeModal.dismiss(this.productStyle);
     }
