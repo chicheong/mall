@@ -24,7 +24,7 @@
     "jwtSecretKey": "c4e03cf03279254c0d6d9d466d31ff8d025544c5",
     "clientFramework": "angularX",
     "useSass": true,
-    "clientPackageManager": "yarn",
+    "clientPackageManager": "npm",
     "applicationType": "monolith",
     "testFrameworks": [
       "gatling",
