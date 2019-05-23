@@ -21,6 +21,7 @@
             "status": "狀態"
         },
         "status": {
+            "UNKNOWN": "UNKNOWN",
             "UP": "正常",
             "DOWN": "異常"
         }

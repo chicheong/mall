@@ -1,68 +1,21 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { DatePipe } from '@angular/common';
+import { NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
 
-import {
-    MallSharedLibsModule,
-    MallSharedCommonModule,
-    DraggableModule,
-    CSRFService,
-    AuthServerProvider,
-    AccountService,
-    UserService,
-    StateStorageService,
-    LoginService,
-    LoginModalService,
-    JhiLoginModalComponent,
-    Principal,
-    HasAnyAuthorityDirective,
-    FileUploadModelService,
-    FileUploadDialogComponent,
-    FileUploadComponent,
-    PermissionService,
-    UuidService
-} from './';
+import { NgbDateMomentAdapter } from './util/datepicker-adapter';
+import { MallSharedLibsModule, MallSharedCommonModule, JhiLoginModalComponent, HasAnyAuthorityDirective } from './';
 
 @NgModule({
-    imports: [
-        MallSharedLibsModule,
-        MallSharedCommonModule,
-        DraggableModule
-    ],
-    declarations: [
-        JhiLoginModalComponent,
-        FileUploadDialogComponent,
-        FileUploadComponent,
-        HasAnyAuthorityDirective
-    ],
-    providers: [
-        LoginService,
-        LoginModalService,
-        AccountService,
-        StateStorageService,
-        Principal,
-        CSRFService,
-        AuthServerProvider,
-        UserService,
-        DatePipe,
-        FileUploadModelService,
-        PermissionService,
-        UuidService
-    ],
-    entryComponents: [
-        JhiLoginModalComponent,
-        FileUploadDialogComponent,
-        FileUploadComponent
-    ],
-    exports: [
-        MallSharedCommonModule,
-        DraggableModule,
-        JhiLoginModalComponent,
-        FileUploadDialogComponent,
-        FileUploadComponent,
-        HasAnyAuthorityDirective,
-        DatePipe
-    ],
+    imports: [MallSharedLibsModule, MallSharedCommonModule],
+    declarations: [JhiLoginModalComponent, HasAnyAuthorityDirective],
+    providers: [{ provide: NgbDateAdapter, useClass: NgbDateMomentAdapter }],
+    entryComponents: [JhiLoginModalComponent],
+    exports: [MallSharedCommonModule, JhiLoginModalComponent, HasAnyAuthorityDirective],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
-
 })
-export class MallSharedModule {}
+export class MallSharedModule {
+    static forRoot() {
+        return {
+            ngModule: MallSharedModule
+        };
+    }
+}

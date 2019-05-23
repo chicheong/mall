@@ -1,15 +1,19 @@
 package com.wongs.web.rest;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.StreamSupport;
-
-import javax.validation.Valid;
+import com.wongs.config.Constants;
+import com.wongs.domain.User;
+import com.wongs.repository.UserRepository;
+import com.wongs.repository.search.UserSearchRepository;
+import com.wongs.security.AuthoritiesConstants;
+import com.wongs.service.MailService;
+import com.wongs.service.UserService;
+import com.wongs.service.dto.UserDTO;
+import com.wongs.web.rest.errors.BadRequestAlertException;
+import com.wongs.web.rest.errors.EmailAlreadyUsedException;
+import com.wongs.web.rest.errors.LoginAlreadyUsedException;
+import com.wongs.web.rest.util.HeaderUtil;
+import com.wongs.web.rest.util.PaginationUtil;
+import io.github.jhipster.web.util.ResponseUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,34 +22,17 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.web.bind.annotation.*;
 
-import com.codahale.metrics.annotation.Timed;
-import com.wongs.config.Constants;
-import com.wongs.domain.User;
-import com.wongs.repository.UserRepository;
-import com.wongs.repository.search.UserSearchRepository;
-import com.wongs.security.AuthoritiesConstants;
-import com.wongs.service.MailService;
-import com.wongs.service.MyAccountService;
-import com.wongs.service.UserInfoService;
-import com.wongs.service.UserService;
-import com.wongs.service.dto.UserDTO;
-import com.wongs.web.rest.errors.BadRequestAlertException;
-import com.wongs.web.rest.errors.EmailAlreadyUsedException;
-import com.wongs.web.rest.errors.LoginAlreadyUsedException;
-import com.wongs.web.rest.util.HeaderUtil;
-import com.wongs.web.rest.util.PaginationUtil;
+import javax.validation.Valid;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
-import io.github.jhipster.web.util.ResponseUtil;
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * REST controller for managing users.
@@ -77,22 +64,18 @@ public class UserResource {
 
     private final Logger log = LoggerFactory.getLogger(UserResource.class);
 
-    private final UserRepository userRepository;
-
     private final UserService userService;
-    private final UserInfoService userInfoService;
-    private final MyAccountService myAccountService;
+
+    private final UserRepository userRepository;
 
     private final MailService mailService;
 
     private final UserSearchRepository userSearchRepository;
 
-    public UserResource(UserRepository userRepository, UserService userService, UserInfoService userInfoService, MyAccountService myAccountService, MailService mailService, UserSearchRepository userSearchRepository) {
+    public UserResource(UserService userService, UserRepository userRepository, MailService mailService, UserSearchRepository userSearchRepository) {
 
-        this.userRepository = userRepository;
         this.userService = userService;
-        this.userInfoService = userInfoService;
-        this.myAccountService = myAccountService;
+        this.userRepository = userRepository;
         this.mailService = mailService;
         this.userSearchRepository = userSearchRepository;
     }
@@ -110,8 +93,7 @@ public class UserResource {
      * @throws BadRequestAlertException 400 (Bad Request) if the login or email is already in use
      */
     @PostMapping("/users")
-    @Timed
-    @Secured(AuthoritiesConstants.ADMIN)
+    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<User> createUser(@Valid @RequestBody UserDTO userDTO) throws URISyntaxException {
         log.debug("REST request to save User : {}", userDTO);
 
@@ -140,8 +122,7 @@ public class UserResource {
      * @throws LoginAlreadyUsedException 400 (Bad Request) if the login is already in use
      */
     @PutMapping("/users")
-    @Timed
-    @Secured(AuthoritiesConstants.ADMIN)
+    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<UserDTO> updateUser(@Valid @RequestBody UserDTO userDTO) {
         log.debug("REST request to update User : {}", userDTO);
         Optional<User> existingUser = userRepository.findOneByEmailIgnoreCase(userDTO.getEmail());
@@ -165,7 +146,6 @@ public class UserResource {
      * @return the ResponseEntity with status 200 (OK) and with body all users
      */
     @GetMapping("/users")
-    @Timed
     public ResponseEntity<List<UserDTO>> getAllUsers(Pageable pageable) {
         final Page<UserDTO> page = userService.getAllManagedUsers(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/users");
@@ -176,8 +156,7 @@ public class UserResource {
      * @return a string list of the all of the roles
      */
     @GetMapping("/users/authorities")
-    @Timed
-    @Secured(AuthoritiesConstants.ADMIN)
+    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
     public List<String> getAuthorities() {
         return userService.getAuthorities();
     }
@@ -189,17 +168,11 @@ public class UserResource {
      * @return the ResponseEntity with status 200 (OK) and with body the "login" user, or with status 404 (Not Found)
      */
     @GetMapping("/users/{login:" + Constants.LOGIN_REGEX + "}")
-    @Timed
     public ResponseEntity<UserDTO> getUser(@PathVariable String login) {
         log.debug("REST request to get User : {}", login);
-        return ResponseUtil.wrapOrNotFound(userService.getUserWithAuthoritiesByLogin(login)
-                .map(user -> {
-                	UserDTO userDTO = new UserDTO(user);
-    				userDTO.setUserInfo(userInfoService.findOneWithAccountsByUserLogin(user.getLogin()));
-    				userDTO.setMyAccount(userDTO.getUserInfo() != null? myAccountService.findOne(userDTO.getUserInfo().getDefaultAccount().getId()) : null); //TODO: no need with shops
-    				return userDTO;
-        		})
-            );
+        return ResponseUtil.wrapOrNotFound(
+            userService.getUserWithAuthoritiesByLogin(login)
+                .map(UserDTO::new));
     }
 
     /**
@@ -209,8 +182,7 @@ public class UserResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/users/{login:" + Constants.LOGIN_REGEX + "}")
-    @Timed
-    @Secured(AuthoritiesConstants.ADMIN)
+    @PreAuthorize("hasRole(\"" + AuthoritiesConstants.ADMIN + "\")")
     public ResponseEntity<Void> deleteUser(@PathVariable String login) {
         log.debug("REST request to delete User: {}", login);
         userService.deleteUser(login);
@@ -225,7 +197,6 @@ public class UserResource {
      * @return the result of the search
      */
     @GetMapping("/_search/users/{query}")
-    @Timed
     public List<User> search(@PathVariable String query) {
         return StreamSupport
             .stream(userSearchRepository.search(queryStringQuery(query)).spliterator(), false)

@@ -1,20 +1,17 @@
 package com.wongs.service;
 
-import java.io.IOException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
-import java.util.Base64;
-import java.util.Base64.Decoder;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import com.wongs.config.Constants;
+import com.wongs.domain.Authority;
+import com.wongs.domain.User;
+import com.wongs.repository.AuthorityRepository;
+import com.wongs.repository.UserRepository;
+import com.wongs.repository.search.UserSearchRepository;
+import com.wongs.security.AuthoritiesConstants;
+import com.wongs.security.SecurityUtils;
+import com.wongs.service.dto.UserDTO;
+import com.wongs.service.util.RandomUtil;
+import com.wongs.web.rest.errors.*;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.CacheManager;
@@ -25,27 +22,10 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.google.common.io.Files;
-import com.wongs.config.Constants;
-import com.wongs.domain.Authority;
-import com.wongs.domain.MyAccount;
-import com.wongs.domain.User;
-import com.wongs.domain.UserInfo;
-import com.wongs.repository.AuthorityRepository;
-import com.wongs.repository.UserRepository;
-import com.wongs.repository.search.UserSearchRepository;
-import com.wongs.security.AuthoritiesConstants;
-import com.wongs.security.SecurityUtils;
-import com.wongs.service.dto.MyAccountDTO;
-import com.wongs.service.dto.ShopDTO;
-import com.wongs.service.dto.UserDTO;
-import com.wongs.service.dto.UserInfoDTO;
-import com.wongs.service.mapper.MyAccountMapper;
-import com.wongs.service.mapper.ShopMapper;
-import com.wongs.service.mapper.UserInfoMapper;
-import com.wongs.service.util.FileUtil;
-import com.wongs.service.util.RandomUtil;
-import com.wongs.service.util.FileUtil.FILETYPE;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Service class for managing users.
@@ -65,29 +45,13 @@ public class UserService {
     private final AuthorityRepository authorityRepository;
 
     private final CacheManager cacheManager;
-    
-    private final UserInfoService userInfoService;
-    private final MyAccountService myAccountService;
-    private final ShopService shopService;
-    
-    private final UserInfoMapper userInfoMapper;
-    private final MyAccountMapper myAccountMapper;
-    private final ShopMapper shopMapper;
 
-    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserSearchRepository userSearchRepository, AuthorityRepository authorityRepository, CacheManager cacheManager,
-    		UserInfoService userInfoService, MyAccountService myAccountService, ShopService shopService,
-    		UserInfoMapper userInfoMapper, MyAccountMapper myAccountMapper, ShopMapper shopMapper) {
+    public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserSearchRepository userSearchRepository, AuthorityRepository authorityRepository, CacheManager cacheManager) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userSearchRepository = userSearchRepository;
         this.authorityRepository = authorityRepository;
         this.cacheManager = cacheManager;
-        this.userInfoService = userInfoService;
-        this.myAccountService = myAccountService;
-        this.shopService = shopService;
-        this.userInfoMapper = userInfoMapper;
-        this.myAccountMapper = myAccountMapper;
-        this.shopMapper = shopMapper;
     }
 
     public Optional<User> activateRegistration(String key) {
@@ -98,58 +62,23 @@ public class UserService {
                 user.setActivated(true);
                 user.setActivationKey(null);
                 userSearchRepository.save(user);
-                cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
-                cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
-                
-                UserInfoDTO userInfo = new UserInfoDTO();
-                userInfo.setUser(user);
-                userInfo = userInfoService.save(userInfo);
-                
-                MyAccountDTO myAccount = new MyAccountDTO();
-                myAccount.getUserInfos().add(userInfoMapper.toEntity(userInfo));
-                myAccount = myAccountService.save(myAccount);
-                
-                //Add shops for Testing only
-                ShopDTO shop1 = new ShopDTO();
-                shop1.setName("Shop001");
-                shop1.setCode("SHOP001");
-                shop1.getAccounts().add(myAccountMapper.toEntity(myAccount));
-                shop1 = shopService.save(shop1);
-                
-                ShopDTO shop2 = new ShopDTO();
-                shop2.setName("Shop002");
-                shop2.setCode("SHOP002");
-                shop2.getAccounts().add(myAccountMapper.toEntity(myAccount));
-                shop2 = shopService.save(shop2);
-                
-                userInfo.getAccounts().add(myAccount);
-                userInfo.setAccountId(myAccount.getId());
-                userInfo.setDefaultAccount(myAccountMapper.toEntity(myAccount));
-                userInfo.setShopId(shop1.getId());
-                userInfoService.save(userInfo);
-                
-                myAccount.getShops().add(shop1);
-                myAccount.getShops().add(shop2);
-                myAccountService.save(myAccount);
-                
+                this.clearUserCaches(user);
                 log.debug("Activated user: {}", user);
                 return user;
             });
     }
 
     public Optional<User> completePasswordReset(String newPassword, String key) {
-       log.debug("Reset user password for reset key {}", key);
-
-       return userRepository.findOneByResetKey(key)
-           .filter(user -> user.getResetDate().isAfter(Instant.now().minusSeconds(86400)))
-           .map(user -> {
+        log.debug("Reset user password for reset key {}", key);
+        return userRepository.findOneByResetKey(key)
+            .filter(user -> user.getResetDate().isAfter(Instant.now().minusSeconds(86400)))
+            .map(user -> {
                 user.setPassword(passwordEncoder.encode(newPassword));
                 user.setResetKey(null);
                 user.setResetDate(null);
-                cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
-                cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
+                this.clearUserCaches(user);
                 return user;
-           });
+            });
     }
 
     public Optional<User> requestPasswordReset(String mail) {
@@ -158,83 +87,87 @@ public class UserService {
             .map(user -> {
                 user.setResetKey(RandomUtil.generateResetKey());
                 user.setResetDate(Instant.now());
-                cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
-                cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
+                this.clearUserCaches(user);
                 return user;
             });
     }
 
     public User registerUser(UserDTO userDTO, String password) {
-
+        userRepository.findOneByLogin(userDTO.getLogin().toLowerCase()).ifPresent(existingUser -> {
+            boolean removed = removeNonActivatedUser(existingUser);
+            if (!removed) {
+                throw new LoginAlreadyUsedException();
+            }
+        });
+        userRepository.findOneByEmailIgnoreCase(userDTO.getEmail()).ifPresent(existingUser -> {
+            boolean removed = removeNonActivatedUser(existingUser);
+            if (!removed) {
+                throw new EmailAlreadyUsedException();
+            }
+        });
         User newUser = new User();
-        Authority authority = authorityRepository.findOne(AuthoritiesConstants.USER);
-        Set<Authority> authorities = new HashSet<>();
         String encryptedPassword = passwordEncoder.encode(password);
-        newUser.setLogin(userDTO.getLogin());
+        newUser.setLogin(userDTO.getLogin().toLowerCase());
         // new user gets initially a generated password
         newUser.setPassword(encryptedPassword);
         newUser.setFirstName(userDTO.getFirstName());
         newUser.setLastName(userDTO.getLastName());
-        newUser.setEmail(userDTO.getEmail());
+        newUser.setEmail(userDTO.getEmail().toLowerCase());
         newUser.setImageUrl(userDTO.getImageUrl());
         newUser.setLangKey(userDTO.getLangKey());
         // new user is not active
         newUser.setActivated(false);
         // new user gets registration key
         newUser.setActivationKey(RandomUtil.generateActivationKey());
-        authorities.add(authority);
+        Set<Authority> authorities = new HashSet<>();
+        authorityRepository.findById(AuthoritiesConstants.USER).ifPresent(authorities::add);
         newUser.setAuthorities(authorities);
         userRepository.save(newUser);
         userSearchRepository.save(newUser);
-        cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(newUser.getLogin());
-        cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(newUser.getEmail());
+        this.clearUserCaches(newUser);
         log.debug("Created Information for User: {}", newUser);
-        
         return newUser;
+    }
+
+    private boolean removeNonActivatedUser(User existingUser){
+        if (existingUser.getActivated()) {
+             return false;
+        }
+        userRepository.delete(existingUser);
+        userRepository.flush();
+        this.clearUserCaches(existingUser);
+        return true;
     }
 
     public User createUser(UserDTO userDTO) {
         User user = new User();
-        user.setLogin(userDTO.getLogin());
+        user.setLogin(userDTO.getLogin().toLowerCase());
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
-        user.setEmail(userDTO.getEmail());
+        user.setEmail(userDTO.getEmail().toLowerCase());
         user.setImageUrl(userDTO.getImageUrl());
         if (userDTO.getLangKey() == null) {
             user.setLangKey(Constants.DEFAULT_LANGUAGE); // default language
         } else {
             user.setLangKey(userDTO.getLangKey());
         }
-        if (userDTO.getAuthorities() != null) {
-            Set<Authority> authorities = userDTO.getAuthorities().stream()
-                .map(authorityRepository::findOne)
-                .collect(Collectors.toSet());
-            user.setAuthorities(authorities);
-        }
         String encryptedPassword = passwordEncoder.encode(RandomUtil.generatePassword());
         user.setPassword(encryptedPassword);
         user.setResetKey(RandomUtil.generateResetKey());
         user.setResetDate(Instant.now());
         user.setActivated(true);
+        if (userDTO.getAuthorities() != null) {
+            Set<Authority> authorities = userDTO.getAuthorities().stream()
+                .map(authorityRepository::findById)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toSet());
+            user.setAuthorities(authorities);
+        }
         userRepository.save(user);
         userSearchRepository.save(user);
-        cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
-        cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
+        this.clearUserCaches(user);
         log.debug("Created Information for User: {}", user);
-        
-        UserInfoDTO userInfo = new UserInfoDTO();
-        userInfo.setUser(user);
-        userInfo = userInfoService.save(userInfo);
-        
-        MyAccountDTO myAccount = new MyAccountDTO();
-        myAccount.getUserInfos().add(userInfoMapper.toEntity(userInfo));
-        myAccount = myAccountService.save(myAccount);
-        
-        userInfo.getAccounts().add(myAccount);
-        userInfo.setAccountId(myAccount.getId());
-        userInfo.setDefaultAccount(myAccountMapper.toEntity(myAccount));
-        userInfoService.save(userInfo);
-        
         return user;
     }
 
@@ -253,18 +186,11 @@ public class UserService {
             .ifPresent(user -> {
                 user.setFirstName(firstName);
                 user.setLastName(lastName);
-                user.setEmail(email);
+                user.setEmail(email.toLowerCase());
                 user.setLangKey(langKey);
-                if (StringUtils.isNotBlank(imageUrl)){
-                	try {
-                		user.setImageUrl(FileUtil.saveAndGetFilePath(FILETYPE.IMAGE, user.getEmail(), imageUrl));
-        			} catch (IOException e) {
-        				log.error(e.toString());
-        			}
-                }
+                user.setImageUrl(imageUrl);
                 userSearchRepository.save(user);
-                cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
-                cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
+                this.clearUserCaches(user);
                 log.debug("Changed Information for User: {}", user);
             });
     }
@@ -277,23 +203,27 @@ public class UserService {
      */
     public Optional<UserDTO> updateUser(UserDTO userDTO) {
         return Optional.of(userRepository
-            .findOne(userDTO.getId()))
+            .findById(userDTO.getId()))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
             .map(user -> {
-                user.setLogin(userDTO.getLogin());
+                this.clearUserCaches(user);
+                user.setLogin(userDTO.getLogin().toLowerCase());
                 user.setFirstName(userDTO.getFirstName());
                 user.setLastName(userDTO.getLastName());
-                user.setEmail(userDTO.getEmail());
+                user.setEmail(userDTO.getEmail().toLowerCase());
                 user.setImageUrl(userDTO.getImageUrl());
                 user.setActivated(userDTO.isActivated());
                 user.setLangKey(userDTO.getLangKey());
                 Set<Authority> managedAuthorities = user.getAuthorities();
                 managedAuthorities.clear();
                 userDTO.getAuthorities().stream()
-                    .map(authorityRepository::findOne)
+                    .map(authorityRepository::findById)
+                    .filter(Optional::isPresent)
+                    .map(Optional::get)
                     .forEach(managedAuthorities::add);
                 userSearchRepository.save(user);
-                cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
-                cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
+                this.clearUserCaches(user);
                 log.debug("Changed Information for User: {}", user);
                 return user;
             })
@@ -302,32 +232,24 @@ public class UserService {
 
     public void deleteUser(String login) {
         userRepository.findOneByLogin(login).ifPresent(user -> {
-        	       	
-        	UserInfoDTO userInfo = userInfoService.findOneWithAccountsByUserLogin(user.getLogin());
-        	if (userInfo != null) {
-        		userInfoService.delete(userInfo.getId());
-        		userInfo.getAccounts().stream().forEach(account -> {
-    				myAccountService.delete(account.getId());
-    				//TODO: should only delete the primary account of UserInfo
-        		}); 
-        	}
-        	
             userRepository.delete(user);
             userSearchRepository.delete(user);
-            cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
-            cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
+            this.clearUserCaches(user);
             log.debug("Deleted User: {}", user);
         });
     }
 
-    public void changePassword(String password) {
+    public void changePassword(String currentClearTextPassword, String newPassword) {
         SecurityUtils.getCurrentUserLogin()
             .flatMap(userRepository::findOneByLogin)
             .ifPresent(user -> {
-                String encryptedPassword = passwordEncoder.encode(password);
+                String currentEncryptedPassword = user.getPassword();
+                if (!passwordEncoder.matches(currentClearTextPassword, currentEncryptedPassword)) {
+                    throw new InvalidPasswordException();
+                }
+                String encryptedPassword = passwordEncoder.encode(newPassword);
                 user.setPassword(encryptedPassword);
-                cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
-                cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
+                this.clearUserCaches(user);
                 log.debug("Changed password for User: {}", user);
             });
     }
@@ -359,14 +281,14 @@ public class UserService {
      */
     @Scheduled(cron = "0 0 1 * * ?")
     public void removeNotActivatedUsers() {
-        List<User> users = userRepository.findAllByActivatedIsFalseAndCreatedDateBefore(Instant.now().minus(3, ChronoUnit.DAYS));
-        for (User user : users) {
-            log.debug("Deleting not activated user {}", user.getLogin());
-            userRepository.delete(user);
-            userSearchRepository.delete(user);
-            cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).evict(user.getLogin());
-            cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).evict(user.getEmail());
-        }
+        userRepository
+            .findAllByActivatedIsFalseAndCreatedDateBefore(Instant.now().minus(3, ChronoUnit.DAYS))
+            .forEach(user -> {
+                log.debug("Deleting not activated user {}", user.getLogin());
+                userRepository.delete(user);
+                userSearchRepository.delete(user);
+                this.clearUserCaches(user);
+            });
     }
 
     /**
@@ -376,4 +298,8 @@ public class UserService {
         return authorityRepository.findAll().stream().map(Authority::getName).collect(Collectors.toList());
     }
 
+    private void clearUserCaches(User user) {
+        Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE)).evict(user.getLogin());
+        Objects.requireNonNull(cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE)).evict(user.getEmail());
+    }
 }

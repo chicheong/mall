@@ -7,8 +7,7 @@
             "lastname": "Last Name",
             "lastname.placeholder": "Your last name",
             "language": "Language",
-            "save": "Save",
-            "createmyshop": "Create My Shop"
+            "button": "Save"
         },
         "messages": {
             "error": {

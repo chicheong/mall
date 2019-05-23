@@ -3,8 +3,8 @@
 #
 # This configuration overrides the application.yml file.
 #
-# More information on profiles: http://www.jhipster.tech/profiles/
-# More information on configuration properties: http://www.jhipster.tech/common-application-properties/
+# More information on profiles: https://www.jhipster.tech/profiles/
+# More information on configuration properties: https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
 # ===================================================================
@@ -27,10 +27,12 @@ spring:
             enabled: false
     datasource:
         type: com.zaxxer.hikari.HikariDataSource
-        url: jdbc:mysql://localhost:3306/mall?useUnicode=true&characterEncoding=utf8&useSSL=false
+        url: jdbc:mysql://localhost:3306/mall?useUnicode=true&characterEncoding=utf8&useSSL=false&useLegacyDatetimeCode=false&serverTimezone=UTC
         username: root
-        password: 123456
+        password:
         hikari:
+            poolName: Hikari
+            auto-commit: false
             data-source-properties:
                 cachePrepStmts: true
                 prepStmtCacheSize: 250
@@ -42,14 +44,16 @@ spring:
         show-sql: false
         properties:
             hibernate.id.new_generator_mappings: true
+            hibernate.connection.provider_disables_autocommit: true
             hibernate.cache.use_second_level_cache: true
             hibernate.cache.use_query_cache: false
-            hibernate.generate_statistics: false
+            hibernate.generate_statistics: true
             hibernate.cache.region.factory_class: io.github.jhipster.config.jcache.BeanClassLoaderAwareJCacheRegionFactory
     data:
-        elasticsearch:
-            cluster-name:
-            cluster-nodes: localhost:9300
+        jest:
+            uri: http://localhost:9200
+    liquibase:
+        contexts: prod
     mail:
         host: localhost
         port: 25
@@ -58,11 +62,8 @@ spring:
     thymeleaf:
         cache: true
 
-liquibase:
-    contexts: prod
-
 # ===================================================================
-# To enable SSL, generate a certificate using:
+# To enable TLS in production, generate a certificate using:
 # keytool -genkey -alias mall -storetype PKCS12 -keyalg RSA -keysize 2048 -keystore keystore.p12 -validity 3650
 #
 # You can also use Let's Encrypt:
@@ -73,8 +74,8 @@ liquibase:
 # server:
 #    port: 443
 #    ssl:
-#        key-store: keystore.p12
-#        key-store-password: <your-password>
+#        key-store: classpath:config/tls/keystore.p12
+#        key-store-password: password
 #        key-store-type: PKCS12
 #        key-alias: mall
 #        # The ciphers suite enforce the security by deactivating some old and deprecated SSL cipher, this list was tested against SSL Labs (https://www.ssllabs.com/ssltest/)
@@ -90,7 +91,7 @@ server:
 # ===================================================================
 # JHipster specific properties
 #
-# Full reference is available at: http://www.jhipster.tech/common-application-properties/
+# Full reference is available at: https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
 jhipster:
@@ -105,24 +106,20 @@ jhipster:
     security:
         authentication:
             jwt:
-                secret: c4e03cf03279254c0d6d9d466d31ff8d025544c5
+                # This token must be encoded using Base64 and be at least 256 bits long (you can type `openssl rand -base64 64` on your command line to generate a 512 bits one)
+                # As this is the PRODUCTION configuration, you MUST change the default key, and store it securely:
+                # - In the JHipster Registry (which includes a Spring Cloud Config server)
+                # - In a separate `application-prod.yml` file, in the same folder as your executable WAR file
+                # - In the `JHIPSTER_SECURITY_AUTHENTICATION_JWT_BASE64_SECRET` environment variable
+                base64-secret: c4e03cf03279254c0d6d9d466d31ff8d025544c5
                 # Token is valid 24 hours
                 token-validity-in-seconds: 86400
                 token-validity-in-seconds-for-remember-me: 2592000
     mail: # specific JHipster mail property, for standard properties see MailProperties
         from: mall@localhost
         base-url: http://my-server-url-to-change # Modify according to your server's URL
-    metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
-        jmx.enabled: true
-        graphite:
-            enabled: false
-            host: localhost
-            port: 2003
-            prefix: mall
-        prometheus:
-            enabled: false
-            endpoint: /prometheusMetrics
-        logs: # Reports Dropwizard metrics in the logs
+    metrics:
+        logs: # Reports metrics in the logs
             enabled: false
             report-frequency: 60 # in seconds
     logging:
@@ -132,14 +129,13 @@ jhipster:
             port: 5000
             queue-size: 512
 
-
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class
 # to have type-safe configuration, like in the JHipsterProperties above
 #
 # More documentation is available at:
-# http://www.jhipster.tech/common-application-properties/
+# https://www.jhipster.tech/common-application-properties/
 # ===================================================================
 
-application:
+# application:
