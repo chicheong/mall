@@ -1,5 +1,7 @@
 package com.wongs.domain;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -22,7 +24,7 @@ import com.wongs.domain.enumeration.PaymentStatus;
 public class PaymentStatusHistory implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,6 +37,7 @@ public class PaymentStatusHistory implements Serializable {
     private PaymentStatus status;
 
     @ManyToOne
+    @JsonIgnoreProperties("statusHistories")
     private Payment payment;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

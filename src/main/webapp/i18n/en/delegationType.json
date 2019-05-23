@@ -1,6 +1,6 @@
 {
     "mallApp": {
-        "DelegationType" : {
+        "DelegationType": {
             "null": "",
             "ACCOUNT": "ACCOUNT",
             "COMPANY": "COMPANY",

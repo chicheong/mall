@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { ShippingPriceRule } from './shipping-price-rule.model';
-import { ShippingPriceRulePopupService } from './shipping-price-rule-popup.service';
+import { IShippingPriceRule } from 'app/shared/model/shipping-price-rule.model';
 import { ShippingPriceRuleService } from './shipping-price-rule.service';
 
 @Component({
@@ -13,22 +12,20 @@ import { ShippingPriceRuleService } from './shipping-price-rule.service';
     templateUrl: './shipping-price-rule-delete-dialog.component.html'
 })
 export class ShippingPriceRuleDeleteDialogComponent {
-
-    shippingPriceRule: ShippingPriceRule;
+    shippingPriceRule: IShippingPriceRule;
 
     constructor(
-        private shippingPriceRuleService: ShippingPriceRuleService,
+        protected shippingPriceRuleService: ShippingPriceRuleService,
         public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager
-    ) {
-    }
+        protected eventManager: JhiEventManager
+    ) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.shippingPriceRuleService.delete(id).subscribe((response) => {
+        this.shippingPriceRuleService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'shippingPriceRuleListModification',
                 content: 'Deleted an shippingPriceRule'
@@ -43,22 +40,33 @@ export class ShippingPriceRuleDeleteDialogComponent {
     template: ''
 })
 export class ShippingPriceRuleDeletePopupComponent implements OnInit, OnDestroy {
+    protected ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private shippingPriceRulePopupService: ShippingPriceRulePopupService
-    ) {}
+    constructor(protected activatedRoute: ActivatedRoute, protected router: Router, protected modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.shippingPriceRulePopupService
-                .open(ShippingPriceRuleDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ shippingPriceRule }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(ShippingPriceRuleDeleteDialogComponent as Component, {
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                this.ngbModalRef.componentInstance.shippingPriceRule = shippingPriceRule;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate(['/shipping-price-rule', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate(['/shipping-price-rule', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

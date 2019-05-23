@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { UserInfo } from './user-info.model';
-import { UserInfoPopupService } from './user-info-popup.service';
+import { IUserInfo } from 'app/shared/model/user-info.model';
 import { UserInfoService } from './user-info.service';
 
 @Component({
@@ -13,22 +12,16 @@ import { UserInfoService } from './user-info.service';
     templateUrl: './user-info-delete-dialog.component.html'
 })
 export class UserInfoDeleteDialogComponent {
+    userInfo: IUserInfo;
 
-    userInfo: UserInfo;
-
-    constructor(
-        private userInfoService: UserInfoService,
-        public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager
-    ) {
-    }
+    constructor(protected userInfoService: UserInfoService, public activeModal: NgbActiveModal, protected eventManager: JhiEventManager) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.userInfoService.delete(id).subscribe((response) => {
+        this.userInfoService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'userInfoListModification',
                 content: 'Deleted an userInfo'
@@ -43,22 +36,30 @@ export class UserInfoDeleteDialogComponent {
     template: ''
 })
 export class UserInfoDeletePopupComponent implements OnInit, OnDestroy {
+    protected ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private userInfoPopupService: UserInfoPopupService
-    ) {}
+    constructor(protected activatedRoute: ActivatedRoute, protected router: Router, protected modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.userInfoPopupService
-                .open(UserInfoDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ userInfo }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(UserInfoDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
+                this.ngbModalRef.componentInstance.userInfo = userInfo;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate(['/user-info', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate(['/user-info', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

@@ -1,6 +1,4 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.service.ShippingService;
 import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
@@ -50,7 +48,6 @@ public class ShippingResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/shippings")
-    @Timed
     public ResponseEntity<ShippingDTO> createShipping(@RequestBody ShippingDTO shippingDTO) throws URISyntaxException {
         log.debug("REST request to save Shipping : {}", shippingDTO);
         if (shippingDTO.getId() != null) {
@@ -72,11 +69,10 @@ public class ShippingResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/shippings")
-    @Timed
     public ResponseEntity<ShippingDTO> updateShipping(@RequestBody ShippingDTO shippingDTO) throws URISyntaxException {
         log.debug("REST request to update Shipping : {}", shippingDTO);
         if (shippingDTO.getId() == null) {
-            return createShipping(shippingDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         ShippingDTO result = shippingService.save(shippingDTO);
         return ResponseEntity.ok()
@@ -91,12 +87,11 @@ public class ShippingResource {
      * @return the ResponseEntity with status 200 (OK) and the list of shippings in body
      */
     @GetMapping("/shippings")
-    @Timed
     public ResponseEntity<List<ShippingDTO>> getAllShippings(Pageable pageable) {
         log.debug("REST request to get a page of Shippings");
         Page<ShippingDTO> page = shippingService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/shippings");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -106,11 +101,10 @@ public class ShippingResource {
      * @return the ResponseEntity with status 200 (OK) and with body the shippingDTO, or with status 404 (Not Found)
      */
     @GetMapping("/shippings/{id}")
-    @Timed
     public ResponseEntity<ShippingDTO> getShipping(@PathVariable Long id) {
         log.debug("REST request to get Shipping : {}", id);
-        ShippingDTO shippingDTO = shippingService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(shippingDTO));
+        Optional<ShippingDTO> shippingDTO = shippingService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(shippingDTO);
     }
 
     /**
@@ -120,7 +114,6 @@ public class ShippingResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/shippings/{id}")
-    @Timed
     public ResponseEntity<Void> deleteShipping(@PathVariable Long id) {
         log.debug("REST request to delete Shipping : {}", id);
         shippingService.delete(id);
@@ -136,12 +129,11 @@ public class ShippingResource {
      * @return the result of the search
      */
     @GetMapping("/_search/shippings")
-    @Timed
     public ResponseEntity<List<ShippingDTO>> searchShippings(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Shippings for query {}", query);
         Page<ShippingDTO> page = shippingService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/shippings");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
 }

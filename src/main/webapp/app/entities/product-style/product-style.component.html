@@ -1,8 +1,8 @@
 <div>
-    <h2>
+    <h2 id="page-heading">
         <span jhiTranslate="mallApp.productStyle.home.title">Product Styles</span>
-        <button class="btn btn-primary float-right jh-create-entity create-product-style" [routerLink]="['/', { outlets: { popup: ['product-style-new'] } }]">
-            <span class="fa fa-plus"></span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-product-style" [routerLink]="['/product-style/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
             <span class="hidden-sm-down"  jhiTranslate="mallApp.productStyle.home.createLabel">
             Create new Product Style
             </span>
@@ -14,11 +14,11 @@
             <form name="searchForm" class="form-inline">
                 <div class="input-group w-100 mt-3">
                     <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'mallApp.productStyle.home.search' | translate }}">
-                    <button class="input-group-addon btn btn-info" (click)="search(currentSearch)">
-                        <span class="fa fa-search"></span>
+                    <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
+                        <fa-icon [icon]="'search'"></fa-icon>
                     </button>
-                    <button class="input-group-addon btn btn-danger" (click)="clear()" *ngIf="currentSearch">
-                        <span class="fa fa-trash-o"></span>
+                    <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
+                        <fa-icon [icon]="'trash-alt'"></fa-icon>
                     </button>
                 </div>
             </form>
@@ -40,38 +40,36 @@
             </thead>
             <tbody>
             <tr *ngFor="let productStyle of productStyles ;trackBy: trackId">
-                <td><a [routerLink]="['../product-style', productStyle.id ]">{{productStyle.id}}</a></td>
+                <td><a [routerLink]="['/product-style', productStyle.id, 'view' ]">{{productStyle.id}}</a></td>
                 <td>{{productStyle.name}}</td>
                 <td>{{productStyle.code}}</td>
                 <td>{{productStyle.isDefault}}</td>
                 <td jhiTranslate="{{'mallApp.ProductStyleType.' + productStyle.type}}">{{productStyle.type}}</td>
                 <td>
-                    <div *ngIf="productStyle.product">
-                        <a [routerLink]="['../product', productStyle.product?.id ]" >{{productStyle.product?.id}}</a>
+                    <div *ngIf="productStyle.productId">
+                        <a [routerLink]="['../product', productStyle.productId , 'view' ]" >{{productStyle.productId}}</a>
                     </div>
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
-                                [routerLink]="['../product-style', productStyle.id ]"
+                                [routerLink]="['/product-style', productStyle.id, 'view' ]"
                                 class="btn btn-info btn-sm">
-                            <span class="fa fa-eye"></span>
+                            <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'product-style/'+ productStyle.id + '/edit'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
+                                [routerLink]="['/product-style', productStyle.id, 'edit']"
                                 class="btn btn-primary btn-sm">
-                            <span class="fa fa-pencil"></span>
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'product-style/'+ productStyle.id + '/delete'} }]"
+                                [routerLink]="['/', 'product-style', { outlets: { popup: productStyle.id + '/delete'} }]"
                                 replaceUrl="true"
                                 queryParamsHandling="merge"
                                 class="btn btn-danger btn-sm">
-                            <span class="fa fa-remove"></span>
+                            <fa-icon [icon]="'times'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
                         </button>
                     </div>

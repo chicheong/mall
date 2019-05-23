@@ -1,13 +1,12 @@
 package com.wongs.repository;
 
 import com.wongs.domain.Quantity;
-import org.springframework.stereotype.Repository;
-
 import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.Repository;
 
 
 /**
- * Spring Data JPA repository for the Quantity entity.
+ * Spring Data  repository for the Quantity entity.
  */
 @SuppressWarnings("unused")
 @Repository

@@ -1,22 +1,25 @@
 package com.wongs.service;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
+import com.wongs.domain.Payment;
+import com.wongs.repository.PaymentRepository;
+import com.wongs.repository.search.PaymentSearchRepository;
+import com.wongs.service.dto.PaymentDTO;
+import com.wongs.service.mapper.PaymentMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.wongs.domain.MyOrder;
-import com.wongs.domain.Payment;
-import com.wongs.domain.enumeration.PaymentStatus;
-import com.wongs.repository.PaymentRepository;
-import com.wongs.repository.search.PaymentSearchRepository;
-import com.wongs.service.dto.PaymentDTO;
-import com.wongs.service.mapper.MyOrderMapper;
-import com.wongs.service.mapper.PaymentMapper;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing Payment.
@@ -27,16 +30,15 @@ public class PaymentService {
 
     private final Logger log = LoggerFactory.getLogger(PaymentService.class);
 
-    private final PaymentMapper paymentMapper;
-    private final MyOrderMapper myOrderMapper;
-    
     private final PaymentRepository paymentRepository;
+
+    private final PaymentMapper paymentMapper;
+
     private final PaymentSearchRepository paymentSearchRepository;
 
-    public PaymentService(PaymentMapper paymentMapper, MyOrderMapper myOrderMapper, PaymentRepository paymentRepository, PaymentSearchRepository paymentSearchRepository) {
+    public PaymentService(PaymentRepository paymentRepository, PaymentMapper paymentMapper, PaymentSearchRepository paymentSearchRepository) {
+        this.paymentRepository = paymentRepository;
         this.paymentMapper = paymentMapper;
-    	this.myOrderMapper = myOrderMapper;
-    	this.paymentRepository = paymentRepository;
         this.paymentSearchRepository = paymentSearchRepository;
     }
 
@@ -54,22 +56,6 @@ public class PaymentService {
         paymentSearchRepository.save(payment);
         return result;
     }
-    
-    /**
-     * Create a payment from MyOrder
-     *
-     * @param paymentDTO the entity to create
-     * @return the persisted entity
-     */
-    public PaymentDTO create(MyOrder myOrder) {
-        log.debug("Request to create Payment from MyOrder : {}", myOrder);
-        PaymentDTO payment = new PaymentDTO();
-        payment.setOrder(myOrder);
-        payment.setCurrency(myOrder.getCurrency());
-        payment.setStatus(PaymentStatus.PENDING);
-        return this.save(payment);
-    }
-
 
     /**
      * Get all the payments.
@@ -84,6 +70,22 @@ public class PaymentService {
             .map(paymentMapper::toDto);
     }
 
+
+
+    /**
+     *  get all the payments where Order is null.
+     *  @return the list of entities
+     */
+    @Transactional(readOnly = true) 
+    public List<PaymentDTO> findAllWhereOrderIsNull() {
+        log.debug("Request to get all payments where Order is null");
+        return StreamSupport
+            .stream(paymentRepository.findAll().spliterator(), false)
+            .filter(payment -> payment.getOrder() == null)
+            .map(paymentMapper::toDto)
+            .collect(Collectors.toCollection(LinkedList::new));
+    }
+
     /**
      * Get one payment by id.
      *
@@ -91,25 +93,12 @@ public class PaymentService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public PaymentDTO findOne(Long id) {
+    public Optional<PaymentDTO> findOne(Long id) {
         log.debug("Request to get Payment : {}", id);
-        Payment payment = paymentRepository.findOne(id);
-        return paymentMapper.toDto(payment);
+        return paymentRepository.findById(id)
+            .map(paymentMapper::toDto);
     }
 
-    /**
-     * Get one payment by MyOrder.
-     *
-     * @param MyOrder
-     * @return the entity
-     */
-    @Transactional(readOnly = true)
-    public PaymentDTO findByOrder(MyOrder myOrder) {
-        log.debug("Request to get Payment from MyOrder : {}", myOrder);
-        Payment payment = paymentRepository.findByOrder(myOrder);
-        return paymentMapper.toDto(payment);
-    }
-    
     /**
      * Delete the payment by id.
      *
@@ -117,8 +106,8 @@ public class PaymentService {
      */
     public void delete(Long id) {
         log.debug("Request to delete Payment : {}", id);
-        paymentRepository.delete(id);
-        paymentSearchRepository.delete(id);
+        paymentRepository.deleteById(id);
+        paymentSearchRepository.deleteById(id);
     }
 
     /**
@@ -131,7 +120,7 @@ public class PaymentService {
     @Transactional(readOnly = true)
     public Page<PaymentDTO> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Payments for query {}", query);
-        Page<Payment> result = paymentSearchRepository.search(queryStringQuery(query), pageable);
-        return result.map(paymentMapper::toDto);
+        return paymentSearchRepository.search(queryStringQuery(query), pageable)
+            .map(paymentMapper::toDto);
     }
 }

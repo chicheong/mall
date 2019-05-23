@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { Delegation } from './delegation.model';
-import { DelegationPopupService } from './delegation-popup.service';
+import { IDelegation } from 'app/shared/model/delegation.model';
 import { DelegationService } from './delegation.service';
 
 @Component({
@@ -13,22 +12,20 @@ import { DelegationService } from './delegation.service';
     templateUrl: './delegation-delete-dialog.component.html'
 })
 export class DelegationDeleteDialogComponent {
-
-    delegation: Delegation;
+    delegation: IDelegation;
 
     constructor(
-        private delegationService: DelegationService,
+        protected delegationService: DelegationService,
         public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager
-    ) {
-    }
+        protected eventManager: JhiEventManager
+    ) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.delegationService.delete(id).subscribe((response) => {
+        this.delegationService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'delegationListModification',
                 content: 'Deleted an delegation'
@@ -43,22 +40,30 @@ export class DelegationDeleteDialogComponent {
     template: ''
 })
 export class DelegationDeletePopupComponent implements OnInit, OnDestroy {
+    protected ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private delegationPopupService: DelegationPopupService
-    ) {}
+    constructor(protected activatedRoute: ActivatedRoute, protected router: Router, protected modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.delegationPopupService
-                .open(DelegationDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ delegation }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(DelegationDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
+                this.ngbModalRef.componentInstance.delegation = delegation;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate(['/delegation', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate(['/delegation', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

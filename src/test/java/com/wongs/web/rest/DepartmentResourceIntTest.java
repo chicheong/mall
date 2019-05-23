@@ -10,9 +10,12 @@ import com.wongs.web.rest.errors.ExceptionTranslator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -20,13 +23,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -52,8 +61,16 @@ public class DepartmentResourceIntTest {
     @Autowired
     private DepartmentRepository departmentRepository;
 
+    @Mock
+    private DepartmentRepository departmentRepositoryMock;
+
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.DepartmentSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private DepartmentSearchRepository departmentSearchRepository;
+    private DepartmentSearchRepository mockDepartmentSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -67,6 +84,9 @@ public class DepartmentResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restDepartmentMockMvc;
 
     private Department department;
@@ -74,12 +94,13 @@ public class DepartmentResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final DepartmentResource departmentResource = new DepartmentResource(departmentRepository, departmentSearchRepository);
+        final DepartmentResource departmentResource = new DepartmentResource(departmentRepository, mockDepartmentSearchRepository);
         this.restDepartmentMockMvc = MockMvcBuilders.standaloneSetup(departmentResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -98,7 +119,6 @@ public class DepartmentResourceIntTest {
 
     @Before
     public void initTest() {
-        departmentSearchRepository.deleteAll();
         department = createEntity(em);
     }
 
@@ -122,8 +142,7 @@ public class DepartmentResourceIntTest {
         assertThat(testDepartment.getStatus()).isEqualTo(DEFAULT_STATUS);
 
         // Validate the Department in Elasticsearch
-        Department departmentEs = departmentSearchRepository.findOne(testDepartment.getId());
-        assertThat(departmentEs).isEqualToIgnoringGivenFields(testDepartment);
+        verify(mockDepartmentSearchRepository, times(1)).save(testDepartment);
     }
 
     @Test
@@ -143,6 +162,9 @@ public class DepartmentResourceIntTest {
         // Validate the Department in the database
         List<Department> departmentList = departmentRepository.findAll();
         assertThat(departmentList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the Department in Elasticsearch
+        verify(mockDepartmentSearchRepository, times(0)).save(department);
     }
 
     @Test
@@ -178,6 +200,39 @@ public class DepartmentResourceIntTest {
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
     }
+    
+    @SuppressWarnings({"unchecked"})
+    public void getAllDepartmentsWithEagerRelationshipsIsEnabled() throws Exception {
+        DepartmentResource departmentResource = new DepartmentResource(departmentRepositoryMock, mockDepartmentSearchRepository);
+        when(departmentRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        MockMvc restDepartmentMockMvc = MockMvcBuilders.standaloneSetup(departmentResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restDepartmentMockMvc.perform(get("/api/departments?eagerload=true"))
+        .andExpect(status().isOk());
+
+        verify(departmentRepositoryMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public void getAllDepartmentsWithEagerRelationshipsIsNotEnabled() throws Exception {
+        DepartmentResource departmentResource = new DepartmentResource(departmentRepositoryMock, mockDepartmentSearchRepository);
+            when(departmentRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+            MockMvc restDepartmentMockMvc = MockMvcBuilders.standaloneSetup(departmentResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restDepartmentMockMvc.perform(get("/api/departments?eagerload=true"))
+        .andExpect(status().isOk());
+
+            verify(departmentRepositoryMock, times(1)).findAllWithEagerRelationships(any());
+    }
 
     @Test
     @Transactional
@@ -208,11 +263,11 @@ public class DepartmentResourceIntTest {
     public void updateDepartment() throws Exception {
         // Initialize the database
         departmentRepository.saveAndFlush(department);
-        departmentSearchRepository.save(department);
+
         int databaseSizeBeforeUpdate = departmentRepository.findAll().size();
 
         // Update the department
-        Department updatedDepartment = departmentRepository.findOne(department.getId());
+        Department updatedDepartment = departmentRepository.findById(department.getId()).get();
         // Disconnect from session so that the updates on updatedDepartment are not directly saved in db
         em.detach(updatedDepartment);
         updatedDepartment
@@ -234,8 +289,7 @@ public class DepartmentResourceIntTest {
         assertThat(testDepartment.getStatus()).isEqualTo(UPDATED_STATUS);
 
         // Validate the Department in Elasticsearch
-        Department departmentEs = departmentSearchRepository.findOne(testDepartment.getId());
-        assertThat(departmentEs).isEqualToIgnoringGivenFields(testDepartment);
+        verify(mockDepartmentSearchRepository, times(1)).save(testDepartment);
     }
 
     @Test
@@ -245,15 +299,18 @@ public class DepartmentResourceIntTest {
 
         // Create the Department
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restDepartmentMockMvc.perform(put("/api/departments")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(department)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Department in the database
         List<Department> departmentList = departmentRepository.findAll();
-        assertThat(departmentList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(departmentList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the Department in Elasticsearch
+        verify(mockDepartmentSearchRepository, times(0)).save(department);
     }
 
     @Test
@@ -261,21 +318,20 @@ public class DepartmentResourceIntTest {
     public void deleteDepartment() throws Exception {
         // Initialize the database
         departmentRepository.saveAndFlush(department);
-        departmentSearchRepository.save(department);
+
         int databaseSizeBeforeDelete = departmentRepository.findAll().size();
 
-        // Get the department
+        // Delete the department
         restDepartmentMockMvc.perform(delete("/api/departments/{id}", department.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean departmentExistsInEs = departmentSearchRepository.exists(department.getId());
-        assertThat(departmentExistsInEs).isFalse();
-
         // Validate the database is empty
         List<Department> departmentList = departmentRepository.findAll();
         assertThat(departmentList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the Department in Elasticsearch
+        verify(mockDepartmentSearchRepository, times(1)).deleteById(department.getId());
     }
 
     @Test
@@ -283,15 +339,15 @@ public class DepartmentResourceIntTest {
     public void searchDepartment() throws Exception {
         // Initialize the database
         departmentRepository.saveAndFlush(department);
-        departmentSearchRepository.save(department);
-
+        when(mockDepartmentSearchRepository.search(queryStringQuery("id:" + department.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(department), PageRequest.of(0, 1), 1));
         // Search the department
         restDepartmentMockMvc.perform(get("/api/_search/departments?query=id:" + department.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(department.getId().intValue())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
     }
 

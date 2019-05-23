@@ -13,6 +13,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -20,13 +22,18 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -51,8 +58,13 @@ public class StateResourceIntTest {
     @Autowired
     private StateRepository stateRepository;
 
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.StateSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private StateSearchRepository stateSearchRepository;
+    private StateSearchRepository mockStateSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -66,6 +78,9 @@ public class StateResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restStateMockMvc;
 
     private State state;
@@ -73,12 +88,13 @@ public class StateResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final StateResource stateResource = new StateResource(stateRepository, stateSearchRepository);
+        final StateResource stateResource = new StateResource(stateRepository, mockStateSearchRepository);
         this.restStateMockMvc = MockMvcBuilders.standaloneSetup(stateResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -97,7 +113,6 @@ public class StateResourceIntTest {
 
     @Before
     public void initTest() {
-        stateSearchRepository.deleteAll();
         state = createEntity(em);
     }
 
@@ -121,8 +136,7 @@ public class StateResourceIntTest {
         assertThat(testState.getName()).isEqualTo(DEFAULT_NAME);
 
         // Validate the State in Elasticsearch
-        State stateEs = stateSearchRepository.findOne(testState.getId());
-        assertThat(stateEs).isEqualToIgnoringGivenFields(testState);
+        verify(mockStateSearchRepository, times(1)).save(testState);
     }
 
     @Test
@@ -142,6 +156,9 @@ public class StateResourceIntTest {
         // Validate the State in the database
         List<State> stateList = stateRepository.findAll();
         assertThat(stateList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the State in Elasticsearch
+        verify(mockStateSearchRepository, times(0)).save(state);
     }
 
     @Test
@@ -177,7 +194,7 @@ public class StateResourceIntTest {
             .andExpect(jsonPath("$.[*].label").value(hasItem(DEFAULT_LABEL.toString())))
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())));
     }
-
+    
     @Test
     @Transactional
     public void getState() throws Exception {
@@ -207,11 +224,11 @@ public class StateResourceIntTest {
     public void updateState() throws Exception {
         // Initialize the database
         stateRepository.saveAndFlush(state);
-        stateSearchRepository.save(state);
+
         int databaseSizeBeforeUpdate = stateRepository.findAll().size();
 
         // Update the state
-        State updatedState = stateRepository.findOne(state.getId());
+        State updatedState = stateRepository.findById(state.getId()).get();
         // Disconnect from session so that the updates on updatedState are not directly saved in db
         em.detach(updatedState);
         updatedState
@@ -233,8 +250,7 @@ public class StateResourceIntTest {
         assertThat(testState.getName()).isEqualTo(UPDATED_NAME);
 
         // Validate the State in Elasticsearch
-        State stateEs = stateSearchRepository.findOne(testState.getId());
-        assertThat(stateEs).isEqualToIgnoringGivenFields(testState);
+        verify(mockStateSearchRepository, times(1)).save(testState);
     }
 
     @Test
@@ -244,15 +260,18 @@ public class StateResourceIntTest {
 
         // Create the State
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restStateMockMvc.perform(put("/api/states")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(state)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the State in the database
         List<State> stateList = stateRepository.findAll();
-        assertThat(stateList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(stateList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the State in Elasticsearch
+        verify(mockStateSearchRepository, times(0)).save(state);
     }
 
     @Test
@@ -260,21 +279,20 @@ public class StateResourceIntTest {
     public void deleteState() throws Exception {
         // Initialize the database
         stateRepository.saveAndFlush(state);
-        stateSearchRepository.save(state);
+
         int databaseSizeBeforeDelete = stateRepository.findAll().size();
 
-        // Get the state
+        // Delete the state
         restStateMockMvc.perform(delete("/api/states/{id}", state.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean stateExistsInEs = stateSearchRepository.exists(state.getId());
-        assertThat(stateExistsInEs).isFalse();
-
         // Validate the database is empty
         List<State> stateList = stateRepository.findAll();
         assertThat(stateList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the State in Elasticsearch
+        verify(mockStateSearchRepository, times(1)).deleteById(state.getId());
     }
 
     @Test
@@ -282,16 +300,16 @@ public class StateResourceIntTest {
     public void searchState() throws Exception {
         // Initialize the database
         stateRepository.saveAndFlush(state);
-        stateSearchRepository.save(state);
-
+        when(mockStateSearchRepository.search(queryStringQuery("id:" + state.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(state), PageRequest.of(0, 1), 1));
         // Search the state
         restStateMockMvc.perform(get("/api/_search/states?query=id:" + state.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(state.getId().intValue())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
-            .andExpect(jsonPath("$.[*].label").value(hasItem(DEFAULT_LABEL.toString())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())));
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
+            .andExpect(jsonPath("$.[*].label").value(hasItem(DEFAULT_LABEL)))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)));
     }
 
     @Test

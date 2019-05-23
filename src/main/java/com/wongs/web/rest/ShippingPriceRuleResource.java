@@ -1,8 +1,5 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.domain.ShippingPriceRule;
-
 import com.wongs.repository.ShippingPriceRuleRepository;
 import com.wongs.repository.search.ShippingPriceRuleSearchRepository;
 import com.wongs.web.rest.errors.BadRequestAlertException;
@@ -56,7 +53,6 @@ public class ShippingPriceRuleResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/shipping-price-rules")
-    @Timed
     public ResponseEntity<ShippingPriceRule> createShippingPriceRule(@RequestBody ShippingPriceRule shippingPriceRule) throws URISyntaxException {
         log.debug("REST request to save ShippingPriceRule : {}", shippingPriceRule);
         if (shippingPriceRule.getId() != null) {
@@ -79,11 +75,10 @@ public class ShippingPriceRuleResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/shipping-price-rules")
-    @Timed
     public ResponseEntity<ShippingPriceRule> updateShippingPriceRule(@RequestBody ShippingPriceRule shippingPriceRule) throws URISyntaxException {
         log.debug("REST request to update ShippingPriceRule : {}", shippingPriceRule);
         if (shippingPriceRule.getId() == null) {
-            return createShippingPriceRule(shippingPriceRule);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         ShippingPriceRule result = shippingPriceRuleRepository.save(shippingPriceRule);
         shippingPriceRuleSearchRepository.save(result);
@@ -99,12 +94,11 @@ public class ShippingPriceRuleResource {
      * @return the ResponseEntity with status 200 (OK) and the list of shippingPriceRules in body
      */
     @GetMapping("/shipping-price-rules")
-    @Timed
     public ResponseEntity<List<ShippingPriceRule>> getAllShippingPriceRules(Pageable pageable) {
         log.debug("REST request to get a page of ShippingPriceRules");
         Page<ShippingPriceRule> page = shippingPriceRuleRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/shipping-price-rules");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -114,11 +108,10 @@ public class ShippingPriceRuleResource {
      * @return the ResponseEntity with status 200 (OK) and with body the shippingPriceRule, or with status 404 (Not Found)
      */
     @GetMapping("/shipping-price-rules/{id}")
-    @Timed
     public ResponseEntity<ShippingPriceRule> getShippingPriceRule(@PathVariable Long id) {
         log.debug("REST request to get ShippingPriceRule : {}", id);
-        ShippingPriceRule shippingPriceRule = shippingPriceRuleRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(shippingPriceRule));
+        Optional<ShippingPriceRule> shippingPriceRule = shippingPriceRuleRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(shippingPriceRule);
     }
 
     /**
@@ -128,11 +121,10 @@ public class ShippingPriceRuleResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/shipping-price-rules/{id}")
-    @Timed
     public ResponseEntity<Void> deleteShippingPriceRule(@PathVariable Long id) {
         log.debug("REST request to delete ShippingPriceRule : {}", id);
-        shippingPriceRuleRepository.delete(id);
-        shippingPriceRuleSearchRepository.delete(id);
+        shippingPriceRuleRepository.deleteById(id);
+        shippingPriceRuleSearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -145,12 +137,11 @@ public class ShippingPriceRuleResource {
      * @return the result of the search
      */
     @GetMapping("/_search/shipping-price-rules")
-    @Timed
     public ResponseEntity<List<ShippingPriceRule>> searchShippingPriceRules(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of ShippingPriceRules for query {}", query);
         Page<ShippingPriceRule> page = shippingPriceRuleSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/shipping-price-rules");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
 }

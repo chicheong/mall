@@ -6,9 +6,7 @@ import com.wongs.domain.ProductItem;
 import com.wongs.repository.ProductItemRepository;
 import com.wongs.repository.search.ProductItemSearchRepository;
 import com.wongs.service.dto.ProductItemDTO;
-import com.wongs.service.mapper.PriceMapper;
 import com.wongs.service.mapper.ProductItemMapper;
-import com.wongs.service.mapper.QuantityMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -17,6 +15,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -24,14 +24,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -65,15 +70,14 @@ public class ProductItemResourceIntTest {
 
     @Autowired
     private ProductItemMapper productItemMapper;
-    
-    @Autowired
-    private PriceMapper priceMapper;
-    
-    @Autowired
-    private QuantityMapper quantityMapper;
 
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.ProductItemSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private ProductItemSearchRepository productItemSearchRepository;
+    private ProductItemSearchRepository mockProductItemSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -87,6 +91,9 @@ public class ProductItemResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restProductItemMockMvc;
 
     private ProductItem productItem;
@@ -94,12 +101,13 @@ public class ProductItemResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ProductItemResource productItemResource = new ProductItemResource(productItemMapper, priceMapper, quantityMapper, productItemRepository, productItemSearchRepository);
+        final ProductItemResource productItemResource = new ProductItemResource(productItemRepository, productItemMapper, mockProductItemSearchRepository);
         this.restProductItemMockMvc = MockMvcBuilders.standaloneSetup(productItemResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -120,7 +128,6 @@ public class ProductItemResourceIntTest {
 
     @Before
     public void initTest() {
-        productItemSearchRepository.deleteAll();
         productItem = createEntity(em);
     }
 
@@ -147,8 +154,7 @@ public class ProductItemResourceIntTest {
         assertThat(testProductItem.getPrice()).isEqualTo(DEFAULT_PRICE);
 
         // Validate the ProductItem in Elasticsearch
-        ProductItem productItemEs = productItemSearchRepository.findOne(testProductItem.getId());
-        assertThat(productItemEs).isEqualToIgnoringGivenFields(testProductItem);
+        verify(mockProductItemSearchRepository, times(1)).save(testProductItem);
     }
 
     @Test
@@ -169,6 +175,9 @@ public class ProductItemResourceIntTest {
         // Validate the ProductItem in the database
         List<ProductItem> productItemList = productItemRepository.findAll();
         assertThat(productItemList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the ProductItem in Elasticsearch
+        verify(mockProductItemSearchRepository, times(0)).save(productItem);
     }
 
     @Test
@@ -188,7 +197,7 @@ public class ProductItemResourceIntTest {
             .andExpect(jsonPath("$.[*].currency").value(hasItem(DEFAULT_CURRENCY.toString())))
             .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())));
     }
-
+    
     @Test
     @Transactional
     public void getProductItem() throws Exception {
@@ -220,11 +229,11 @@ public class ProductItemResourceIntTest {
     public void updateProductItem() throws Exception {
         // Initialize the database
         productItemRepository.saveAndFlush(productItem);
-        productItemSearchRepository.save(productItem);
+
         int databaseSizeBeforeUpdate = productItemRepository.findAll().size();
 
         // Update the productItem
-        ProductItem updatedProductItem = productItemRepository.findOne(productItem.getId());
+        ProductItem updatedProductItem = productItemRepository.findById(productItem.getId()).get();
         // Disconnect from session so that the updates on updatedProductItem are not directly saved in db
         em.detach(updatedProductItem);
         updatedProductItem
@@ -251,8 +260,7 @@ public class ProductItemResourceIntTest {
         assertThat(testProductItem.getPrice()).isEqualTo(UPDATED_PRICE);
 
         // Validate the ProductItem in Elasticsearch
-        ProductItem productItemEs = productItemSearchRepository.findOne(testProductItem.getId());
-        assertThat(productItemEs).isEqualToIgnoringGivenFields(testProductItem);
+        verify(mockProductItemSearchRepository, times(1)).save(testProductItem);
     }
 
     @Test
@@ -263,15 +271,18 @@ public class ProductItemResourceIntTest {
         // Create the ProductItem
         ProductItemDTO productItemDTO = productItemMapper.toDto(productItem);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restProductItemMockMvc.perform(put("/api/product-items")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(productItemDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the ProductItem in the database
         List<ProductItem> productItemList = productItemRepository.findAll();
-        assertThat(productItemList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(productItemList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the ProductItem in Elasticsearch
+        verify(mockProductItemSearchRepository, times(0)).save(productItem);
     }
 
     @Test
@@ -279,21 +290,20 @@ public class ProductItemResourceIntTest {
     public void deleteProductItem() throws Exception {
         // Initialize the database
         productItemRepository.saveAndFlush(productItem);
-        productItemSearchRepository.save(productItem);
+
         int databaseSizeBeforeDelete = productItemRepository.findAll().size();
 
-        // Get the productItem
+        // Delete the productItem
         restProductItemMockMvc.perform(delete("/api/product-items/{id}", productItem.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean productItemExistsInEs = productItemSearchRepository.exists(productItem.getId());
-        assertThat(productItemExistsInEs).isFalse();
-
         // Validate the database is empty
         List<ProductItem> productItemList = productItemRepository.findAll();
         assertThat(productItemList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the ProductItem in Elasticsearch
+        verify(mockProductItemSearchRepository, times(1)).deleteById(productItem.getId());
     }
 
     @Test
@@ -301,14 +311,14 @@ public class ProductItemResourceIntTest {
     public void searchProductItem() throws Exception {
         // Initialize the database
         productItemRepository.saveAndFlush(productItem);
-        productItemSearchRepository.save(productItem);
-
+        when(mockProductItemSearchRepository.search(queryStringQuery("id:" + productItem.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(productItem), PageRequest.of(0, 1), 1));
         // Search the productItem
         restProductItemMockMvc.perform(get("/api/_search/product-items?query=id:" + productItem.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(productItem.getId().intValue())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].isDefault").value(hasItem(DEFAULT_IS_DEFAULT.booleanValue())))
             .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY)))
             .andExpect(jsonPath("$.[*].currency").value(hasItem(DEFAULT_CURRENCY.toString())))

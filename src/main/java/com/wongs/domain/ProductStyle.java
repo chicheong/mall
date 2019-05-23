@@ -1,5 +1,7 @@
 package com.wongs.domain;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -21,7 +23,7 @@ import com.wongs.domain.enumeration.ProductStyleType;
 public class ProductStyle implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -40,6 +42,7 @@ public class ProductStyle implements Serializable {
     private ProductStyleType type;
 
     @ManyToOne
+    @JsonIgnoreProperties("styles")
     private Product product;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
@@ -129,10 +132,7 @@ public class ProductStyle implements Serializable {
         if (productStyle.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(getId(), productStyle.getId()) &&
-        		Objects.equals(getName(), productStyle.getName()) &&
-        		Objects.equals(getCode(), productStyle.getCode()) &&
-        		Objects.equals(isIsDefault(), productStyle.isIsDefault());
+        return Objects.equals(getId(), productStyle.getId());
     }
 
     @Override

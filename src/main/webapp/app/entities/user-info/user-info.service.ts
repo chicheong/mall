@@ -1,81 +1,44 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { SERVER_API_URL } from '../../app.constants';
+import { Observable } from 'rxjs';
 
-import { UserInfo } from './user-info.model';
-import { createRequestOption } from '../../shared';
+import { SERVER_API_URL } from 'app/app.constants';
+import { createRequestOption } from 'app/shared';
+import { IUserInfo } from 'app/shared/model/user-info.model';
 
-export type EntityResponseType = HttpResponse<UserInfo>;
+type EntityResponseType = HttpResponse<IUserInfo>;
+type EntityArrayResponseType = HttpResponse<IUserInfo[]>;
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class UserInfoService {
+    public resourceUrl = SERVER_API_URL + 'api/user-infos';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/user-infos';
 
-    private resourceUrl =  SERVER_API_URL + 'api/user-infos';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/user-infos';
+    constructor(protected http: HttpClient) {}
 
-    constructor(private http: HttpClient) { }
-
-    create(userInfo: UserInfo): Observable<EntityResponseType> {
-        const copy = this.convert(userInfo);
-        return this.http.post<UserInfo>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    create(userInfo: IUserInfo): Observable<EntityResponseType> {
+        return this.http.post<IUserInfo>(this.resourceUrl, userInfo, { observe: 'response' });
     }
 
-    update(userInfo: UserInfo): Observable<EntityResponseType> {
-        const copy = this.convert(userInfo);
-        return this.http.put<UserInfo>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    update(userInfo: IUserInfo): Observable<EntityResponseType> {
+        return this.http.put<IUserInfo>(this.resourceUrl, userInfo, { observe: 'response' });
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<UserInfo>(`${this.resourceUrl}/${id}`, { observe: 'response'})
-            .map((res: EntityResponseType) => this.convertResponse(res));
+        return this.http.get<IUserInfo>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    query(req?: any): Observable<HttpResponse<UserInfo[]>> {
+    query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<UserInfo[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<UserInfo[]>) => this.convertArrayResponse(res));
+        return this.http.get<IUserInfo[]>(this.resourceUrl, { params: options, observe: 'response' });
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    search(req?: any): Observable<HttpResponse<UserInfo[]>> {
+    search(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<UserInfo[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<UserInfo[]>) => this.convertArrayResponse(res));
-    }
-
-    private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: UserInfo = this.convertItemFromServer(res.body);
-        return res.clone({body});
-    }
-
-    private convertArrayResponse(res: HttpResponse<UserInfo[]>): HttpResponse<UserInfo[]> {
-        const jsonResponse: UserInfo[] = res.body;
-        const body: UserInfo[] = [];
-        for (let i = 0; i < jsonResponse.length; i++) {
-            body.push(this.convertItemFromServer(jsonResponse[i]));
-        }
-        return res.clone({body});
-    }
-
-    /**
-     * Convert a returned JSON object to UserInfo.
-     */
-    private convertItemFromServer(userInfo: UserInfo): UserInfo {
-        const copy: UserInfo = Object.assign({}, userInfo);
-        return copy;
-    }
-
-    /**
-     * Convert a UserInfo to a JSON which can be sent to the server.
-     */
-    private convert(userInfo: UserInfo): UserInfo {
-        const copy: UserInfo = Object.assign({}, userInfo);
-        return copy;
+        return this.http.get<IUserInfo[]>(this.resourceSearchUrl, { params: options, observe: 'response' });
     }
 }

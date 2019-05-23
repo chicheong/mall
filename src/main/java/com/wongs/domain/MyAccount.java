@@ -1,6 +1,8 @@
 package com.wongs.domain;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -25,12 +27,12 @@ import com.wongs.domain.enumeration.AccountType;
 public class MyAccount implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "balance", precision=10, scale=2)
+    @Column(name = "balance", precision = 10, scale = 2)
     private BigDecimal balance;
 
     @Enumerated(EnumType.STRING)
@@ -38,29 +40,30 @@ public class MyAccount implements Serializable {
     private AccountType type;
 
     @OneToMany(mappedBy = "account")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Delegation> delegations = new HashSet<>();
-
     @ManyToOne
+    @JsonIgnoreProperties("accounts")
     private Company company;
 
     @ManyToOne
+    @JsonIgnoreProperties("accounts")
     private Department department;
 
     @ManyToOne
+    @JsonIgnoreProperties("accounts")
     private Office office;
 
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "my_account_shop",
-               joinColumns = @JoinColumn(name="my_accounts_id", referencedColumnName="id"),
-               inverseJoinColumns = @JoinColumn(name="shops_id", referencedColumnName="id"))
+               joinColumns = @JoinColumn(name = "my_account_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "shop_id", referencedColumnName = "id"))
     private Set<Shop> shops = new HashSet<>();
 
     @ManyToMany(mappedBy = "accounts")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JsonIgnore
     private Set<UserInfo> userInfos = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

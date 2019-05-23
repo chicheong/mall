@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "currencyRate" : {
+        "currencyRate": {
             "home": {
                 "title": "Currency Rates",
                 "createLabel": "Create a new Currency Rate",

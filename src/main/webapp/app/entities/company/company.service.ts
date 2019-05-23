@@ -1,81 +1,44 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { SERVER_API_URL } from '../../app.constants';
+import { Observable } from 'rxjs';
 
-import { Company } from './company.model';
-import { createRequestOption } from '../../shared';
+import { SERVER_API_URL } from 'app/app.constants';
+import { createRequestOption } from 'app/shared';
+import { ICompany } from 'app/shared/model/company.model';
 
-export type EntityResponseType = HttpResponse<Company>;
+type EntityResponseType = HttpResponse<ICompany>;
+type EntityArrayResponseType = HttpResponse<ICompany[]>;
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class CompanyService {
+    public resourceUrl = SERVER_API_URL + 'api/companies';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/companies';
 
-    private resourceUrl =  SERVER_API_URL + 'api/companies';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/companies';
+    constructor(protected http: HttpClient) {}
 
-    constructor(private http: HttpClient) { }
-
-    create(company: Company): Observable<EntityResponseType> {
-        const copy = this.convert(company);
-        return this.http.post<Company>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    create(company: ICompany): Observable<EntityResponseType> {
+        return this.http.post<ICompany>(this.resourceUrl, company, { observe: 'response' });
     }
 
-    update(company: Company): Observable<EntityResponseType> {
-        const copy = this.convert(company);
-        return this.http.put<Company>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    update(company: ICompany): Observable<EntityResponseType> {
+        return this.http.put<ICompany>(this.resourceUrl, company, { observe: 'response' });
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<Company>(`${this.resourceUrl}/${id}`, { observe: 'response'})
-            .map((res: EntityResponseType) => this.convertResponse(res));
+        return this.http.get<ICompany>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    query(req?: any): Observable<HttpResponse<Company[]>> {
+    query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Company[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Company[]>) => this.convertArrayResponse(res));
+        return this.http.get<ICompany[]>(this.resourceUrl, { params: options, observe: 'response' });
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    search(req?: any): Observable<HttpResponse<Company[]>> {
+    search(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Company[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Company[]>) => this.convertArrayResponse(res));
-    }
-
-    private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: Company = this.convertItemFromServer(res.body);
-        return res.clone({body});
-    }
-
-    private convertArrayResponse(res: HttpResponse<Company[]>): HttpResponse<Company[]> {
-        const jsonResponse: Company[] = res.body;
-        const body: Company[] = [];
-        for (let i = 0; i < jsonResponse.length; i++) {
-            body.push(this.convertItemFromServer(jsonResponse[i]));
-        }
-        return res.clone({body});
-    }
-
-    /**
-     * Convert a returned JSON object to Company.
-     */
-    private convertItemFromServer(company: Company): Company {
-        const copy: Company = Object.assign({}, company);
-        return copy;
-    }
-
-    /**
-     * Convert a Company to a JSON which can be sent to the server.
-     */
-    private convert(company: Company): Company {
-        const copy: Company = Object.assign({}, company);
-        return copy;
+        return this.http.get<ICompany[]>(this.resourceSearchUrl, { params: options, observe: 'response' });
     }
 }

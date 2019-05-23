@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "company" : {
+        "company": {
             "home": {
                 "title": "Companies",
                 "createLabel": "建立一筆新的 Company",

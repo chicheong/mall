@@ -1,8 +1,8 @@
 <div>
-    <h2>
+    <h2 id="page-heading">
         <span jhiTranslate="mallApp.productItem.home.title">Product Items</span>
-        <button class="btn btn-primary float-right jh-create-entity create-product-item" [routerLink]="['/', { outlets: { popup: ['product-item-new'] } }]">
-            <span class="fa fa-plus"></span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-product-item" [routerLink]="['/product-item/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
             <span class="hidden-sm-down"  jhiTranslate="mallApp.productItem.home.createLabel">
             Create new Product Item
             </span>
@@ -15,10 +15,10 @@
                 <div class="input-group w-100 mt-3">
                     <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'mallApp.productItem.home.search' | translate }}">
                     <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
-                        <span class="fa fa-search"></span>
+                        <fa-icon [icon]="'search'"></fa-icon>
                     </button>
                     <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
-                        <span class="fa fa-trash-o"></span>
+                        <fa-icon [icon]="'trash-alt'"></fa-icon>
                     </button>
                 </div>
             </form>
@@ -29,63 +29,49 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="code"><span jhiTranslate="mallApp.productItem.code">Code</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="isDefault"><span jhiTranslate="mallApp.productItem.isDefault">Is Default</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="quantity"><span jhiTranslate="mallApp.productItem.quantity">Quantity</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="currency"><span jhiTranslate="mallApp.productItem.currency">Currency</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="price"><span jhiTranslate="mallApp.productItem.price">Price</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="color.id"><span jhiTranslate="mallApp.productItem.color">Color</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="size.id"><span jhiTranslate="mallApp.productItem.size">Size</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="product.id"><span jhiTranslate="mallApp.productItem.product">Product</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="code"><span jhiTranslate="mallApp.productItem.code">Code</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="isDefault"><span jhiTranslate="mallApp.productItem.isDefault">Is Default</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="quantity"><span jhiTranslate="mallApp.productItem.quantity">Quantity</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="currency"><span jhiTranslate="mallApp.productItem.currency">Currency</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="price"><span jhiTranslate="mallApp.productItem.price">Price</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="productId"><span jhiTranslate="mallApp.productItem.product">Product</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let productItem of productItems ;trackBy: trackId">
-                <td><a [routerLink]="['../product-item', productItem.id ]">{{productItem.id}}</a></td>
+                <td><a [routerLink]="['/product-item', productItem.id, 'view' ]">{{productItem.id}}</a></td>
                 <td>{{productItem.code}}</td>
                 <td>{{productItem.isDefault}}</td>
                 <td>{{productItem.quantity}}</td>
                 <td jhiTranslate="{{'mallApp.CurrencyType.' + productItem.currency}}">{{productItem.currency}}</td>
                 <td>{{productItem.price}}</td>
                 <td>
-                    <div *ngIf="productItem.color">
-                        <a [routerLink]="['../product-style', productItem.color?.id ]" >{{productItem.color?.id}}</a>
-                    </div>
-                </td>
-                <td>
-                    <div *ngIf="productItem.size">
-                        <a [routerLink]="['../product-style', productItem.size?.id ]" >{{productItem.size?.id}}</a>
-                    </div>
-                </td>
-                <td>
-                    <div *ngIf="productItem.product">
-                        <a [routerLink]="['../product', productItem.product?.id ]" >{{productItem.product?.id}}</a>
+                    <div *ngIf="productItem.productId">
+                        <a [routerLink]="['../product', productItem.productId , 'view' ]" >{{productItem.productId}}</a>
                     </div>
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
-                                [routerLink]="['../product-item', productItem.id ]"
+                                [routerLink]="['/product-item', productItem.id, 'view' ]"
                                 class="btn btn-info btn-sm">
-                            <span class="fa fa-eye"></span>
+                            <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'product-item/'+ productItem.id + '/edit'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
+                                [routerLink]="['/product-item', productItem.id, 'edit']"
                                 class="btn btn-primary btn-sm">
-                            <span class="fa fa-pencil"></span>
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'product-item/'+ productItem.id + '/delete'} }]"
+                                [routerLink]="['/', 'product-item', { outlets: { popup: productItem.id + '/delete'} }]"
                                 replaceUrl="true"
                                 queryParamsHandling="merge"
                                 class="btn btn-danger btn-sm">
-                            <span class="fa fa-remove"></span>
+                            <fa-icon [icon]="'times'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
                         </button>
                     </div>
@@ -96,7 +82,7 @@
     </div>
     <div *ngIf="productItems && productItems.length">
         <div class="row justify-content-center">
-            <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+            <jhi-item-count [page]="page" [total]="totalItems" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
         </div>
         <div class="row justify-content-center">
             <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>

@@ -1,8 +1,5 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.domain.State;
-
 import com.wongs.repository.StateRepository;
 import com.wongs.repository.search.StateSearchRepository;
 import com.wongs.web.rest.errors.BadRequestAlertException;
@@ -57,7 +54,6 @@ public class StateResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/states")
-    @Timed
     public ResponseEntity<State> createState(@Valid @RequestBody State state) throws URISyntaxException {
         log.debug("REST request to save State : {}", state);
         if (state.getId() != null) {
@@ -80,11 +76,10 @@ public class StateResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/states")
-    @Timed
     public ResponseEntity<State> updateState(@Valid @RequestBody State state) throws URISyntaxException {
         log.debug("REST request to update State : {}", state);
         if (state.getId() == null) {
-            return createState(state);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         State result = stateRepository.save(state);
         stateSearchRepository.save(result);
@@ -100,12 +95,11 @@ public class StateResource {
      * @return the ResponseEntity with status 200 (OK) and the list of states in body
      */
     @GetMapping("/states")
-    @Timed
     public ResponseEntity<List<State>> getAllStates(Pageable pageable) {
         log.debug("REST request to get a page of States");
         Page<State> page = stateRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/states");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -115,11 +109,10 @@ public class StateResource {
      * @return the ResponseEntity with status 200 (OK) and with body the state, or with status 404 (Not Found)
      */
     @GetMapping("/states/{id}")
-    @Timed
     public ResponseEntity<State> getState(@PathVariable Long id) {
         log.debug("REST request to get State : {}", id);
-        State state = stateRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(state));
+        Optional<State> state = stateRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(state);
     }
 
     /**
@@ -129,11 +122,10 @@ public class StateResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/states/{id}")
-    @Timed
     public ResponseEntity<Void> deleteState(@PathVariable Long id) {
         log.debug("REST request to delete State : {}", id);
-        stateRepository.delete(id);
-        stateSearchRepository.delete(id);
+        stateRepository.deleteById(id);
+        stateSearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -146,12 +138,11 @@ public class StateResource {
      * @return the result of the search
      */
     @GetMapping("/_search/states")
-    @Timed
     public ResponseEntity<List<State>> searchStates(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of States for query {}", query);
         Page<State> page = stateSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/states");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
 }

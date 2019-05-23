@@ -1,6 +1,6 @@
 {
     "mallApp": {
-        "ProductStatus" : {
+        "ProductStatus": {
             "null": "",
             "ACTIVE": "ACTIVE",
             "RESTRICTED": "RESTRICTED",

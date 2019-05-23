@@ -1,13 +1,12 @@
 package com.wongs.repository;
 
 import com.wongs.domain.ShippingStatusHistory;
-import org.springframework.stereotype.Repository;
-
 import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.Repository;
 
 
 /**
- * Spring Data JPA repository for the ShippingStatusHistory entity.
+ * Spring Data  repository for the ShippingStatusHistory entity.
  */
 @SuppressWarnings("unused")
 @Repository

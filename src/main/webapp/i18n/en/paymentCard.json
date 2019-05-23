@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "paymentCard" : {
+        "paymentCard": {
             "home": {
                 "title": "Payment Cards",
                 "createLabel": "Create a new Payment Card",

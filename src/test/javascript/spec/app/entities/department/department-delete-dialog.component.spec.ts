@@ -1,15 +1,14 @@
 /* tslint:disable max-line-length */
-import { ComponentFixture, TestBed, async, inject, fakeAsync, tick } from '@angular/core/testing';
+import { ComponentFixture, TestBed, inject, fakeAsync, tick } from '@angular/core/testing';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Observable } from 'rxjs/Observable';
+import { Observable, of } from 'rxjs';
 import { JhiEventManager } from 'ng-jhipster';
 
 import { MallTestModule } from '../../../test.module';
-import { DepartmentDeleteDialogComponent } from '../../../../../../main/webapp/app/entities/department/department-delete-dialog.component';
-import { DepartmentService } from '../../../../../../main/webapp/app/entities/department/department.service';
+import { DepartmentDeleteDialogComponent } from 'app/entities/department/department-delete-dialog.component';
+import { DepartmentService } from 'app/entities/department/department.service';
 
 describe('Component Tests', () => {
-
     describe('Department Management Delete Component', () => {
         let comp: DepartmentDeleteDialogComponent;
         let fixture: ComponentFixture<DepartmentDeleteDialogComponent>;
@@ -17,19 +16,13 @@ describe('Component Tests', () => {
         let mockEventManager: any;
         let mockActiveModal: any;
 
-        beforeEach(async(() => {
+        beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [MallTestModule],
-                declarations: [DepartmentDeleteDialogComponent],
-                providers: [
-                    DepartmentService
-                ]
+                declarations: [DepartmentDeleteDialogComponent]
             })
-            .overrideTemplate(DepartmentDeleteDialogComponent, '')
-            .compileComponents();
-        }));
-
-        beforeEach(() => {
+                .overrideTemplate(DepartmentDeleteDialogComponent, '')
+                .compileComponents();
             fixture = TestBed.createComponent(DepartmentDeleteDialogComponent);
             comp = fixture.componentInstance;
             service = fixture.debugElement.injector.get(DepartmentService);
@@ -38,24 +31,22 @@ describe('Component Tests', () => {
         });
 
         describe('confirmDelete', () => {
-            it('Should call delete service on confirmDelete',
-                inject([],
-                    fakeAsync(() => {
-                        // GIVEN
-                        spyOn(service, 'delete').and.returnValue(Observable.of({}));
+            it('Should call delete service on confirmDelete', inject(
+                [],
+                fakeAsync(() => {
+                    // GIVEN
+                    spyOn(service, 'delete').and.returnValue(of({}));
 
-                        // WHEN
-                        comp.confirmDelete(123);
-                        tick();
+                    // WHEN
+                    comp.confirmDelete(123);
+                    tick();
 
-                        // THEN
-                        expect(service.delete).toHaveBeenCalledWith(123);
-                        expect(mockActiveModal.dismissSpy).toHaveBeenCalled();
-                        expect(mockEventManager.broadcastSpy).toHaveBeenCalled();
-                    })
-                )
-            );
+                    // THEN
+                    expect(service.delete).toHaveBeenCalledWith(123);
+                    expect(mockActiveModal.dismissSpy).toHaveBeenCalled();
+                    expect(mockEventManager.broadcastSpy).toHaveBeenCalled();
+                })
+            ));
         });
     });
-
 });

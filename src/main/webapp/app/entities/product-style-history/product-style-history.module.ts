@@ -1,49 +1,45 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { JhiLanguageService } from 'ng-jhipster';
+import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from '../../shared';
+import { MallSharedModule } from 'app/shared';
 import {
-    ProductStyleHistoryService,
-    ProductStyleHistoryPopupService,
     ProductStyleHistoryComponent,
     ProductStyleHistoryDetailComponent,
-    ProductStyleHistoryDialogComponent,
-    ProductStyleHistoryPopupComponent,
+    ProductStyleHistoryUpdateComponent,
     ProductStyleHistoryDeletePopupComponent,
     ProductStyleHistoryDeleteDialogComponent,
     productStyleHistoryRoute,
-    productStyleHistoryPopupRoute,
+    productStyleHistoryPopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...productStyleHistoryRoute,
-    ...productStyleHistoryPopupRoute,
-];
+const ENTITY_STATES = [...productStyleHistoryRoute, ...productStyleHistoryPopupRoute];
 
 @NgModule({
-    imports: [
-        MallSharedModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         ProductStyleHistoryComponent,
         ProductStyleHistoryDetailComponent,
-        ProductStyleHistoryDialogComponent,
+        ProductStyleHistoryUpdateComponent,
         ProductStyleHistoryDeleteDialogComponent,
-        ProductStyleHistoryPopupComponent,
-        ProductStyleHistoryDeletePopupComponent,
+        ProductStyleHistoryDeletePopupComponent
     ],
     entryComponents: [
         ProductStyleHistoryComponent,
-        ProductStyleHistoryDialogComponent,
-        ProductStyleHistoryPopupComponent,
+        ProductStyleHistoryUpdateComponent,
         ProductStyleHistoryDeleteDialogComponent,
-        ProductStyleHistoryDeletePopupComponent,
+        ProductStyleHistoryDeletePopupComponent
     ],
-    providers: [
-        ProductStyleHistoryService,
-        ProductStyleHistoryPopupService,
-    ],
+    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MallProductStyleHistoryModule {}
+export class MallProductStyleHistoryModule {
+    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
+        this.languageHelper.language.subscribe((languageKey: string) => {
+            if (languageKey !== undefined) {
+                this.languageService.changeLanguage(languageKey);
+            }
+        });
+    }
+}

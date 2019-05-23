@@ -1,44 +1,78 @@
 import { Injectable } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiPaginationUtil } from 'ng-jhipster';
-
-import { UserRouteAccessService } from '../../shared';
+import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
+import { UserRouteAccessService } from 'app/core';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { Company } from 'app/shared/model/company.model';
+import { CompanyService } from './company.service';
 import { CompanyComponent } from './company.component';
 import { CompanyDetailComponent } from './company-detail.component';
-import { CompanyPopupComponent } from './company-dialog.component';
+import { CompanyUpdateComponent } from './company-update.component';
 import { CompanyDeletePopupComponent } from './company-delete-dialog.component';
+import { ICompany } from 'app/shared/model/company.model';
 
-@Injectable()
-export class CompanyResolvePagingParams implements Resolve<any> {
+@Injectable({ providedIn: 'root' })
+export class CompanyResolve implements Resolve<ICompany> {
+    constructor(private service: CompanyService) {}
 
-    constructor(private paginationUtil: JhiPaginationUtil) {}
-
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        const page = route.queryParams['page'] ? route.queryParams['page'] : '1';
-        const sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'id,asc';
-        return {
-            page: this.paginationUtil.parsePage(page),
-            predicate: this.paginationUtil.parsePredicate(sort),
-            ascending: this.paginationUtil.parseAscending(sort)
-      };
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ICompany> {
+        const id = route.params['id'] ? route.params['id'] : null;
+        if (id) {
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<Company>) => response.ok),
+                map((company: HttpResponse<Company>) => company.body)
+            );
+        }
+        return of(new Company());
     }
 }
 
 export const companyRoute: Routes = [
     {
-        path: 'company',
+        path: '',
         component: CompanyComponent,
         resolve: {
-            'pagingParams': CompanyResolvePagingParams
+            pagingParams: JhiResolvePagingParams
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            defaultSort: 'id,asc',
+            pageTitle: 'mallApp.company.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/view',
+        component: CompanyDetailComponent,
+        resolve: {
+            company: CompanyResolve
         },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.company.home.title'
         },
         canActivate: [UserRouteAccessService]
-    }, {
-        path: 'company/:id',
-        component: CompanyDetailComponent,
+    },
+    {
+        path: 'new',
+        component: CompanyUpdateComponent,
+        resolve: {
+            company: CompanyResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.company.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/edit',
+        component: CompanyUpdateComponent,
+        resolve: {
+            company: CompanyResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.company.home.title'
@@ -49,28 +83,11 @@ export const companyRoute: Routes = [
 
 export const companyPopupRoute: Routes = [
     {
-        path: 'company-new',
-        component: CompanyPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.company.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'company/:id/edit',
-        component: CompanyPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.company.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'company/:id/delete',
+        path: ':id/delete',
         component: CompanyDeletePopupComponent,
+        resolve: {
+            company: CompanyResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.company.home.title'

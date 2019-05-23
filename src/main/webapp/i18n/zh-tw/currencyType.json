@@ -1,6 +1,6 @@
 {
     "mallApp": {
-        "CurrencyType" : {
+        "CurrencyType": {
             "null": "",
             "HKD": "HKD",
             "CNY": "CNY",

@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "url" : {
+        "url": {
             "home": {
                 "title": "Urls",
                 "createLabel": "Create a new Url",
@@ -12,7 +11,7 @@
             "updated": "A Url is updated with identifier {{ param }}",
             "deleted": "A Url is deleted with identifier {{ param }}",
             "delete": {
-                "question": "Are you sure you want to delete this one?"
+                "question": "Are you sure you want to delete Url {{ id }}?"
             },
             "detail": {
                 "title": "Url"

@@ -1,6 +1,4 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.service.UserInfoService;
 import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
@@ -50,7 +48,6 @@ public class UserInfoResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/user-infos")
-    @Timed
     public ResponseEntity<UserInfoDTO> createUserInfo(@RequestBody UserInfoDTO userInfoDTO) throws URISyntaxException {
         log.debug("REST request to save UserInfo : {}", userInfoDTO);
         if (userInfoDTO.getId() != null) {
@@ -72,11 +69,10 @@ public class UserInfoResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/user-infos")
-    @Timed
     public ResponseEntity<UserInfoDTO> updateUserInfo(@RequestBody UserInfoDTO userInfoDTO) throws URISyntaxException {
         log.debug("REST request to update UserInfo : {}", userInfoDTO);
         if (userInfoDTO.getId() == null) {
-            return createUserInfo(userInfoDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         UserInfoDTO result = userInfoService.save(userInfoDTO);
         return ResponseEntity.ok()
@@ -88,15 +84,20 @@ public class UserInfoResource {
      * GET  /user-infos : get all the userInfos.
      *
      * @param pageable the pagination information
+     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many)
      * @return the ResponseEntity with status 200 (OK) and the list of userInfos in body
      */
     @GetMapping("/user-infos")
-    @Timed
-    public ResponseEntity<List<UserInfoDTO>> getAllUserInfos(Pageable pageable) {
+    public ResponseEntity<List<UserInfoDTO>> getAllUserInfos(Pageable pageable, @RequestParam(required = false, defaultValue = "false") boolean eagerload) {
         log.debug("REST request to get a page of UserInfos");
-        Page<UserInfoDTO> page = userInfoService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/user-infos");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        Page<UserInfoDTO> page;
+        if (eagerload) {
+            page = userInfoService.findAllWithEagerRelationships(pageable);
+        } else {
+            page = userInfoService.findAll(pageable);
+        }
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, String.format("/api/user-infos?eagerload=%b", eagerload));
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -106,11 +107,10 @@ public class UserInfoResource {
      * @return the ResponseEntity with status 200 (OK) and with body the userInfoDTO, or with status 404 (Not Found)
      */
     @GetMapping("/user-infos/{id}")
-    @Timed
     public ResponseEntity<UserInfoDTO> getUserInfo(@PathVariable Long id) {
         log.debug("REST request to get UserInfo : {}", id);
-        UserInfoDTO userInfoDTO = userInfoService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(userInfoDTO));
+        Optional<UserInfoDTO> userInfoDTO = userInfoService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(userInfoDTO);
     }
 
     /**
@@ -120,7 +120,6 @@ public class UserInfoResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/user-infos/{id}")
-    @Timed
     public ResponseEntity<Void> deleteUserInfo(@PathVariable Long id) {
         log.debug("REST request to delete UserInfo : {}", id);
         userInfoService.delete(id);
@@ -136,12 +135,11 @@ public class UserInfoResource {
      * @return the result of the search
      */
     @GetMapping("/_search/user-infos")
-    @Timed
     public ResponseEntity<List<UserInfoDTO>> searchUserInfos(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of UserInfos for query {}", query);
         Page<UserInfoDTO> page = userInfoService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/user-infos");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
 }

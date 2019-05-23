@@ -1,8 +1,5 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.domain.Country;
-
 import com.wongs.repository.CountryRepository;
 import com.wongs.repository.search.CountrySearchRepository;
 import com.wongs.web.rest.errors.BadRequestAlertException;
@@ -57,7 +54,6 @@ public class CountryResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/countries")
-    @Timed
     public ResponseEntity<Country> createCountry(@Valid @RequestBody Country country) throws URISyntaxException {
         log.debug("REST request to save Country : {}", country);
         if (country.getId() != null) {
@@ -80,11 +76,10 @@ public class CountryResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/countries")
-    @Timed
     public ResponseEntity<Country> updateCountry(@Valid @RequestBody Country country) throws URISyntaxException {
         log.debug("REST request to update Country : {}", country);
         if (country.getId() == null) {
-            return createCountry(country);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         Country result = countryRepository.save(country);
         countrySearchRepository.save(result);
@@ -100,12 +95,11 @@ public class CountryResource {
      * @return the ResponseEntity with status 200 (OK) and the list of countries in body
      */
     @GetMapping("/countries")
-    @Timed
     public ResponseEntity<List<Country>> getAllCountries(Pageable pageable) {
         log.debug("REST request to get a page of Countries");
         Page<Country> page = countryRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/countries");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -115,11 +109,10 @@ public class CountryResource {
      * @return the ResponseEntity with status 200 (OK) and with body the country, or with status 404 (Not Found)
      */
     @GetMapping("/countries/{id}")
-    @Timed
     public ResponseEntity<Country> getCountry(@PathVariable Long id) {
         log.debug("REST request to get Country : {}", id);
-        Country country = countryRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(country));
+        Optional<Country> country = countryRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(country);
     }
 
     /**
@@ -129,11 +122,10 @@ public class CountryResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/countries/{id}")
-    @Timed
     public ResponseEntity<Void> deleteCountry(@PathVariable Long id) {
         log.debug("REST request to delete Country : {}", id);
-        countryRepository.delete(id);
-        countrySearchRepository.delete(id);
+        countryRepository.deleteById(id);
+        countrySearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -146,12 +138,11 @@ public class CountryResource {
      * @return the result of the search
      */
     @GetMapping("/_search/countries")
-    @Timed
     public ResponseEntity<List<Country>> searchCountries(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Countries for query {}", query);
         Page<Country> page = countrySearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/countries");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
 }

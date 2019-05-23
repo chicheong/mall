@@ -13,6 +13,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -20,14 +22,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -56,8 +63,13 @@ public class ShippingTypeResourceIntTest {
     @Autowired
     private ShippingTypeRepository shippingTypeRepository;
 
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.ShippingTypeSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private ShippingTypeSearchRepository shippingTypeSearchRepository;
+    private ShippingTypeSearchRepository mockShippingTypeSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -71,6 +83,9 @@ public class ShippingTypeResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restShippingTypeMockMvc;
 
     private ShippingType shippingType;
@@ -78,12 +93,13 @@ public class ShippingTypeResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ShippingTypeResource shippingTypeResource = new ShippingTypeResource(shippingTypeRepository, shippingTypeSearchRepository);
+        final ShippingTypeResource shippingTypeResource = new ShippingTypeResource(shippingTypeRepository, mockShippingTypeSearchRepository);
         this.restShippingTypeMockMvc = MockMvcBuilders.standaloneSetup(shippingTypeResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -103,7 +119,6 @@ public class ShippingTypeResourceIntTest {
 
     @Before
     public void initTest() {
-        shippingTypeSearchRepository.deleteAll();
         shippingType = createEntity(em);
     }
 
@@ -128,8 +143,7 @@ public class ShippingTypeResourceIntTest {
         assertThat(testShippingType.getCurrency()).isEqualTo(DEFAULT_CURRENCY);
 
         // Validate the ShippingType in Elasticsearch
-        ShippingType shippingTypeEs = shippingTypeSearchRepository.findOne(testShippingType.getId());
-        assertThat(shippingTypeEs).isEqualToIgnoringGivenFields(testShippingType);
+        verify(mockShippingTypeSearchRepository, times(1)).save(testShippingType);
     }
 
     @Test
@@ -149,6 +163,9 @@ public class ShippingTypeResourceIntTest {
         // Validate the ShippingType in the database
         List<ShippingType> shippingTypeList = shippingTypeRepository.findAll();
         assertThat(shippingTypeList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the ShippingType in Elasticsearch
+        verify(mockShippingTypeSearchRepository, times(0)).save(shippingType);
     }
 
     @Test
@@ -167,7 +184,7 @@ public class ShippingTypeResourceIntTest {
             .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
             .andExpect(jsonPath("$.[*].currency").value(hasItem(DEFAULT_CURRENCY.toString())));
     }
-
+    
     @Test
     @Transactional
     public void getShippingType() throws Exception {
@@ -198,11 +215,11 @@ public class ShippingTypeResourceIntTest {
     public void updateShippingType() throws Exception {
         // Initialize the database
         shippingTypeRepository.saveAndFlush(shippingType);
-        shippingTypeSearchRepository.save(shippingType);
+
         int databaseSizeBeforeUpdate = shippingTypeRepository.findAll().size();
 
         // Update the shippingType
-        ShippingType updatedShippingType = shippingTypeRepository.findOne(shippingType.getId());
+        ShippingType updatedShippingType = shippingTypeRepository.findById(shippingType.getId()).get();
         // Disconnect from session so that the updates on updatedShippingType are not directly saved in db
         em.detach(updatedShippingType);
         updatedShippingType
@@ -226,8 +243,7 @@ public class ShippingTypeResourceIntTest {
         assertThat(testShippingType.getCurrency()).isEqualTo(UPDATED_CURRENCY);
 
         // Validate the ShippingType in Elasticsearch
-        ShippingType shippingTypeEs = shippingTypeSearchRepository.findOne(testShippingType.getId());
-        assertThat(shippingTypeEs).isEqualToIgnoringGivenFields(testShippingType);
+        verify(mockShippingTypeSearchRepository, times(1)).save(testShippingType);
     }
 
     @Test
@@ -237,15 +253,18 @@ public class ShippingTypeResourceIntTest {
 
         // Create the ShippingType
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restShippingTypeMockMvc.perform(put("/api/shipping-types")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(shippingType)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the ShippingType in the database
         List<ShippingType> shippingTypeList = shippingTypeRepository.findAll();
-        assertThat(shippingTypeList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(shippingTypeList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the ShippingType in Elasticsearch
+        verify(mockShippingTypeSearchRepository, times(0)).save(shippingType);
     }
 
     @Test
@@ -253,21 +272,20 @@ public class ShippingTypeResourceIntTest {
     public void deleteShippingType() throws Exception {
         // Initialize the database
         shippingTypeRepository.saveAndFlush(shippingType);
-        shippingTypeSearchRepository.save(shippingType);
+
         int databaseSizeBeforeDelete = shippingTypeRepository.findAll().size();
 
-        // Get the shippingType
+        // Delete the shippingType
         restShippingTypeMockMvc.perform(delete("/api/shipping-types/{id}", shippingType.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean shippingTypeExistsInEs = shippingTypeSearchRepository.exists(shippingType.getId());
-        assertThat(shippingTypeExistsInEs).isFalse();
-
         // Validate the database is empty
         List<ShippingType> shippingTypeList = shippingTypeRepository.findAll();
         assertThat(shippingTypeList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the ShippingType in Elasticsearch
+        verify(mockShippingTypeSearchRepository, times(1)).deleteById(shippingType.getId());
     }
 
     @Test
@@ -275,15 +293,15 @@ public class ShippingTypeResourceIntTest {
     public void searchShippingType() throws Exception {
         // Initialize the database
         shippingTypeRepository.saveAndFlush(shippingType);
-        shippingTypeSearchRepository.save(shippingType);
-
+        when(mockShippingTypeSearchRepository.search(queryStringQuery("id:" + shippingType.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(shippingType), PageRequest.of(0, 1), 1));
         // Search the shippingType
         restShippingTypeMockMvc.perform(get("/api/_search/shipping-types?query=id:" + shippingType.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(shippingType.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
             .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
             .andExpect(jsonPath("$.[*].currency").value(hasItem(DEFAULT_CURRENCY.toString())));
     }

@@ -13,6 +13,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -20,14 +22,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -52,8 +59,13 @@ public class ShippingPriceRuleResourceIntTest {
     @Autowired
     private ShippingPriceRuleRepository shippingPriceRuleRepository;
 
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.ShippingPriceRuleSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private ShippingPriceRuleSearchRepository shippingPriceRuleSearchRepository;
+    private ShippingPriceRuleSearchRepository mockShippingPriceRuleSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -67,6 +79,9 @@ public class ShippingPriceRuleResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restShippingPriceRuleMockMvc;
 
     private ShippingPriceRule shippingPriceRule;
@@ -74,12 +89,13 @@ public class ShippingPriceRuleResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ShippingPriceRuleResource shippingPriceRuleResource = new ShippingPriceRuleResource(shippingPriceRuleRepository, shippingPriceRuleSearchRepository);
+        final ShippingPriceRuleResource shippingPriceRuleResource = new ShippingPriceRuleResource(shippingPriceRuleRepository, mockShippingPriceRuleSearchRepository);
         this.restShippingPriceRuleMockMvc = MockMvcBuilders.standaloneSetup(shippingPriceRuleResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -98,7 +114,6 @@ public class ShippingPriceRuleResourceIntTest {
 
     @Before
     public void initTest() {
-        shippingPriceRuleSearchRepository.deleteAll();
         shippingPriceRule = createEntity(em);
     }
 
@@ -122,8 +137,7 @@ public class ShippingPriceRuleResourceIntTest {
         assertThat(testShippingPriceRule.getPrice()).isEqualTo(DEFAULT_PRICE);
 
         // Validate the ShippingPriceRule in Elasticsearch
-        ShippingPriceRule shippingPriceRuleEs = shippingPriceRuleSearchRepository.findOne(testShippingPriceRule.getId());
-        assertThat(shippingPriceRuleEs).isEqualToIgnoringGivenFields(testShippingPriceRule);
+        verify(mockShippingPriceRuleSearchRepository, times(1)).save(testShippingPriceRule);
     }
 
     @Test
@@ -143,6 +157,9 @@ public class ShippingPriceRuleResourceIntTest {
         // Validate the ShippingPriceRule in the database
         List<ShippingPriceRule> shippingPriceRuleList = shippingPriceRuleRepository.findAll();
         assertThat(shippingPriceRuleList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the ShippingPriceRule in Elasticsearch
+        verify(mockShippingPriceRuleSearchRepository, times(0)).save(shippingPriceRule);
     }
 
     @Test
@@ -160,7 +177,7 @@ public class ShippingPriceRuleResourceIntTest {
             .andExpect(jsonPath("$.[*].value").value(hasItem(DEFAULT_VALUE.intValue())))
             .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())));
     }
-
+    
     @Test
     @Transactional
     public void getShippingPriceRule() throws Exception {
@@ -190,11 +207,11 @@ public class ShippingPriceRuleResourceIntTest {
     public void updateShippingPriceRule() throws Exception {
         // Initialize the database
         shippingPriceRuleRepository.saveAndFlush(shippingPriceRule);
-        shippingPriceRuleSearchRepository.save(shippingPriceRule);
+
         int databaseSizeBeforeUpdate = shippingPriceRuleRepository.findAll().size();
 
         // Update the shippingPriceRule
-        ShippingPriceRule updatedShippingPriceRule = shippingPriceRuleRepository.findOne(shippingPriceRule.getId());
+        ShippingPriceRule updatedShippingPriceRule = shippingPriceRuleRepository.findById(shippingPriceRule.getId()).get();
         // Disconnect from session so that the updates on updatedShippingPriceRule are not directly saved in db
         em.detach(updatedShippingPriceRule);
         updatedShippingPriceRule
@@ -216,8 +233,7 @@ public class ShippingPriceRuleResourceIntTest {
         assertThat(testShippingPriceRule.getPrice()).isEqualTo(UPDATED_PRICE);
 
         // Validate the ShippingPriceRule in Elasticsearch
-        ShippingPriceRule shippingPriceRuleEs = shippingPriceRuleSearchRepository.findOne(testShippingPriceRule.getId());
-        assertThat(shippingPriceRuleEs).isEqualToIgnoringGivenFields(testShippingPriceRule);
+        verify(mockShippingPriceRuleSearchRepository, times(1)).save(testShippingPriceRule);
     }
 
     @Test
@@ -227,15 +243,18 @@ public class ShippingPriceRuleResourceIntTest {
 
         // Create the ShippingPriceRule
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restShippingPriceRuleMockMvc.perform(put("/api/shipping-price-rules")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(shippingPriceRule)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the ShippingPriceRule in the database
         List<ShippingPriceRule> shippingPriceRuleList = shippingPriceRuleRepository.findAll();
-        assertThat(shippingPriceRuleList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(shippingPriceRuleList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the ShippingPriceRule in Elasticsearch
+        verify(mockShippingPriceRuleSearchRepository, times(0)).save(shippingPriceRule);
     }
 
     @Test
@@ -243,21 +262,20 @@ public class ShippingPriceRuleResourceIntTest {
     public void deleteShippingPriceRule() throws Exception {
         // Initialize the database
         shippingPriceRuleRepository.saveAndFlush(shippingPriceRule);
-        shippingPriceRuleSearchRepository.save(shippingPriceRule);
+
         int databaseSizeBeforeDelete = shippingPriceRuleRepository.findAll().size();
 
-        // Get the shippingPriceRule
+        // Delete the shippingPriceRule
         restShippingPriceRuleMockMvc.perform(delete("/api/shipping-price-rules/{id}", shippingPriceRule.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean shippingPriceRuleExistsInEs = shippingPriceRuleSearchRepository.exists(shippingPriceRule.getId());
-        assertThat(shippingPriceRuleExistsInEs).isFalse();
-
         // Validate the database is empty
         List<ShippingPriceRule> shippingPriceRuleList = shippingPriceRuleRepository.findAll();
         assertThat(shippingPriceRuleList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the ShippingPriceRule in Elasticsearch
+        verify(mockShippingPriceRuleSearchRepository, times(1)).deleteById(shippingPriceRule.getId());
     }
 
     @Test
@@ -265,14 +283,14 @@ public class ShippingPriceRuleResourceIntTest {
     public void searchShippingPriceRule() throws Exception {
         // Initialize the database
         shippingPriceRuleRepository.saveAndFlush(shippingPriceRule);
-        shippingPriceRuleSearchRepository.save(shippingPriceRule);
-
+        when(mockShippingPriceRuleSearchRepository.search(queryStringQuery("id:" + shippingPriceRule.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(shippingPriceRule), PageRequest.of(0, 1), 1));
         // Search the shippingPriceRule
         restShippingPriceRuleMockMvc.perform(get("/api/_search/shipping-price-rules?query=id:" + shippingPriceRule.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(shippingPriceRule.getId().intValue())))
-            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE)))
             .andExpect(jsonPath("$.[*].value").value(hasItem(DEFAULT_VALUE.intValue())))
             .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())));
     }

@@ -1,44 +1,78 @@
 import { Injectable } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiPaginationUtil } from 'ng-jhipster';
-
-import { UserRouteAccessService } from '../../shared';
+import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
+import { UserRouteAccessService } from 'app/core';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { ShippingPriceRule } from 'app/shared/model/shipping-price-rule.model';
+import { ShippingPriceRuleService } from './shipping-price-rule.service';
 import { ShippingPriceRuleComponent } from './shipping-price-rule.component';
 import { ShippingPriceRuleDetailComponent } from './shipping-price-rule-detail.component';
-import { ShippingPriceRulePopupComponent } from './shipping-price-rule-dialog.component';
+import { ShippingPriceRuleUpdateComponent } from './shipping-price-rule-update.component';
 import { ShippingPriceRuleDeletePopupComponent } from './shipping-price-rule-delete-dialog.component';
+import { IShippingPriceRule } from 'app/shared/model/shipping-price-rule.model';
 
-@Injectable()
-export class ShippingPriceRuleResolvePagingParams implements Resolve<any> {
+@Injectable({ providedIn: 'root' })
+export class ShippingPriceRuleResolve implements Resolve<IShippingPriceRule> {
+    constructor(private service: ShippingPriceRuleService) {}
 
-    constructor(private paginationUtil: JhiPaginationUtil) {}
-
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        const page = route.queryParams['page'] ? route.queryParams['page'] : '1';
-        const sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'id,asc';
-        return {
-            page: this.paginationUtil.parsePage(page),
-            predicate: this.paginationUtil.parsePredicate(sort),
-            ascending: this.paginationUtil.parseAscending(sort)
-      };
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<IShippingPriceRule> {
+        const id = route.params['id'] ? route.params['id'] : null;
+        if (id) {
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<ShippingPriceRule>) => response.ok),
+                map((shippingPriceRule: HttpResponse<ShippingPriceRule>) => shippingPriceRule.body)
+            );
+        }
+        return of(new ShippingPriceRule());
     }
 }
 
 export const shippingPriceRuleRoute: Routes = [
     {
-        path: 'shipping-price-rule',
+        path: '',
         component: ShippingPriceRuleComponent,
         resolve: {
-            'pagingParams': ShippingPriceRuleResolvePagingParams
+            pagingParams: JhiResolvePagingParams
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            defaultSort: 'id,asc',
+            pageTitle: 'mallApp.shippingPriceRule.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/view',
+        component: ShippingPriceRuleDetailComponent,
+        resolve: {
+            shippingPriceRule: ShippingPriceRuleResolve
         },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.shippingPriceRule.home.title'
         },
         canActivate: [UserRouteAccessService]
-    }, {
-        path: 'shipping-price-rule/:id',
-        component: ShippingPriceRuleDetailComponent,
+    },
+    {
+        path: 'new',
+        component: ShippingPriceRuleUpdateComponent,
+        resolve: {
+            shippingPriceRule: ShippingPriceRuleResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.shippingPriceRule.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/edit',
+        component: ShippingPriceRuleUpdateComponent,
+        resolve: {
+            shippingPriceRule: ShippingPriceRuleResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.shippingPriceRule.home.title'
@@ -49,28 +83,11 @@ export const shippingPriceRuleRoute: Routes = [
 
 export const shippingPriceRulePopupRoute: Routes = [
     {
-        path: 'shipping-price-rule-new',
-        component: ShippingPriceRulePopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.shippingPriceRule.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'shipping-price-rule/:id/edit',
-        component: ShippingPriceRulePopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.shippingPriceRule.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'shipping-price-rule/:id/delete',
+        path: ':id/delete',
         component: ShippingPriceRuleDeletePopupComponent,
+        resolve: {
+            shippingPriceRule: ShippingPriceRuleResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.shippingPriceRule.home.title'

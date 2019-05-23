@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "company" : {
+        "company": {
             "home": {
                 "title": "Companies",
                 "createLabel": "Create a new Company",

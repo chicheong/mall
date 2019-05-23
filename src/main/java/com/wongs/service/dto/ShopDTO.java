@@ -1,16 +1,8 @@
 package com.wongs.service.dto;
-
-
 import java.time.ZonedDateTime;
 import javax.validation.constraints.*;
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 import java.util.Objects;
-
-import com.wongs.domain.MyAccount;
-import com.wongs.domain.Product;
-import com.wongs.domain.Shop;
 import com.wongs.domain.enumeration.CommonStatus;
 
 /**
@@ -28,8 +20,6 @@ public class ShopDTO implements Serializable {
     private String description;
 
     private CommonStatus status;
-    
-    private String permission;
 
     private String createdBy;
 
@@ -39,26 +29,7 @@ public class ShopDTO implements Serializable {
 
     private ZonedDateTime lastModifiedDate;
 
-    private Set<MyAccount> accounts = new HashSet<>();
 
-    private Set<ProductDTO> products = null;
-    
-    public ShopDTO() {
-        // Empty constructor needed for Jackson.
-    }
-
-    public ShopDTO(Shop shop) {
-        this.id = shop.getId();
-    	this.name = shop.getName();
-    	this.code = shop.getCode();
-    	this.status = shop.getStatus();
-    	this.description = shop.getDescription();
-    	this.createdBy = shop.getCreatedBy();
-    	this.createdDate = shop.getCreatedDate();
-    	this.lastModifiedBy = shop.getLastModifiedBy();
-    	this.lastModifiedDate = shop.getLastModifiedDate();
-    }
-    
     public Long getId() {
         return id;
     }
@@ -98,14 +69,6 @@ public class ShopDTO implements Serializable {
     public void setStatus(CommonStatus status) {
         this.status = status;
     }
-    
-    public String getPermission() {
-		return permission;
-	}
-
-	public void setPermission(String permission) {
-		this.permission = permission;
-	}
 
     public String getCreatedBy() {
         return createdBy;
@@ -138,23 +101,7 @@ public class ShopDTO implements Serializable {
     public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
-    
-    public Set<MyAccount> getAccounts() {
-		return accounts;
-	}
 
-	public void setAccounts(Set<MyAccount> accounts) {
-		this.accounts = accounts;
-	}
-
-	public Set<ProductDTO> getProducts() {
-		return products;
-	}
-
-	public void setProducts(Set<ProductDTO> products) {
-		this.products = products;
-	}
-	
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -165,7 +112,7 @@ public class ShopDTO implements Serializable {
         }
 
         ShopDTO shopDTO = (ShopDTO) o;
-        if(shopDTO.getId() == null || getId() == null) {
+        if (shopDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), shopDTO.getId());
@@ -188,7 +135,6 @@ public class ShopDTO implements Serializable {
             ", createdDate='" + getCreatedDate() + "'" +
             ", lastModifiedBy='" + getLastModifiedBy() + "'" +
             ", lastModifiedDate='" + getLastModifiedDate() + "'" +
-            ", products=" + getProducts() +
             "}";
     }
 }

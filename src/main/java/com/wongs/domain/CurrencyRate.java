@@ -1,5 +1,6 @@
 package com.wongs.domain;
 
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -23,7 +24,7 @@ import com.wongs.domain.enumeration.CurrencyType;
 public class CurrencyRate implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,7 +35,7 @@ public class CurrencyRate implements Serializable {
     @Column(name = "jhi_to")
     private ZonedDateTime to;
 
-    @Column(name = "rate", precision=10, scale=2)
+    @Column(name = "rate", precision = 10, scale = 2)
     private BigDecimal rate;
 
     @Enumerated(EnumType.STRING)

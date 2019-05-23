@@ -1,7 +1,4 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
-import com.wongs.security.SecurityUtils;
 import com.wongs.service.MyAccountService;
 import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
@@ -51,7 +48,6 @@ public class MyAccountResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/my-accounts")
-    @Timed
     public ResponseEntity<MyAccountDTO> createMyAccount(@RequestBody MyAccountDTO myAccountDTO) throws URISyntaxException {
         log.debug("REST request to save MyAccount : {}", myAccountDTO);
         if (myAccountDTO.getId() != null) {
@@ -73,11 +69,10 @@ public class MyAccountResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/my-accounts")
-    @Timed
     public ResponseEntity<MyAccountDTO> updateMyAccount(@RequestBody MyAccountDTO myAccountDTO) throws URISyntaxException {
         log.debug("REST request to update MyAccount : {}", myAccountDTO);
         if (myAccountDTO.getId() == null) {
-            return createMyAccount(myAccountDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         MyAccountDTO result = myAccountService.save(myAccountDTO);
         return ResponseEntity.ok()
@@ -89,15 +84,20 @@ public class MyAccountResource {
      * GET  /my-accounts : get all the myAccounts.
      *
      * @param pageable the pagination information
+     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many)
      * @return the ResponseEntity with status 200 (OK) and the list of myAccounts in body
      */
     @GetMapping("/my-accounts")
-    @Timed
-    public ResponseEntity<List<MyAccountDTO>> getAllMyAccounts(Pageable pageable) {
+    public ResponseEntity<List<MyAccountDTO>> getAllMyAccounts(Pageable pageable, @RequestParam(required = false, defaultValue = "false") boolean eagerload) {
         log.debug("REST request to get a page of MyAccounts");
-        Page<MyAccountDTO> page = myAccountService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/my-accounts");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        Page<MyAccountDTO> page;
+        if (eagerload) {
+            page = myAccountService.findAllWithEagerRelationships(pageable);
+        } else {
+            page = myAccountService.findAll(pageable);
+        }
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, String.format("/api/my-accounts?eagerload=%b", eagerload));
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -107,12 +107,10 @@ public class MyAccountResource {
      * @return the ResponseEntity with status 200 (OK) and with body the myAccountDTO, or with status 404 (Not Found)
      */
     @GetMapping("/my-accounts/{id}")
-    @Timed
     public ResponseEntity<MyAccountDTO> getMyAccount(@PathVariable Long id) {
         log.debug("REST request to get MyAccount : {}", id);
-        MyAccountDTO myAccountDTO = myAccountService.findOne(id);
-        //MyAccount myAccount = myAccountRepository.findOneWithEagerRelationships(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(myAccountDTO));
+        Optional<MyAccountDTO> myAccountDTO = myAccountService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(myAccountDTO);
     }
 
     /**
@@ -122,7 +120,6 @@ public class MyAccountResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/my-accounts/{id}")
-    @Timed
     public ResponseEntity<Void> deleteMyAccount(@PathVariable Long id) {
         log.debug("REST request to delete MyAccount : {}", id);
         myAccountService.delete(id);
@@ -138,12 +135,11 @@ public class MyAccountResource {
      * @return the result of the search
      */
     @GetMapping("/_search/my-accounts")
-    @Timed
     public ResponseEntity<List<MyAccountDTO>> searchMyAccounts(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of MyAccounts for query {}", query);
         Page<MyAccountDTO> page = myAccountService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/my-accounts");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
 }

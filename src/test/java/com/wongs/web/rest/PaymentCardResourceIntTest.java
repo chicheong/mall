@@ -13,6 +13,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -20,13 +22,18 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -57,8 +64,13 @@ public class PaymentCardResourceIntTest {
     @Autowired
     private PaymentCardRepository paymentCardRepository;
 
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.PaymentCardSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private PaymentCardSearchRepository paymentCardSearchRepository;
+    private PaymentCardSearchRepository mockPaymentCardSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -72,6 +84,9 @@ public class PaymentCardResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restPaymentCardMockMvc;
 
     private PaymentCard paymentCard;
@@ -79,12 +94,13 @@ public class PaymentCardResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final PaymentCardResource paymentCardResource = new PaymentCardResource(paymentCardRepository, paymentCardSearchRepository);
+        final PaymentCardResource paymentCardResource = new PaymentCardResource(paymentCardRepository, mockPaymentCardSearchRepository);
         this.restPaymentCardMockMvc = MockMvcBuilders.standaloneSetup(paymentCardResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -105,7 +121,6 @@ public class PaymentCardResourceIntTest {
 
     @Before
     public void initTest() {
-        paymentCardSearchRepository.deleteAll();
         paymentCard = createEntity(em);
     }
 
@@ -131,8 +146,7 @@ public class PaymentCardResourceIntTest {
         assertThat(testPaymentCard.getCvc()).isEqualTo(DEFAULT_CVC);
 
         // Validate the PaymentCard in Elasticsearch
-        PaymentCard paymentCardEs = paymentCardSearchRepository.findOne(testPaymentCard.getId());
-        assertThat(paymentCardEs).isEqualToIgnoringGivenFields(testPaymentCard);
+        verify(mockPaymentCardSearchRepository, times(1)).save(testPaymentCard);
     }
 
     @Test
@@ -152,6 +166,9 @@ public class PaymentCardResourceIntTest {
         // Validate the PaymentCard in the database
         List<PaymentCard> paymentCardList = paymentCardRepository.findAll();
         assertThat(paymentCardList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the PaymentCard in Elasticsearch
+        verify(mockPaymentCardSearchRepository, times(0)).save(paymentCard);
     }
 
     @Test
@@ -171,7 +188,7 @@ public class PaymentCardResourceIntTest {
             .andExpect(jsonPath("$.[*].expirationYear").value(hasItem(DEFAULT_EXPIRATION_YEAR.toString())))
             .andExpect(jsonPath("$.[*].cvc").value(hasItem(DEFAULT_CVC.toString())));
     }
-
+    
     @Test
     @Transactional
     public void getPaymentCard() throws Exception {
@@ -203,11 +220,11 @@ public class PaymentCardResourceIntTest {
     public void updatePaymentCard() throws Exception {
         // Initialize the database
         paymentCardRepository.saveAndFlush(paymentCard);
-        paymentCardSearchRepository.save(paymentCard);
+
         int databaseSizeBeforeUpdate = paymentCardRepository.findAll().size();
 
         // Update the paymentCard
-        PaymentCard updatedPaymentCard = paymentCardRepository.findOne(paymentCard.getId());
+        PaymentCard updatedPaymentCard = paymentCardRepository.findById(paymentCard.getId()).get();
         // Disconnect from session so that the updates on updatedPaymentCard are not directly saved in db
         em.detach(updatedPaymentCard);
         updatedPaymentCard
@@ -233,8 +250,7 @@ public class PaymentCardResourceIntTest {
         assertThat(testPaymentCard.getCvc()).isEqualTo(UPDATED_CVC);
 
         // Validate the PaymentCard in Elasticsearch
-        PaymentCard paymentCardEs = paymentCardSearchRepository.findOne(testPaymentCard.getId());
-        assertThat(paymentCardEs).isEqualToIgnoringGivenFields(testPaymentCard);
+        verify(mockPaymentCardSearchRepository, times(1)).save(testPaymentCard);
     }
 
     @Test
@@ -244,15 +260,18 @@ public class PaymentCardResourceIntTest {
 
         // Create the PaymentCard
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restPaymentCardMockMvc.perform(put("/api/payment-cards")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(paymentCard)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the PaymentCard in the database
         List<PaymentCard> paymentCardList = paymentCardRepository.findAll();
-        assertThat(paymentCardList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(paymentCardList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the PaymentCard in Elasticsearch
+        verify(mockPaymentCardSearchRepository, times(0)).save(paymentCard);
     }
 
     @Test
@@ -260,21 +279,20 @@ public class PaymentCardResourceIntTest {
     public void deletePaymentCard() throws Exception {
         // Initialize the database
         paymentCardRepository.saveAndFlush(paymentCard);
-        paymentCardSearchRepository.save(paymentCard);
+
         int databaseSizeBeforeDelete = paymentCardRepository.findAll().size();
 
-        // Get the paymentCard
+        // Delete the paymentCard
         restPaymentCardMockMvc.perform(delete("/api/payment-cards/{id}", paymentCard.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean paymentCardExistsInEs = paymentCardSearchRepository.exists(paymentCard.getId());
-        assertThat(paymentCardExistsInEs).isFalse();
-
         // Validate the database is empty
         List<PaymentCard> paymentCardList = paymentCardRepository.findAll();
         assertThat(paymentCardList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the PaymentCard in Elasticsearch
+        verify(mockPaymentCardSearchRepository, times(1)).deleteById(paymentCard.getId());
     }
 
     @Test
@@ -282,18 +300,18 @@ public class PaymentCardResourceIntTest {
     public void searchPaymentCard() throws Exception {
         // Initialize the database
         paymentCardRepository.saveAndFlush(paymentCard);
-        paymentCardSearchRepository.save(paymentCard);
-
+        when(mockPaymentCardSearchRepository.search(queryStringQuery("id:" + paymentCard.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(paymentCard), PageRequest.of(0, 1), 1));
         // Search the paymentCard
         restPaymentCardMockMvc.perform(get("/api/_search/payment-cards?query=id:" + paymentCard.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(paymentCard.getId().intValue())))
-            .andExpect(jsonPath("$.[*].holderName").value(hasItem(DEFAULT_HOLDER_NAME.toString())))
-            .andExpect(jsonPath("$.[*].cardNumber").value(hasItem(DEFAULT_CARD_NUMBER.toString())))
-            .andExpect(jsonPath("$.[*].expirationMonth").value(hasItem(DEFAULT_EXPIRATION_MONTH.toString())))
-            .andExpect(jsonPath("$.[*].expirationYear").value(hasItem(DEFAULT_EXPIRATION_YEAR.toString())))
-            .andExpect(jsonPath("$.[*].cvc").value(hasItem(DEFAULT_CVC.toString())));
+            .andExpect(jsonPath("$.[*].holderName").value(hasItem(DEFAULT_HOLDER_NAME)))
+            .andExpect(jsonPath("$.[*].cardNumber").value(hasItem(DEFAULT_CARD_NUMBER)))
+            .andExpect(jsonPath("$.[*].expirationMonth").value(hasItem(DEFAULT_EXPIRATION_MONTH)))
+            .andExpect(jsonPath("$.[*].expirationYear").value(hasItem(DEFAULT_EXPIRATION_YEAR)))
+            .andExpect(jsonPath("$.[*].cvc").value(hasItem(DEFAULT_CVC)));
     }
 
     @Test

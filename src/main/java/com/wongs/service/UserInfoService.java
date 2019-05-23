@@ -1,20 +1,21 @@
 package com.wongs.service;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
+import com.wongs.domain.UserInfo;
+import com.wongs.repository.UserInfoRepository;
+import com.wongs.repository.search.UserInfoSearchRepository;
+import com.wongs.service.dto.UserInfoDTO;
+import com.wongs.service.mapper.UserInfoMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.wongs.domain.UserInfo;
-import com.wongs.repository.UserInfoRepository;
-import com.wongs.repository.search.UserInfoSearchRepository;
-import com.wongs.service.dto.UserInfoDTO;
-import com.wongs.service.mapper.MyAccountMapper;
-import com.wongs.service.mapper.UserInfoMapper;
+import java.util.Optional;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing UserInfo.
@@ -25,18 +26,15 @@ public class UserInfoService {
 
     private final Logger log = LoggerFactory.getLogger(UserInfoService.class);
 
-    private final UserInfoMapper userInfoMapper;
-    private final MyAccountMapper myAccountMapper;
-    
     private final UserInfoRepository userInfoRepository;
+
+    private final UserInfoMapper userInfoMapper;
+
     private final UserInfoSearchRepository userInfoSearchRepository;
 
-    public UserInfoService(UserInfoMapper userInfoMapper, MyAccountMapper myAccountMapper,
-    		UserInfoRepository userInfoRepository, UserInfoSearchRepository userInfoSearchRepository
-    		) {
-        this.userInfoMapper = userInfoMapper;
-        this.myAccountMapper = myAccountMapper;
+    public UserInfoService(UserInfoRepository userInfoRepository, UserInfoMapper userInfoMapper, UserInfoSearchRepository userInfoSearchRepository) {
         this.userInfoRepository = userInfoRepository;
+        this.userInfoMapper = userInfoMapper;
         this.userInfoSearchRepository = userInfoSearchRepository;
     }
 
@@ -49,7 +47,6 @@ public class UserInfoService {
     public UserInfoDTO save(UserInfoDTO userInfoDTO) {
         log.debug("Request to save UserInfo : {}", userInfoDTO);
         UserInfo userInfo = userInfoMapper.toEntity(userInfoDTO);
-        userInfo.setAccounts(myAccountMapper.toEntity(userInfoDTO.getAccounts()));
         userInfo = userInfoRepository.save(userInfo);
         UserInfoDTO result = userInfoMapper.toDto(userInfo);
         userInfoSearchRepository.save(userInfo);
@@ -70,27 +67,26 @@ public class UserInfoService {
     }
 
     /**
+     * Get all the UserInfo with eager load of many-to-many relationships.
+     *
+     * @return the list of entities
+     */
+    public Page<UserInfoDTO> findAllWithEagerRelationships(Pageable pageable) {
+        return userInfoRepository.findAllWithEagerRelationships(pageable).map(userInfoMapper::toDto);
+    }
+    
+
+    /**
      * Get one userInfo by id.
      *
      * @param id the id of the entity
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public UserInfoDTO findOne(Long id) {
+    public Optional<UserInfoDTO> findOne(Long id) {
         log.debug("Request to get UserInfo : {}", id);
-        UserInfo userInfo = userInfoRepository.findOne(id);
-        return userInfoMapper.toDto(userInfo);
-    }
-    
-
-    @Transactional(readOnly = true)
-    public UserInfoDTO findOneWithAccountsByUserLogin(String login) {
-    	UserInfo userInfo = userInfoRepository.findOneWithAccountsByUserLogin(login);
-    	if (userInfo == null)
-    		return null;
-    	UserInfoDTO userInfoDTO = userInfoMapper.toDto(userInfo);
-    	userInfoDTO.setAccounts(myAccountMapper.toDto(userInfo.getAccounts()));
-        return userInfoDTO;
+        return userInfoRepository.findOneWithEagerRelationships(id)
+            .map(userInfoMapper::toDto);
     }
 
     /**
@@ -100,8 +96,8 @@ public class UserInfoService {
      */
     public void delete(Long id) {
         log.debug("Request to delete UserInfo : {}", id);
-        userInfoRepository.delete(id);
-        userInfoSearchRepository.delete(id);
+        userInfoRepository.deleteById(id);
+        userInfoSearchRepository.deleteById(id);
     }
 
     /**
@@ -114,7 +110,7 @@ public class UserInfoService {
     @Transactional(readOnly = true)
     public Page<UserInfoDTO> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of UserInfos for query {}", query);
-        Page<UserInfo> result = userInfoSearchRepository.search(queryStringQuery(query), pageable);
-        return result.map(userInfoMapper::toDto);
+        return userInfoSearchRepository.search(queryStringQuery(query), pageable)
+            .map(userInfoMapper::toDto);
     }
 }

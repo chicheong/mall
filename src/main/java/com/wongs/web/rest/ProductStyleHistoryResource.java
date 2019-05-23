@@ -1,8 +1,5 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.domain.ProductStyleHistory;
-
 import com.wongs.repository.ProductStyleHistoryRepository;
 import com.wongs.repository.search.ProductStyleHistorySearchRepository;
 import com.wongs.web.rest.errors.BadRequestAlertException;
@@ -51,7 +48,6 @@ public class ProductStyleHistoryResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/product-style-histories")
-    @Timed
     public ResponseEntity<ProductStyleHistory> createProductStyleHistory(@RequestBody ProductStyleHistory productStyleHistory) throws URISyntaxException {
         log.debug("REST request to save ProductStyleHistory : {}", productStyleHistory);
         if (productStyleHistory.getId() != null) {
@@ -74,11 +70,10 @@ public class ProductStyleHistoryResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/product-style-histories")
-    @Timed
     public ResponseEntity<ProductStyleHistory> updateProductStyleHistory(@RequestBody ProductStyleHistory productStyleHistory) throws URISyntaxException {
         log.debug("REST request to update ProductStyleHistory : {}", productStyleHistory);
         if (productStyleHistory.getId() == null) {
-            return createProductStyleHistory(productStyleHistory);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         ProductStyleHistory result = productStyleHistoryRepository.save(productStyleHistory);
         productStyleHistorySearchRepository.save(result);
@@ -93,11 +88,10 @@ public class ProductStyleHistoryResource {
      * @return the ResponseEntity with status 200 (OK) and the list of productStyleHistories in body
      */
     @GetMapping("/product-style-histories")
-    @Timed
     public List<ProductStyleHistory> getAllProductStyleHistories() {
         log.debug("REST request to get all ProductStyleHistories");
         return productStyleHistoryRepository.findAll();
-        }
+    }
 
     /**
      * GET  /product-style-histories/:id : get the "id" productStyleHistory.
@@ -106,11 +100,10 @@ public class ProductStyleHistoryResource {
      * @return the ResponseEntity with status 200 (OK) and with body the productStyleHistory, or with status 404 (Not Found)
      */
     @GetMapping("/product-style-histories/{id}")
-    @Timed
     public ResponseEntity<ProductStyleHistory> getProductStyleHistory(@PathVariable Long id) {
         log.debug("REST request to get ProductStyleHistory : {}", id);
-        ProductStyleHistory productStyleHistory = productStyleHistoryRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(productStyleHistory));
+        Optional<ProductStyleHistory> productStyleHistory = productStyleHistoryRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(productStyleHistory);
     }
 
     /**
@@ -120,11 +113,10 @@ public class ProductStyleHistoryResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/product-style-histories/{id}")
-    @Timed
     public ResponseEntity<Void> deleteProductStyleHistory(@PathVariable Long id) {
         log.debug("REST request to delete ProductStyleHistory : {}", id);
-        productStyleHistoryRepository.delete(id);
-        productStyleHistorySearchRepository.delete(id);
+        productStyleHistoryRepository.deleteById(id);
+        productStyleHistorySearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -136,7 +128,6 @@ public class ProductStyleHistoryResource {
      * @return the result of the search
      */
     @GetMapping("/_search/product-style-histories")
-    @Timed
     public List<ProductStyleHistory> searchProductStyleHistories(@RequestParam String query) {
         log.debug("REST request to search ProductStyleHistories for query {}", query);
         return StreamSupport

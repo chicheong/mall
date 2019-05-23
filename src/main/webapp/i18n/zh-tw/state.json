@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "state" : {
+        "state": {
             "home": {
                 "title": "States",
                 "createLabel": "建立一筆新的 State",

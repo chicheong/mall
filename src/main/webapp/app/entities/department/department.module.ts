@@ -1,51 +1,40 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { JhiLanguageService } from 'ng-jhipster';
+import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from '../../shared';
+import { MallSharedModule } from 'app/shared';
 import {
-    DepartmentService,
-    DepartmentPopupService,
     DepartmentComponent,
     DepartmentDetailComponent,
-    DepartmentDialogComponent,
-    DepartmentPopupComponent,
+    DepartmentUpdateComponent,
     DepartmentDeletePopupComponent,
     DepartmentDeleteDialogComponent,
     departmentRoute,
-    departmentPopupRoute,
-    DepartmentResolvePagingParams,
+    departmentPopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...departmentRoute,
-    ...departmentPopupRoute,
-];
+const ENTITY_STATES = [...departmentRoute, ...departmentPopupRoute];
 
 @NgModule({
-    imports: [
-        MallSharedModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         DepartmentComponent,
         DepartmentDetailComponent,
-        DepartmentDialogComponent,
+        DepartmentUpdateComponent,
         DepartmentDeleteDialogComponent,
-        DepartmentPopupComponent,
-        DepartmentDeletePopupComponent,
+        DepartmentDeletePopupComponent
     ],
-    entryComponents: [
-        DepartmentComponent,
-        DepartmentDialogComponent,
-        DepartmentPopupComponent,
-        DepartmentDeleteDialogComponent,
-        DepartmentDeletePopupComponent,
-    ],
-    providers: [
-        DepartmentService,
-        DepartmentPopupService,
-        DepartmentResolvePagingParams,
-    ],
+    entryComponents: [DepartmentComponent, DepartmentUpdateComponent, DepartmentDeleteDialogComponent, DepartmentDeletePopupComponent],
+    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MallDepartmentModule {}
+export class MallDepartmentModule {
+    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
+        this.languageHelper.language.subscribe((languageKey: string) => {
+            if (languageKey !== undefined) {
+                this.languageService.changeLanguage(languageKey);
+            }
+        });
+    }
+}

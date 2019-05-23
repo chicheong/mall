@@ -1,49 +1,45 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { JhiLanguageService } from 'ng-jhipster';
+import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from '../../shared';
+import { MallSharedModule } from 'app/shared';
 import {
-    ProductStyleService,
-    ProductStylePopupService,
     ProductStyleComponent,
     ProductStyleDetailComponent,
-    ProductStyleDialogComponent,
-    ProductStylePopupComponent,
+    ProductStyleUpdateComponent,
     ProductStyleDeletePopupComponent,
     ProductStyleDeleteDialogComponent,
     productStyleRoute,
-    productStylePopupRoute,
+    productStylePopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...productStyleRoute,
-    ...productStylePopupRoute,
-];
+const ENTITY_STATES = [...productStyleRoute, ...productStylePopupRoute];
 
 @NgModule({
-    imports: [
-        MallSharedModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         ProductStyleComponent,
         ProductStyleDetailComponent,
-        ProductStyleDialogComponent,
+        ProductStyleUpdateComponent,
         ProductStyleDeleteDialogComponent,
-        ProductStylePopupComponent,
-        ProductStyleDeletePopupComponent,
+        ProductStyleDeletePopupComponent
     ],
     entryComponents: [
         ProductStyleComponent,
-        ProductStyleDialogComponent,
-        ProductStylePopupComponent,
+        ProductStyleUpdateComponent,
         ProductStyleDeleteDialogComponent,
-        ProductStyleDeletePopupComponent,
+        ProductStyleDeletePopupComponent
     ],
-    providers: [
-        ProductStyleService,
-        ProductStylePopupService,
-    ],
+    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MallProductStyleModule {}
+export class MallProductStyleModule {
+    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
+        this.languageHelper.language.subscribe((languageKey: string) => {
+            if (languageKey !== undefined) {
+                this.languageService.changeLanguage(languageKey);
+            }
+        });
+    }
+}

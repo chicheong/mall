@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { State } from './state.model';
-import { StatePopupService } from './state-popup.service';
+import { IState } from 'app/shared/model/state.model';
 import { StateService } from './state.service';
 
 @Component({
@@ -13,22 +12,16 @@ import { StateService } from './state.service';
     templateUrl: './state-delete-dialog.component.html'
 })
 export class StateDeleteDialogComponent {
+    state: IState;
 
-    state: State;
-
-    constructor(
-        private stateService: StateService,
-        public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager
-    ) {
-    }
+    constructor(protected stateService: StateService, public activeModal: NgbActiveModal, protected eventManager: JhiEventManager) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.stateService.delete(id).subscribe((response) => {
+        this.stateService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'stateListModification',
                 content: 'Deleted an state'
@@ -43,22 +36,30 @@ export class StateDeleteDialogComponent {
     template: ''
 })
 export class StateDeletePopupComponent implements OnInit, OnDestroy {
+    protected ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private statePopupService: StatePopupService
-    ) {}
+    constructor(protected activatedRoute: ActivatedRoute, protected router: Router, protected modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.statePopupService
-                .open(StateDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ state }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(StateDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
+                this.ngbModalRef.componentInstance.state = state;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate(['/state', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate(['/state', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

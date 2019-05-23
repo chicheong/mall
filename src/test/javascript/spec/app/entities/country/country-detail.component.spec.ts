@@ -1,54 +1,40 @@
 /* tslint:disable max-line-length */
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 import { MallTestModule } from '../../../test.module';
-import { CountryDetailComponent } from '../../../../../../main/webapp/app/entities/country/country-detail.component';
-import { CountryService } from '../../../../../../main/webapp/app/entities/country/country.service';
-import { Country } from '../../../../../../main/webapp/app/entities/country/country.model';
+import { CountryDetailComponent } from 'app/entities/country/country-detail.component';
+import { Country } from 'app/shared/model/country.model';
 
 describe('Component Tests', () => {
-
     describe('Country Management Detail Component', () => {
         let comp: CountryDetailComponent;
         let fixture: ComponentFixture<CountryDetailComponent>;
-        let service: CountryService;
+        const route = ({ data: of({ country: new Country(123) }) } as any) as ActivatedRoute;
 
-        beforeEach(async(() => {
+        beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [MallTestModule],
                 declarations: [CountryDetailComponent],
-                providers: [
-                    CountryService
-                ]
+                providers: [{ provide: ActivatedRoute, useValue: route }]
             })
-            .overrideTemplate(CountryDetailComponent, '')
-            .compileComponents();
-        }));
-
-        beforeEach(() => {
+                .overrideTemplate(CountryDetailComponent, '')
+                .compileComponents();
             fixture = TestBed.createComponent(CountryDetailComponent);
             comp = fixture.componentInstance;
-            service = fixture.debugElement.injector.get(CountryService);
         });
 
         describe('OnInit', () => {
             it('Should call load all on init', () => {
                 // GIVEN
 
-                spyOn(service, 'find').and.returnValue(Observable.of(new HttpResponse({
-                    body: new Country(123)
-                })));
-
                 // WHEN
                 comp.ngOnInit();
 
                 // THEN
-                expect(service.find).toHaveBeenCalledWith(123);
-                expect(comp.country).toEqual(jasmine.objectContaining({id: 123}));
+                expect(comp.country).toEqual(jasmine.objectContaining({ id: 123 }));
             });
         });
     });
-
 });

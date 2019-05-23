@@ -1,100 +1,85 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { SERVER_API_URL } from '../../app.constants';
+import { Observable } from 'rxjs';
+import * as moment from 'moment';
+import { DATE_FORMAT } from 'app/shared/constants/input.constants';
+import { map } from 'rxjs/operators';
 
-import { JhiDateUtils } from 'ng-jhipster';
+import { SERVER_API_URL } from 'app/app.constants';
+import { createRequestOption } from 'app/shared';
+import { IUrl } from 'app/shared/model/url.model';
 
-import { Url } from './url.model';
-import { createRequestOption } from '../../shared';
+type EntityResponseType = HttpResponse<IUrl>;
+type EntityArrayResponseType = HttpResponse<IUrl[]>;
 
-export type EntityResponseType = HttpResponse<Url>;
-
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class UrlService {
+    public resourceUrl = SERVER_API_URL + 'api/urls';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/urls';
 
-    private resourceUrl =  SERVER_API_URL + 'api/urls';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/urls';
+    constructor(protected http: HttpClient) {}
 
-    constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }
-
-    create(url: Url): Observable<EntityResponseType> {
-        const copy = this.convert(url);
-        return this.http.post<Url>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    create(url: IUrl): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(url);
+        return this.http
+            .post<IUrl>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    createMultiple(urls: Url[]): Observable<HttpResponse<Url[]>> {
-        const copies: Url[] = [];
-        urls.forEach((url) => {
-            copies.push(this.convert(url));
-        });
-        return this.http.post<Url[]>(this.resourceUrl + '/multiple', copies, { observe: 'response' })
-            .map((res: HttpResponse<Url[]>) => this.convertArrayResponse(res));
-    }
-
-    update(url: Url): Observable<EntityResponseType> {
-        const copy = this.convert(url);
-        return this.http.put<Url>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    update(url: IUrl): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(url);
+        return this.http
+            .put<IUrl>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<Url>(`${this.resourceUrl}/${id}`, { observe: 'response'})
-            .map((res: EntityResponseType) => this.convertResponse(res));
+        return this.http
+            .get<IUrl>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    query(req?: any): Observable<HttpResponse<Url[]>> {
+    query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Url[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Url[]>) => this.convertArrayResponse(res));
+        return this.http
+            .get<IUrl[]>(this.resourceUrl, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    search(req?: any): Observable<HttpResponse<Url[]>> {
+    search(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Url[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Url[]>) => this.convertArrayResponse(res));
+        return this.http
+            .get<IUrl[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
-    private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: Url = this.convertItemFromServer(res.body);
-        return res.clone({body});
+    protected convertDateFromClient(url: IUrl): IUrl {
+        const copy: IUrl = Object.assign({}, url, {
+            createdDate: url.createdDate != null && url.createdDate.isValid() ? url.createdDate.toJSON() : null,
+            lastModifiedDate: url.lastModifiedDate != null && url.lastModifiedDate.isValid() ? url.lastModifiedDate.toJSON() : null
+        });
+        return copy;
     }
 
-    private convertArrayResponse(res: HttpResponse<Url[]>): HttpResponse<Url[]> {
-        const jsonResponse: Url[] = res.body;
-        const body: Url[] = [];
-        for (let i = 0; i < jsonResponse.length; i++) {
-            body.push(this.convertItemFromServer(jsonResponse[i]));
+    protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        if (res.body) {
+            res.body.createdDate = res.body.createdDate != null ? moment(res.body.createdDate) : null;
+            res.body.lastModifiedDate = res.body.lastModifiedDate != null ? moment(res.body.lastModifiedDate) : null;
         }
-        return res.clone({body});
+        return res;
     }
 
-    /**
-     * Convert a returned JSON object to Url.
-     */
-    private convertItemFromServer(url: Url): Url {
-        const copy: Url = Object.assign({}, url);
-        copy.createdDate = this.dateUtils
-            .convertDateTimeFromServer(url.createdDate);
-        copy.lastModifiedDate = this.dateUtils
-            .convertDateTimeFromServer(url.lastModifiedDate);
-        return copy;
-    }
-
-    /**
-     * Convert a Url to a JSON which can be sent to the server.
-     */
-    private convert(url: Url): Url {
-        const copy: Url = Object.assign({}, url);
-
-        copy.createdDate = this.dateUtils.toDate(url.createdDate);
-
-        copy.lastModifiedDate = this.dateUtils.toDate(url.lastModifiedDate);
-        return copy;
+    protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        if (res.body) {
+            res.body.forEach((url: IUrl) => {
+                url.createdDate = url.createdDate != null ? moment(url.createdDate) : null;
+                url.lastModifiedDate = url.lastModifiedDate != null ? moment(url.lastModifiedDate) : null;
+            });
+        }
+        return res;
     }
 }

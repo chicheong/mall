@@ -1,44 +1,78 @@
 import { Injectable } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiPaginationUtil } from 'ng-jhipster';
-
-import { UserRouteAccessService } from '../../shared';
+import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
+import { UserRouteAccessService } from 'app/core';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { Office } from 'app/shared/model/office.model';
+import { OfficeService } from './office.service';
 import { OfficeComponent } from './office.component';
 import { OfficeDetailComponent } from './office-detail.component';
-import { OfficePopupComponent } from './office-dialog.component';
+import { OfficeUpdateComponent } from './office-update.component';
 import { OfficeDeletePopupComponent } from './office-delete-dialog.component';
+import { IOffice } from 'app/shared/model/office.model';
 
-@Injectable()
-export class OfficeResolvePagingParams implements Resolve<any> {
+@Injectable({ providedIn: 'root' })
+export class OfficeResolve implements Resolve<IOffice> {
+    constructor(private service: OfficeService) {}
 
-    constructor(private paginationUtil: JhiPaginationUtil) {}
-
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        const page = route.queryParams['page'] ? route.queryParams['page'] : '1';
-        const sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'id,asc';
-        return {
-            page: this.paginationUtil.parsePage(page),
-            predicate: this.paginationUtil.parsePredicate(sort),
-            ascending: this.paginationUtil.parseAscending(sort)
-      };
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<IOffice> {
+        const id = route.params['id'] ? route.params['id'] : null;
+        if (id) {
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<Office>) => response.ok),
+                map((office: HttpResponse<Office>) => office.body)
+            );
+        }
+        return of(new Office());
     }
 }
 
 export const officeRoute: Routes = [
     {
-        path: 'office',
+        path: '',
         component: OfficeComponent,
         resolve: {
-            'pagingParams': OfficeResolvePagingParams
+            pagingParams: JhiResolvePagingParams
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            defaultSort: 'id,asc',
+            pageTitle: 'mallApp.office.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/view',
+        component: OfficeDetailComponent,
+        resolve: {
+            office: OfficeResolve
         },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.office.home.title'
         },
         canActivate: [UserRouteAccessService]
-    }, {
-        path: 'office/:id',
-        component: OfficeDetailComponent,
+    },
+    {
+        path: 'new',
+        component: OfficeUpdateComponent,
+        resolve: {
+            office: OfficeResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.office.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/edit',
+        component: OfficeUpdateComponent,
+        resolve: {
+            office: OfficeResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.office.home.title'
@@ -49,28 +83,11 @@ export const officeRoute: Routes = [
 
 export const officePopupRoute: Routes = [
     {
-        path: 'office-new',
-        component: OfficePopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.office.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'office/:id/edit',
-        component: OfficePopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.office.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'office/:id/delete',
+        path: ':id/delete',
         component: OfficeDeletePopupComponent,
+        resolve: {
+            office: OfficeResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.office.home.title'

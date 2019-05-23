@@ -1,44 +1,78 @@
 import { Injectable } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiPaginationUtil } from 'ng-jhipster';
-
-import { UserRouteAccessService } from '../../shared';
+import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
+import { UserRouteAccessService } from 'app/core';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { Card } from 'app/shared/model/card.model';
+import { CardService } from './card.service';
 import { CardComponent } from './card.component';
 import { CardDetailComponent } from './card-detail.component';
-import { CardPopupComponent } from './card-dialog.component';
+import { CardUpdateComponent } from './card-update.component';
 import { CardDeletePopupComponent } from './card-delete-dialog.component';
+import { ICard } from 'app/shared/model/card.model';
 
-@Injectable()
-export class CardResolvePagingParams implements Resolve<any> {
+@Injectable({ providedIn: 'root' })
+export class CardResolve implements Resolve<ICard> {
+    constructor(private service: CardService) {}
 
-    constructor(private paginationUtil: JhiPaginationUtil) {}
-
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        const page = route.queryParams['page'] ? route.queryParams['page'] : '1';
-        const sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'id,asc';
-        return {
-            page: this.paginationUtil.parsePage(page),
-            predicate: this.paginationUtil.parsePredicate(sort),
-            ascending: this.paginationUtil.parseAscending(sort)
-      };
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ICard> {
+        const id = route.params['id'] ? route.params['id'] : null;
+        if (id) {
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<Card>) => response.ok),
+                map((card: HttpResponse<Card>) => card.body)
+            );
+        }
+        return of(new Card());
     }
 }
 
 export const cardRoute: Routes = [
     {
-        path: 'card',
+        path: '',
         component: CardComponent,
         resolve: {
-            'pagingParams': CardResolvePagingParams
+            pagingParams: JhiResolvePagingParams
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            defaultSort: 'id,asc',
+            pageTitle: 'mallApp.card.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/view',
+        component: CardDetailComponent,
+        resolve: {
+            card: CardResolve
         },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.card.home.title'
         },
         canActivate: [UserRouteAccessService]
-    }, {
-        path: 'card/:id',
-        component: CardDetailComponent,
+    },
+    {
+        path: 'new',
+        component: CardUpdateComponent,
+        resolve: {
+            card: CardResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.card.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/edit',
+        component: CardUpdateComponent,
+        resolve: {
+            card: CardResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.card.home.title'
@@ -49,28 +83,11 @@ export const cardRoute: Routes = [
 
 export const cardPopupRoute: Routes = [
     {
-        path: 'card-new',
-        component: CardPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.card.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'card/:id/edit',
-        component: CardPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.card.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'card/:id/delete',
+        path: ':id/delete',
         component: CardDeletePopupComponent,
+        resolve: {
+            card: CardResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.card.home.title'

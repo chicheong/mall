@@ -1,91 +1,85 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { SERVER_API_URL } from '../../app.constants';
+import { Observable } from 'rxjs';
+import * as moment from 'moment';
+import { DATE_FORMAT } from 'app/shared/constants/input.constants';
+import { map } from 'rxjs/operators';
 
-import { JhiDateUtils } from 'ng-jhipster';
+import { SERVER_API_URL } from 'app/app.constants';
+import { createRequestOption } from 'app/shared';
+import { IPrice } from 'app/shared/model/price.model';
 
-import { Price } from './price.model';
-import { createRequestOption } from '../../shared';
+type EntityResponseType = HttpResponse<IPrice>;
+type EntityArrayResponseType = HttpResponse<IPrice[]>;
 
-export type EntityResponseType = HttpResponse<Price>;
-
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class PriceService {
+    public resourceUrl = SERVER_API_URL + 'api/prices';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/prices';
 
-    private resourceUrl =  SERVER_API_URL + 'api/prices';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/prices';
+    constructor(protected http: HttpClient) {}
 
-    constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }
-
-    create(price: Price): Observable<EntityResponseType> {
-        const copy = this.convert(price);
-        return this.http.post<Price>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    create(price: IPrice): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(price);
+        return this.http
+            .post<IPrice>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    update(price: Price): Observable<EntityResponseType> {
-        const copy = this.convert(price);
-        return this.http.put<Price>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    update(price: IPrice): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(price);
+        return this.http
+            .put<IPrice>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<Price>(`${this.resourceUrl}/${id}`, { observe: 'response'})
-            .map((res: EntityResponseType) => this.convertResponse(res));
+        return this.http
+            .get<IPrice>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    query(req?: any): Observable<HttpResponse<Price[]>> {
+    query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Price[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Price[]>) => this.convertArrayResponse(res));
+        return this.http
+            .get<IPrice[]>(this.resourceUrl, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    search(req?: any): Observable<HttpResponse<Price[]>> {
+    search(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Price[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Price[]>) => this.convertArrayResponse(res));
+        return this.http
+            .get<IPrice[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
-    private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: Price = this.convertItemFromServer(res.body);
-        return res.clone({body});
+    protected convertDateFromClient(price: IPrice): IPrice {
+        const copy: IPrice = Object.assign({}, price, {
+            from: price.from != null && price.from.isValid() ? price.from.toJSON() : null,
+            to: price.to != null && price.to.isValid() ? price.to.toJSON() : null
+        });
+        return copy;
     }
 
-    private convertArrayResponse(res: HttpResponse<Price[]>): HttpResponse<Price[]> {
-        const jsonResponse: Price[] = res.body;
-        const body: Price[] = [];
-        for (let i = 0; i < jsonResponse.length; i++) {
-            body.push(this.convertItemFromServer(jsonResponse[i]));
+    protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        if (res.body) {
+            res.body.from = res.body.from != null ? moment(res.body.from) : null;
+            res.body.to = res.body.to != null ? moment(res.body.to) : null;
         }
-        return res.clone({body});
+        return res;
     }
 
-    /**
-     * Convert a returned JSON object to Price.
-     */
-    convertItemFromServer(price: Price): Price {
-        const copy: Price = Object.assign({}, price);
-        copy.from = this.dateUtils
-            .convertDateTimeFromServer(price.from);
-        copy.to = this.dateUtils
-            .convertDateTimeFromServer(price.to);
-        return copy;
-    }
-
-    /**
-     * Convert a Price to a JSON which can be sent to the server.
-     */
-    convert(price: Price): Price {
-        const copy: Price = Object.assign({}, price);
-
-        copy.from = this.dateUtils.toDate(price.from);
-
-        copy.to = this.dateUtils.toDate(price.to);
-        return copy;
+    protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        if (res.body) {
+            res.body.forEach((price: IPrice) => {
+                price.from = price.from != null ? moment(price.from) : null;
+                price.to = price.to != null ? moment(price.to) : null;
+            });
+        }
+        return res;
     }
 }

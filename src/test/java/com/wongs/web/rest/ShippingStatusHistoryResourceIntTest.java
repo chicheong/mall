@@ -13,6 +13,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -20,18 +22,23 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.ZoneOffset;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.sameInstant;
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -54,8 +61,13 @@ public class ShippingStatusHistoryResourceIntTest {
     @Autowired
     private ShippingStatusHistoryRepository shippingStatusHistoryRepository;
 
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.ShippingStatusHistorySearchRepositoryMockConfiguration
+     */
     @Autowired
-    private ShippingStatusHistorySearchRepository shippingStatusHistorySearchRepository;
+    private ShippingStatusHistorySearchRepository mockShippingStatusHistorySearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -69,6 +81,9 @@ public class ShippingStatusHistoryResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restShippingStatusHistoryMockMvc;
 
     private ShippingStatusHistory shippingStatusHistory;
@@ -76,12 +91,13 @@ public class ShippingStatusHistoryResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ShippingStatusHistoryResource shippingStatusHistoryResource = new ShippingStatusHistoryResource(shippingStatusHistoryRepository, shippingStatusHistorySearchRepository);
+        final ShippingStatusHistoryResource shippingStatusHistoryResource = new ShippingStatusHistoryResource(shippingStatusHistoryRepository, mockShippingStatusHistorySearchRepository);
         this.restShippingStatusHistoryMockMvc = MockMvcBuilders.standaloneSetup(shippingStatusHistoryResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -99,7 +115,6 @@ public class ShippingStatusHistoryResourceIntTest {
 
     @Before
     public void initTest() {
-        shippingStatusHistorySearchRepository.deleteAll();
         shippingStatusHistory = createEntity(em);
     }
 
@@ -122,9 +137,7 @@ public class ShippingStatusHistoryResourceIntTest {
         assertThat(testShippingStatusHistory.getStatus()).isEqualTo(DEFAULT_STATUS);
 
         // Validate the ShippingStatusHistory in Elasticsearch
-        ShippingStatusHistory shippingStatusHistoryEs = shippingStatusHistorySearchRepository.findOne(testShippingStatusHistory.getId());
-        assertThat(testShippingStatusHistory.getEffectiveDate()).isEqualTo(testShippingStatusHistory.getEffectiveDate());
-        assertThat(shippingStatusHistoryEs).isEqualToIgnoringGivenFields(testShippingStatusHistory, "effectiveDate");
+        verify(mockShippingStatusHistorySearchRepository, times(1)).save(testShippingStatusHistory);
     }
 
     @Test
@@ -144,6 +157,9 @@ public class ShippingStatusHistoryResourceIntTest {
         // Validate the ShippingStatusHistory in the database
         List<ShippingStatusHistory> shippingStatusHistoryList = shippingStatusHistoryRepository.findAll();
         assertThat(shippingStatusHistoryList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the ShippingStatusHistory in Elasticsearch
+        verify(mockShippingStatusHistorySearchRepository, times(0)).save(shippingStatusHistory);
     }
 
     @Test
@@ -160,7 +176,7 @@ public class ShippingStatusHistoryResourceIntTest {
             .andExpect(jsonPath("$.[*].effectiveDate").value(hasItem(sameInstant(DEFAULT_EFFECTIVE_DATE))))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
     }
-
+    
     @Test
     @Transactional
     public void getShippingStatusHistory() throws Exception {
@@ -189,11 +205,11 @@ public class ShippingStatusHistoryResourceIntTest {
     public void updateShippingStatusHistory() throws Exception {
         // Initialize the database
         shippingStatusHistoryRepository.saveAndFlush(shippingStatusHistory);
-        shippingStatusHistorySearchRepository.save(shippingStatusHistory);
+
         int databaseSizeBeforeUpdate = shippingStatusHistoryRepository.findAll().size();
 
         // Update the shippingStatusHistory
-        ShippingStatusHistory updatedShippingStatusHistory = shippingStatusHistoryRepository.findOne(shippingStatusHistory.getId());
+        ShippingStatusHistory updatedShippingStatusHistory = shippingStatusHistoryRepository.findById(shippingStatusHistory.getId()).get();
         // Disconnect from session so that the updates on updatedShippingStatusHistory are not directly saved in db
         em.detach(updatedShippingStatusHistory);
         updatedShippingStatusHistory
@@ -213,9 +229,7 @@ public class ShippingStatusHistoryResourceIntTest {
         assertThat(testShippingStatusHistory.getStatus()).isEqualTo(UPDATED_STATUS);
 
         // Validate the ShippingStatusHistory in Elasticsearch
-        ShippingStatusHistory shippingStatusHistoryEs = shippingStatusHistorySearchRepository.findOne(testShippingStatusHistory.getId());
-        assertThat(testShippingStatusHistory.getEffectiveDate()).isEqualTo(testShippingStatusHistory.getEffectiveDate());
-        assertThat(shippingStatusHistoryEs).isEqualToIgnoringGivenFields(testShippingStatusHistory, "effectiveDate");
+        verify(mockShippingStatusHistorySearchRepository, times(1)).save(testShippingStatusHistory);
     }
 
     @Test
@@ -225,15 +239,18 @@ public class ShippingStatusHistoryResourceIntTest {
 
         // Create the ShippingStatusHistory
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restShippingStatusHistoryMockMvc.perform(put("/api/shipping-status-histories")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(shippingStatusHistory)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the ShippingStatusHistory in the database
         List<ShippingStatusHistory> shippingStatusHistoryList = shippingStatusHistoryRepository.findAll();
-        assertThat(shippingStatusHistoryList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(shippingStatusHistoryList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the ShippingStatusHistory in Elasticsearch
+        verify(mockShippingStatusHistorySearchRepository, times(0)).save(shippingStatusHistory);
     }
 
     @Test
@@ -241,21 +258,20 @@ public class ShippingStatusHistoryResourceIntTest {
     public void deleteShippingStatusHistory() throws Exception {
         // Initialize the database
         shippingStatusHistoryRepository.saveAndFlush(shippingStatusHistory);
-        shippingStatusHistorySearchRepository.save(shippingStatusHistory);
+
         int databaseSizeBeforeDelete = shippingStatusHistoryRepository.findAll().size();
 
-        // Get the shippingStatusHistory
+        // Delete the shippingStatusHistory
         restShippingStatusHistoryMockMvc.perform(delete("/api/shipping-status-histories/{id}", shippingStatusHistory.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean shippingStatusHistoryExistsInEs = shippingStatusHistorySearchRepository.exists(shippingStatusHistory.getId());
-        assertThat(shippingStatusHistoryExistsInEs).isFalse();
-
         // Validate the database is empty
         List<ShippingStatusHistory> shippingStatusHistoryList = shippingStatusHistoryRepository.findAll();
         assertThat(shippingStatusHistoryList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the ShippingStatusHistory in Elasticsearch
+        verify(mockShippingStatusHistorySearchRepository, times(1)).deleteById(shippingStatusHistory.getId());
     }
 
     @Test
@@ -263,8 +279,8 @@ public class ShippingStatusHistoryResourceIntTest {
     public void searchShippingStatusHistory() throws Exception {
         // Initialize the database
         shippingStatusHistoryRepository.saveAndFlush(shippingStatusHistory);
-        shippingStatusHistorySearchRepository.save(shippingStatusHistory);
-
+        when(mockShippingStatusHistorySearchRepository.search(queryStringQuery("id:" + shippingStatusHistory.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(shippingStatusHistory), PageRequest.of(0, 1), 1));
         // Search the shippingStatusHistory
         restShippingStatusHistoryMockMvc.perform(get("/api/_search/shipping-status-histories?query=id:" + shippingStatusHistory.getId()))
             .andExpect(status().isOk())

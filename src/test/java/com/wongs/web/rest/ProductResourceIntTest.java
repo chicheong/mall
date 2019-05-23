@@ -4,8 +4,8 @@ import com.wongs.MallApp;
 
 import com.wongs.domain.Product;
 import com.wongs.repository.ProductRepository;
-import com.wongs.service.ProductService;
 import com.wongs.repository.search.ProductSearchRepository;
+import com.wongs.service.ProductService;
 import com.wongs.service.dto.ProductDTO;
 import com.wongs.service.mapper.ProductMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
@@ -16,6 +16,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -23,18 +25,23 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.ZoneOffset;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.sameInstant;
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -90,8 +97,13 @@ public class ProductResourceIntTest {
     @Autowired
     private ProductService productService;
 
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.ProductSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private ProductSearchRepository productSearchRepository;
+    private ProductSearchRepository mockProductSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -105,6 +117,9 @@ public class ProductResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restProductMockMvc;
 
     private Product product;
@@ -117,7 +132,8 @@ public class ProductResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -144,7 +160,6 @@ public class ProductResourceIntTest {
 
     @Before
     public void initTest() {
-        productSearchRepository.deleteAll();
         product = createEntity(em);
     }
 
@@ -177,10 +192,7 @@ public class ProductResourceIntTest {
         assertThat(testProduct.getLastModifiedDate()).isEqualTo(DEFAULT_LAST_MODIFIED_DATE);
 
         // Validate the Product in Elasticsearch
-        Product productEs = productSearchRepository.findOne(testProduct.getId());
-        assertThat(testProduct.getCreatedDate()).isEqualTo(testProduct.getCreatedDate());
-        assertThat(testProduct.getLastModifiedDate()).isEqualTo(testProduct.getLastModifiedDate());
-        assertThat(productEs).isEqualToIgnoringGivenFields(testProduct, "createdDate", "lastModifiedDate");
+        verify(mockProductSearchRepository, times(1)).save(testProduct);
     }
 
     @Test
@@ -201,25 +213,9 @@ public class ProductResourceIntTest {
         // Validate the Product in the database
         List<Product> productList = productRepository.findAll();
         assertThat(productList).hasSize(databaseSizeBeforeCreate);
-    }
 
-    @Test
-    @Transactional
-    public void checkNameIsRequired() throws Exception {
-        int databaseSizeBeforeTest = productRepository.findAll().size();
-        // set the field null
-        product.setName(null);
-
-        // Create the Product, which fails.
-        ProductDTO productDTO = productMapper.toDto(product);
-
-        restProductMockMvc.perform(post("/api/products")
-            .contentType(TestUtil.APPLICATION_JSON_UTF8)
-            .content(TestUtil.convertObjectToJsonBytes(productDTO)))
-            .andExpect(status().isBadRequest());
-
-        List<Product> productList = productRepository.findAll();
-        assertThat(productList).hasSize(databaseSizeBeforeTest);
+        // Validate the Product in Elasticsearch
+        verify(mockProductSearchRepository, times(0)).save(product);
     }
 
     @Test
@@ -245,7 +241,7 @@ public class ProductResourceIntTest {
             .andExpect(jsonPath("$.[*].lastModifiedBy").value(hasItem(DEFAULT_LAST_MODIFIED_BY.toString())))
             .andExpect(jsonPath("$.[*].lastModifiedDate").value(hasItem(sameInstant(DEFAULT_LAST_MODIFIED_DATE))));
     }
-
+    
     @Test
     @Transactional
     public void getProduct() throws Exception {
@@ -283,11 +279,11 @@ public class ProductResourceIntTest {
     public void updateProduct() throws Exception {
         // Initialize the database
         productRepository.saveAndFlush(product);
-        productSearchRepository.save(product);
+
         int databaseSizeBeforeUpdate = productRepository.findAll().size();
 
         // Update the product
-        Product updatedProduct = productRepository.findOne(product.getId());
+        Product updatedProduct = productRepository.findById(product.getId()).get();
         // Disconnect from session so that the updates on updatedProduct are not directly saved in db
         em.detach(updatedProduct);
         updatedProduct
@@ -326,10 +322,7 @@ public class ProductResourceIntTest {
         assertThat(testProduct.getLastModifiedDate()).isEqualTo(UPDATED_LAST_MODIFIED_DATE);
 
         // Validate the Product in Elasticsearch
-        Product productEs = productSearchRepository.findOne(testProduct.getId());
-        assertThat(testProduct.getCreatedDate()).isEqualTo(testProduct.getCreatedDate());
-        assertThat(testProduct.getLastModifiedDate()).isEqualTo(testProduct.getLastModifiedDate());
-        assertThat(productEs).isEqualToIgnoringGivenFields(testProduct, "createdDate", "lastModifiedDate");
+        verify(mockProductSearchRepository, times(1)).save(testProduct);
     }
 
     @Test
@@ -340,15 +333,18 @@ public class ProductResourceIntTest {
         // Create the Product
         ProductDTO productDTO = productMapper.toDto(product);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restProductMockMvc.perform(put("/api/products")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(productDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Product in the database
         List<Product> productList = productRepository.findAll();
-        assertThat(productList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(productList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the Product in Elasticsearch
+        verify(mockProductSearchRepository, times(0)).save(product);
     }
 
     @Test
@@ -356,21 +352,20 @@ public class ProductResourceIntTest {
     public void deleteProduct() throws Exception {
         // Initialize the database
         productRepository.saveAndFlush(product);
-        productSearchRepository.save(product);
+
         int databaseSizeBeforeDelete = productRepository.findAll().size();
 
-        // Get the product
+        // Delete the product
         restProductMockMvc.perform(delete("/api/products/{id}", product.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean productExistsInEs = productSearchRepository.exists(product.getId());
-        assertThat(productExistsInEs).isFalse();
-
         // Validate the database is empty
         List<Product> productList = productRepository.findAll();
         assertThat(productList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the Product in Elasticsearch
+        verify(mockProductSearchRepository, times(1)).deleteById(product.getId());
     }
 
     @Test
@@ -378,23 +373,23 @@ public class ProductResourceIntTest {
     public void searchProduct() throws Exception {
         // Initialize the database
         productRepository.saveAndFlush(product);
-        productSearchRepository.save(product);
-
+        when(mockProductSearchRepository.search(queryStringQuery("id:" + product.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(product), PageRequest.of(0, 1), 1));
         // Search the product
         restProductMockMvc.perform(get("/api/_search/products?query=id:" + product.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(product.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
-            .andExpect(jsonPath("$.[*].brand").value(hasItem(DEFAULT_BRAND.toString())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
-            .andExpect(jsonPath("$.[*].content").value(hasItem(DEFAULT_CONTENT.toString())))
-            .andExpect(jsonPath("$.[*].remark").value(hasItem(DEFAULT_REMARK.toString())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
+            .andExpect(jsonPath("$.[*].brand").value(hasItem(DEFAULT_BRAND)))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
+            .andExpect(jsonPath("$.[*].content").value(hasItem(DEFAULT_CONTENT)))
+            .andExpect(jsonPath("$.[*].remark").value(hasItem(DEFAULT_REMARK)))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
-            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY.toString())))
+            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
-            .andExpect(jsonPath("$.[*].lastModifiedBy").value(hasItem(DEFAULT_LAST_MODIFIED_BY.toString())))
+            .andExpect(jsonPath("$.[*].lastModifiedBy").value(hasItem(DEFAULT_LAST_MODIFIED_BY)))
             .andExpect(jsonPath("$.[*].lastModifiedDate").value(hasItem(sameInstant(DEFAULT_LAST_MODIFIED_DATE))));
     }
 

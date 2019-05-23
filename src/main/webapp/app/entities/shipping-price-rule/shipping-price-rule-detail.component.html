@@ -1,40 +1,41 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="shippingPriceRule">
+            <h2><span jhiTranslate="mallApp.shippingPriceRule.detail.title">Shipping Price Rule</span> {{shippingPriceRule.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="mallApp.shippingPriceRule.type">Type</span></dt>
+                <dd>
+                    <span>{{shippingPriceRule.type}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.shippingPriceRule.value">Value</span></dt>
+                <dd>
+                    <span>{{shippingPriceRule.value}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.shippingPriceRule.price">Price</span></dt>
+                <dd>
+                    <span>{{shippingPriceRule.price}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.shippingPriceRule.shop">Shop</span></dt>
+                <dd>
+                    <div *ngIf="shippingPriceRule.shop">
+                        <a [routerLink]="['/shop', shippingPriceRule.shop?.id, 'view']">{{shippingPriceRule.shop?.id}}</a>
+                    </div>
+                </dd>
+            </dl>
 
-<div *ngIf="shippingPriceRule">
-    <h2><span jhiTranslate="mallApp.shippingPriceRule.detail.title">Shipping Price Rule</span> {{shippingPriceRule.id}}</h2>
-    <hr>
-    <jhi-alert-error></jhi-alert-error>
-    <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="mallApp.shippingPriceRule.type">Type</span></dt>
-        <dd>
-            <span>{{shippingPriceRule.type}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.shippingPriceRule.value">Value</span></dt>
-        <dd>
-            <span>{{shippingPriceRule.value}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.shippingPriceRule.price">Price</span></dt>
-        <dd>
-            <span>{{shippingPriceRule.price}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.shippingPriceRule.shop">Shop</span></dt>
-        <dd>
-            <div *ngIf="shippingPriceRule.shop">
-                <a [routerLink]="['/shop', shippingPriceRule.shop?.id]">{{shippingPriceRule.shop?.id}}</a>
-            </div>
-        </dd>
-    </dl>
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
 
-    <button type="submit"
-            (click)="previousState()"
-            class="btn btn-info">
-        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
-    </button>
-
-    <button type="button"
-            [routerLink]="['/', { outlets: { popup: 'shipping-price-rule/'+ shippingPriceRule.id + '/edit'} }]"
-            replaceUrl="true"
-            queryParamsHandling="merge"
-            class="btn btn-primary">
-        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
-    </button>
+            <button type="button"
+                    [routerLink]="['/shipping-price-rule', shippingPriceRule.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
 </div>

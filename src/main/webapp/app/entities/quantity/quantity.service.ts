@@ -1,89 +1,85 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { SERVER_API_URL } from '../../app.constants';
+import { Observable } from 'rxjs';
+import * as moment from 'moment';
+import { DATE_FORMAT } from 'app/shared/constants/input.constants';
+import { map } from 'rxjs/operators';
 
-import { JhiDateUtils } from 'ng-jhipster';
+import { SERVER_API_URL } from 'app/app.constants';
+import { createRequestOption } from 'app/shared';
+import { IQuantity } from 'app/shared/model/quantity.model';
 
-import { Quantity } from './quantity.model';
-import { createRequestOption } from '../../shared';
+type EntityResponseType = HttpResponse<IQuantity>;
+type EntityArrayResponseType = HttpResponse<IQuantity[]>;
 
-export type EntityResponseType = HttpResponse<Quantity>;
-
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class QuantityService {
+    public resourceUrl = SERVER_API_URL + 'api/quantities';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/quantities';
 
-    private resourceUrl = SERVER_API_URL + 'api/quantities';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/quantities';
+    constructor(protected http: HttpClient) {}
 
-    constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }
-
-    create(quantity: Quantity): Observable<EntityResponseType> {
-        const copy = this.convert(quantity);
-        return this.http.post<Quantity>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    create(quantity: IQuantity): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(quantity);
+        return this.http
+            .post<IQuantity>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    update(quantity: Quantity): Observable<EntityResponseType> {
-        const copy = this.convert(quantity);
-        return this.http.put<Quantity>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    update(quantity: IQuantity): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(quantity);
+        return this.http
+            .put<IQuantity>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<Quantity>(`${this.resourceUrl}/${id}`, { observe: 'response'})
-            .map((res: EntityResponseType) => this.convertResponse(res));
+        return this.http
+            .get<IQuantity>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    query(req?: any): Observable<HttpResponse<Quantity[]>> {
+    query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Quantity[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Quantity[]>) => this.convertArrayResponse(res));
+        return this.http
+            .get<IQuantity[]>(this.resourceUrl, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    search(req?: any): Observable<HttpResponse<Quantity[]>> {
+    search(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Quantity[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Quantity[]>) => this.convertArrayResponse(res));
+        return this.http
+            .get<IQuantity[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
-    private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: Quantity = this.convertItemFromServer(res.body);
-        return res.clone({body});
+    protected convertDateFromClient(quantity: IQuantity): IQuantity {
+        const copy: IQuantity = Object.assign({}, quantity, {
+            from: quantity.from != null && quantity.from.isValid() ? quantity.from.toJSON() : null,
+            to: quantity.to != null && quantity.to.isValid() ? quantity.to.toJSON() : null
+        });
+        return copy;
     }
 
-    private convertArrayResponse(res: HttpResponse<Quantity[]>): HttpResponse<Quantity[]> {
-        const jsonResponse: Quantity[] = res.body;
-        const body: Quantity[] = [];
-        for (let i = 0; i < jsonResponse.length; i++) {
-            body.push(this.convertItemFromServer(jsonResponse[i]));
+    protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        if (res.body) {
+            res.body.from = res.body.from != null ? moment(res.body.from) : null;
+            res.body.to = res.body.to != null ? moment(res.body.to) : null;
         }
-        return res.clone({body});
+        return res;
     }
 
-    /**
-     * Convert a returned JSON object to Quantity.
-     */
-    convertItemFromServer(quantity: Quantity): Quantity {
-        const copy: Quantity = Object.assign({}, quantity);
-        copy.from = this.dateUtils
-            .convertDateTimeFromServer(quantity.from);
-        copy.to = this.dateUtils
-            .convertDateTimeFromServer(quantity.to);
-        return copy;
-    }
-
-    /**
-     * Convert a Quantity to a JSON which can be sent to the server.
-     */
-    convert(quantity: Quantity): Quantity {
-        const copy: Quantity = Object.assign({}, quantity);
-        copy.from = this.dateUtils.toDate(quantity.from);
-        copy.to = this.dateUtils.toDate(quantity.to);
-        return copy;
+    protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        if (res.body) {
+            res.body.forEach((quantity: IQuantity) => {
+                quantity.from = quantity.from != null ? moment(quantity.from) : null;
+                quantity.to = quantity.to != null ? moment(quantity.to) : null;
+            });
+        }
+        return res;
     }
 }

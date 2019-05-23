@@ -1,20 +1,9 @@
 package com.wongs.service.dto;
-
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
-
-import com.wongs.domain.Company;
-import com.wongs.domain.Delegation;
-import com.wongs.domain.Department;
-import com.wongs.domain.MyAccount;
-import com.wongs.domain.MyOrder;
-import com.wongs.domain.Office;
-import com.wongs.domain.Shop;
-import com.wongs.domain.UserInfo;
+import java.util.Objects;
 import com.wongs.domain.enumeration.AccountType;
 
 /**
@@ -27,33 +16,22 @@ public class MyAccountDTO implements Serializable {
     private BigDecimal balance;
 
     private AccountType type;
-    
-    private Set<Delegation> delegations = new HashSet<>();
 
-	private Company company;
 
-//    private String companyCode;
+    private Long companyId;
 
-    private Department department;
+    private String companyCode;
 
-    private Office office;
+    private Long departmentId;
+
+    private String departmentCode;
+
+    private Long officeId;
+
+    private String officeCode;
 
     private Set<ShopDTO> shops = new HashSet<>();
-    
-    private Set<UserInfo> userInfos = new HashSet<>();
-    
-    private MyOrderDTO myOrder = null;
-    
-    public MyAccountDTO() {
-        // Empty constructor needed for Jackson.
-	}
-    
-    public MyAccountDTO(MyAccount myAccount) {
-		this.id = myAccount.getId();
-		this.balance = myAccount.getBalance();
-		this.type = myAccount.getType();
-	}
-    
+
     public Long getId() {
         return id;
     }
@@ -77,62 +55,62 @@ public class MyAccountDTO implements Serializable {
     public void setType(AccountType type) {
         this.type = type;
     }
-    
-    public Set<Delegation> getDelegations() {
-		return delegations;
-	}
 
-	public void setDelegations(Set<Delegation> delegations) {
-		this.delegations = delegations;
-	}
+    public Long getCompanyId() {
+        return companyId;
+    }
 
-    public Company getCompany() {
-		return company;
-	}
+    public void setCompanyId(Long companyId) {
+        this.companyId = companyId;
+    }
 
-	public void setCompany(Company company) {
-		this.company = company;
-	}
+    public String getCompanyCode() {
+        return companyCode;
+    }
 
-	public Department getDepartment() {
-		return department;
-	}
+    public void setCompanyCode(String companyCode) {
+        this.companyCode = companyCode;
+    }
 
-	public void setDepartment(Department department) {
-		this.department = department;
-	}
+    public Long getDepartmentId() {
+        return departmentId;
+    }
 
-	public Office getOffice() {
-		return office;
-	}
+    public void setDepartmentId(Long departmentId) {
+        this.departmentId = departmentId;
+    }
 
-	public void setOffice(Office office) {
-		this.office = office;
-	}
+    public String getDepartmentCode() {
+        return departmentCode;
+    }
 
-	public Set<ShopDTO> getShops() {
+    public void setDepartmentCode(String departmentCode) {
+        this.departmentCode = departmentCode;
+    }
+
+    public Long getOfficeId() {
+        return officeId;
+    }
+
+    public void setOfficeId(Long officeId) {
+        this.officeId = officeId;
+    }
+
+    public String getOfficeCode() {
+        return officeCode;
+    }
+
+    public void setOfficeCode(String officeCode) {
+        this.officeCode = officeCode;
+    }
+
+    public Set<ShopDTO> getShops() {
         return shops;
     }
 
     public void setShops(Set<ShopDTO> shops) {
         this.shops = shops;
     }
-    
-	public Set<UserInfo> getUserInfos() {
-		return userInfos;
-	}
-
-	public void setUserInfos(Set<UserInfo> userInfos) {
-		this.userInfos = userInfos;
-	}
-    
-    public MyOrderDTO getMyOrder() {
-		return myOrder;
-	}
-
-	public void setMyOrder(MyOrderDTO myOrder) {
-		this.myOrder = myOrder;
-	}
 
     @Override
     public boolean equals(Object o) {
@@ -144,7 +122,7 @@ public class MyAccountDTO implements Serializable {
         }
 
         MyAccountDTO myAccountDTO = (MyAccountDTO) o;
-        if(myAccountDTO.getId() == null || getId() == null) {
+        if (myAccountDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), myAccountDTO.getId());
@@ -161,6 +139,12 @@ public class MyAccountDTO implements Serializable {
             "id=" + getId() +
             ", balance=" + getBalance() +
             ", type='" + getType() + "'" +
+            ", company=" + getCompanyId() +
+            ", company='" + getCompanyCode() + "'" +
+            ", department=" + getDepartmentId() +
+            ", department='" + getDepartmentCode() + "'" +
+            ", office=" + getOfficeId() +
+            ", office='" + getOfficeCode() + "'" +
             "}";
     }
 }

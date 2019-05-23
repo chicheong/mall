@@ -1,81 +1,44 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { SERVER_API_URL } from '../../app.constants';
+import { Observable } from 'rxjs';
 
-import { ProductStyle } from './product-style.model';
-import { createRequestOption } from '../../shared';
+import { SERVER_API_URL } from 'app/app.constants';
+import { createRequestOption } from 'app/shared';
+import { IProductStyle } from 'app/shared/model/product-style.model';
 
-export type EntityResponseType = HttpResponse<ProductStyle>;
+type EntityResponseType = HttpResponse<IProductStyle>;
+type EntityArrayResponseType = HttpResponse<IProductStyle[]>;
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ProductStyleService {
+    public resourceUrl = SERVER_API_URL + 'api/product-styles';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/product-styles';
 
-    private resourceUrl = SERVER_API_URL + 'api/product-styles';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/product-styles';
+    constructor(protected http: HttpClient) {}
 
-    constructor(private http: HttpClient) { }
-
-    create(productStyle: ProductStyle): Observable<EntityResponseType> {
-        const copy = this.convert(productStyle);
-        return this.http.post<ProductStyle>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    create(productStyle: IProductStyle): Observable<EntityResponseType> {
+        return this.http.post<IProductStyle>(this.resourceUrl, productStyle, { observe: 'response' });
     }
 
-    update(productStyle: ProductStyle): Observable<EntityResponseType> {
-        const copy = this.convert(productStyle);
-        return this.http.put<ProductStyle>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    update(productStyle: IProductStyle): Observable<EntityResponseType> {
+        return this.http.put<IProductStyle>(this.resourceUrl, productStyle, { observe: 'response' });
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<ProductStyle>(`${this.resourceUrl}/${id}`, { observe: 'response'})
-            .map((res: EntityResponseType) => this.convertResponse(res));
+        return this.http.get<IProductStyle>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    query(req?: any): Observable<HttpResponse<ProductStyle[]>> {
+    query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<ProductStyle[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<ProductStyle[]>) => this.convertArrayResponse(res));
+        return this.http.get<IProductStyle[]>(this.resourceUrl, { params: options, observe: 'response' });
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    search(req?: any): Observable<HttpResponse<ProductStyle[]>> {
+    search(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<ProductStyle[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<ProductStyle[]>) => this.convertArrayResponse(res));
-    }
-
-    private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: ProductStyle = this.convertItemFromServer(res.body);
-        return res.clone({body});
-    }
-
-    private convertArrayResponse(res: HttpResponse<ProductStyle[]>): HttpResponse<ProductStyle[]> {
-        const jsonResponse: ProductStyle[] = res.body;
-        const body: ProductStyle[] = [];
-        for (let i = 0; i < jsonResponse.length; i++) {
-            body.push(this.convertItemFromServer(jsonResponse[i]));
-        }
-        return res.clone({body});
-    }
-
-    /**
-     * Convert a returned JSON object to ProductStyle.
-     */
-    private convertItemFromServer(productStyle: ProductStyle): ProductStyle {
-        const copy: ProductStyle = Object.assign({}, productStyle);
-        return copy;
-    }
-
-    /**
-     * Convert a ProductStyle to a JSON which can be sent to the server.
-     */
-    private convert(productStyle: ProductStyle): ProductStyle {
-        const copy: ProductStyle = Object.assign({}, productStyle);
-        return copy;
+        return this.http.get<IProductStyle[]>(this.resourceSearchUrl, { params: options, observe: 'response' });
     }
 }

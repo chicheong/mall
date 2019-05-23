@@ -1,12 +1,11 @@
 {
     "mallApp": {
-        "quantity" : {
+        "quantity": {
             "home": {
                 "title": "Quantities",
                 "createLabel": "建立一筆新的 Quantity",
                 "createOrEditLabel": "建立或編輯 Quantity",
-                "search": "搜尋 Quantity",
-				"advanceQuantity": "預定數量"
+                "search": "搜尋 Quantity"
             },
             "created": "新的 Quantity 建立成功，識別碼為 {{ param }}",
             "updated": "識別碼為 {{ param }} 的 Quantity 更新成功",
@@ -20,15 +19,7 @@
             "from": "From",
             "to": "To",
             "quantity": "Quantity",
-            "item": "Item",
-            "tooltip": {
-            	"quantityField": "數量，例如 999"
-            },
-            "button": {
-            	"addOneMoreTimeslot": "加多一個時段",
-            	"remove": "移除",
-            	"addAndCopyToALL": "新增並複製至全部"
-            }
+            "item": "Item"
         }
     }
 }

@@ -1,8 +1,8 @@
 <div>
-    <h2>
+    <h2 id="page-heading">
         <span jhiTranslate="mallApp.currencyRate.home.title">Currency Rates</span>
-        <button class="btn btn-primary float-right jh-create-entity create-currency-rate" [routerLink]="['/', { outlets: { popup: ['currency-rate-new'] } }]">
-            <span class="fa fa-plus"></span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-currency-rate" [routerLink]="['/currency-rate/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
             <span class="hidden-sm-down"  jhiTranslate="mallApp.currencyRate.home.createLabel">
             Create new Currency Rate
             </span>
@@ -15,10 +15,10 @@
                 <div class="input-group w-100 mt-3">
                     <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'mallApp.currencyRate.home.search' | translate }}">
                     <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
-                        <span class="fa fa-search"></span>
+                        <fa-icon [icon]="'search'"></fa-icon>
                     </button>
                     <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
-                        <span class="fa fa-trash-o"></span>
+                        <fa-icon [icon]="'trash-alt'"></fa-icon>
                     </button>
                 </div>
             </form>
@@ -40,7 +40,7 @@
             </thead>
             <tbody>
             <tr *ngFor="let currencyRate of currencyRates ;trackBy: trackId">
-                <td><a [routerLink]="['../currency-rate', currencyRate.id ]">{{currencyRate.id}}</a></td>
+                <td><a [routerLink]="['/currency-rate', currencyRate.id, 'view' ]">{{currencyRate.id}}</a></td>
                 <td>{{currencyRate.from | date:'medium'}}</td>
                 <td>{{currencyRate.to | date:'medium'}}</td>
                 <td>{{currencyRate.rate}}</td>
@@ -49,25 +49,23 @@
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
-                                [routerLink]="['../currency-rate', currencyRate.id ]"
+                                [routerLink]="['/currency-rate', currencyRate.id, 'view' ]"
                                 class="btn btn-info btn-sm">
-                            <span class="fa fa-eye"></span>
+                            <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'currency-rate/'+ currencyRate.id + '/edit'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
+                                [routerLink]="['/currency-rate', currencyRate.id, 'edit']"
                                 class="btn btn-primary btn-sm">
-                            <span class="fa fa-pencil"></span>
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'currency-rate/'+ currencyRate.id + '/delete'} }]"
+                                [routerLink]="['/', 'currency-rate', { outlets: { popup: currencyRate.id + '/delete'} }]"
                                 replaceUrl="true"
                                 queryParamsHandling="merge"
                                 class="btn btn-danger btn-sm">
-                            <span class="fa fa-remove"></span>
+                            <fa-icon [icon]="'times'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
                         </button>
                     </div>

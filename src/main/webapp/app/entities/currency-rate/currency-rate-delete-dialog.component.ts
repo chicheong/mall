@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { CurrencyRate } from './currency-rate.model';
-import { CurrencyRatePopupService } from './currency-rate-popup.service';
+import { ICurrencyRate } from 'app/shared/model/currency-rate.model';
 import { CurrencyRateService } from './currency-rate.service';
 
 @Component({
@@ -13,22 +12,20 @@ import { CurrencyRateService } from './currency-rate.service';
     templateUrl: './currency-rate-delete-dialog.component.html'
 })
 export class CurrencyRateDeleteDialogComponent {
-
-    currencyRate: CurrencyRate;
+    currencyRate: ICurrencyRate;
 
     constructor(
-        private currencyRateService: CurrencyRateService,
+        protected currencyRateService: CurrencyRateService,
         public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager
-    ) {
-    }
+        protected eventManager: JhiEventManager
+    ) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.currencyRateService.delete(id).subscribe((response) => {
+        this.currencyRateService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'currencyRateListModification',
                 content: 'Deleted an currencyRate'
@@ -43,22 +40,33 @@ export class CurrencyRateDeleteDialogComponent {
     template: ''
 })
 export class CurrencyRateDeletePopupComponent implements OnInit, OnDestroy {
+    protected ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private currencyRatePopupService: CurrencyRatePopupService
-    ) {}
+    constructor(protected activatedRoute: ActivatedRoute, protected router: Router, protected modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.currencyRatePopupService
-                .open(CurrencyRateDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ currencyRate }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(CurrencyRateDeleteDialogComponent as Component, {
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                this.ngbModalRef.componentInstance.currencyRate = currencyRate;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate(['/currency-rate', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate(['/currency-rate', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

@@ -1,54 +1,40 @@
 /* tslint:disable max-line-length */
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 import { MallTestModule } from '../../../test.module';
-import { OrderShopDetailComponent } from '../../../../../../main/webapp/app/entities/order-shop/order-shop-detail.component';
-import { OrderShopService } from '../../../../../../main/webapp/app/entities/order-shop/order-shop.service';
-import { OrderShop } from '../../../../../../main/webapp/app/entities/order-shop/order-shop.model';
+import { OrderShopDetailComponent } from 'app/entities/order-shop/order-shop-detail.component';
+import { OrderShop } from 'app/shared/model/order-shop.model';
 
 describe('Component Tests', () => {
-
     describe('OrderShop Management Detail Component', () => {
         let comp: OrderShopDetailComponent;
         let fixture: ComponentFixture<OrderShopDetailComponent>;
-        let service: OrderShopService;
+        const route = ({ data: of({ orderShop: new OrderShop(123) }) } as any) as ActivatedRoute;
 
-        beforeEach(async(() => {
+        beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [MallTestModule],
                 declarations: [OrderShopDetailComponent],
-                providers: [
-                    OrderShopService
-                ]
+                providers: [{ provide: ActivatedRoute, useValue: route }]
             })
-            .overrideTemplate(OrderShopDetailComponent, '')
-            .compileComponents();
-        }));
-
-        beforeEach(() => {
+                .overrideTemplate(OrderShopDetailComponent, '')
+                .compileComponents();
             fixture = TestBed.createComponent(OrderShopDetailComponent);
             comp = fixture.componentInstance;
-            service = fixture.debugElement.injector.get(OrderShopService);
         });
 
         describe('OnInit', () => {
             it('Should call load all on init', () => {
                 // GIVEN
 
-                spyOn(service, 'find').and.returnValue(Observable.of(new HttpResponse({
-                    body: new OrderShop(123)
-                })));
-
                 // WHEN
                 comp.ngOnInit();
 
                 // THEN
-                expect(service.find).toHaveBeenCalledWith(123);
-                expect(comp.orderShop).toEqual(jasmine.objectContaining({id: 123}));
+                expect(comp.orderShop).toEqual(jasmine.objectContaining({ id: 123 }));
             });
         });
     });
-
 });

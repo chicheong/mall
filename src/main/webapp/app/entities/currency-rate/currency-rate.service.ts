@@ -1,91 +1,85 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { SERVER_API_URL } from '../../app.constants';
+import { Observable } from 'rxjs';
+import * as moment from 'moment';
+import { DATE_FORMAT } from 'app/shared/constants/input.constants';
+import { map } from 'rxjs/operators';
 
-import { JhiDateUtils } from 'ng-jhipster';
+import { SERVER_API_URL } from 'app/app.constants';
+import { createRequestOption } from 'app/shared';
+import { ICurrencyRate } from 'app/shared/model/currency-rate.model';
 
-import { CurrencyRate } from './currency-rate.model';
-import { createRequestOption } from '../../shared';
+type EntityResponseType = HttpResponse<ICurrencyRate>;
+type EntityArrayResponseType = HttpResponse<ICurrencyRate[]>;
 
-export type EntityResponseType = HttpResponse<CurrencyRate>;
-
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class CurrencyRateService {
+    public resourceUrl = SERVER_API_URL + 'api/currency-rates';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/currency-rates';
 
-    private resourceUrl =  SERVER_API_URL + 'api/currency-rates';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/currency-rates';
+    constructor(protected http: HttpClient) {}
 
-    constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }
-
-    create(currencyRate: CurrencyRate): Observable<EntityResponseType> {
-        const copy = this.convert(currencyRate);
-        return this.http.post<CurrencyRate>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    create(currencyRate: ICurrencyRate): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(currencyRate);
+        return this.http
+            .post<ICurrencyRate>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    update(currencyRate: CurrencyRate): Observable<EntityResponseType> {
-        const copy = this.convert(currencyRate);
-        return this.http.put<CurrencyRate>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    update(currencyRate: ICurrencyRate): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(currencyRate);
+        return this.http
+            .put<ICurrencyRate>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<CurrencyRate>(`${this.resourceUrl}/${id}`, { observe: 'response'})
-            .map((res: EntityResponseType) => this.convertResponse(res));
+        return this.http
+            .get<ICurrencyRate>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    query(req?: any): Observable<HttpResponse<CurrencyRate[]>> {
+    query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<CurrencyRate[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<CurrencyRate[]>) => this.convertArrayResponse(res));
+        return this.http
+            .get<ICurrencyRate[]>(this.resourceUrl, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    search(req?: any): Observable<HttpResponse<CurrencyRate[]>> {
+    search(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<CurrencyRate[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<CurrencyRate[]>) => this.convertArrayResponse(res));
+        return this.http
+            .get<ICurrencyRate[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
-    private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: CurrencyRate = this.convertItemFromServer(res.body);
-        return res.clone({body});
+    protected convertDateFromClient(currencyRate: ICurrencyRate): ICurrencyRate {
+        const copy: ICurrencyRate = Object.assign({}, currencyRate, {
+            from: currencyRate.from != null && currencyRate.from.isValid() ? currencyRate.from.toJSON() : null,
+            to: currencyRate.to != null && currencyRate.to.isValid() ? currencyRate.to.toJSON() : null
+        });
+        return copy;
     }
 
-    private convertArrayResponse(res: HttpResponse<CurrencyRate[]>): HttpResponse<CurrencyRate[]> {
-        const jsonResponse: CurrencyRate[] = res.body;
-        const body: CurrencyRate[] = [];
-        for (let i = 0; i < jsonResponse.length; i++) {
-            body.push(this.convertItemFromServer(jsonResponse[i]));
+    protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        if (res.body) {
+            res.body.from = res.body.from != null ? moment(res.body.from) : null;
+            res.body.to = res.body.to != null ? moment(res.body.to) : null;
         }
-        return res.clone({body});
+        return res;
     }
 
-    /**
-     * Convert a returned JSON object to CurrencyRate.
-     */
-    private convertItemFromServer(currencyRate: CurrencyRate): CurrencyRate {
-        const copy: CurrencyRate = Object.assign({}, currencyRate);
-        copy.from = this.dateUtils
-            .convertDateTimeFromServer(currencyRate.from);
-        copy.to = this.dateUtils
-            .convertDateTimeFromServer(currencyRate.to);
-        return copy;
-    }
-
-    /**
-     * Convert a CurrencyRate to a JSON which can be sent to the server.
-     */
-    private convert(currencyRate: CurrencyRate): CurrencyRate {
-        const copy: CurrencyRate = Object.assign({}, currencyRate);
-
-        copy.from = this.dateUtils.toDate(currencyRate.from);
-
-        copy.to = this.dateUtils.toDate(currencyRate.to);
-        return copy;
+    protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        if (res.body) {
+            res.body.forEach((currencyRate: ICurrencyRate) => {
+                currencyRate.from = currencyRate.from != null ? moment(currencyRate.from) : null;
+                currencyRate.to = currencyRate.to != null ? moment(currencyRate.to) : null;
+            });
+        }
+        return res;
     }
 }

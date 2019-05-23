@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { Country } from './country.model';
-import { CountryPopupService } from './country-popup.service';
+import { ICountry } from 'app/shared/model/country.model';
 import { CountryService } from './country.service';
 
 @Component({
@@ -13,22 +12,16 @@ import { CountryService } from './country.service';
     templateUrl: './country-delete-dialog.component.html'
 })
 export class CountryDeleteDialogComponent {
+    country: ICountry;
 
-    country: Country;
-
-    constructor(
-        private countryService: CountryService,
-        public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager
-    ) {
-    }
+    constructor(protected countryService: CountryService, public activeModal: NgbActiveModal, protected eventManager: JhiEventManager) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.countryService.delete(id).subscribe((response) => {
+        this.countryService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'countryListModification',
                 content: 'Deleted an country'
@@ -43,22 +36,30 @@ export class CountryDeleteDialogComponent {
     template: ''
 })
 export class CountryDeletePopupComponent implements OnInit, OnDestroy {
+    protected ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private countryPopupService: CountryPopupService
-    ) {}
+    constructor(protected activatedRoute: ActivatedRoute, protected router: Router, protected modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.countryPopupService
-                .open(CountryDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ country }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(CountryDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
+                this.ngbModalRef.componentInstance.country = country;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate(['/country', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate(['/country', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

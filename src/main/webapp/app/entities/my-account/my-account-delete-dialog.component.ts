@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { MyAccount } from './my-account.model';
-import { MyAccountPopupService } from './my-account-popup.service';
+import { IMyAccount } from 'app/shared/model/my-account.model';
 import { MyAccountService } from './my-account.service';
 
 @Component({
@@ -13,22 +12,20 @@ import { MyAccountService } from './my-account.service';
     templateUrl: './my-account-delete-dialog.component.html'
 })
 export class MyAccountDeleteDialogComponent {
-
-    myAccount: MyAccount;
+    myAccount: IMyAccount;
 
     constructor(
-        private myAccountService: MyAccountService,
+        protected myAccountService: MyAccountService,
         public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager
-    ) {
-    }
+        protected eventManager: JhiEventManager
+    ) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.myAccountService.delete(id).subscribe((response) => {
+        this.myAccountService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'myAccountListModification',
                 content: 'Deleted an myAccount'
@@ -43,22 +40,30 @@ export class MyAccountDeleteDialogComponent {
     template: ''
 })
 export class MyAccountDeletePopupComponent implements OnInit, OnDestroy {
+    protected ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private myAccountPopupService: MyAccountPopupService
-    ) {}
+    constructor(protected activatedRoute: ActivatedRoute, protected router: Router, protected modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.myAccountPopupService
-                .open(MyAccountDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ myAccount }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(MyAccountDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
+                this.ngbModalRef.componentInstance.myAccount = myAccount;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate(['/my-account', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate(['/my-account', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

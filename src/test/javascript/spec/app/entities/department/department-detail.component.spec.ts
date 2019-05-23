@@ -1,54 +1,40 @@
 /* tslint:disable max-line-length */
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 import { MallTestModule } from '../../../test.module';
-import { DepartmentDetailComponent } from '../../../../../../main/webapp/app/entities/department/department-detail.component';
-import { DepartmentService } from '../../../../../../main/webapp/app/entities/department/department.service';
-import { Department } from '../../../../../../main/webapp/app/entities/department/department.model';
+import { DepartmentDetailComponent } from 'app/entities/department/department-detail.component';
+import { Department } from 'app/shared/model/department.model';
 
 describe('Component Tests', () => {
-
     describe('Department Management Detail Component', () => {
         let comp: DepartmentDetailComponent;
         let fixture: ComponentFixture<DepartmentDetailComponent>;
-        let service: DepartmentService;
+        const route = ({ data: of({ department: new Department(123) }) } as any) as ActivatedRoute;
 
-        beforeEach(async(() => {
+        beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [MallTestModule],
                 declarations: [DepartmentDetailComponent],
-                providers: [
-                    DepartmentService
-                ]
+                providers: [{ provide: ActivatedRoute, useValue: route }]
             })
-            .overrideTemplate(DepartmentDetailComponent, '')
-            .compileComponents();
-        }));
-
-        beforeEach(() => {
+                .overrideTemplate(DepartmentDetailComponent, '')
+                .compileComponents();
             fixture = TestBed.createComponent(DepartmentDetailComponent);
             comp = fixture.componentInstance;
-            service = fixture.debugElement.injector.get(DepartmentService);
         });
 
         describe('OnInit', () => {
             it('Should call load all on init', () => {
                 // GIVEN
 
-                spyOn(service, 'find').and.returnValue(Observable.of(new HttpResponse({
-                    body: new Department(123)
-                })));
-
                 // WHEN
                 comp.ngOnInit();
 
                 // THEN
-                expect(service.find).toHaveBeenCalledWith(123);
-                expect(comp.department).toEqual(jasmine.objectContaining({id: 123}));
+                expect(comp.department).toEqual(jasmine.objectContaining({ id: 123 }));
             });
         });
     });
-
 });

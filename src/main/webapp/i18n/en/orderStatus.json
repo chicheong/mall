@@ -1,6 +1,6 @@
 {
     "mallApp": {
-        "OrderStatus" : {
+        "OrderStatus": {
             "null": "",
             "PENDING": "PENDING",
             "COMFIRMED": "COMFIRMED",

@@ -1,13 +1,12 @@
 package com.wongs.repository;
 
 import com.wongs.domain.OrderStatusHistory;
-import org.springframework.stereotype.Repository;
-
 import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.Repository;
 
 
 /**
- * Spring Data JPA repository for the OrderStatusHistory entity.
+ * Spring Data  repository for the OrderStatusHistory entity.
  */
 @SuppressWarnings("unused")
 @Repository

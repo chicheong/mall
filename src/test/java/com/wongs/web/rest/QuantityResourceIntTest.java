@@ -15,6 +15,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -22,18 +24,23 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.ZoneOffset;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.sameInstant;
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -61,8 +68,13 @@ public class QuantityResourceIntTest {
     @Autowired
     private QuantityMapper quantityMapper;
 
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.QuantitySearchRepositoryMockConfiguration
+     */
     @Autowired
-    private QuantitySearchRepository quantitySearchRepository;
+    private QuantitySearchRepository mockQuantitySearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -76,6 +88,9 @@ public class QuantityResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restQuantityMockMvc;
 
     private Quantity quantity;
@@ -83,12 +98,13 @@ public class QuantityResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final QuantityResource quantityResource = new QuantityResource(quantityRepository, quantityMapper, quantitySearchRepository);
+        final QuantityResource quantityResource = new QuantityResource(quantityRepository, quantityMapper, mockQuantitySearchRepository);
         this.restQuantityMockMvc = MockMvcBuilders.standaloneSetup(quantityResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -107,7 +123,6 @@ public class QuantityResourceIntTest {
 
     @Before
     public void initTest() {
-        quantitySearchRepository.deleteAll();
         quantity = createEntity(em);
     }
 
@@ -132,10 +147,7 @@ public class QuantityResourceIntTest {
         assertThat(testQuantity.getQuantity()).isEqualTo(DEFAULT_QUANTITY);
 
         // Validate the Quantity in Elasticsearch
-        Quantity quantityEs = quantitySearchRepository.findOne(testQuantity.getId());
-        assertThat(testQuantity.getFrom()).isEqualTo(testQuantity.getFrom());
-        assertThat(testQuantity.getTo()).isEqualTo(testQuantity.getTo());
-        assertThat(quantityEs).isEqualToIgnoringGivenFields(testQuantity, "from", "to");
+        verify(mockQuantitySearchRepository, times(1)).save(testQuantity);
     }
 
     @Test
@@ -156,6 +168,9 @@ public class QuantityResourceIntTest {
         // Validate the Quantity in the database
         List<Quantity> quantityList = quantityRepository.findAll();
         assertThat(quantityList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the Quantity in Elasticsearch
+        verify(mockQuantitySearchRepository, times(0)).save(quantity);
     }
 
     @Test
@@ -173,7 +188,7 @@ public class QuantityResourceIntTest {
             .andExpect(jsonPath("$.[*].to").value(hasItem(sameInstant(DEFAULT_TO))))
             .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY)));
     }
-
+    
     @Test
     @Transactional
     public void getQuantity() throws Exception {
@@ -203,11 +218,11 @@ public class QuantityResourceIntTest {
     public void updateQuantity() throws Exception {
         // Initialize the database
         quantityRepository.saveAndFlush(quantity);
-        quantitySearchRepository.save(quantity);
+
         int databaseSizeBeforeUpdate = quantityRepository.findAll().size();
 
         // Update the quantity
-        Quantity updatedQuantity = quantityRepository.findOne(quantity.getId());
+        Quantity updatedQuantity = quantityRepository.findById(quantity.getId()).get();
         // Disconnect from session so that the updates on updatedQuantity are not directly saved in db
         em.detach(updatedQuantity);
         updatedQuantity
@@ -230,10 +245,7 @@ public class QuantityResourceIntTest {
         assertThat(testQuantity.getQuantity()).isEqualTo(UPDATED_QUANTITY);
 
         // Validate the Quantity in Elasticsearch
-        Quantity quantityEs = quantitySearchRepository.findOne(testQuantity.getId());
-        assertThat(testQuantity.getFrom()).isEqualTo(testQuantity.getFrom());
-        assertThat(testQuantity.getTo()).isEqualTo(testQuantity.getTo());
-        assertThat(quantityEs).isEqualToIgnoringGivenFields(testQuantity, "from", "to");
+        verify(mockQuantitySearchRepository, times(1)).save(testQuantity);
     }
 
     @Test
@@ -244,15 +256,18 @@ public class QuantityResourceIntTest {
         // Create the Quantity
         QuantityDTO quantityDTO = quantityMapper.toDto(quantity);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restQuantityMockMvc.perform(put("/api/quantities")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(quantityDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Quantity in the database
         List<Quantity> quantityList = quantityRepository.findAll();
-        assertThat(quantityList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(quantityList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the Quantity in Elasticsearch
+        verify(mockQuantitySearchRepository, times(0)).save(quantity);
     }
 
     @Test
@@ -260,21 +275,20 @@ public class QuantityResourceIntTest {
     public void deleteQuantity() throws Exception {
         // Initialize the database
         quantityRepository.saveAndFlush(quantity);
-        quantitySearchRepository.save(quantity);
+
         int databaseSizeBeforeDelete = quantityRepository.findAll().size();
 
-        // Get the quantity
+        // Delete the quantity
         restQuantityMockMvc.perform(delete("/api/quantities/{id}", quantity.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean quantityExistsInEs = quantitySearchRepository.exists(quantity.getId());
-        assertThat(quantityExistsInEs).isFalse();
-
         // Validate the database is empty
         List<Quantity> quantityList = quantityRepository.findAll();
         assertThat(quantityList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the Quantity in Elasticsearch
+        verify(mockQuantitySearchRepository, times(1)).deleteById(quantity.getId());
     }
 
     @Test
@@ -282,8 +296,8 @@ public class QuantityResourceIntTest {
     public void searchQuantity() throws Exception {
         // Initialize the database
         quantityRepository.saveAndFlush(quantity);
-        quantitySearchRepository.save(quantity);
-
+        when(mockQuantitySearchRepository.search(queryStringQuery("id:" + quantity.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(quantity), PageRequest.of(0, 1), 1));
         // Search the quantity
         restQuantityMockMvc.perform(get("/api/_search/quantities?query=id:" + quantity.getId()))
             .andExpect(status().isOk())

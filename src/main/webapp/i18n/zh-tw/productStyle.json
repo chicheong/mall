@@ -1,6 +1,6 @@
 {
     "mallApp": {
-        "productStyle" : {
+        "productStyle": {
             "home": {
                 "title": "Product Styles",
                 "createLabel": "建立一筆新的 Product Style",

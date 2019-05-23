@@ -1,8 +1,5 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.domain.Office;
-
 import com.wongs.repository.OfficeRepository;
 import com.wongs.repository.search.OfficeSearchRepository;
 import com.wongs.web.rest.errors.BadRequestAlertException;
@@ -57,7 +54,6 @@ public class OfficeResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/offices")
-    @Timed
     public ResponseEntity<Office> createOffice(@Valid @RequestBody Office office) throws URISyntaxException {
         log.debug("REST request to save Office : {}", office);
         if (office.getId() != null) {
@@ -80,11 +76,10 @@ public class OfficeResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/offices")
-    @Timed
     public ResponseEntity<Office> updateOffice(@Valid @RequestBody Office office) throws URISyntaxException {
         log.debug("REST request to update Office : {}", office);
         if (office.getId() == null) {
-            return createOffice(office);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         Office result = officeRepository.save(office);
         officeSearchRepository.save(result);
@@ -100,12 +95,11 @@ public class OfficeResource {
      * @return the ResponseEntity with status 200 (OK) and the list of offices in body
      */
     @GetMapping("/offices")
-    @Timed
     public ResponseEntity<List<Office>> getAllOffices(Pageable pageable) {
         log.debug("REST request to get a page of Offices");
         Page<Office> page = officeRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/offices");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -115,11 +109,10 @@ public class OfficeResource {
      * @return the ResponseEntity with status 200 (OK) and with body the office, or with status 404 (Not Found)
      */
     @GetMapping("/offices/{id}")
-    @Timed
     public ResponseEntity<Office> getOffice(@PathVariable Long id) {
         log.debug("REST request to get Office : {}", id);
-        Office office = officeRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(office));
+        Optional<Office> office = officeRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(office);
     }
 
     /**
@@ -129,11 +122,10 @@ public class OfficeResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/offices/{id}")
-    @Timed
     public ResponseEntity<Void> deleteOffice(@PathVariable Long id) {
         log.debug("REST request to delete Office : {}", id);
-        officeRepository.delete(id);
-        officeSearchRepository.delete(id);
+        officeRepository.deleteById(id);
+        officeSearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -146,12 +138,11 @@ public class OfficeResource {
      * @return the result of the search
      */
     @GetMapping("/_search/offices")
-    @Timed
     public ResponseEntity<List<Office>> searchOffices(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Offices for query {}", query);
         Page<Office> page = officeSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/offices");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
 }

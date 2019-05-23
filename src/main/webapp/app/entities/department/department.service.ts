@@ -1,81 +1,44 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { SERVER_API_URL } from '../../app.constants';
+import { Observable } from 'rxjs';
 
-import { Department } from './department.model';
-import { createRequestOption } from '../../shared';
+import { SERVER_API_URL } from 'app/app.constants';
+import { createRequestOption } from 'app/shared';
+import { IDepartment } from 'app/shared/model/department.model';
 
-export type EntityResponseType = HttpResponse<Department>;
+type EntityResponseType = HttpResponse<IDepartment>;
+type EntityArrayResponseType = HttpResponse<IDepartment[]>;
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class DepartmentService {
+    public resourceUrl = SERVER_API_URL + 'api/departments';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/departments';
 
-    private resourceUrl =  SERVER_API_URL + 'api/departments';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/departments';
+    constructor(protected http: HttpClient) {}
 
-    constructor(private http: HttpClient) { }
-
-    create(department: Department): Observable<EntityResponseType> {
-        const copy = this.convert(department);
-        return this.http.post<Department>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    create(department: IDepartment): Observable<EntityResponseType> {
+        return this.http.post<IDepartment>(this.resourceUrl, department, { observe: 'response' });
     }
 
-    update(department: Department): Observable<EntityResponseType> {
-        const copy = this.convert(department);
-        return this.http.put<Department>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    update(department: IDepartment): Observable<EntityResponseType> {
+        return this.http.put<IDepartment>(this.resourceUrl, department, { observe: 'response' });
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<Department>(`${this.resourceUrl}/${id}`, { observe: 'response'})
-            .map((res: EntityResponseType) => this.convertResponse(res));
+        return this.http.get<IDepartment>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    query(req?: any): Observable<HttpResponse<Department[]>> {
+    query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Department[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Department[]>) => this.convertArrayResponse(res));
+        return this.http.get<IDepartment[]>(this.resourceUrl, { params: options, observe: 'response' });
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    search(req?: any): Observable<HttpResponse<Department[]>> {
+    search(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Department[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Department[]>) => this.convertArrayResponse(res));
-    }
-
-    private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: Department = this.convertItemFromServer(res.body);
-        return res.clone({body});
-    }
-
-    private convertArrayResponse(res: HttpResponse<Department[]>): HttpResponse<Department[]> {
-        const jsonResponse: Department[] = res.body;
-        const body: Department[] = [];
-        for (let i = 0; i < jsonResponse.length; i++) {
-            body.push(this.convertItemFromServer(jsonResponse[i]));
-        }
-        return res.clone({body});
-    }
-
-    /**
-     * Convert a returned JSON object to Department.
-     */
-    private convertItemFromServer(department: Department): Department {
-        const copy: Department = Object.assign({}, department);
-        return copy;
-    }
-
-    /**
-     * Convert a Department to a JSON which can be sent to the server.
-     */
-    private convert(department: Department): Department {
-        const copy: Department = Object.assign({}, department);
-        return copy;
+        return this.http.get<IDepartment[]>(this.resourceSearchUrl, { params: options, observe: 'response' });
     }
 }

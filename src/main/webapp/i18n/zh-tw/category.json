@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "category" : {
+        "category": {
             "home": {
                 "title": "Categories",
                 "createLabel": "建立一筆新的 Category",

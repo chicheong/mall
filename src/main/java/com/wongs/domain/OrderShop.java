@@ -1,6 +1,8 @@
 package com.wongs.domain;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -25,12 +27,12 @@ import com.wongs.domain.enumeration.CurrencyType;
 public class OrderShop implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "total", precision=10, scale=2)
+    @Column(name = "total", precision = 10, scale = 2)
     private BigDecimal total;
 
     @Enumerated(EnumType.STRING)
@@ -49,11 +51,10 @@ public class OrderShop implements Serializable {
     private Shop shop;
 
     @OneToMany(mappedBy = "shop")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<OrderItem> items = new HashSet<>();
-
     @ManyToOne
+    @JsonIgnoreProperties("shops")
     private MyOrder order;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

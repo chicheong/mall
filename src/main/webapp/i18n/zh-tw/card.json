@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "card" : {
+        "card": {
             "home": {
                 "title": "Cards",
                 "createLabel": "建立一筆新的 Card",

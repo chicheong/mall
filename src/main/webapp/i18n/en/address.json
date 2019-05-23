@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "address" : {
+        "address": {
             "home": {
                 "title": "Addresses",
                 "createLabel": "Create a new Address",

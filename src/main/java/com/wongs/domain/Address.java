@@ -1,5 +1,7 @@
 package com.wongs.domain;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -19,7 +21,7 @@ import java.util.Objects;
 public class Address implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -43,9 +45,11 @@ public class Address implements Serializable {
     private String postalCode;
 
     @ManyToOne
+    @JsonIgnoreProperties("addresses")
     private Country country;
 
     @ManyToOne
+    @JsonIgnoreProperties("addresses")
     private State state;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

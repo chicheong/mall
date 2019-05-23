@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "category" : {
+        "category": {
             "home": {
                 "title": "Categories",
                 "createLabel": "Create a new Category",

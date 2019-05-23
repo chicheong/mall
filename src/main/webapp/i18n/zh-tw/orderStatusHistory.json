@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "orderStatusHistory" : {
+        "orderStatusHistory": {
             "home": {
                 "title": "Order Status Histories",
                 "createLabel": "建立一筆新的 Order Status History",

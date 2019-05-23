@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "delegation" : {
+        "delegation": {
             "home": {
                 "title": "Delegations",
                 "createLabel": "Create a new Delegation",

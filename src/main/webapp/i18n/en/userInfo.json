@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "userInfo" : {
+        "userInfo": {
             "home": {
                 "title": "User Infos",
                 "createLabel": "Create a new User Info",

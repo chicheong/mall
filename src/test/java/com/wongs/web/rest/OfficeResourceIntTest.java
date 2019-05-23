@@ -13,6 +13,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -20,13 +22,18 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -52,8 +59,13 @@ public class OfficeResourceIntTest {
     @Autowired
     private OfficeRepository officeRepository;
 
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.OfficeSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private OfficeSearchRepository officeSearchRepository;
+    private OfficeSearchRepository mockOfficeSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -67,6 +79,9 @@ public class OfficeResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restOfficeMockMvc;
 
     private Office office;
@@ -74,12 +89,13 @@ public class OfficeResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final OfficeResource officeResource = new OfficeResource(officeRepository, officeSearchRepository);
+        final OfficeResource officeResource = new OfficeResource(officeRepository, mockOfficeSearchRepository);
         this.restOfficeMockMvc = MockMvcBuilders.standaloneSetup(officeResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -98,7 +114,6 @@ public class OfficeResourceIntTest {
 
     @Before
     public void initTest() {
-        officeSearchRepository.deleteAll();
         office = createEntity(em);
     }
 
@@ -122,8 +137,7 @@ public class OfficeResourceIntTest {
         assertThat(testOffice.getStatus()).isEqualTo(DEFAULT_STATUS);
 
         // Validate the Office in Elasticsearch
-        Office officeEs = officeSearchRepository.findOne(testOffice.getId());
-        assertThat(officeEs).isEqualToIgnoringGivenFields(testOffice);
+        verify(mockOfficeSearchRepository, times(1)).save(testOffice);
     }
 
     @Test
@@ -143,6 +157,9 @@ public class OfficeResourceIntTest {
         // Validate the Office in the database
         List<Office> officeList = officeRepository.findAll();
         assertThat(officeList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the Office in Elasticsearch
+        verify(mockOfficeSearchRepository, times(0)).save(office);
     }
 
     @Test
@@ -178,7 +195,7 @@ public class OfficeResourceIntTest {
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
     }
-
+    
     @Test
     @Transactional
     public void getOffice() throws Exception {
@@ -208,11 +225,11 @@ public class OfficeResourceIntTest {
     public void updateOffice() throws Exception {
         // Initialize the database
         officeRepository.saveAndFlush(office);
-        officeSearchRepository.save(office);
+
         int databaseSizeBeforeUpdate = officeRepository.findAll().size();
 
         // Update the office
-        Office updatedOffice = officeRepository.findOne(office.getId());
+        Office updatedOffice = officeRepository.findById(office.getId()).get();
         // Disconnect from session so that the updates on updatedOffice are not directly saved in db
         em.detach(updatedOffice);
         updatedOffice
@@ -234,8 +251,7 @@ public class OfficeResourceIntTest {
         assertThat(testOffice.getStatus()).isEqualTo(UPDATED_STATUS);
 
         // Validate the Office in Elasticsearch
-        Office officeEs = officeSearchRepository.findOne(testOffice.getId());
-        assertThat(officeEs).isEqualToIgnoringGivenFields(testOffice);
+        verify(mockOfficeSearchRepository, times(1)).save(testOffice);
     }
 
     @Test
@@ -245,15 +261,18 @@ public class OfficeResourceIntTest {
 
         // Create the Office
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restOfficeMockMvc.perform(put("/api/offices")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(office)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Office in the database
         List<Office> officeList = officeRepository.findAll();
-        assertThat(officeList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(officeList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the Office in Elasticsearch
+        verify(mockOfficeSearchRepository, times(0)).save(office);
     }
 
     @Test
@@ -261,21 +280,20 @@ public class OfficeResourceIntTest {
     public void deleteOffice() throws Exception {
         // Initialize the database
         officeRepository.saveAndFlush(office);
-        officeSearchRepository.save(office);
+
         int databaseSizeBeforeDelete = officeRepository.findAll().size();
 
-        // Get the office
+        // Delete the office
         restOfficeMockMvc.perform(delete("/api/offices/{id}", office.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean officeExistsInEs = officeSearchRepository.exists(office.getId());
-        assertThat(officeExistsInEs).isFalse();
-
         // Validate the database is empty
         List<Office> officeList = officeRepository.findAll();
         assertThat(officeList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the Office in Elasticsearch
+        verify(mockOfficeSearchRepository, times(1)).deleteById(office.getId());
     }
 
     @Test
@@ -283,15 +301,15 @@ public class OfficeResourceIntTest {
     public void searchOffice() throws Exception {
         // Initialize the database
         officeRepository.saveAndFlush(office);
-        officeSearchRepository.save(office);
-
+        when(mockOfficeSearchRepository.search(queryStringQuery("id:" + office.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(office), PageRequest.of(0, 1), 1));
         // Search the office
         restOfficeMockMvc.perform(get("/api/_search/offices?query=id:" + office.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(office.getId().intValue())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
     }
 

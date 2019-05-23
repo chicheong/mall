@@ -1,13 +1,11 @@
-
 {
     "mallApp": {
-        "price" : {
+        "price": {
             "home": {
                 "title": "Prices",
                 "createLabel": "建立一筆新的 Price",
                 "createOrEditLabel": "建立或編輯 Price",
-                "search": "搜尋 Price",
-				"advancePrice": "預定價格"
+                "search": "搜尋 Price"
             },
             "created": "新的 Price 建立成功，識別碼為 {{ param }}",
             "updated": "識別碼為 {{ param }} 的 Price 更新成功",
@@ -22,15 +20,7 @@
             "to": "To",
             "price": "Price",
             "currency": "Currency",
-            "item": "Item",
-            "tooltip": {
-            	"priceField": "價格，例如 999"
-            },
-            "button": {
-            	"addOneMoreTimeslot": "加多一個時段",
-            	"remove": "移除",
-            	"addAndCopyToALL": "新增並複製至全部"
-            }
+            "item": "Item"
         }
     }
 }

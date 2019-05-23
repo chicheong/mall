@@ -1,55 +1,51 @@
 /* tslint:disable max-line-length */
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { Observable } from 'rxjs/Observable';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { Observable, of } from 'rxjs';
 import { HttpHeaders, HttpResponse } from '@angular/common/http';
 
 import { MallTestModule } from '../../../test.module';
-import { CurrencyRateComponent } from '../../../../../../main/webapp/app/entities/currency-rate/currency-rate.component';
-import { CurrencyRateService } from '../../../../../../main/webapp/app/entities/currency-rate/currency-rate.service';
-import { CurrencyRate } from '../../../../../../main/webapp/app/entities/currency-rate/currency-rate.model';
+import { CurrencyRateComponent } from 'app/entities/currency-rate/currency-rate.component';
+import { CurrencyRateService } from 'app/entities/currency-rate/currency-rate.service';
+import { CurrencyRate } from 'app/shared/model/currency-rate.model';
 
 describe('Component Tests', () => {
-
     describe('CurrencyRate Management Component', () => {
         let comp: CurrencyRateComponent;
         let fixture: ComponentFixture<CurrencyRateComponent>;
         let service: CurrencyRateService;
 
-        beforeEach(async(() => {
+        beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [MallTestModule],
                 declarations: [CurrencyRateComponent],
-                providers: [
-                    CurrencyRateService
-                ]
+                providers: []
             })
-            .overrideTemplate(CurrencyRateComponent, '')
-            .compileComponents();
-        }));
+                .overrideTemplate(CurrencyRateComponent, '')
+                .compileComponents();
 
-        beforeEach(() => {
             fixture = TestBed.createComponent(CurrencyRateComponent);
             comp = fixture.componentInstance;
             service = fixture.debugElement.injector.get(CurrencyRateService);
         });
 
-        describe('OnInit', () => {
-            it('Should call load all on init', () => {
-                // GIVEN
-                const headers = new HttpHeaders().append('link', 'link;link');
-                spyOn(service, 'query').and.returnValue(Observable.of(new HttpResponse({
-                    body: [new CurrencyRate(123)],
-                    headers
-                })));
+        it('Should call load all on init', () => {
+            // GIVEN
+            const headers = new HttpHeaders().append('link', 'link;link');
+            spyOn(service, 'query').and.returnValue(
+                of(
+                    new HttpResponse({
+                        body: [new CurrencyRate(123)],
+                        headers
+                    })
+                )
+            );
 
-                // WHEN
-                comp.ngOnInit();
+            // WHEN
+            comp.ngOnInit();
 
-                // THEN
-                expect(service.query).toHaveBeenCalled();
-                expect(comp.currencyRates[0]).toEqual(jasmine.objectContaining({id: 123}));
-            });
+            // THEN
+            expect(service.query).toHaveBeenCalled();
+            expect(comp.currencyRates[0]).toEqual(jasmine.objectContaining({ id: 123 }));
         });
     });
-
 });

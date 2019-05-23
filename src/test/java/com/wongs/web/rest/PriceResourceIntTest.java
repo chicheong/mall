@@ -15,6 +15,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -22,6 +24,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
@@ -29,12 +32,16 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.ZoneOffset;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.sameInstant;
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -66,8 +73,13 @@ public class PriceResourceIntTest {
     @Autowired
     private PriceMapper priceMapper;
 
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.PriceSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private PriceSearchRepository priceSearchRepository;
+    private PriceSearchRepository mockPriceSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -81,6 +93,9 @@ public class PriceResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restPriceMockMvc;
 
     private Price price;
@@ -88,12 +103,13 @@ public class PriceResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final PriceResource priceResource = new PriceResource(priceRepository, priceMapper, priceSearchRepository);
+        final PriceResource priceResource = new PriceResource(priceRepository, priceMapper, mockPriceSearchRepository);
         this.restPriceMockMvc = MockMvcBuilders.standaloneSetup(priceResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -113,7 +129,6 @@ public class PriceResourceIntTest {
 
     @Before
     public void initTest() {
-        priceSearchRepository.deleteAll();
         price = createEntity(em);
     }
 
@@ -139,10 +154,7 @@ public class PriceResourceIntTest {
         assertThat(testPrice.getCurrency()).isEqualTo(DEFAULT_CURRENCY);
 
         // Validate the Price in Elasticsearch
-        Price priceEs = priceSearchRepository.findOne(testPrice.getId());
-        assertThat(testPrice.getFrom()).isEqualTo(testPrice.getFrom());
-        assertThat(testPrice.getTo()).isEqualTo(testPrice.getTo());
-        assertThat(priceEs).isEqualToIgnoringGivenFields(testPrice, "from", "to");
+        verify(mockPriceSearchRepository, times(1)).save(testPrice);
     }
 
     @Test
@@ -163,6 +175,9 @@ public class PriceResourceIntTest {
         // Validate the Price in the database
         List<Price> priceList = priceRepository.findAll();
         assertThat(priceList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the Price in Elasticsearch
+        verify(mockPriceSearchRepository, times(0)).save(price);
     }
 
     @Test
@@ -181,7 +196,7 @@ public class PriceResourceIntTest {
             .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
             .andExpect(jsonPath("$.[*].currency").value(hasItem(DEFAULT_CURRENCY.toString())));
     }
-
+    
     @Test
     @Transactional
     public void getPrice() throws Exception {
@@ -212,11 +227,11 @@ public class PriceResourceIntTest {
     public void updatePrice() throws Exception {
         // Initialize the database
         priceRepository.saveAndFlush(price);
-        priceSearchRepository.save(price);
+
         int databaseSizeBeforeUpdate = priceRepository.findAll().size();
 
         // Update the price
-        Price updatedPrice = priceRepository.findOne(price.getId());
+        Price updatedPrice = priceRepository.findById(price.getId()).get();
         // Disconnect from session so that the updates on updatedPrice are not directly saved in db
         em.detach(updatedPrice);
         updatedPrice
@@ -241,10 +256,7 @@ public class PriceResourceIntTest {
         assertThat(testPrice.getCurrency()).isEqualTo(UPDATED_CURRENCY);
 
         // Validate the Price in Elasticsearch
-        Price priceEs = priceSearchRepository.findOne(testPrice.getId());
-        assertThat(testPrice.getFrom()).isEqualTo(testPrice.getFrom());
-        assertThat(testPrice.getTo()).isEqualTo(testPrice.getTo());
-        assertThat(priceEs).isEqualToIgnoringGivenFields(testPrice, "from", "to");
+        verify(mockPriceSearchRepository, times(1)).save(testPrice);
     }
 
     @Test
@@ -255,15 +267,18 @@ public class PriceResourceIntTest {
         // Create the Price
         PriceDTO priceDTO = priceMapper.toDto(price);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restPriceMockMvc.perform(put("/api/prices")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(priceDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Price in the database
         List<Price> priceList = priceRepository.findAll();
-        assertThat(priceList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(priceList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the Price in Elasticsearch
+        verify(mockPriceSearchRepository, times(0)).save(price);
     }
 
     @Test
@@ -271,21 +286,20 @@ public class PriceResourceIntTest {
     public void deletePrice() throws Exception {
         // Initialize the database
         priceRepository.saveAndFlush(price);
-        priceSearchRepository.save(price);
+
         int databaseSizeBeforeDelete = priceRepository.findAll().size();
 
-        // Get the price
+        // Delete the price
         restPriceMockMvc.perform(delete("/api/prices/{id}", price.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean priceExistsInEs = priceSearchRepository.exists(price.getId());
-        assertThat(priceExistsInEs).isFalse();
-
         // Validate the database is empty
         List<Price> priceList = priceRepository.findAll();
         assertThat(priceList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the Price in Elasticsearch
+        verify(mockPriceSearchRepository, times(1)).deleteById(price.getId());
     }
 
     @Test
@@ -293,8 +307,8 @@ public class PriceResourceIntTest {
     public void searchPrice() throws Exception {
         // Initialize the database
         priceRepository.saveAndFlush(price);
-        priceSearchRepository.save(price);
-
+        when(mockPriceSearchRepository.search(queryStringQuery("id:" + price.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(price), PageRequest.of(0, 1), 1));
         // Search the price
         restPriceMockMvc.perform(get("/api/_search/prices?query=id:" + price.getId()))
             .andExpect(status().isOk())

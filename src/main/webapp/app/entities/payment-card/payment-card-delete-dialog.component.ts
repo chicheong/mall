@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { PaymentCard } from './payment-card.model';
-import { PaymentCardPopupService } from './payment-card-popup.service';
+import { IPaymentCard } from 'app/shared/model/payment-card.model';
 import { PaymentCardService } from './payment-card.service';
 
 @Component({
@@ -13,22 +12,20 @@ import { PaymentCardService } from './payment-card.service';
     templateUrl: './payment-card-delete-dialog.component.html'
 })
 export class PaymentCardDeleteDialogComponent {
-
-    paymentCard: PaymentCard;
+    paymentCard: IPaymentCard;
 
     constructor(
-        private paymentCardService: PaymentCardService,
+        protected paymentCardService: PaymentCardService,
         public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager
-    ) {
-    }
+        protected eventManager: JhiEventManager
+    ) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.paymentCardService.delete(id).subscribe((response) => {
+        this.paymentCardService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'paymentCardListModification',
                 content: 'Deleted an paymentCard'
@@ -43,22 +40,33 @@ export class PaymentCardDeleteDialogComponent {
     template: ''
 })
 export class PaymentCardDeletePopupComponent implements OnInit, OnDestroy {
+    protected ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private paymentCardPopupService: PaymentCardPopupService
-    ) {}
+    constructor(protected activatedRoute: ActivatedRoute, protected router: Router, protected modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.paymentCardPopupService
-                .open(PaymentCardDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ paymentCard }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(PaymentCardDeleteDialogComponent as Component, {
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                this.ngbModalRef.componentInstance.paymentCard = paymentCard;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate(['/payment-card', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate(['/payment-card', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

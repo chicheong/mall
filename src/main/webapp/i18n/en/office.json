@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "office" : {
+        "office": {
             "home": {
                 "title": "Offices",
                 "createLabel": "Create a new Office",

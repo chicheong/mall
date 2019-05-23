@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "country" : {
+        "country": {
             "home": {
                 "title": "Countries",
                 "createLabel": "建立一筆新的 Country",

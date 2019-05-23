@@ -1,13 +1,12 @@
 package com.wongs.repository;
 
 import com.wongs.domain.ProductStyleHistory;
-import org.springframework.stereotype.Repository;
-
 import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.Repository;
 
 
 /**
- * Spring Data JPA repository for the ProductStyleHistory entity.
+ * Spring Data  repository for the ProductStyleHistory entity.
  */
 @SuppressWarnings("unused")
 @Repository

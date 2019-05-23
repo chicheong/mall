@@ -1,6 +1,4 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.service.PaymentService;
 import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
@@ -50,7 +48,6 @@ public class PaymentResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/payments")
-    @Timed
     public ResponseEntity<PaymentDTO> createPayment(@RequestBody PaymentDTO paymentDTO) throws URISyntaxException {
         log.debug("REST request to save Payment : {}", paymentDTO);
         if (paymentDTO.getId() != null) {
@@ -72,11 +69,10 @@ public class PaymentResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/payments")
-    @Timed
     public ResponseEntity<PaymentDTO> updatePayment(@RequestBody PaymentDTO paymentDTO) throws URISyntaxException {
         log.debug("REST request to update Payment : {}", paymentDTO);
         if (paymentDTO.getId() == null) {
-            return createPayment(paymentDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         PaymentDTO result = paymentService.save(paymentDTO);
         return ResponseEntity.ok()
@@ -88,15 +84,20 @@ public class PaymentResource {
      * GET  /payments : get all the payments.
      *
      * @param pageable the pagination information
+     * @param filter the filter of the request
      * @return the ResponseEntity with status 200 (OK) and the list of payments in body
      */
     @GetMapping("/payments")
-    @Timed
-    public ResponseEntity<List<PaymentDTO>> getAllPayments(Pageable pageable) {
+    public ResponseEntity<List<PaymentDTO>> getAllPayments(Pageable pageable, @RequestParam(required = false) String filter) {
+        if ("order-is-null".equals(filter)) {
+            log.debug("REST request to get all Payments where order is null");
+            return new ResponseEntity<>(paymentService.findAllWhereOrderIsNull(),
+                    HttpStatus.OK);
+        }
         log.debug("REST request to get a page of Payments");
         Page<PaymentDTO> page = paymentService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/payments");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -106,11 +107,10 @@ public class PaymentResource {
      * @return the ResponseEntity with status 200 (OK) and with body the paymentDTO, or with status 404 (Not Found)
      */
     @GetMapping("/payments/{id}")
-    @Timed
     public ResponseEntity<PaymentDTO> getPayment(@PathVariable Long id) {
         log.debug("REST request to get Payment : {}", id);
-        PaymentDTO paymentDTO = paymentService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(paymentDTO));
+        Optional<PaymentDTO> paymentDTO = paymentService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(paymentDTO);
     }
 
     /**
@@ -120,7 +120,6 @@ public class PaymentResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/payments/{id}")
-    @Timed
     public ResponseEntity<Void> deletePayment(@PathVariable Long id) {
         log.debug("REST request to delete Payment : {}", id);
         paymentService.delete(id);
@@ -136,12 +135,11 @@ public class PaymentResource {
      * @return the result of the search
      */
     @GetMapping("/_search/payments")
-    @Timed
     public ResponseEntity<List<PaymentDTO>> searchPayments(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Payments for query {}", query);
         Page<PaymentDTO> page = paymentService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/payments");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
 }

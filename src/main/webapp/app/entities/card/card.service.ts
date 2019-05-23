@@ -1,81 +1,44 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { SERVER_API_URL } from '../../app.constants';
+import { Observable } from 'rxjs';
 
-import { Card } from './card.model';
-import { createRequestOption } from '../../shared';
+import { SERVER_API_URL } from 'app/app.constants';
+import { createRequestOption } from 'app/shared';
+import { ICard } from 'app/shared/model/card.model';
 
-export type EntityResponseType = HttpResponse<Card>;
+type EntityResponseType = HttpResponse<ICard>;
+type EntityArrayResponseType = HttpResponse<ICard[]>;
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class CardService {
+    public resourceUrl = SERVER_API_URL + 'api/cards';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/cards';
 
-    private resourceUrl =  SERVER_API_URL + 'api/cards';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/cards';
+    constructor(protected http: HttpClient) {}
 
-    constructor(private http: HttpClient) { }
-
-    create(card: Card): Observable<EntityResponseType> {
-        const copy = this.convert(card);
-        return this.http.post<Card>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    create(card: ICard): Observable<EntityResponseType> {
+        return this.http.post<ICard>(this.resourceUrl, card, { observe: 'response' });
     }
 
-    update(card: Card): Observable<EntityResponseType> {
-        const copy = this.convert(card);
-        return this.http.put<Card>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    update(card: ICard): Observable<EntityResponseType> {
+        return this.http.put<ICard>(this.resourceUrl, card, { observe: 'response' });
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<Card>(`${this.resourceUrl}/${id}`, { observe: 'response'})
-            .map((res: EntityResponseType) => this.convertResponse(res));
+        return this.http.get<ICard>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    query(req?: any): Observable<HttpResponse<Card[]>> {
+    query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Card[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Card[]>) => this.convertArrayResponse(res));
+        return this.http.get<ICard[]>(this.resourceUrl, { params: options, observe: 'response' });
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    search(req?: any): Observable<HttpResponse<Card[]>> {
+    search(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Card[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Card[]>) => this.convertArrayResponse(res));
-    }
-
-    private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: Card = this.convertItemFromServer(res.body);
-        return res.clone({body});
-    }
-
-    private convertArrayResponse(res: HttpResponse<Card[]>): HttpResponse<Card[]> {
-        const jsonResponse: Card[] = res.body;
-        const body: Card[] = [];
-        for (let i = 0; i < jsonResponse.length; i++) {
-            body.push(this.convertItemFromServer(jsonResponse[i]));
-        }
-        return res.clone({body});
-    }
-
-    /**
-     * Convert a returned JSON object to Card.
-     */
-    private convertItemFromServer(card: Card): Card {
-        const copy: Card = Object.assign({}, card);
-        return copy;
-    }
-
-    /**
-     * Convert a Card to a JSON which can be sent to the server.
-     */
-    private convert(card: Card): Card {
-        const copy: Card = Object.assign({}, card);
-        return copy;
+        return this.http.get<ICard[]>(this.resourceSearchUrl, { params: options, observe: 'response' });
     }
 }

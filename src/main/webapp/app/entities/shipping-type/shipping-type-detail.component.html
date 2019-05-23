@@ -1,38 +1,39 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="shippingType">
+            <h2><span jhiTranslate="mallApp.shippingType.detail.title">Shipping Type</span> {{shippingType.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="mallApp.shippingType.name">Name</span></dt>
+                <dd>
+                    <span>{{shippingType.name}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.shippingType.description">Description</span></dt>
+                <dd>
+                    <span>{{shippingType.description}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.shippingType.price">Price</span></dt>
+                <dd>
+                    <span>{{shippingType.price}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.shippingType.currency">Currency</span></dt>
+                <dd>
+                    <span jhiTranslate="{{'mallApp.CurrencyType.' + shippingType.currency}}">{{shippingType.currency}}</span>
+                </dd>
+            </dl>
 
-<div *ngIf="shippingType">
-    <h2><span jhiTranslate="mallApp.shippingType.detail.title">Shipping Type</span> {{shippingType.id}}</h2>
-    <hr>
-    <jhi-alert-error></jhi-alert-error>
-    <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="mallApp.shippingType.name">Name</span></dt>
-        <dd>
-            <span>{{shippingType.name}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.shippingType.description">Description</span></dt>
-        <dd>
-            <span>{{shippingType.description}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.shippingType.price">Price</span></dt>
-        <dd>
-            <span>{{shippingType.price}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.shippingType.currency">Currency</span></dt>
-        <dd>
-            <span jhiTranslate="{{'mallApp.CurrencyType.' + shippingType.currency}}">{{shippingType.currency}}</span>
-        </dd>
-    </dl>
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
 
-    <button type="submit"
-            (click)="previousState()"
-            class="btn btn-info">
-        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
-    </button>
-
-    <button type="button"
-            [routerLink]="['/', { outlets: { popup: 'shipping-type/'+ shippingType.id + '/edit'} }]"
-            replaceUrl="true"
-            queryParamsHandling="merge"
-            class="btn btn-primary">
-        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
-    </button>
+            <button type="button"
+                    [routerLink]="['/shipping-type', shippingType.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
 </div>

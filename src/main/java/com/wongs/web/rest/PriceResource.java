@@ -1,8 +1,5 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.domain.Price;
-
 import com.wongs.repository.PriceRepository;
 import com.wongs.repository.search.PriceSearchRepository;
 import com.wongs.web.rest.errors.BadRequestAlertException;
@@ -61,7 +58,6 @@ public class PriceResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/prices")
-    @Timed
     public ResponseEntity<PriceDTO> createPrice(@RequestBody PriceDTO priceDTO) throws URISyntaxException {
         log.debug("REST request to save Price : {}", priceDTO);
         if (priceDTO.getId() != null) {
@@ -86,11 +82,10 @@ public class PriceResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/prices")
-    @Timed
     public ResponseEntity<PriceDTO> updatePrice(@RequestBody PriceDTO priceDTO) throws URISyntaxException {
         log.debug("REST request to update Price : {}", priceDTO);
         if (priceDTO.getId() == null) {
-            return createPrice(priceDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         Price price = priceMapper.toEntity(priceDTO);
         price = priceRepository.save(price);
@@ -108,12 +103,11 @@ public class PriceResource {
      * @return the ResponseEntity with status 200 (OK) and the list of prices in body
      */
     @GetMapping("/prices")
-    @Timed
     public ResponseEntity<List<PriceDTO>> getAllPrices(Pageable pageable) {
         log.debug("REST request to get a page of Prices");
-        Page<Price> page = priceRepository.findAll(pageable);
+        Page<PriceDTO> page = priceRepository.findAll(pageable).map(priceMapper::toDto);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/prices");
-        return new ResponseEntity<>(priceMapper.toDto(page.getContent()), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -123,12 +117,11 @@ public class PriceResource {
      * @return the ResponseEntity with status 200 (OK) and with body the priceDTO, or with status 404 (Not Found)
      */
     @GetMapping("/prices/{id}")
-    @Timed
     public ResponseEntity<PriceDTO> getPrice(@PathVariable Long id) {
         log.debug("REST request to get Price : {}", id);
-        Price price = priceRepository.findOne(id);
-        PriceDTO priceDTO = priceMapper.toDto(price);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(priceDTO));
+        Optional<PriceDTO> priceDTO = priceRepository.findById(id)
+            .map(priceMapper::toDto);
+        return ResponseUtil.wrapOrNotFound(priceDTO);
     }
 
     /**
@@ -138,11 +131,10 @@ public class PriceResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/prices/{id}")
-    @Timed
     public ResponseEntity<Void> deletePrice(@PathVariable Long id) {
         log.debug("REST request to delete Price : {}", id);
-        priceRepository.delete(id);
-        priceSearchRepository.delete(id);
+        priceRepository.deleteById(id);
+        priceSearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -155,12 +147,11 @@ public class PriceResource {
      * @return the result of the search
      */
     @GetMapping("/_search/prices")
-    @Timed
     public ResponseEntity<List<PriceDTO>> searchPrices(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Prices for query {}", query);
         Page<Price> page = priceSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/prices");
-        return new ResponseEntity<>(priceMapper.toDto(page.getContent()), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(priceMapper.toDto(page.getContent()));
     }
 
 }

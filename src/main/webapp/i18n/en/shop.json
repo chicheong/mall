@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "shop" : {
+        "shop": {
             "home": {
                 "title": "Shops",
                 "createLabel": "Create a new Shop",

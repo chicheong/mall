@@ -1,40 +1,41 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="state">
+            <h2><span jhiTranslate="mallApp.state.detail.title">State</span> {{state.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="mallApp.state.code">Code</span></dt>
+                <dd>
+                    <span>{{state.code}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.state.label">Label</span></dt>
+                <dd>
+                    <span>{{state.label}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.state.name">Name</span></dt>
+                <dd>
+                    <span>{{state.name}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.state.country">Country</span></dt>
+                <dd>
+                    <div *ngIf="state.country">
+                        <a [routerLink]="['/country', state.country?.id, 'view']">{{state.country?.id}}</a>
+                    </div>
+                </dd>
+            </dl>
 
-<div *ngIf="state">
-    <h2><span jhiTranslate="mallApp.state.detail.title">State</span> {{state.id}}</h2>
-    <hr>
-    <jhi-alert-error></jhi-alert-error>
-    <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="mallApp.state.code">Code</span></dt>
-        <dd>
-            <span>{{state.code}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.state.label">Label</span></dt>
-        <dd>
-            <span>{{state.label}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.state.name">Name</span></dt>
-        <dd>
-            <span>{{state.name}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.state.country">Country</span></dt>
-        <dd>
-            <div *ngIf="state.country">
-                <a [routerLink]="['/country', state.country?.id]">{{state.country?.id}}</a>
-            </div>
-        </dd>
-    </dl>
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
 
-    <button type="submit"
-            (click)="previousState()"
-            class="btn btn-info">
-        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
-    </button>
-
-    <button type="button"
-            [routerLink]="['/', { outlets: { popup: 'state/'+ state.id + '/edit'} }]"
-            replaceUrl="true"
-            queryParamsHandling="merge"
-            class="btn btn-primary">
-        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
-    </button>
+            <button type="button"
+                    [routerLink]="['/state', state.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
 </div>

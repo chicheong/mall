@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "userInfo" : {
+        "userInfo": {
             "home": {
                 "title": "User Infos",
                 "createLabel": "建立一筆新的 User Info",

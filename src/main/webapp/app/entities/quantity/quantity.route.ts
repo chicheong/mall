@@ -1,44 +1,78 @@
 import { Injectable } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiPaginationUtil } from 'ng-jhipster';
-
-import { UserRouteAccessService } from '../../shared';
+import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
+import { UserRouteAccessService } from 'app/core';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { Quantity } from 'app/shared/model/quantity.model';
+import { QuantityService } from './quantity.service';
 import { QuantityComponent } from './quantity.component';
 import { QuantityDetailComponent } from './quantity-detail.component';
-import { QuantityPopupComponent } from './quantity-dialog.component';
+import { QuantityUpdateComponent } from './quantity-update.component';
 import { QuantityDeletePopupComponent } from './quantity-delete-dialog.component';
+import { IQuantity } from 'app/shared/model/quantity.model';
 
-@Injectable()
-export class QuantityResolvePagingParams implements Resolve<any> {
+@Injectable({ providedIn: 'root' })
+export class QuantityResolve implements Resolve<IQuantity> {
+    constructor(private service: QuantityService) {}
 
-    constructor(private paginationUtil: JhiPaginationUtil) {}
-
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        const page = route.queryParams['page'] ? route.queryParams['page'] : '1';
-        const sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'id,asc';
-        return {
-            page: this.paginationUtil.parsePage(page),
-            predicate: this.paginationUtil.parsePredicate(sort),
-            ascending: this.paginationUtil.parseAscending(sort)
-      };
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<IQuantity> {
+        const id = route.params['id'] ? route.params['id'] : null;
+        if (id) {
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<Quantity>) => response.ok),
+                map((quantity: HttpResponse<Quantity>) => quantity.body)
+            );
+        }
+        return of(new Quantity());
     }
 }
 
 export const quantityRoute: Routes = [
     {
-        path: 'quantity',
+        path: '',
         component: QuantityComponent,
         resolve: {
-            'pagingParams': QuantityResolvePagingParams
+            pagingParams: JhiResolvePagingParams
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            defaultSort: 'id,asc',
+            pageTitle: 'mallApp.quantity.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/view',
+        component: QuantityDetailComponent,
+        resolve: {
+            quantity: QuantityResolve
         },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.quantity.home.title'
         },
         canActivate: [UserRouteAccessService]
-    }, {
-        path: 'quantity/:id',
-        component: QuantityDetailComponent,
+    },
+    {
+        path: 'new',
+        component: QuantityUpdateComponent,
+        resolve: {
+            quantity: QuantityResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.quantity.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/edit',
+        component: QuantityUpdateComponent,
+        resolve: {
+            quantity: QuantityResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.quantity.home.title'
@@ -49,28 +83,11 @@ export const quantityRoute: Routes = [
 
 export const quantityPopupRoute: Routes = [
     {
-        path: 'quantity-new',
-        component: QuantityPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.quantity.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'quantity/:id/edit',
-        component: QuantityPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.quantity.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'quantity/:id/delete',
+        path: ':id/delete',
         component: QuantityDeletePopupComponent,
+        resolve: {
+            quantity: QuantityResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.quantity.home.title'

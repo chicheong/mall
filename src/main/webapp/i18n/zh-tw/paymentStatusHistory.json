@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "paymentStatusHistory" : {
+        "paymentStatusHistory": {
             "home": {
                 "title": "Payment Status Histories",
                 "createLabel": "建立一筆新的 Payment Status History",

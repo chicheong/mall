@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { Shipping } from './shipping.model';
-import { ShippingPopupService } from './shipping-popup.service';
+import { IShipping } from 'app/shared/model/shipping.model';
 import { ShippingService } from './shipping.service';
 
 @Component({
@@ -13,22 +12,16 @@ import { ShippingService } from './shipping.service';
     templateUrl: './shipping-delete-dialog.component.html'
 })
 export class ShippingDeleteDialogComponent {
+    shipping: IShipping;
 
-    shipping: Shipping;
-
-    constructor(
-        private shippingService: ShippingService,
-        public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager
-    ) {
-    }
+    constructor(protected shippingService: ShippingService, public activeModal: NgbActiveModal, protected eventManager: JhiEventManager) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.shippingService.delete(id).subscribe((response) => {
+        this.shippingService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'shippingListModification',
                 content: 'Deleted an shipping'
@@ -43,22 +36,30 @@ export class ShippingDeleteDialogComponent {
     template: ''
 })
 export class ShippingDeletePopupComponent implements OnInit, OnDestroy {
+    protected ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private shippingPopupService: ShippingPopupService
-    ) {}
+    constructor(protected activatedRoute: ActivatedRoute, protected router: Router, protected modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.shippingPopupService
-                .open(ShippingDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ shipping }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(ShippingDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
+                this.ngbModalRef.componentInstance.shipping = shipping;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate(['/shipping', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate(['/shipping', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

@@ -7,20 +7,15 @@ import com.wongs.service.dto.DelegationDTO;
 import com.wongs.service.mapper.DelegationMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
-
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Collection;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * Service Implementation for managing Delegation.
@@ -71,6 +66,7 @@ public class DelegationService {
             .map(delegationMapper::toDto);
     }
 
+
     /**
      * Get one delegation by id.
      *
@@ -78,10 +74,10 @@ public class DelegationService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public DelegationDTO findOne(Long id) {
+    public Optional<DelegationDTO> findOne(Long id) {
         log.debug("Request to get Delegation : {}", id);
-        Delegation delegation = delegationRepository.findOne(id);
-        return delegationMapper.toDto(delegation);
+        return delegationRepository.findById(id)
+            .map(delegationMapper::toDto);
     }
 
     /**
@@ -91,8 +87,8 @@ public class DelegationService {
      */
     public void delete(Long id) {
         log.debug("Request to delete Delegation : {}", id);
-        delegationRepository.delete(id);
-        delegationSearchRepository.delete(id);
+        delegationRepository.deleteById(id);
+        delegationSearchRepository.deleteById(id);
     }
 
     /**
@@ -105,15 +101,7 @@ public class DelegationService {
     @Transactional(readOnly = true)
     public Page<DelegationDTO> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Delegations for query {}", query);
-        Page<Delegation> result = delegationSearchRepository.search(queryStringQuery(query), pageable);
-        return result.map(delegationMapper::toDto);
-    }
-    
-    // not in use
-    @Transactional(readOnly = true)
-    public Set<Delegation> findByTypeAndDelegationIdList(String type, Collection<String> ids) {
-        log.debug("Request to find Delegations for type {} and {}", type, ids);
-        Set<Delegation> result = delegationRepository.findByTypeAndDelegationIdList(type, ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()), ids);
-        return result;
+        return delegationSearchRepository.search(queryStringQuery(query), pageable)
+            .map(delegationMapper::toDto);
     }
 }

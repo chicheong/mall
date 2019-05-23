@@ -1,8 +1,5 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.domain.PaymentCard;
-
 import com.wongs.repository.PaymentCardRepository;
 import com.wongs.repository.search.PaymentCardSearchRepository;
 import com.wongs.web.rest.errors.BadRequestAlertException;
@@ -56,7 +53,6 @@ public class PaymentCardResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/payment-cards")
-    @Timed
     public ResponseEntity<PaymentCard> createPaymentCard(@RequestBody PaymentCard paymentCard) throws URISyntaxException {
         log.debug("REST request to save PaymentCard : {}", paymentCard);
         if (paymentCard.getId() != null) {
@@ -79,11 +75,10 @@ public class PaymentCardResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/payment-cards")
-    @Timed
     public ResponseEntity<PaymentCard> updatePaymentCard(@RequestBody PaymentCard paymentCard) throws URISyntaxException {
         log.debug("REST request to update PaymentCard : {}", paymentCard);
         if (paymentCard.getId() == null) {
-            return createPaymentCard(paymentCard);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         PaymentCard result = paymentCardRepository.save(paymentCard);
         paymentCardSearchRepository.save(result);
@@ -100,19 +95,18 @@ public class PaymentCardResource {
      * @return the ResponseEntity with status 200 (OK) and the list of paymentCards in body
      */
     @GetMapping("/payment-cards")
-    @Timed
     public ResponseEntity<List<PaymentCard>> getAllPaymentCards(Pageable pageable, @RequestParam(required = false) String filter) {
-    	/**if ("payment-is-null".equals(filter)) {
+        if ("payment-is-null".equals(filter)) {
             log.debug("REST request to get all PaymentCards where payment is null");
             return new ResponseEntity<>(StreamSupport
                 .stream(paymentCardRepository.findAll().spliterator(), false)
                 .filter(paymentCard -> paymentCard.getPayment() == null)
                 .collect(Collectors.toList()), HttpStatus.OK);
-        }*/
+        }
         log.debug("REST request to get a page of PaymentCards");
         Page<PaymentCard> page = paymentCardRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/payment-cards");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -122,11 +116,10 @@ public class PaymentCardResource {
      * @return the ResponseEntity with status 200 (OK) and with body the paymentCard, or with status 404 (Not Found)
      */
     @GetMapping("/payment-cards/{id}")
-    @Timed
     public ResponseEntity<PaymentCard> getPaymentCard(@PathVariable Long id) {
         log.debug("REST request to get PaymentCard : {}", id);
-        PaymentCard paymentCard = paymentCardRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(paymentCard));
+        Optional<PaymentCard> paymentCard = paymentCardRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(paymentCard);
     }
 
     /**
@@ -136,11 +129,10 @@ public class PaymentCardResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/payment-cards/{id}")
-    @Timed
     public ResponseEntity<Void> deletePaymentCard(@PathVariable Long id) {
         log.debug("REST request to delete PaymentCard : {}", id);
-        paymentCardRepository.delete(id);
-        paymentCardSearchRepository.delete(id);
+        paymentCardRepository.deleteById(id);
+        paymentCardSearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -153,12 +145,11 @@ public class PaymentCardResource {
      * @return the result of the search
      */
     @GetMapping("/_search/payment-cards")
-    @Timed
     public ResponseEntity<List<PaymentCard>> searchPaymentCards(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of PaymentCards for query {}", query);
         Page<PaymentCard> page = paymentCardSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/payment-cards");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
 }

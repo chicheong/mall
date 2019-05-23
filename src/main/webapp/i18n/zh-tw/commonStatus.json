@@ -1,6 +1,6 @@
 {
     "mallApp": {
-        "CommonStatus" : {
+        "CommonStatus": {
             "null": "",
             "ACTIVE": "ACTIVE",
             "INACTIVE": "INACTIVE"

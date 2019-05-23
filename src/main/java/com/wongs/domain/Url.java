@@ -1,5 +1,6 @@
 package com.wongs.domain;
 
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -20,7 +21,7 @@ import java.util.Objects;
 public class Url implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -207,13 +208,7 @@ public class Url implements Serializable {
         if (url.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(getId(), url.getId()) &&
-        		Objects.equals(getEntityType(), url.getEntityType()) &&
-        		Objects.equals(getEntityId(), url.getEntityId()) &&
-        		Objects.equals(getPath(), url.getPath()) &&
-        		Objects.equals(getFileName(), url.getFileName()) &&
-        		Objects.equals(getSequence(), url.getSequence()) &&
-        		Objects.equals(getDescription(), url.getDescription());
+        return Objects.equals(getId(), url.getId());
     }
 
     @Override

@@ -1,8 +1,5 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.domain.Card;
-
 import com.wongs.repository.CardRepository;
 import com.wongs.repository.search.CardSearchRepository;
 import com.wongs.web.rest.errors.BadRequestAlertException;
@@ -56,7 +53,6 @@ public class CardResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/cards")
-    @Timed
     public ResponseEntity<Card> createCard(@RequestBody Card card) throws URISyntaxException {
         log.debug("REST request to save Card : {}", card);
         if (card.getId() != null) {
@@ -79,11 +75,10 @@ public class CardResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/cards")
-    @Timed
     public ResponseEntity<Card> updateCard(@RequestBody Card card) throws URISyntaxException {
         log.debug("REST request to update Card : {}", card);
         if (card.getId() == null) {
-            return createCard(card);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         Card result = cardRepository.save(card);
         cardSearchRepository.save(result);
@@ -99,12 +94,11 @@ public class CardResource {
      * @return the ResponseEntity with status 200 (OK) and the list of cards in body
      */
     @GetMapping("/cards")
-    @Timed
     public ResponseEntity<List<Card>> getAllCards(Pageable pageable) {
         log.debug("REST request to get a page of Cards");
         Page<Card> page = cardRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/cards");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -114,11 +108,10 @@ public class CardResource {
      * @return the ResponseEntity with status 200 (OK) and with body the card, or with status 404 (Not Found)
      */
     @GetMapping("/cards/{id}")
-    @Timed
     public ResponseEntity<Card> getCard(@PathVariable Long id) {
         log.debug("REST request to get Card : {}", id);
-        Card card = cardRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(card));
+        Optional<Card> card = cardRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(card);
     }
 
     /**
@@ -128,11 +121,10 @@ public class CardResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/cards/{id}")
-    @Timed
     public ResponseEntity<Void> deleteCard(@PathVariable Long id) {
         log.debug("REST request to delete Card : {}", id);
-        cardRepository.delete(id);
-        cardSearchRepository.delete(id);
+        cardRepository.deleteById(id);
+        cardSearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -145,12 +137,11 @@ public class CardResource {
      * @return the result of the search
      */
     @GetMapping("/_search/cards")
-    @Timed
     public ResponseEntity<List<Card>> searchCards(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Cards for query {}", query);
         Page<Card> page = cardSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/cards");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
 }

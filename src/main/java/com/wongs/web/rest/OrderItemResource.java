@@ -1,8 +1,5 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.domain.OrderItem;
-
 import com.wongs.repository.OrderItemRepository;
 import com.wongs.repository.search.OrderItemSearchRepository;
 import com.wongs.web.rest.errors.BadRequestAlertException;
@@ -61,7 +58,6 @@ public class OrderItemResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/order-items")
-    @Timed
     public ResponseEntity<OrderItemDTO> createOrderItem(@RequestBody OrderItemDTO orderItemDTO) throws URISyntaxException {
         log.debug("REST request to save OrderItem : {}", orderItemDTO);
         if (orderItemDTO.getId() != null) {
@@ -86,11 +82,10 @@ public class OrderItemResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/order-items")
-    @Timed
     public ResponseEntity<OrderItemDTO> updateOrderItem(@RequestBody OrderItemDTO orderItemDTO) throws URISyntaxException {
         log.debug("REST request to update OrderItem : {}", orderItemDTO);
         if (orderItemDTO.getId() == null) {
-            return createOrderItem(orderItemDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         OrderItem orderItem = orderItemMapper.toEntity(orderItemDTO);
         orderItem = orderItemRepository.save(orderItem);
@@ -109,7 +104,6 @@ public class OrderItemResource {
      * @return the ResponseEntity with status 200 (OK) and the list of orderItems in body
      */
     @GetMapping("/order-items")
-    @Timed
     public ResponseEntity<List<OrderItemDTO>> getAllOrderItems(Pageable pageable, @RequestParam(required = false) String filter) {
         if ("productitem-is-null".equals(filter)) {
             log.debug("REST request to get all OrderItems where productItem is null");
@@ -120,9 +114,9 @@ public class OrderItemResource {
                 .collect(Collectors.toList()), HttpStatus.OK);
         }
         log.debug("REST request to get a page of OrderItems");
-        Page<OrderItem> page = orderItemRepository.findAll(pageable);
+        Page<OrderItemDTO> page = orderItemRepository.findAll(pageable).map(orderItemMapper::toDto);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/order-items");
-        return new ResponseEntity<>(orderItemMapper.toDto(page.getContent()), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -132,12 +126,11 @@ public class OrderItemResource {
      * @return the ResponseEntity with status 200 (OK) and with body the orderItemDTO, or with status 404 (Not Found)
      */
     @GetMapping("/order-items/{id}")
-    @Timed
     public ResponseEntity<OrderItemDTO> getOrderItem(@PathVariable Long id) {
         log.debug("REST request to get OrderItem : {}", id);
-        OrderItem orderItem = orderItemRepository.findOne(id);
-        OrderItemDTO orderItemDTO = orderItemMapper.toDto(orderItem);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(orderItemDTO));
+        Optional<OrderItemDTO> orderItemDTO = orderItemRepository.findById(id)
+            .map(orderItemMapper::toDto);
+        return ResponseUtil.wrapOrNotFound(orderItemDTO);
     }
 
     /**
@@ -147,11 +140,10 @@ public class OrderItemResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/order-items/{id}")
-    @Timed
     public ResponseEntity<Void> deleteOrderItem(@PathVariable Long id) {
         log.debug("REST request to delete OrderItem : {}", id);
-        orderItemRepository.delete(id);
-        orderItemSearchRepository.delete(id);
+        orderItemRepository.deleteById(id);
+        orderItemSearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -164,12 +156,11 @@ public class OrderItemResource {
      * @return the result of the search
      */
     @GetMapping("/_search/order-items")
-    @Timed
     public ResponseEntity<List<OrderItemDTO>> searchOrderItems(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of OrderItems for query {}", query);
         Page<OrderItem> page = orderItemSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/order-items");
-        return new ResponseEntity<>(orderItemMapper.toDto(page.getContent()), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(orderItemMapper.toDto(page.getContent()));
     }
 
 }

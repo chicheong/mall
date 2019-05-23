@@ -1,54 +1,40 @@
 /* tslint:disable max-line-length */
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 import { MallTestModule } from '../../../test.module';
-import { OfficeDetailComponent } from '../../../../../../main/webapp/app/entities/office/office-detail.component';
-import { OfficeService } from '../../../../../../main/webapp/app/entities/office/office.service';
-import { Office } from '../../../../../../main/webapp/app/entities/office/office.model';
+import { OfficeDetailComponent } from 'app/entities/office/office-detail.component';
+import { Office } from 'app/shared/model/office.model';
 
 describe('Component Tests', () => {
-
     describe('Office Management Detail Component', () => {
         let comp: OfficeDetailComponent;
         let fixture: ComponentFixture<OfficeDetailComponent>;
-        let service: OfficeService;
+        const route = ({ data: of({ office: new Office(123) }) } as any) as ActivatedRoute;
 
-        beforeEach(async(() => {
+        beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [MallTestModule],
                 declarations: [OfficeDetailComponent],
-                providers: [
-                    OfficeService
-                ]
+                providers: [{ provide: ActivatedRoute, useValue: route }]
             })
-            .overrideTemplate(OfficeDetailComponent, '')
-            .compileComponents();
-        }));
-
-        beforeEach(() => {
+                .overrideTemplate(OfficeDetailComponent, '')
+                .compileComponents();
             fixture = TestBed.createComponent(OfficeDetailComponent);
             comp = fixture.componentInstance;
-            service = fixture.debugElement.injector.get(OfficeService);
         });
 
         describe('OnInit', () => {
             it('Should call load all on init', () => {
                 // GIVEN
 
-                spyOn(service, 'find').and.returnValue(Observable.of(new HttpResponse({
-                    body: new Office(123)
-                })));
-
                 // WHEN
                 comp.ngOnInit();
 
                 // THEN
-                expect(service.find).toHaveBeenCalledWith(123);
-                expect(comp.office).toEqual(jasmine.objectContaining({id: 123}));
+                expect(comp.office).toEqual(jasmine.objectContaining({ id: 123 }));
             });
         });
     });
-
 });

@@ -1,8 +1,8 @@
 <div>
-    <h2>
+    <h2 id="page-heading">
         <span jhiTranslate="mallApp.shippingPriceRule.home.title">Shipping Price Rules</span>
-        <button class="btn btn-primary float-right jh-create-entity create-shipping-price-rule" [routerLink]="['/', { outlets: { popup: ['shipping-price-rule-new'] } }]">
-            <span class="fa fa-plus"></span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-shipping-price-rule" [routerLink]="['/shipping-price-rule/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
             <span class="hidden-sm-down"  jhiTranslate="mallApp.shippingPriceRule.home.createLabel">
             Create new Shipping Price Rule
             </span>
@@ -15,10 +15,10 @@
                 <div class="input-group w-100 mt-3">
                     <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'mallApp.shippingPriceRule.home.search' | translate }}">
                     <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
-                        <span class="fa fa-search"></span>
+                        <fa-icon [icon]="'search'"></fa-icon>
                     </button>
                     <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
-                        <span class="fa fa-trash-o"></span>
+                        <fa-icon [icon]="'trash-alt'"></fa-icon>
                     </button>
                 </div>
             </form>
@@ -29,47 +29,45 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="type"><span jhiTranslate="mallApp.shippingPriceRule.type">Type</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="value"><span jhiTranslate="mallApp.shippingPriceRule.value">Value</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="price"><span jhiTranslate="mallApp.shippingPriceRule.price">Price</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="shop.id"><span jhiTranslate="mallApp.shippingPriceRule.shop">Shop</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="type"><span jhiTranslate="mallApp.shippingPriceRule.type">Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="value"><span jhiTranslate="mallApp.shippingPriceRule.value">Value</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="price"><span jhiTranslate="mallApp.shippingPriceRule.price">Price</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="shop.id"><span jhiTranslate="mallApp.shippingPriceRule.shop">Shop</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let shippingPriceRule of shippingPriceRules ;trackBy: trackId">
-                <td><a [routerLink]="['../shipping-price-rule', shippingPriceRule.id ]">{{shippingPriceRule.id}}</a></td>
+                <td><a [routerLink]="['/shipping-price-rule', shippingPriceRule.id, 'view' ]">{{shippingPriceRule.id}}</a></td>
                 <td>{{shippingPriceRule.type}}</td>
                 <td>{{shippingPriceRule.value}}</td>
                 <td>{{shippingPriceRule.price}}</td>
                 <td>
                     <div *ngIf="shippingPriceRule.shop">
-                        <a [routerLink]="['../shop', shippingPriceRule.shop?.id ]" >{{shippingPriceRule.shop?.id}}</a>
+                        <a [routerLink]="['../shop', shippingPriceRule.shop?.id, 'view' ]" >{{shippingPriceRule.shop?.id}}</a>
                     </div>
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
-                                [routerLink]="['../shipping-price-rule', shippingPriceRule.id ]"
+                                [routerLink]="['/shipping-price-rule', shippingPriceRule.id, 'view' ]"
                                 class="btn btn-info btn-sm">
-                            <span class="fa fa-eye"></span>
+                            <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'shipping-price-rule/'+ shippingPriceRule.id + '/edit'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
+                                [routerLink]="['/shipping-price-rule', shippingPriceRule.id, 'edit']"
                                 class="btn btn-primary btn-sm">
-                            <span class="fa fa-pencil"></span>
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'shipping-price-rule/'+ shippingPriceRule.id + '/delete'} }]"
+                                [routerLink]="['/', 'shipping-price-rule', { outlets: { popup: shippingPriceRule.id + '/delete'} }]"
                                 replaceUrl="true"
                                 queryParamsHandling="merge"
                                 class="btn btn-danger btn-sm">
-                            <span class="fa fa-remove"></span>
+                            <fa-icon [icon]="'times'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
                         </button>
                     </div>
@@ -80,7 +78,7 @@
     </div>
     <div *ngIf="shippingPriceRules && shippingPriceRules.length">
         <div class="row justify-content-center">
-            <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+            <jhi-item-count [page]="page" [total]="totalItems" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
         </div>
         <div class="row justify-content-center">
             <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>

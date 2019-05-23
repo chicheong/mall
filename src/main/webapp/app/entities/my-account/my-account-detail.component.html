@@ -1,54 +1,55 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="myAccount">
+            <h2><span jhiTranslate="mallApp.myAccount.detail.title">My Account</span> {{myAccount.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="mallApp.myAccount.balance">Balance</span></dt>
+                <dd>
+                    <span>{{myAccount.balance}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.myAccount.type">Type</span></dt>
+                <dd>
+                    <span jhiTranslate="{{'mallApp.AccountType.' + myAccount.type}}">{{myAccount.type}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.myAccount.company">Company</span></dt>
+                <dd>
+                    <div *ngIf="myAccount.companyId">
+                        <a [routerLink]="['/company', myAccount.companyId, 'view']">{{myAccount.companyCode}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="mallApp.myAccount.department">Department</span></dt>
+                <dd>
+                    <div *ngIf="myAccount.departmentId">
+                        <a [routerLink]="['/department', myAccount.departmentId, 'view']">{{myAccount.departmentCode}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="mallApp.myAccount.office">Office</span></dt>
+                <dd>
+                    <div *ngIf="myAccount.officeId">
+                        <a [routerLink]="['/office', myAccount.officeId, 'view']">{{myAccount.officeCode}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="mallApp.myAccount.shop">Shop</span></dt>
+                <dd>
+                    <span *ngFor="let shop of myAccount.shops; let last = last">
+                        <a [routerLink]="['/shop', shop?.id, 'view' ]">{{shop.id}}</a>{{last ? '' : ', '}}
+                    </span>
+                </dd>
+            </dl>
 
-<div *ngIf="myAccount">
-    <h2><span jhiTranslate="mallApp.myAccount.detail.title">My Account</span> {{myAccount.id}}</h2>
-    <hr>
-    <jhi-alert-error></jhi-alert-error>
-    <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="mallApp.myAccount.balance">Balance</span></dt>
-        <dd>
-            <span>{{myAccount.balance}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.myAccount.type">Type</span></dt>
-        <dd>
-            <span jhiTranslate="{{'mallApp.AccountType.' + myAccount.type}}">{{myAccount.type}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.myAccount.company">Company</span></dt>
-		<dd>
-            <div *ngIf="myAccount.company">
-                <a [routerLink]="['/company', myAccount.company?.id]">{{myAccount.company?.code}}</a>
-            </div>
-        </dd>
-        <dt><span jhiTranslate="mallApp.myAccount.department">Department</span></dt>
-        <dd>
-            <div *ngIf="myAccount.department">
-                <a [routerLink]="['/department', myAccount.department?.id]">{{myAccount.department?.code}}</a>
-            </div>
-        </dd>
-        <dt><span jhiTranslate="mallApp.myAccount.office">Office</span></dt>
-        <dd>
-            <div *ngIf="myAccount.office">
-                <a [routerLink]="['/office', myAccount.office?.id]">{{myAccount.office?.code}}</a>
-            </div>
-        </dd>
-        <dt><span jhiTranslate="mallApp.myAccount.shop">Shop</span></dt>
-        <dd>
-            <span *ngFor="let shop of myAccount.shops; let last = last">
-                <a [routerLink]="['/shop', shop?.id ]">{{shop.id}}</a>{{last ? '' : ', '}}
-            </span>
-        </dd>
-    </dl>
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
 
-    <button type="submit"
-            (click)="previousState()"
-            class="btn btn-info">
-        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
-    </button>
-
-    <button type="button"
-            [routerLink]="['/', { outlets: { popup: 'my-account/'+ myAccount.id + '/edit'} }]"
-            replaceUrl="true"
-            queryParamsHandling="merge"
-            class="btn btn-primary">
-        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
-    </button>
+            <button type="button"
+                    [routerLink]="['/my-account', myAccount.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
 </div>

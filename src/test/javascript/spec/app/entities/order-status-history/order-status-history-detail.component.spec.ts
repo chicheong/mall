@@ -1,54 +1,40 @@
 /* tslint:disable max-line-length */
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 import { MallTestModule } from '../../../test.module';
-import { OrderStatusHistoryDetailComponent } from '../../../../../../main/webapp/app/entities/order-status-history/order-status-history-detail.component';
-import { OrderStatusHistoryService } from '../../../../../../main/webapp/app/entities/order-status-history/order-status-history.service';
-import { OrderStatusHistory } from '../../../../../../main/webapp/app/entities/order-status-history/order-status-history.model';
+import { OrderStatusHistoryDetailComponent } from 'app/entities/order-status-history/order-status-history-detail.component';
+import { OrderStatusHistory } from 'app/shared/model/order-status-history.model';
 
 describe('Component Tests', () => {
-
     describe('OrderStatusHistory Management Detail Component', () => {
         let comp: OrderStatusHistoryDetailComponent;
         let fixture: ComponentFixture<OrderStatusHistoryDetailComponent>;
-        let service: OrderStatusHistoryService;
+        const route = ({ data: of({ orderStatusHistory: new OrderStatusHistory(123) }) } as any) as ActivatedRoute;
 
-        beforeEach(async(() => {
+        beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [MallTestModule],
                 declarations: [OrderStatusHistoryDetailComponent],
-                providers: [
-                    OrderStatusHistoryService
-                ]
+                providers: [{ provide: ActivatedRoute, useValue: route }]
             })
-            .overrideTemplate(OrderStatusHistoryDetailComponent, '')
-            .compileComponents();
-        }));
-
-        beforeEach(() => {
+                .overrideTemplate(OrderStatusHistoryDetailComponent, '')
+                .compileComponents();
             fixture = TestBed.createComponent(OrderStatusHistoryDetailComponent);
             comp = fixture.componentInstance;
-            service = fixture.debugElement.injector.get(OrderStatusHistoryService);
         });
 
         describe('OnInit', () => {
             it('Should call load all on init', () => {
                 // GIVEN
 
-                spyOn(service, 'find').and.returnValue(Observable.of(new HttpResponse({
-                    body: new OrderStatusHistory(123)
-                })));
-
                 // WHEN
                 comp.ngOnInit();
 
                 // THEN
-                expect(service.find).toHaveBeenCalledWith(123);
-                expect(comp.orderStatusHistory).toEqual(jasmine.objectContaining({id: 123}));
+                expect(comp.orderStatusHistory).toEqual(jasmine.objectContaining({ id: 123 }));
             });
         });
     });
-
 });

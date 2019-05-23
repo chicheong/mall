@@ -1,76 +1,93 @@
 import { Injectable } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiPaginationUtil } from 'ng-jhipster';
-
-import { UserRouteAccessService } from '../../shared';
+import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
+import { UserRouteAccessService } from 'app/core';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { Shop } from 'app/shared/model/shop.model';
+import { ShopService } from './shop.service';
 import { ShopComponent } from './shop.component';
 import { ShopDetailComponent } from './shop-detail.component';
-import { ShopPopupComponent } from './shop-dialog.component';
+import { ShopUpdateComponent } from './shop-update.component';
 import { ShopDeletePopupComponent } from './shop-delete-dialog.component';
+import { IShop } from 'app/shared/model/shop.model';
 
-@Injectable()
-export class ShopResolvePagingParams implements Resolve<any> {
+@Injectable({ providedIn: 'root' })
+export class ShopResolve implements Resolve<IShop> {
+    constructor(private service: ShopService) {}
 
-    constructor(private paginationUtil: JhiPaginationUtil) {}
-
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        const page = route.queryParams['page'] ? route.queryParams['page'] : '1';
-        const sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'id,asc';
-        return {
-            page: this.paginationUtil.parsePage(page),
-            predicate: this.paginationUtil.parsePredicate(sort),
-            ascending: this.paginationUtil.parseAscending(sort)
-      };
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<IShop> {
+        const id = route.params['id'] ? route.params['id'] : null;
+        if (id) {
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<Shop>) => response.ok),
+                map((shop: HttpResponse<Shop>) => shop.body)
+            );
+        }
+        return of(new Shop());
     }
 }
 
 export const shopRoute: Routes = [
     {
-        path: 'shop',
+        path: '',
         component: ShopComponent,
         resolve: {
-            'pagingParams': ShopResolvePagingParams
+            pagingParams: JhiResolvePagingParams
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            defaultSort: 'id,asc',
+            pageTitle: 'mallApp.shop.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/view',
+        component: ShopDetailComponent,
+        resolve: {
+            shop: ShopResolve
         },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.shop.home.title'
         },
         canActivate: [UserRouteAccessService]
-    }, {
-        path: 'shop/:id',
-        component: ShopDetailComponent,
+    },
+    {
+        path: 'new',
+        component: ShopUpdateComponent,
+        resolve: {
+            shop: ShopResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.shop.home.title'
         },
-        canActivate: []
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/edit',
+        component: ShopUpdateComponent,
+        resolve: {
+            shop: ShopResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.shop.home.title'
+        },
+        canActivate: [UserRouteAccessService]
     }
 ];
 
 export const shopPopupRoute: Routes = [
     {
-        path: 'shop-new',
-        component: ShopPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.shop.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'shop/:id/edit',
-        component: ShopPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.shop.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'shop/:id/delete',
+        path: ':id/delete',
         component: ShopDeletePopupComponent,
+        resolve: {
+            shop: ShopResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.shop.home.title'

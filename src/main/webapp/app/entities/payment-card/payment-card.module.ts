@@ -1,51 +1,40 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { JhiLanguageService } from 'ng-jhipster';
+import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from '../../shared';
+import { MallSharedModule } from 'app/shared';
 import {
-    PaymentCardService,
-    PaymentCardPopupService,
     PaymentCardComponent,
     PaymentCardDetailComponent,
-    PaymentCardDialogComponent,
-    PaymentCardPopupComponent,
+    PaymentCardUpdateComponent,
     PaymentCardDeletePopupComponent,
     PaymentCardDeleteDialogComponent,
     paymentCardRoute,
-    paymentCardPopupRoute,
-    PaymentCardResolvePagingParams,
+    paymentCardPopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...paymentCardRoute,
-    ...paymentCardPopupRoute,
-];
+const ENTITY_STATES = [...paymentCardRoute, ...paymentCardPopupRoute];
 
 @NgModule({
-    imports: [
-        MallSharedModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         PaymentCardComponent,
         PaymentCardDetailComponent,
-        PaymentCardDialogComponent,
+        PaymentCardUpdateComponent,
         PaymentCardDeleteDialogComponent,
-        PaymentCardPopupComponent,
-        PaymentCardDeletePopupComponent,
+        PaymentCardDeletePopupComponent
     ],
-    entryComponents: [
-        PaymentCardComponent,
-        PaymentCardDialogComponent,
-        PaymentCardPopupComponent,
-        PaymentCardDeleteDialogComponent,
-        PaymentCardDeletePopupComponent,
-    ],
-    providers: [
-        PaymentCardService,
-        PaymentCardPopupService,
-        PaymentCardResolvePagingParams,
-    ],
+    entryComponents: [PaymentCardComponent, PaymentCardUpdateComponent, PaymentCardDeleteDialogComponent, PaymentCardDeletePopupComponent],
+    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MallPaymentCardModule {}
+export class MallPaymentCardModule {
+    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
+        this.languageHelper.language.subscribe((languageKey: string) => {
+            if (languageKey !== undefined) {
+                this.languageService.changeLanguage(languageKey);
+            }
+        });
+    }
+}

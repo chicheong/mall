@@ -1,42 +1,43 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="paymentCard">
+            <h2><span jhiTranslate="mallApp.paymentCard.detail.title">Payment Card</span> {{paymentCard.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="mallApp.paymentCard.holderName">Holder Name</span></dt>
+                <dd>
+                    <span>{{paymentCard.holderName}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.paymentCard.cardNumber">Card Number</span></dt>
+                <dd>
+                    <span>{{paymentCard.cardNumber}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.paymentCard.expirationMonth">Expiration Month</span></dt>
+                <dd>
+                    <span>{{paymentCard.expirationMonth}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.paymentCard.expirationYear">Expiration Year</span></dt>
+                <dd>
+                    <span>{{paymentCard.expirationYear}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.paymentCard.cvc">Cvc</span></dt>
+                <dd>
+                    <span>{{paymentCard.cvc}}</span>
+                </dd>
+            </dl>
 
-<div *ngIf="paymentCard">
-    <h2><span jhiTranslate="mallApp.paymentCard.detail.title">Payment Card</span> {{paymentCard.id}}</h2>
-    <hr>
-    <jhi-alert-error></jhi-alert-error>
-    <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="mallApp.paymentCard.holderName">Holder Name</span></dt>
-        <dd>
-            <span>{{paymentCard.holderName}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.paymentCard.cardNumber">Card Number</span></dt>
-        <dd>
-            <span>{{paymentCard.cardNumber}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.paymentCard.expirationMonth">Expiration Month</span></dt>
-        <dd>
-            <span>{{paymentCard.expirationMonth}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.paymentCard.expirationYear">Expiration Year</span></dt>
-        <dd>
-            <span>{{paymentCard.expirationYear}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.paymentCard.cvc">Cvc</span></dt>
-        <dd>
-            <span>{{paymentCard.cvc}}</span>
-        </dd>
-    </dl>
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
 
-    <button type="submit"
-            (click)="previousState()"
-            class="btn btn-info">
-        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
-    </button>
-
-    <button type="button"
-            [routerLink]="['/', { outlets: { popup: 'payment-card/'+ paymentCard.id + '/edit'} }]"
-            replaceUrl="true"
-            queryParamsHandling="merge"
-            class="btn btn-primary">
-        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
-    </button>
+            <button type="button"
+                    [routerLink]="['/payment-card', paymentCard.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
 </div>

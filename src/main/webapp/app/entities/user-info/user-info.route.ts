@@ -1,44 +1,78 @@
 import { Injectable } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiPaginationUtil } from 'ng-jhipster';
-
-import { UserRouteAccessService } from '../../shared';
+import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
+import { UserRouteAccessService } from 'app/core';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { UserInfo } from 'app/shared/model/user-info.model';
+import { UserInfoService } from './user-info.service';
 import { UserInfoComponent } from './user-info.component';
 import { UserInfoDetailComponent } from './user-info-detail.component';
-import { UserInfoPopupComponent } from './user-info-dialog.component';
+import { UserInfoUpdateComponent } from './user-info-update.component';
 import { UserInfoDeletePopupComponent } from './user-info-delete-dialog.component';
+import { IUserInfo } from 'app/shared/model/user-info.model';
 
-@Injectable()
-export class UserInfoResolvePagingParams implements Resolve<any> {
+@Injectable({ providedIn: 'root' })
+export class UserInfoResolve implements Resolve<IUserInfo> {
+    constructor(private service: UserInfoService) {}
 
-    constructor(private paginationUtil: JhiPaginationUtil) {}
-
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        const page = route.queryParams['page'] ? route.queryParams['page'] : '1';
-        const sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'id,asc';
-        return {
-            page: this.paginationUtil.parsePage(page),
-            predicate: this.paginationUtil.parsePredicate(sort),
-            ascending: this.paginationUtil.parseAscending(sort)
-      };
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<IUserInfo> {
+        const id = route.params['id'] ? route.params['id'] : null;
+        if (id) {
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<UserInfo>) => response.ok),
+                map((userInfo: HttpResponse<UserInfo>) => userInfo.body)
+            );
+        }
+        return of(new UserInfo());
     }
 }
 
 export const userInfoRoute: Routes = [
     {
-        path: 'user-info',
+        path: '',
         component: UserInfoComponent,
         resolve: {
-            'pagingParams': UserInfoResolvePagingParams
+            pagingParams: JhiResolvePagingParams
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            defaultSort: 'id,asc',
+            pageTitle: 'mallApp.userInfo.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/view',
+        component: UserInfoDetailComponent,
+        resolve: {
+            userInfo: UserInfoResolve
         },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.userInfo.home.title'
         },
         canActivate: [UserRouteAccessService]
-    }, {
-        path: 'user-info/:id',
-        component: UserInfoDetailComponent,
+    },
+    {
+        path: 'new',
+        component: UserInfoUpdateComponent,
+        resolve: {
+            userInfo: UserInfoResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.userInfo.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/edit',
+        component: UserInfoUpdateComponent,
+        resolve: {
+            userInfo: UserInfoResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.userInfo.home.title'
@@ -49,28 +83,11 @@ export const userInfoRoute: Routes = [
 
 export const userInfoPopupRoute: Routes = [
     {
-        path: 'user-info-new',
-        component: UserInfoPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.userInfo.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'user-info/:id/edit',
-        component: UserInfoPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.userInfo.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'user-info/:id/delete',
+        path: ':id/delete',
         component: UserInfoDeletePopupComponent,
+        resolve: {
+            userInfo: UserInfoResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.userInfo.home.title'

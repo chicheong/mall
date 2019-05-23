@@ -1,36 +1,37 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="shippingStatusHistory">
+            <h2><span jhiTranslate="mallApp.shippingStatusHistory.detail.title">Shipping Status History</span> {{shippingStatusHistory.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="mallApp.shippingStatusHistory.effectiveDate">Effective Date</span></dt>
+                <dd>
+                    <span>{{shippingStatusHistory.effectiveDate}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.shippingStatusHistory.status">Status</span></dt>
+                <dd>
+                    <span jhiTranslate="{{'mallApp.ShippingStatus.' + shippingStatusHistory.status}}">{{shippingStatusHistory.status}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.shippingStatusHistory.shipping">Shipping</span></dt>
+                <dd>
+                    <div *ngIf="shippingStatusHistory.shipping">
+                        <a [routerLink]="['/shipping', shippingStatusHistory.shipping?.id, 'view']">{{shippingStatusHistory.shipping?.id}}</a>
+                    </div>
+                </dd>
+            </dl>
 
-<div *ngIf="shippingStatusHistory">
-    <h2><span jhiTranslate="mallApp.shippingStatusHistory.detail.title">Shipping Status History</span> {{shippingStatusHistory.id}}</h2>
-    <hr>
-    <jhi-alert-error></jhi-alert-error>
-    <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="mallApp.shippingStatusHistory.effectiveDate">Effective Date</span></dt>
-        <dd>
-            <span>{{shippingStatusHistory.effectiveDate | date:'medium'}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.shippingStatusHistory.status">Status</span></dt>
-        <dd>
-            <span jhiTranslate="{{'mallApp.ShippingStatus.' + shippingStatusHistory.status}}">{{shippingStatusHistory.status}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.shippingStatusHistory.shipping">Shipping</span></dt>
-        <dd>
-            <div *ngIf="shippingStatusHistory.shipping">
-                <a [routerLink]="['/shipping', shippingStatusHistory.shipping?.id]">{{shippingStatusHistory.shipping?.id}}</a>
-            </div>
-        </dd>
-    </dl>
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
 
-    <button type="submit"
-            (click)="previousState()"
-            class="btn btn-info">
-        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
-    </button>
-
-    <button type="button"
-            [routerLink]="['/', { outlets: { popup: 'shipping-status-history/'+ shippingStatusHistory.id + '/edit'} }]"
-            replaceUrl="true"
-            queryParamsHandling="merge"
-            class="btn btn-primary">
-        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
-    </button>
+            <button type="button"
+                    [routerLink]="['/shipping-status-history', shippingStatusHistory.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
 </div>

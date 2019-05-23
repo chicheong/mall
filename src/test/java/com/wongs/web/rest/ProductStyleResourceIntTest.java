@@ -22,13 +22,18 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -60,8 +65,13 @@ public class ProductStyleResourceIntTest {
     @Autowired
     private ProductStyleMapper productStyleMapper;
 
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.ProductStyleSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private ProductStyleSearchRepository productStyleSearchRepository;
+    private ProductStyleSearchRepository mockProductStyleSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -75,6 +85,9 @@ public class ProductStyleResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restProductStyleMockMvc;
 
     private ProductStyle productStyle;
@@ -82,12 +95,13 @@ public class ProductStyleResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ProductStyleResource productStyleResource = new ProductStyleResource(productStyleRepository, productStyleMapper, productStyleSearchRepository);
+        final ProductStyleResource productStyleResource = new ProductStyleResource(productStyleRepository, productStyleMapper, mockProductStyleSearchRepository);
         this.restProductStyleMockMvc = MockMvcBuilders.standaloneSetup(productStyleResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -107,7 +121,6 @@ public class ProductStyleResourceIntTest {
 
     @Before
     public void initTest() {
-        productStyleSearchRepository.deleteAll();
         productStyle = createEntity(em);
     }
 
@@ -133,8 +146,7 @@ public class ProductStyleResourceIntTest {
         assertThat(testProductStyle.getType()).isEqualTo(DEFAULT_TYPE);
 
         // Validate the ProductStyle in Elasticsearch
-        ProductStyle productStyleEs = productStyleSearchRepository.findOne(testProductStyle.getId());
-        assertThat(productStyleEs).isEqualToIgnoringGivenFields(testProductStyle);
+        verify(mockProductStyleSearchRepository, times(1)).save(testProductStyle);
     }
 
     @Test
@@ -155,6 +167,9 @@ public class ProductStyleResourceIntTest {
         // Validate the ProductStyle in the database
         List<ProductStyle> productStyleList = productStyleRepository.findAll();
         assertThat(productStyleList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the ProductStyle in Elasticsearch
+        verify(mockProductStyleSearchRepository, times(0)).save(productStyle);
     }
 
     @Test
@@ -173,7 +188,7 @@ public class ProductStyleResourceIntTest {
             .andExpect(jsonPath("$.[*].isDefault").value(hasItem(DEFAULT_IS_DEFAULT.booleanValue())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())));
     }
-
+    
     @Test
     @Transactional
     public void getProductStyle() throws Exception {
@@ -204,11 +219,11 @@ public class ProductStyleResourceIntTest {
     public void updateProductStyle() throws Exception {
         // Initialize the database
         productStyleRepository.saveAndFlush(productStyle);
-        productStyleSearchRepository.save(productStyle);
+
         int databaseSizeBeforeUpdate = productStyleRepository.findAll().size();
 
         // Update the productStyle
-        ProductStyle updatedProductStyle = productStyleRepository.findOne(productStyle.getId());
+        ProductStyle updatedProductStyle = productStyleRepository.findById(productStyle.getId()).get();
         // Disconnect from session so that the updates on updatedProductStyle are not directly saved in db
         em.detach(updatedProductStyle);
         updatedProductStyle
@@ -233,8 +248,7 @@ public class ProductStyleResourceIntTest {
         assertThat(testProductStyle.getType()).isEqualTo(UPDATED_TYPE);
 
         // Validate the ProductStyle in Elasticsearch
-        ProductStyle productStyleEs = productStyleSearchRepository.findOne(testProductStyle.getId());
-        assertThat(productStyleEs).isEqualToIgnoringGivenFields(testProductStyle);
+        verify(mockProductStyleSearchRepository, times(1)).save(testProductStyle);
     }
 
     @Test
@@ -245,15 +259,18 @@ public class ProductStyleResourceIntTest {
         // Create the ProductStyle
         ProductStyleDTO productStyleDTO = productStyleMapper.toDto(productStyle);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restProductStyleMockMvc.perform(put("/api/product-styles")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(productStyleDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the ProductStyle in the database
         List<ProductStyle> productStyleList = productStyleRepository.findAll();
-        assertThat(productStyleList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(productStyleList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the ProductStyle in Elasticsearch
+        verify(mockProductStyleSearchRepository, times(0)).save(productStyle);
     }
 
     @Test
@@ -261,21 +278,20 @@ public class ProductStyleResourceIntTest {
     public void deleteProductStyle() throws Exception {
         // Initialize the database
         productStyleRepository.saveAndFlush(productStyle);
-        productStyleSearchRepository.save(productStyle);
+
         int databaseSizeBeforeDelete = productStyleRepository.findAll().size();
 
-        // Get the productStyle
+        // Delete the productStyle
         restProductStyleMockMvc.perform(delete("/api/product-styles/{id}", productStyle.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean productStyleExistsInEs = productStyleSearchRepository.exists(productStyle.getId());
-        assertThat(productStyleExistsInEs).isFalse();
-
         // Validate the database is empty
         List<ProductStyle> productStyleList = productStyleRepository.findAll();
         assertThat(productStyleList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the ProductStyle in Elasticsearch
+        verify(mockProductStyleSearchRepository, times(1)).deleteById(productStyle.getId());
     }
 
     @Test
@@ -283,15 +299,15 @@ public class ProductStyleResourceIntTest {
     public void searchProductStyle() throws Exception {
         // Initialize the database
         productStyleRepository.saveAndFlush(productStyle);
-        productStyleSearchRepository.save(productStyle);
-
+        when(mockProductStyleSearchRepository.search(queryStringQuery("id:" + productStyle.getId())))
+            .thenReturn(Collections.singletonList(productStyle));
         // Search the productStyle
         restProductStyleMockMvc.perform(get("/api/_search/product-styles?query=id:" + productStyle.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(productStyle.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].isDefault").value(hasItem(DEFAULT_IS_DEFAULT.booleanValue())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())));
     }

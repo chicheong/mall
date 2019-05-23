@@ -1,55 +1,24 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse } from '@angular/common/http';
-import { Subscription } from 'rxjs/Subscription';
-import { JhiEventManager } from 'ng-jhipster';
 
-import { MyAccount } from './my-account.model';
-import { MyAccountService } from './my-account.service';
+import { IMyAccount } from 'app/shared/model/my-account.model';
 
 @Component({
     selector: 'jhi-my-account-detail',
     templateUrl: './my-account-detail.component.html'
 })
-export class MyAccountDetailComponent implements OnInit, OnDestroy {
+export class MyAccountDetailComponent implements OnInit {
+    myAccount: IMyAccount;
 
-    myAccount: MyAccount;
-    private subscription: Subscription;
-    private eventSubscriber: Subscription;
-
-    constructor(
-        private eventManager: JhiEventManager,
-        private myAccountService: MyAccountService,
-        private route: ActivatedRoute
-    ) {
-    }
+    constructor(protected activatedRoute: ActivatedRoute) {}
 
     ngOnInit() {
-        this.subscription = this.route.params.subscribe((params) => {
-            this.load(params['id']);
+        this.activatedRoute.data.subscribe(({ myAccount }) => {
+            this.myAccount = myAccount;
         });
-        this.registerChangeInMyAccounts();
     }
 
-    load(id) {
-        this.myAccountService.find(id)
-            .subscribe((myAccountResponse: HttpResponse<MyAccount>) => {
-                this.myAccount = myAccountResponse.body;
-            });
-    }
     previousState() {
         window.history.back();
-    }
-
-    ngOnDestroy() {
-        this.subscription.unsubscribe();
-        this.eventManager.destroy(this.eventSubscriber);
-    }
-
-    registerChangeInMyAccounts() {
-        this.eventSubscriber = this.eventManager.subscribe(
-            'myAccountListModification',
-            (response) => this.load(this.myAccount.id)
-        );
     }
 }

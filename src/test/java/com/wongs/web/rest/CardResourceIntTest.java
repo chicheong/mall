@@ -13,6 +13,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -20,13 +22,18 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -57,8 +64,13 @@ public class CardResourceIntTest {
     @Autowired
     private CardRepository cardRepository;
 
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.CardSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private CardSearchRepository cardSearchRepository;
+    private CardSearchRepository mockCardSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -72,6 +84,9 @@ public class CardResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restCardMockMvc;
 
     private Card card;
@@ -79,12 +94,13 @@ public class CardResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final CardResource cardResource = new CardResource(cardRepository, cardSearchRepository);
+        final CardResource cardResource = new CardResource(cardRepository, mockCardSearchRepository);
         this.restCardMockMvc = MockMvcBuilders.standaloneSetup(cardResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -105,7 +121,6 @@ public class CardResourceIntTest {
 
     @Before
     public void initTest() {
-        cardSearchRepository.deleteAll();
         card = createEntity(em);
     }
 
@@ -131,8 +146,7 @@ public class CardResourceIntTest {
         assertThat(testCard.getCvc()).isEqualTo(DEFAULT_CVC);
 
         // Validate the Card in Elasticsearch
-        Card cardEs = cardSearchRepository.findOne(testCard.getId());
-        assertThat(cardEs).isEqualToIgnoringGivenFields(testCard);
+        verify(mockCardSearchRepository, times(1)).save(testCard);
     }
 
     @Test
@@ -152,6 +166,9 @@ public class CardResourceIntTest {
         // Validate the Card in the database
         List<Card> cardList = cardRepository.findAll();
         assertThat(cardList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the Card in Elasticsearch
+        verify(mockCardSearchRepository, times(0)).save(card);
     }
 
     @Test
@@ -171,7 +188,7 @@ public class CardResourceIntTest {
             .andExpect(jsonPath("$.[*].expirationYear").value(hasItem(DEFAULT_EXPIRATION_YEAR.toString())))
             .andExpect(jsonPath("$.[*].cvc").value(hasItem(DEFAULT_CVC.toString())));
     }
-
+    
     @Test
     @Transactional
     public void getCard() throws Exception {
@@ -203,11 +220,11 @@ public class CardResourceIntTest {
     public void updateCard() throws Exception {
         // Initialize the database
         cardRepository.saveAndFlush(card);
-        cardSearchRepository.save(card);
+
         int databaseSizeBeforeUpdate = cardRepository.findAll().size();
 
         // Update the card
-        Card updatedCard = cardRepository.findOne(card.getId());
+        Card updatedCard = cardRepository.findById(card.getId()).get();
         // Disconnect from session so that the updates on updatedCard are not directly saved in db
         em.detach(updatedCard);
         updatedCard
@@ -233,8 +250,7 @@ public class CardResourceIntTest {
         assertThat(testCard.getCvc()).isEqualTo(UPDATED_CVC);
 
         // Validate the Card in Elasticsearch
-        Card cardEs = cardSearchRepository.findOne(testCard.getId());
-        assertThat(cardEs).isEqualToIgnoringGivenFields(testCard);
+        verify(mockCardSearchRepository, times(1)).save(testCard);
     }
 
     @Test
@@ -244,15 +260,18 @@ public class CardResourceIntTest {
 
         // Create the Card
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCardMockMvc.perform(put("/api/cards")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(card)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Card in the database
         List<Card> cardList = cardRepository.findAll();
-        assertThat(cardList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(cardList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the Card in Elasticsearch
+        verify(mockCardSearchRepository, times(0)).save(card);
     }
 
     @Test
@@ -260,21 +279,20 @@ public class CardResourceIntTest {
     public void deleteCard() throws Exception {
         // Initialize the database
         cardRepository.saveAndFlush(card);
-        cardSearchRepository.save(card);
+
         int databaseSizeBeforeDelete = cardRepository.findAll().size();
 
-        // Get the card
+        // Delete the card
         restCardMockMvc.perform(delete("/api/cards/{id}", card.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean cardExistsInEs = cardSearchRepository.exists(card.getId());
-        assertThat(cardExistsInEs).isFalse();
-
         // Validate the database is empty
         List<Card> cardList = cardRepository.findAll();
         assertThat(cardList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the Card in Elasticsearch
+        verify(mockCardSearchRepository, times(1)).deleteById(card.getId());
     }
 
     @Test
@@ -282,18 +300,18 @@ public class CardResourceIntTest {
     public void searchCard() throws Exception {
         // Initialize the database
         cardRepository.saveAndFlush(card);
-        cardSearchRepository.save(card);
-
+        when(mockCardSearchRepository.search(queryStringQuery("id:" + card.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(card), PageRequest.of(0, 1), 1));
         // Search the card
         restCardMockMvc.perform(get("/api/_search/cards?query=id:" + card.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(card.getId().intValue())))
-            .andExpect(jsonPath("$.[*].holderName").value(hasItem(DEFAULT_HOLDER_NAME.toString())))
-            .andExpect(jsonPath("$.[*].cardNumber").value(hasItem(DEFAULT_CARD_NUMBER.toString())))
-            .andExpect(jsonPath("$.[*].expirationMonth").value(hasItem(DEFAULT_EXPIRATION_MONTH.toString())))
-            .andExpect(jsonPath("$.[*].expirationYear").value(hasItem(DEFAULT_EXPIRATION_YEAR.toString())))
-            .andExpect(jsonPath("$.[*].cvc").value(hasItem(DEFAULT_CVC.toString())));
+            .andExpect(jsonPath("$.[*].holderName").value(hasItem(DEFAULT_HOLDER_NAME)))
+            .andExpect(jsonPath("$.[*].cardNumber").value(hasItem(DEFAULT_CARD_NUMBER)))
+            .andExpect(jsonPath("$.[*].expirationMonth").value(hasItem(DEFAULT_EXPIRATION_MONTH)))
+            .andExpect(jsonPath("$.[*].expirationYear").value(hasItem(DEFAULT_EXPIRATION_YEAR)))
+            .andExpect(jsonPath("$.[*].cvc").value(hasItem(DEFAULT_CVC)));
     }
 
     @Test

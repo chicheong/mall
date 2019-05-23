@@ -1,54 +1,40 @@
 /* tslint:disable max-line-length */
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 import { MallTestModule } from '../../../test.module';
-import { StateDetailComponent } from '../../../../../../main/webapp/app/entities/state/state-detail.component';
-import { StateService } from '../../../../../../main/webapp/app/entities/state/state.service';
-import { State } from '../../../../../../main/webapp/app/entities/state/state.model';
+import { StateDetailComponent } from 'app/entities/state/state-detail.component';
+import { State } from 'app/shared/model/state.model';
 
 describe('Component Tests', () => {
-
     describe('State Management Detail Component', () => {
         let comp: StateDetailComponent;
         let fixture: ComponentFixture<StateDetailComponent>;
-        let service: StateService;
+        const route = ({ data: of({ state: new State(123) }) } as any) as ActivatedRoute;
 
-        beforeEach(async(() => {
+        beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [MallTestModule],
                 declarations: [StateDetailComponent],
-                providers: [
-                    StateService
-                ]
+                providers: [{ provide: ActivatedRoute, useValue: route }]
             })
-            .overrideTemplate(StateDetailComponent, '')
-            .compileComponents();
-        }));
-
-        beforeEach(() => {
+                .overrideTemplate(StateDetailComponent, '')
+                .compileComponents();
             fixture = TestBed.createComponent(StateDetailComponent);
             comp = fixture.componentInstance;
-            service = fixture.debugElement.injector.get(StateService);
         });
 
         describe('OnInit', () => {
             it('Should call load all on init', () => {
                 // GIVEN
 
-                spyOn(service, 'find').and.returnValue(Observable.of(new HttpResponse({
-                    body: new State(123)
-                })));
-
                 // WHEN
                 comp.ngOnInit();
 
                 // THEN
-                expect(service.find).toHaveBeenCalledWith(123);
-                expect(comp.state).toEqual(jasmine.objectContaining({id: 123}));
+                expect(comp.state).toEqual(jasmine.objectContaining({ id: 123 }));
             });
         });
     });
-
 });

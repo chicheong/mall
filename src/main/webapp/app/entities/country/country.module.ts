@@ -1,51 +1,40 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { JhiLanguageService } from 'ng-jhipster';
+import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from '../../shared';
+import { MallSharedModule } from 'app/shared';
 import {
-    CountryService,
-    CountryPopupService,
     CountryComponent,
     CountryDetailComponent,
-    CountryDialogComponent,
-    CountryPopupComponent,
+    CountryUpdateComponent,
     CountryDeletePopupComponent,
     CountryDeleteDialogComponent,
     countryRoute,
-    countryPopupRoute,
-    CountryResolvePagingParams,
+    countryPopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...countryRoute,
-    ...countryPopupRoute,
-];
+const ENTITY_STATES = [...countryRoute, ...countryPopupRoute];
 
 @NgModule({
-    imports: [
-        MallSharedModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         CountryComponent,
         CountryDetailComponent,
-        CountryDialogComponent,
+        CountryUpdateComponent,
         CountryDeleteDialogComponent,
-        CountryPopupComponent,
-        CountryDeletePopupComponent,
+        CountryDeletePopupComponent
     ],
-    entryComponents: [
-        CountryComponent,
-        CountryDialogComponent,
-        CountryPopupComponent,
-        CountryDeleteDialogComponent,
-        CountryDeletePopupComponent,
-    ],
-    providers: [
-        CountryService,
-        CountryPopupService,
-        CountryResolvePagingParams,
-    ],
+    entryComponents: [CountryComponent, CountryUpdateComponent, CountryDeleteDialogComponent, CountryDeletePopupComponent],
+    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MallCountryModule {}
+export class MallCountryModule {
+    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
+        this.languageHelper.language.subscribe((languageKey: string) => {
+            if (languageKey !== undefined) {
+                this.languageService.changeLanguage(languageKey);
+            }
+        });
+    }
+}

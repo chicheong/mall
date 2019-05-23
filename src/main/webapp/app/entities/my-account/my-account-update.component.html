@@ -1,0 +1,63 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+            <h2 id="jhi-my-account-heading" jhiTranslate="mallApp.myAccount.home.createOrEditLabel">Create or edit a My Account</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!myAccount.id">
+                    <label for="id" jhiTranslate="global.field.id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                        [(ngModel)]="myAccount.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.myAccount.balance" for="field_balance">Balance</label>
+                    <input type="number" class="form-control" name="balance" id="field_balance"
+                        [(ngModel)]="myAccount.balance" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.myAccount.type" for="field_type">Type</label>
+                    <select class="form-control" name="type" [(ngModel)]="myAccount.type" id="field_type" >
+                        <option value="PERSONAL">{{'mallApp.AccountType.PERSONAL' | translate}}</option>
+                        <option value="COMPANY">{{'mallApp.AccountType.COMPANY' | translate}}</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.myAccount.company" for="field_company">Company</label>
+                    <select class="form-control" id="field_company" name="company" [(ngModel)]="myAccount.companyId" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="companyOption.id" *ngFor="let companyOption of companies; trackBy: trackCompanyById">{{companyOption.code}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.myAccount.department" for="field_department">Department</label>
+                    <select class="form-control" id="field_department" name="department" [(ngModel)]="myAccount.departmentId" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="departmentOption.id" *ngFor="let departmentOption of departments; trackBy: trackDepartmentById">{{departmentOption.code}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.myAccount.office" for="field_office">Office</label>
+                    <select class="form-control" id="field_office" name="office" [(ngModel)]="myAccount.officeId" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="officeOption.id" *ngFor="let officeOption of offices; trackBy: trackOfficeById">{{officeOption.code}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label jhiTranslate="mallApp.myAccount.shop" for="field_shop">Shop</label>
+                    <select class="form-control" id="field_shop" multiple name="shop" [(ngModel)]="myAccount.shops">
+                        <option [ngValue]="getSelected(myAccount.shops, shopOption)" *ngFor="let shopOption of shops; trackBy: trackShopById">{{shopOption.id}}</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

@@ -1,40 +1,21 @@
 package com.wongs.service;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
-import java.math.BigDecimal;
-import java.util.Optional;
-import java.util.Set;
-
+import com.wongs.domain.MyOrder;
+import com.wongs.repository.MyOrderRepository;
+import com.wongs.repository.search.MyOrderSearchRepository;
+import com.wongs.service.dto.MyOrderDTO;
+import com.wongs.service.mapper.MyOrderMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.wongs.domain.MyAccount;
-import com.wongs.domain.MyOrder;
-import com.wongs.domain.OrderItem;
-import com.wongs.domain.OrderShop;
-import com.wongs.domain.Shop;
-import com.wongs.domain.enumeration.CurrencyType;
-import com.wongs.domain.enumeration.OrderStatus;
-import com.wongs.repository.MyOrderRepository;
-import com.wongs.repository.OrderItemRepository;
-import com.wongs.repository.OrderShopRepository;
-import com.wongs.repository.search.MyOrderSearchRepository;
-import com.wongs.repository.search.OrderItemSearchRepository;
-import com.wongs.repository.search.OrderShopSearchRepository;
-import com.wongs.service.dto.MyAccountDTO;
-import com.wongs.service.dto.MyOrderDTO;
-import com.wongs.service.dto.OrderItemDTO;
-import com.wongs.service.dto.OrderShopDTO;
-import com.wongs.service.mapper.AddressMapper;
-import com.wongs.service.mapper.MyAccountMapper;
-import com.wongs.service.mapper.MyOrderMapper;
-import com.wongs.service.mapper.OrderItemMapper;
-import com.wongs.service.mapper.OrderShopMapper;
+import java.util.Optional;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
  * Service Implementation for managing MyOrder.
@@ -45,48 +26,16 @@ public class MyOrderService {
 
     private final Logger log = LoggerFactory.getLogger(MyOrderService.class);
 
-    private final MyOrderMapper myOrderMapper;
-    private final MyAccountMapper myAccountMapper;
-    private final AddressMapper addressMapper;
-    private final OrderShopMapper orderShopMapper;
-    private final OrderItemMapper orderItemMapper;
-
     private final MyOrderRepository myOrderRepository;
-    private final MyOrderSearchRepository myOrderSearchRepository;
-    
-    private final OrderShopRepository orderShopRepository;
-    private final OrderShopSearchRepository orderShopSearchRepository;
-    
-    private final OrderItemRepository orderItemRepository;
-    private final OrderItemSearchRepository orderItemSearchRepository;
-    
-    private final ShippingService shippingService;
-    private final PaymentService paymentService;
-    private final AddressService addressService;
-    private final ShopService shopService;
 
-    public MyOrderService(MyOrderMapper myOrderMapper, MyAccountMapper myAccountMapper, AddressMapper addressMapper,
-    						OrderShopMapper orderShopMapper, OrderItemMapper orderItemMapper,
-    						MyOrderRepository myOrderRepository, MyOrderSearchRepository myOrderSearchRepository,
-    						OrderShopRepository orderShopRepository, OrderShopSearchRepository orderShopSearchRepository,
-    						OrderItemRepository orderItemRepository, OrderItemSearchRepository orderItemSearchRepository,
-    						ShippingService shippingService, PaymentService paymentService, AddressService addressService,
-    						ShopService shopService) {
+    private final MyOrderMapper myOrderMapper;
+
+    private final MyOrderSearchRepository myOrderSearchRepository;
+
+    public MyOrderService(MyOrderRepository myOrderRepository, MyOrderMapper myOrderMapper, MyOrderSearchRepository myOrderSearchRepository) {
+        this.myOrderRepository = myOrderRepository;
         this.myOrderMapper = myOrderMapper;
-        this.myAccountMapper = myAccountMapper;
-        this.addressMapper = addressMapper;
-        this.orderShopMapper = orderShopMapper;
-        this.orderItemMapper = orderItemMapper;
-    	this.myOrderRepository = myOrderRepository;
         this.myOrderSearchRepository = myOrderSearchRepository;
-        this.orderShopRepository = orderShopRepository;
-        this.orderShopSearchRepository = orderShopSearchRepository;
-        this.orderItemRepository = orderItemRepository;
-        this.orderItemSearchRepository = orderItemSearchRepository;
-        this.shippingService = shippingService;
-        this.paymentService = paymentService;
-        this.addressService = addressService;
-        this.shopService = shopService;
     }
 
     /**
@@ -98,121 +47,10 @@ public class MyOrderService {
     public MyOrderDTO save(MyOrderDTO myOrderDTO) {
         log.debug("Request to save MyOrder : {}", myOrderDTO);
         MyOrder myOrder = myOrderMapper.toEntity(myOrderDTO);
-//        myOrder.setShops(myOrderDTO.getShops());
-        myOrder.setStatusHistories(myOrderDTO.getStatusHistories());
-        MyOrder result = myOrderRepository.save(myOrder);
-//        MyOrderDTO result = myOrderMapper.toDto(myOrder);
-        myOrderSearchRepository.save(myOrder);
-//        myOrderDTO.getShops().forEach((shop) -> {
-//        	orderShopRepository.save(shop);
-//        	orderShopSearchRepository.save(shop);
-//        });
-//        Optional.ofNullable(myOrderDTO.getShipping()).ifPresent(shippingDTO -> {
-//        	Optional.ofNullable(shippingDTO.getShippingAddress()).ifPresent(address -> {
-//        		if (address.getId() == null) {
-//        			shippingDTO.setShippingAddress(addressService.save(address));
-//        		} else {
-//        			AddressDTO oAddressDTO = addressService.findOne(address.getId());
-//        			AddressDTO nAddressDTO = addressMapper.toDto(address);
-//        			if (!(oAddressDTO.equals(nAddressDTO))) {
-//        				shippingDTO.setShippingAddress(addressService.save(address));
-//        			}
-//        		}
-//        	});
-//        	shippingDTO.setOrder(result);
-//        	shippingService.save(shippingDTO);
-//        });
-        Optional.ofNullable(myOrderDTO.getPayment()).ifPresent(paymentDTO -> {
-        	paymentDTO.setOrder(result);
-        	paymentService.save(paymentDTO);
-        });
-        return this.findOne(myOrder.getId());
-    }
-    
-    /**
-     * Add a productItem to a Pending MyOrder.
-     *
-     * @param myOrderDTO the entity to save
-     * @return the persisted entity
-     */
-    public MyOrderDTO addToCart(MyAccountDTO myAccountDTO, final OrderItem orderItem) {
-        log.debug("Request to add OrderItem : {} ", orderItem);
-        MyAccount myAccount = myAccountMapper.toEntity(myAccountDTO);
-        MyOrder myOrder = this.findEntityByAccountAndStatus(myAccount, OrderStatus.PENDING).orElseGet(() -> {
-        	return this.createPendingOrder(myAccount, orderItem.getCurrency());	
-        });
-        Shop shop = shopService.findByProductItem(orderItem.getProductItem());
-        myOrder.getShops().stream().filter(orderShop -> shop.getId().equals(orderShop.getId())).findFirst().map(orderShop -> {
-        	orderShop.getItems().stream().filter(item -> orderItem.getProductItem().equals(item.getProductItem())).findFirst().map(item -> {
-            	item.setQuantity(item.getQuantity() + orderItem.getQuantity());
-            	orderItemRepository.save(item);
-            	return item; 
-        	}).orElseGet(() -> {
-            	orderItem.setShop(orderShop);
-            	orderItemRepository.save(orderItem);
-            	orderShop.getItems().add(orderItem);
-            	orderShopRepository.save(orderShop);
-            	orderShopSearchRepository.save(orderShop);
-            	return orderItem;
-            });
-        	return orderShop;
-        }).orElseGet(() -> {
-        	OrderShop orderShop = new OrderShop();
-        	orderShop.setOrder(myOrder);
-        	orderShop.setShop(shop);
-        	orderShop.getItems().add(orderItem);
-        	orderShop.setCurrency(orderItem.getCurrency());
-        	orderShop.setTotal(this.calculateTotalPrice(orderItem));
-        	orderShop = orderShopRepository.save(orderShop);
-        	orderShopSearchRepository.save(orderShop);
-        	orderItem.setShop(orderShop);
-        	orderItemRepository.save(orderItem);
-        	return orderShop;
-        });
-        
-//        myOrder.getItems().stream().filter(item -> orderItem.getProductItem().equals(item.getProductItem())).findFirst().map(item -> {
-//        	item.setQuantity(item.getQuantity() + orderItem.getQuantity());
-//        	orderItemRepository.save(item);
-//        	return item; 
-//        }).orElseGet(() -> {
-//        	orderItem.setOrder(myOrder);
-//        	orderItemRepository.save(orderItem);
-//        	myOrder.getItems().add(orderItem);
-//            myOrderRepository.save(myOrder);
-//            myOrderSearchRepository.save(myOrder);     
-//        	return orderItem;
-//        });
-//        boolean itemFound = false;
-//        for (OrderItem item : myOrder.getItems()){
-//        	if (orderItem.getProductItem().equals(item.getProductItem())) {
-//        		item.setQuantity(item.getQuantity() + orderItem.getQuantity());
-//            	orderItemRepository.save(item);
-//        		itemFound = true;
-//        		break;
-//        	}
-//        }
-//        if (!itemFound){
-//        	orderItem.setOrder(myOrder);
-//        	orderItemRepository.save(orderItem);
-//        	myOrder.getItems().add(orderItem);
-//        	myOrderRepository.save(myOrder);
-//        	myOrderSearchRepository.save(myOrder); 
-//        }
-        return this.findOne(myOrder.getId());
-    }
-
-    private MyOrder createPendingOrder(MyAccount myAccount, CurrencyType currency) {
-    	MyOrder myOrder = new MyOrder();
-    	myOrder.setAccount(myAccount);
-    	myOrder.setCurrency(currency);
-    	myOrder.setStatus(OrderStatus.PENDING);
         myOrder = myOrderRepository.save(myOrder);
+        MyOrderDTO result = myOrderMapper.toDto(myOrder);
         myOrderSearchRepository.save(myOrder);
-        
-//        shippingService.create(myOrder);
-        paymentService.create(myOrder);
-        
-    	return myOrder;
+        return result;
     }
 
     /**
@@ -228,6 +66,7 @@ public class MyOrderService {
             .map(myOrderMapper::toDto);
     }
 
+
     /**
      * Get one myOrder by id.
      *
@@ -235,61 +74,10 @@ public class MyOrderService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public MyOrderDTO findOne(Long id) {
+    public Optional<MyOrderDTO> findOne(Long id) {
         log.debug("Request to get MyOrder : {}", id);
-        MyOrder myOrder = myOrderRepository.findOne(id);
-        return this.toDTOWithDetail(myOrder);
-    }
-    
-    /**
-     * Get one myOrder by MyAccount and OrderStatus.
-     *
-     * @param MyAccount and OrderStatus
-     * @return the entity
-     */
-    @Transactional(readOnly = true)
-    public MyOrderDTO findByAccountAndStatus(MyAccount account, OrderStatus status) {
-        log.debug("Request to get MyOrder : {}", account, status);
-        Set<MyOrder> myOrders = myOrderRepository.findByAccountAndStatus(account, status);
-        MyOrder myOrder = myOrders.stream().findFirst().orElse(null);
-        return this.toDTOWithDetail(myOrder);
-    }
-    
-    private MyOrderDTO toDTOWithDetail(MyOrder myOrder){
-        if (myOrder == null)
-        	return null;
-        
-        MyOrderDTO myOrderDTO = myOrderMapper.toDto(myOrder);
-        myOrder.getShops().forEach((shop) -> {
-        	OrderShopDTO shopDTO = orderShopMapper.toDto(shop);
-        	shop.getItems().forEach((item) -> {
-        		OrderItemDTO itemDTO = orderItemMapper.toDto(item);
-        		shopDTO.getItems().add(itemDTO);
-        	});
-        	myOrderDTO.getShops().add(shopDTO);
-        });
-        myOrder.getStatusHistories().forEach((statusHistory) -> {
-        	myOrderDTO.getStatusHistories().add(statusHistory);
-        });
-        myOrderDTO.setPayment(paymentService.findByOrder(myOrder));
-        return myOrderDTO;
-    }
-    
-    public BigDecimal calculateTotalPrice(OrderItem orderItem) {
-    	return orderItem.getPrice().multiply(new BigDecimal(orderItem.getQuantity()));
-    }
-    
-    /**
-     * Get one myOrder by MyAccount and OrderStatus.
-     *
-     * @param MyAccount and OrderStatus
-     * @return the entity
-     */
-    @Transactional(readOnly = true)
-    private Optional<MyOrder> findEntityByAccountAndStatus(MyAccount account, OrderStatus status) {
-        log.debug("Request to get MyOrder : {}", account, status);
-        Set<MyOrder> myOrders = myOrderRepository.findByAccountAndStatus(account, status);
-        return myOrders.stream().findFirst();
+        return myOrderRepository.findById(id)
+            .map(myOrderMapper::toDto);
     }
 
     /**
@@ -299,8 +87,8 @@ public class MyOrderService {
      */
     public void delete(Long id) {
         log.debug("Request to delete MyOrder : {}", id);
-        myOrderRepository.delete(id);
-        myOrderSearchRepository.delete(id);
+        myOrderRepository.deleteById(id);
+        myOrderSearchRepository.deleteById(id);
     }
 
     /**
@@ -313,7 +101,7 @@ public class MyOrderService {
     @Transactional(readOnly = true)
     public Page<MyOrderDTO> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of MyOrders for query {}", query);
-        Page<MyOrder> result = myOrderSearchRepository.search(queryStringQuery(query), pageable);
-        return result.map(myOrderMapper::toDto);
+        return myOrderSearchRepository.search(queryStringQuery(query), pageable)
+            .map(myOrderMapper::toDto);
     }
 }

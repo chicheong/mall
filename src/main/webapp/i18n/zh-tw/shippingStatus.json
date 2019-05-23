@@ -1,6 +1,6 @@
 {
     "mallApp": {
-        "ShippingStatus" : {
+        "ShippingStatus": {
             "null": "",
             "PENDING": "PENDING",
             "SHIPPED": "SHIPPED",

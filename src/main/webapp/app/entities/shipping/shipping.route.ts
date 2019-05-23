@@ -1,44 +1,78 @@
 import { Injectable } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiPaginationUtil } from 'ng-jhipster';
-
-import { UserRouteAccessService } from '../../shared';
+import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
+import { UserRouteAccessService } from 'app/core';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { Shipping } from 'app/shared/model/shipping.model';
+import { ShippingService } from './shipping.service';
 import { ShippingComponent } from './shipping.component';
 import { ShippingDetailComponent } from './shipping-detail.component';
-import { ShippingPopupComponent } from './shipping-dialog.component';
+import { ShippingUpdateComponent } from './shipping-update.component';
 import { ShippingDeletePopupComponent } from './shipping-delete-dialog.component';
+import { IShipping } from 'app/shared/model/shipping.model';
 
-@Injectable()
-export class ShippingResolvePagingParams implements Resolve<any> {
+@Injectable({ providedIn: 'root' })
+export class ShippingResolve implements Resolve<IShipping> {
+    constructor(private service: ShippingService) {}
 
-    constructor(private paginationUtil: JhiPaginationUtil) {}
-
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        const page = route.queryParams['page'] ? route.queryParams['page'] : '1';
-        const sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'id,asc';
-        return {
-            page: this.paginationUtil.parsePage(page),
-            predicate: this.paginationUtil.parsePredicate(sort),
-            ascending: this.paginationUtil.parseAscending(sort)
-      };
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<IShipping> {
+        const id = route.params['id'] ? route.params['id'] : null;
+        if (id) {
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<Shipping>) => response.ok),
+                map((shipping: HttpResponse<Shipping>) => shipping.body)
+            );
+        }
+        return of(new Shipping());
     }
 }
 
 export const shippingRoute: Routes = [
     {
-        path: 'shipping',
+        path: '',
         component: ShippingComponent,
         resolve: {
-            'pagingParams': ShippingResolvePagingParams
+            pagingParams: JhiResolvePagingParams
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            defaultSort: 'id,asc',
+            pageTitle: 'mallApp.shipping.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/view',
+        component: ShippingDetailComponent,
+        resolve: {
+            shipping: ShippingResolve
         },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.shipping.home.title'
         },
         canActivate: [UserRouteAccessService]
-    }, {
-        path: 'shipping/:id',
-        component: ShippingDetailComponent,
+    },
+    {
+        path: 'new',
+        component: ShippingUpdateComponent,
+        resolve: {
+            shipping: ShippingResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.shipping.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/edit',
+        component: ShippingUpdateComponent,
+        resolve: {
+            shipping: ShippingResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.shipping.home.title'
@@ -49,28 +83,11 @@ export const shippingRoute: Routes = [
 
 export const shippingPopupRoute: Routes = [
     {
-        path: 'shipping-new',
-        component: ShippingPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.shipping.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'shipping/:id/edit',
-        component: ShippingPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.shipping.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'shipping/:id/delete',
+        path: ':id/delete',
         component: ShippingDeletePopupComponent,
+        resolve: {
+            shipping: ShippingResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.shipping.home.title'

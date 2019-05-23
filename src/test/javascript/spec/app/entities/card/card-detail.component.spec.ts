@@ -1,54 +1,40 @@
 /* tslint:disable max-line-length */
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 import { MallTestModule } from '../../../test.module';
-import { CardDetailComponent } from '../../../../../../main/webapp/app/entities/card/card-detail.component';
-import { CardService } from '../../../../../../main/webapp/app/entities/card/card.service';
-import { Card } from '../../../../../../main/webapp/app/entities/card/card.model';
+import { CardDetailComponent } from 'app/entities/card/card-detail.component';
+import { Card } from 'app/shared/model/card.model';
 
 describe('Component Tests', () => {
-
     describe('Card Management Detail Component', () => {
         let comp: CardDetailComponent;
         let fixture: ComponentFixture<CardDetailComponent>;
-        let service: CardService;
+        const route = ({ data: of({ card: new Card(123) }) } as any) as ActivatedRoute;
 
-        beforeEach(async(() => {
+        beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [MallTestModule],
                 declarations: [CardDetailComponent],
-                providers: [
-                    CardService
-                ]
+                providers: [{ provide: ActivatedRoute, useValue: route }]
             })
-            .overrideTemplate(CardDetailComponent, '')
-            .compileComponents();
-        }));
-
-        beforeEach(() => {
+                .overrideTemplate(CardDetailComponent, '')
+                .compileComponents();
             fixture = TestBed.createComponent(CardDetailComponent);
             comp = fixture.componentInstance;
-            service = fixture.debugElement.injector.get(CardService);
         });
 
         describe('OnInit', () => {
             it('Should call load all on init', () => {
                 // GIVEN
 
-                spyOn(service, 'find').and.returnValue(Observable.of(new HttpResponse({
-                    body: new Card(123)
-                })));
-
                 // WHEN
                 comp.ngOnInit();
 
                 // THEN
-                expect(service.find).toHaveBeenCalledWith(123);
-                expect(comp.card).toEqual(jasmine.objectContaining({id: 123}));
+                expect(comp.card).toEqual(jasmine.objectContaining({ id: 123 }));
             });
         });
     });
-
 });

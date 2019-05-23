@@ -1,13 +1,12 @@
 package com.wongs.repository;
 
 import com.wongs.domain.CurrencyRate;
-import org.springframework.stereotype.Repository;
-
 import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.Repository;
 
 
 /**
- * Spring Data JPA repository for the CurrencyRate entity.
+ * Spring Data  repository for the CurrencyRate entity.
  */
 @SuppressWarnings("unused")
 @Repository

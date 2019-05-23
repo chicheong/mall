@@ -1,8 +1,8 @@
 <div>
-    <h2>
+    <h2 id="page-heading">
         <span jhiTranslate="mallApp.delegation.home.title">Delegations</span>
-        <button class="btn btn-primary float-right jh-create-entity create-delegation" [routerLink]="['/', { outlets: { popup: ['delegation-new'] } }]">
-            <span class="fa fa-plus"></span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-delegation" [routerLink]="['/delegation/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
             <span class="hidden-sm-down"  jhiTranslate="mallApp.delegation.home.createLabel">
             Create new Delegation
             </span>
@@ -15,10 +15,10 @@
                 <div class="input-group w-100 mt-3">
                     <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'mallApp.delegation.home.search' | translate }}">
                     <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
-                        <span class="fa fa-search"></span>
+                        <fa-icon [icon]="'search'"></fa-icon>
                     </button>
                     <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
-                        <span class="fa fa-trash-o"></span>
+                        <fa-icon [icon]="'trash-alt'"></fa-icon>
                     </button>
                 </div>
             </form>
@@ -29,23 +29,23 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="reset.bind(this)">
-            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="from"><span jhiTranslate="mallApp.delegation.from">From</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="to"><span jhiTranslate="mallApp.delegation.to">To</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="type"><span jhiTranslate="mallApp.delegation.type">Type</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="delegateId"><span jhiTranslate="mallApp.delegation.delegateId">Delegate Id</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="status"><span jhiTranslate="mallApp.delegation.status">Status</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="createdBy"><span jhiTranslate="mallApp.delegation.createdBy">Created By</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="createdDate"><span jhiTranslate="mallApp.delegation.createdDate">Created Date</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="lastModifiedBy"><span jhiTranslate="mallApp.delegation.lastModifiedBy">Last Modified By</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="lastModifiedDate"><span jhiTranslate="mallApp.delegation.lastModifiedDate">Last Modified Date</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="account.id"><span jhiTranslate="mallApp.delegation.account">Account</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="from"><span jhiTranslate="mallApp.delegation.from">From</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="to"><span jhiTranslate="mallApp.delegation.to">To</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="type"><span jhiTranslate="mallApp.delegation.type">Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="delegateId"><span jhiTranslate="mallApp.delegation.delegateId">Delegate Id</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="status"><span jhiTranslate="mallApp.delegation.status">Status</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="createdBy"><span jhiTranslate="mallApp.delegation.createdBy">Created By</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="createdDate"><span jhiTranslate="mallApp.delegation.createdDate">Created Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="lastModifiedBy"><span jhiTranslate="mallApp.delegation.lastModifiedBy">Last Modified By</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="lastModifiedDate"><span jhiTranslate="mallApp.delegation.lastModifiedDate">Last Modified Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="accountId"><span jhiTranslate="mallApp.delegation.account">Account</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
             <tbody infinite-scroll (scrolled)="loadPage(page + 1)" [infiniteScrollDisabled]="page >= links['last']" [infiniteScrollDistance]="0">
             <tr *ngFor="let delegation of delegations ;trackBy: trackId">
-                <td><a [routerLink]="['../delegation', delegation.id ]">{{delegation.id}}</a></td>
+                <td><a [routerLink]="['/delegation', delegation.id, 'view' ]">{{delegation.id}}</a></td>
                 <td>{{delegation.from | date:'medium'}}</td>
                 <td>{{delegation.to | date:'medium'}}</td>
                 <td jhiTranslate="{{'mallApp.DelegationType.' + delegation.type}}">{{delegation.type}}</td>
@@ -56,32 +56,30 @@
                 <td>{{delegation.lastModifiedBy}}</td>
                 <td>{{delegation.lastModifiedDate | date:'medium'}}</td>
                 <td>
-                    <div *ngIf="delegation.account">
-                        <a [routerLink]="['../my-account', delegation.account?.id ]" >{{delegation.account?.id}}</a>
+                    <div *ngIf="delegation.accountId">
+                        <a [routerLink]="['../my-account', delegation.accountId , 'view' ]" >{{delegation.accountId}}</a>
                     </div>
                 </td>
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
-                                [routerLink]="['../delegation', delegation.id ]"
+                                [routerLink]="['/delegation', delegation.id, 'view' ]"
                                 class="btn btn-info btn-sm">
-                            <span class="fa fa-eye"></span>
+                            <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'delegation/'+ delegation.id + '/edit'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
+                                [routerLink]="['/delegation', delegation.id, 'edit']"
                                 class="btn btn-primary btn-sm">
-                            <span class="fa fa-pencil"></span>
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'delegation/'+ delegation.id + '/delete'} }]"
+                                [routerLink]="['/', 'delegation', { outlets: { popup: delegation.id + '/delete'} }]"
                                 replaceUrl="true"
                                 queryParamsHandling="merge"
                                 class="btn btn-danger btn-sm">
-                            <span class="fa fa-remove"></span>
+                            <fa-icon [icon]="'times'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
                         </button>
                     </div>

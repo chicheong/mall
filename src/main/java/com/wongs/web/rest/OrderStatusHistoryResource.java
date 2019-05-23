@@ -1,8 +1,5 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.domain.OrderStatusHistory;
-
 import com.wongs.repository.OrderStatusHistoryRepository;
 import com.wongs.repository.search.OrderStatusHistorySearchRepository;
 import com.wongs.web.rest.errors.BadRequestAlertException;
@@ -56,7 +53,6 @@ public class OrderStatusHistoryResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/order-status-histories")
-    @Timed
     public ResponseEntity<OrderStatusHistory> createOrderStatusHistory(@RequestBody OrderStatusHistory orderStatusHistory) throws URISyntaxException {
         log.debug("REST request to save OrderStatusHistory : {}", orderStatusHistory);
         if (orderStatusHistory.getId() != null) {
@@ -79,11 +75,10 @@ public class OrderStatusHistoryResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/order-status-histories")
-    @Timed
     public ResponseEntity<OrderStatusHistory> updateOrderStatusHistory(@RequestBody OrderStatusHistory orderStatusHistory) throws URISyntaxException {
         log.debug("REST request to update OrderStatusHistory : {}", orderStatusHistory);
         if (orderStatusHistory.getId() == null) {
-            return createOrderStatusHistory(orderStatusHistory);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         OrderStatusHistory result = orderStatusHistoryRepository.save(orderStatusHistory);
         orderStatusHistorySearchRepository.save(result);
@@ -99,12 +94,11 @@ public class OrderStatusHistoryResource {
      * @return the ResponseEntity with status 200 (OK) and the list of orderStatusHistories in body
      */
     @GetMapping("/order-status-histories")
-    @Timed
     public ResponseEntity<List<OrderStatusHistory>> getAllOrderStatusHistories(Pageable pageable) {
         log.debug("REST request to get a page of OrderStatusHistories");
         Page<OrderStatusHistory> page = orderStatusHistoryRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/order-status-histories");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -114,11 +108,10 @@ public class OrderStatusHistoryResource {
      * @return the ResponseEntity with status 200 (OK) and with body the orderStatusHistory, or with status 404 (Not Found)
      */
     @GetMapping("/order-status-histories/{id}")
-    @Timed
     public ResponseEntity<OrderStatusHistory> getOrderStatusHistory(@PathVariable Long id) {
         log.debug("REST request to get OrderStatusHistory : {}", id);
-        OrderStatusHistory orderStatusHistory = orderStatusHistoryRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(orderStatusHistory));
+        Optional<OrderStatusHistory> orderStatusHistory = orderStatusHistoryRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(orderStatusHistory);
     }
 
     /**
@@ -128,11 +121,10 @@ public class OrderStatusHistoryResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/order-status-histories/{id}")
-    @Timed
     public ResponseEntity<Void> deleteOrderStatusHistory(@PathVariable Long id) {
         log.debug("REST request to delete OrderStatusHistory : {}", id);
-        orderStatusHistoryRepository.delete(id);
-        orderStatusHistorySearchRepository.delete(id);
+        orderStatusHistoryRepository.deleteById(id);
+        orderStatusHistorySearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -145,12 +137,11 @@ public class OrderStatusHistoryResource {
      * @return the result of the search
      */
     @GetMapping("/_search/order-status-histories")
-    @Timed
     public ResponseEntity<List<OrderStatusHistory>> searchOrderStatusHistories(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of OrderStatusHistories for query {}", query);
         Page<OrderStatusHistory> page = orderStatusHistorySearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/order-status-histories");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
 }

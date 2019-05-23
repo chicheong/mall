@@ -4,8 +4,8 @@ import com.wongs.MallApp;
 
 import com.wongs.domain.Address;
 import com.wongs.repository.AddressRepository;
-import com.wongs.service.AddressService;
 import com.wongs.repository.search.AddressSearchRepository;
+import com.wongs.service.AddressService;
 import com.wongs.service.dto.AddressDTO;
 import com.wongs.service.mapper.AddressMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
@@ -16,6 +16,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -23,13 +25,18 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -69,8 +76,13 @@ public class AddressResourceIntTest {
     @Autowired
     private AddressService addressService;
 
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.AddressSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private AddressSearchRepository addressSearchRepository;
+    private AddressSearchRepository mockAddressSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -84,6 +96,9 @@ public class AddressResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restAddressMockMvc;
 
     private Address address;
@@ -96,7 +111,8 @@ public class AddressResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -118,7 +134,6 @@ public class AddressResourceIntTest {
 
     @Before
     public void initTest() {
-        addressSearchRepository.deleteAll();
         address = createEntity(em);
     }
 
@@ -146,8 +161,7 @@ public class AddressResourceIntTest {
         assertThat(testAddress.getPostalCode()).isEqualTo(DEFAULT_POSTAL_CODE);
 
         // Validate the Address in Elasticsearch
-        Address addressEs = addressSearchRepository.findOne(testAddress.getId());
-        assertThat(addressEs).isEqualToIgnoringGivenFields(testAddress);
+        verify(mockAddressSearchRepository, times(1)).save(testAddress);
     }
 
     @Test
@@ -168,6 +182,9 @@ public class AddressResourceIntTest {
         // Validate the Address in the database
         List<Address> addressList = addressRepository.findAll();
         assertThat(addressList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the Address in Elasticsearch
+        verify(mockAddressSearchRepository, times(0)).save(address);
     }
 
     @Test
@@ -188,7 +205,7 @@ public class AddressResourceIntTest {
             .andExpect(jsonPath("$.[*].city").value(hasItem(DEFAULT_CITY.toString())))
             .andExpect(jsonPath("$.[*].postalCode").value(hasItem(DEFAULT_POSTAL_CODE.toString())));
     }
-
+    
     @Test
     @Transactional
     public void getAddress() throws Exception {
@@ -221,11 +238,11 @@ public class AddressResourceIntTest {
     public void updateAddress() throws Exception {
         // Initialize the database
         addressRepository.saveAndFlush(address);
-        addressSearchRepository.save(address);
+
         int databaseSizeBeforeUpdate = addressRepository.findAll().size();
 
         // Update the address
-        Address updatedAddress = addressRepository.findOne(address.getId());
+        Address updatedAddress = addressRepository.findById(address.getId()).get();
         // Disconnect from session so that the updates on updatedAddress are not directly saved in db
         em.detach(updatedAddress);
         updatedAddress
@@ -254,8 +271,7 @@ public class AddressResourceIntTest {
         assertThat(testAddress.getPostalCode()).isEqualTo(UPDATED_POSTAL_CODE);
 
         // Validate the Address in Elasticsearch
-        Address addressEs = addressSearchRepository.findOne(testAddress.getId());
-        assertThat(addressEs).isEqualToIgnoringGivenFields(testAddress);
+        verify(mockAddressSearchRepository, times(1)).save(testAddress);
     }
 
     @Test
@@ -266,15 +282,18 @@ public class AddressResourceIntTest {
         // Create the Address
         AddressDTO addressDTO = addressMapper.toDto(address);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restAddressMockMvc.perform(put("/api/addresses")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(addressDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Address in the database
         List<Address> addressList = addressRepository.findAll();
-        assertThat(addressList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(addressList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the Address in Elasticsearch
+        verify(mockAddressSearchRepository, times(0)).save(address);
     }
 
     @Test
@@ -282,21 +301,20 @@ public class AddressResourceIntTest {
     public void deleteAddress() throws Exception {
         // Initialize the database
         addressRepository.saveAndFlush(address);
-        addressSearchRepository.save(address);
+
         int databaseSizeBeforeDelete = addressRepository.findAll().size();
 
-        // Get the address
+        // Delete the address
         restAddressMockMvc.perform(delete("/api/addresses/{id}", address.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean addressExistsInEs = addressSearchRepository.exists(address.getId());
-        assertThat(addressExistsInEs).isFalse();
-
         // Validate the database is empty
         List<Address> addressList = addressRepository.findAll();
         assertThat(addressList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the Address in Elasticsearch
+        verify(mockAddressSearchRepository, times(1)).deleteById(address.getId());
     }
 
     @Test
@@ -304,19 +322,19 @@ public class AddressResourceIntTest {
     public void searchAddress() throws Exception {
         // Initialize the database
         addressRepository.saveAndFlush(address);
-        addressSearchRepository.save(address);
-
+        when(mockAddressSearchRepository.search(queryStringQuery("id:" + address.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(address), PageRequest.of(0, 1), 1));
         // Search the address
         restAddressMockMvc.perform(get("/api/_search/addresses?query=id:" + address.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(address.getId().intValue())))
-            .andExpect(jsonPath("$.[*].line1").value(hasItem(DEFAULT_LINE_1.toString())))
-            .andExpect(jsonPath("$.[*].line2").value(hasItem(DEFAULT_LINE_2.toString())))
-            .andExpect(jsonPath("$.[*].line3").value(hasItem(DEFAULT_LINE_3.toString())))
-            .andExpect(jsonPath("$.[*].line4").value(hasItem(DEFAULT_LINE_4.toString())))
-            .andExpect(jsonPath("$.[*].city").value(hasItem(DEFAULT_CITY.toString())))
-            .andExpect(jsonPath("$.[*].postalCode").value(hasItem(DEFAULT_POSTAL_CODE.toString())));
+            .andExpect(jsonPath("$.[*].line1").value(hasItem(DEFAULT_LINE_1)))
+            .andExpect(jsonPath("$.[*].line2").value(hasItem(DEFAULT_LINE_2)))
+            .andExpect(jsonPath("$.[*].line3").value(hasItem(DEFAULT_LINE_3)))
+            .andExpect(jsonPath("$.[*].line4").value(hasItem(DEFAULT_LINE_4)))
+            .andExpect(jsonPath("$.[*].city").value(hasItem(DEFAULT_CITY)))
+            .andExpect(jsonPath("$.[*].postalCode").value(hasItem(DEFAULT_POSTAL_CODE)));
     }
 
     @Test

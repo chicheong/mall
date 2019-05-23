@@ -1,11 +1,12 @@
 package com.wongs.domain;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
 
 import org.springframework.data.elasticsearch.annotations.Document;
 import java.io.Serializable;
@@ -26,13 +27,12 @@ import com.wongs.domain.enumeration.ProductStatus;
 public class Product implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull
-    @Column(name = "name") //, nullable = false
+    @Column(name = "name")
     private String name;
 
     @Column(name = "code")
@@ -67,21 +67,18 @@ public class Product implements Serializable {
     private ZonedDateTime lastModifiedDate;
 
     @OneToMany(mappedBy = "product")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<ProductStyle> styles = new HashSet<>();
-
     @OneToMany(mappedBy = "product")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<ProductItem> items = new HashSet<>();
-
     @ManyToOne
+    @JsonIgnoreProperties("products")
     private Shop shop;
 
     @ManyToMany(mappedBy = "products")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JsonIgnore
     private Set<Category> categories = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

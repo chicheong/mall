@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { OrderStatusHistory } from './order-status-history.model';
-import { OrderStatusHistoryPopupService } from './order-status-history-popup.service';
+import { IOrderStatusHistory } from 'app/shared/model/order-status-history.model';
 import { OrderStatusHistoryService } from './order-status-history.service';
 
 @Component({
@@ -13,22 +12,20 @@ import { OrderStatusHistoryService } from './order-status-history.service';
     templateUrl: './order-status-history-delete-dialog.component.html'
 })
 export class OrderStatusHistoryDeleteDialogComponent {
-
-    orderStatusHistory: OrderStatusHistory;
+    orderStatusHistory: IOrderStatusHistory;
 
     constructor(
-        private orderStatusHistoryService: OrderStatusHistoryService,
+        protected orderStatusHistoryService: OrderStatusHistoryService,
         public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager
-    ) {
-    }
+        protected eventManager: JhiEventManager
+    ) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.orderStatusHistoryService.delete(id).subscribe((response) => {
+        this.orderStatusHistoryService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'orderStatusHistoryListModification',
                 content: 'Deleted an orderStatusHistory'
@@ -43,22 +40,33 @@ export class OrderStatusHistoryDeleteDialogComponent {
     template: ''
 })
 export class OrderStatusHistoryDeletePopupComponent implements OnInit, OnDestroy {
+    protected ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private orderStatusHistoryPopupService: OrderStatusHistoryPopupService
-    ) {}
+    constructor(protected activatedRoute: ActivatedRoute, protected router: Router, protected modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.orderStatusHistoryPopupService
-                .open(OrderStatusHistoryDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ orderStatusHistory }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(OrderStatusHistoryDeleteDialogComponent as Component, {
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                this.ngbModalRef.componentInstance.orderStatusHistory = orderStatusHistory;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate(['/order-status-history', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate(['/order-status-history', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

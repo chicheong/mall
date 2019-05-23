@@ -1,50 +1,51 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="productItemHistory">
+            <h2><span jhiTranslate="mallApp.productItemHistory.detail.title">Product Item History</span> {{productItemHistory.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="mallApp.productItemHistory.code">Code</span></dt>
+                <dd>
+                    <span>{{productItemHistory.code}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.productItemHistory.isDefault">Is Default</span></dt>
+                <dd>
+                    <span>{{productItemHistory.isDefault}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.productItemHistory.quantity">Quantity</span></dt>
+                <dd>
+                    <span>{{productItemHistory.quantity}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.productItemHistory.currency">Currency</span></dt>
+                <dd>
+                    <span jhiTranslate="{{'mallApp.CurrencyType.' + productItemHistory.currency}}">{{productItemHistory.currency}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.productItemHistory.price">Price</span></dt>
+                <dd>
+                    <span>{{productItemHistory.price}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.productItemHistory.createdBy">Created By</span></dt>
+                <dd>
+                    <span>{{productItemHistory.createdBy}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.productItemHistory.createdDate">Created Date</span></dt>
+                <dd>
+                    <span>{{productItemHistory.createdDate}}</span>
+                </dd>
+            </dl>
 
-<div *ngIf="productItemHistory">
-    <h2><span jhiTranslate="mallApp.productItemHistory.detail.title">Product Item History</span> {{productItemHistory.id}}</h2>
-    <hr>
-    <jhi-alert-error></jhi-alert-error>
-    <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="mallApp.productItemHistory.code">Code</span></dt>
-        <dd>
-            <span>{{productItemHistory.code}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productItemHistory.isDefault">Is Default</span></dt>
-        <dd>
-            <span>{{productItemHistory.isDefault}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productItemHistory.quantity">Quantity</span></dt>
-        <dd>
-            <span>{{productItemHistory.quantity}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productItemHistory.currency">Currency</span></dt>
-        <dd>
-            <span jhiTranslate="{{'mallApp.CurrencyType.' + productItemHistory.currency}}">{{productItemHistory.currency}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productItemHistory.price">Price</span></dt>
-        <dd>
-            <span>{{productItemHistory.price}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productItemHistory.createdBy">Created By</span></dt>
-        <dd>
-            <span>{{productItemHistory.createdBy}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productItemHistory.createdDate">Created Date</span></dt>
-        <dd>
-            <span>{{productItemHistory.createdDate | date:'medium'}}</span>
-        </dd>
-    </dl>
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
 
-    <button type="submit"
-            (click)="previousState()"
-            class="btn btn-info">
-        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
-    </button>
-
-    <button type="button"
-            [routerLink]="['/', { outlets: { popup: 'product-item-history/'+ productItemHistory.id + '/edit'} }]"
-            replaceUrl="true"
-            queryParamsHandling="merge"
-            class="btn btn-primary">
-        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
-    </button>
+            <button type="button"
+                    [routerLink]="['/product-item-history', productItemHistory.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
 </div>

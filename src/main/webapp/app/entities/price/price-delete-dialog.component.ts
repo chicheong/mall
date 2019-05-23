@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { Price } from './price.model';
-import { PricePopupService } from './price-popup.service';
+import { IPrice } from 'app/shared/model/price.model';
 import { PriceService } from './price.service';
 
 @Component({
@@ -13,22 +12,16 @@ import { PriceService } from './price.service';
     templateUrl: './price-delete-dialog.component.html'
 })
 export class PriceDeleteDialogComponent {
+    price: IPrice;
 
-    price: Price;
-
-    constructor(
-        private priceService: PriceService,
-        public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager
-    ) {
-    }
+    constructor(protected priceService: PriceService, public activeModal: NgbActiveModal, protected eventManager: JhiEventManager) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.priceService.delete(id).subscribe((response) => {
+        this.priceService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'priceListModification',
                 content: 'Deleted an price'
@@ -43,22 +36,30 @@ export class PriceDeleteDialogComponent {
     template: ''
 })
 export class PriceDeletePopupComponent implements OnInit, OnDestroy {
+    protected ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private pricePopupService: PricePopupService
-    ) {}
+    constructor(protected activatedRoute: ActivatedRoute, protected router: Router, protected modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.pricePopupService
-                .open(PriceDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ price }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(PriceDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
+                this.ngbModalRef.componentInstance.price = price;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate(['/price', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate(['/price', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

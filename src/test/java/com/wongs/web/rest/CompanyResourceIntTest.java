@@ -10,9 +10,12 @@ import com.wongs.web.rest.errors.ExceptionTranslator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -20,13 +23,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -52,8 +61,16 @@ public class CompanyResourceIntTest {
     @Autowired
     private CompanyRepository companyRepository;
 
+    @Mock
+    private CompanyRepository companyRepositoryMock;
+
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.CompanySearchRepositoryMockConfiguration
+     */
     @Autowired
-    private CompanySearchRepository companySearchRepository;
+    private CompanySearchRepository mockCompanySearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -67,6 +84,9 @@ public class CompanyResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restCompanyMockMvc;
 
     private Company company;
@@ -74,12 +94,13 @@ public class CompanyResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final CompanyResource companyResource = new CompanyResource(companyRepository, companySearchRepository);
+        final CompanyResource companyResource = new CompanyResource(companyRepository, mockCompanySearchRepository);
         this.restCompanyMockMvc = MockMvcBuilders.standaloneSetup(companyResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -98,7 +119,6 @@ public class CompanyResourceIntTest {
 
     @Before
     public void initTest() {
-        companySearchRepository.deleteAll();
         company = createEntity(em);
     }
 
@@ -122,8 +142,7 @@ public class CompanyResourceIntTest {
         assertThat(testCompany.getStatus()).isEqualTo(DEFAULT_STATUS);
 
         // Validate the Company in Elasticsearch
-        Company companyEs = companySearchRepository.findOne(testCompany.getId());
-        assertThat(companyEs).isEqualToIgnoringGivenFields(testCompany);
+        verify(mockCompanySearchRepository, times(1)).save(testCompany);
     }
 
     @Test
@@ -143,6 +162,9 @@ public class CompanyResourceIntTest {
         // Validate the Company in the database
         List<Company> companyList = companyRepository.findAll();
         assertThat(companyList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the Company in Elasticsearch
+        verify(mockCompanySearchRepository, times(0)).save(company);
     }
 
     @Test
@@ -178,6 +200,39 @@ public class CompanyResourceIntTest {
             .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
     }
+    
+    @SuppressWarnings({"unchecked"})
+    public void getAllCompaniesWithEagerRelationshipsIsEnabled() throws Exception {
+        CompanyResource companyResource = new CompanyResource(companyRepositoryMock, mockCompanySearchRepository);
+        when(companyRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        MockMvc restCompanyMockMvc = MockMvcBuilders.standaloneSetup(companyResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restCompanyMockMvc.perform(get("/api/companies?eagerload=true"))
+        .andExpect(status().isOk());
+
+        verify(companyRepositoryMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public void getAllCompaniesWithEagerRelationshipsIsNotEnabled() throws Exception {
+        CompanyResource companyResource = new CompanyResource(companyRepositoryMock, mockCompanySearchRepository);
+            when(companyRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+            MockMvc restCompanyMockMvc = MockMvcBuilders.standaloneSetup(companyResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restCompanyMockMvc.perform(get("/api/companies?eagerload=true"))
+        .andExpect(status().isOk());
+
+            verify(companyRepositoryMock, times(1)).findAllWithEagerRelationships(any());
+    }
 
     @Test
     @Transactional
@@ -208,11 +263,11 @@ public class CompanyResourceIntTest {
     public void updateCompany() throws Exception {
         // Initialize the database
         companyRepository.saveAndFlush(company);
-        companySearchRepository.save(company);
+
         int databaseSizeBeforeUpdate = companyRepository.findAll().size();
 
         // Update the company
-        Company updatedCompany = companyRepository.findOne(company.getId());
+        Company updatedCompany = companyRepository.findById(company.getId()).get();
         // Disconnect from session so that the updates on updatedCompany are not directly saved in db
         em.detach(updatedCompany);
         updatedCompany
@@ -234,8 +289,7 @@ public class CompanyResourceIntTest {
         assertThat(testCompany.getStatus()).isEqualTo(UPDATED_STATUS);
 
         // Validate the Company in Elasticsearch
-        Company companyEs = companySearchRepository.findOne(testCompany.getId());
-        assertThat(companyEs).isEqualToIgnoringGivenFields(testCompany);
+        verify(mockCompanySearchRepository, times(1)).save(testCompany);
     }
 
     @Test
@@ -245,15 +299,18 @@ public class CompanyResourceIntTest {
 
         // Create the Company
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCompanyMockMvc.perform(put("/api/companies")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(company)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Company in the database
         List<Company> companyList = companyRepository.findAll();
-        assertThat(companyList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(companyList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the Company in Elasticsearch
+        verify(mockCompanySearchRepository, times(0)).save(company);
     }
 
     @Test
@@ -261,21 +318,20 @@ public class CompanyResourceIntTest {
     public void deleteCompany() throws Exception {
         // Initialize the database
         companyRepository.saveAndFlush(company);
-        companySearchRepository.save(company);
+
         int databaseSizeBeforeDelete = companyRepository.findAll().size();
 
-        // Get the company
+        // Delete the company
         restCompanyMockMvc.perform(delete("/api/companies/{id}", company.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean companyExistsInEs = companySearchRepository.exists(company.getId());
-        assertThat(companyExistsInEs).isFalse();
-
         // Validate the database is empty
         List<Company> companyList = companyRepository.findAll();
         assertThat(companyList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the Company in Elasticsearch
+        verify(mockCompanySearchRepository, times(1)).deleteById(company.getId());
     }
 
     @Test
@@ -283,15 +339,15 @@ public class CompanyResourceIntTest {
     public void searchCompany() throws Exception {
         // Initialize the database
         companyRepository.saveAndFlush(company);
-        companySearchRepository.save(company);
-
+        when(mockCompanySearchRepository.search(queryStringQuery("id:" + company.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(company), PageRequest.of(0, 1), 1));
         // Search the company
         restCompanyMockMvc.perform(get("/api/_search/companies?query=id:" + company.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(company.getId().intValue())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
     }
 

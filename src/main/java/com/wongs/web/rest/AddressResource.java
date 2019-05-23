@@ -1,6 +1,4 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.service.AddressService;
 import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
@@ -50,7 +48,6 @@ public class AddressResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/addresses")
-    @Timed
     public ResponseEntity<AddressDTO> createAddress(@RequestBody AddressDTO addressDTO) throws URISyntaxException {
         log.debug("REST request to save Address : {}", addressDTO);
         if (addressDTO.getId() != null) {
@@ -72,11 +69,10 @@ public class AddressResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/addresses")
-    @Timed
     public ResponseEntity<AddressDTO> updateAddress(@RequestBody AddressDTO addressDTO) throws URISyntaxException {
         log.debug("REST request to update Address : {}", addressDTO);
         if (addressDTO.getId() == null) {
-            return createAddress(addressDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         AddressDTO result = addressService.save(addressDTO);
         return ResponseEntity.ok()
@@ -91,12 +87,11 @@ public class AddressResource {
      * @return the ResponseEntity with status 200 (OK) and the list of addresses in body
      */
     @GetMapping("/addresses")
-    @Timed
     public ResponseEntity<List<AddressDTO>> getAllAddresses(Pageable pageable) {
         log.debug("REST request to get a page of Addresses");
         Page<AddressDTO> page = addressService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/addresses");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -106,11 +101,10 @@ public class AddressResource {
      * @return the ResponseEntity with status 200 (OK) and with body the addressDTO, or with status 404 (Not Found)
      */
     @GetMapping("/addresses/{id}")
-    @Timed
     public ResponseEntity<AddressDTO> getAddress(@PathVariable Long id) {
         log.debug("REST request to get Address : {}", id);
-        AddressDTO addressDTO = addressService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(addressDTO));
+        Optional<AddressDTO> addressDTO = addressService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(addressDTO);
     }
 
     /**
@@ -120,7 +114,6 @@ public class AddressResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/addresses/{id}")
-    @Timed
     public ResponseEntity<Void> deleteAddress(@PathVariable Long id) {
         log.debug("REST request to delete Address : {}", id);
         addressService.delete(id);
@@ -136,12 +129,11 @@ public class AddressResource {
      * @return the result of the search
      */
     @GetMapping("/_search/addresses")
-    @Timed
     public ResponseEntity<List<AddressDTO>> searchAddresses(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Addresses for query {}", query);
         Page<AddressDTO> page = addressService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/addresses");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
 }

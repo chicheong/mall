@@ -1,52 +1,78 @@
 import { Injectable } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiPaginationUtil } from 'ng-jhipster';
-
-import { UserRouteAccessService } from '../../shared';
+import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
+import { UserRouteAccessService } from 'app/core';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { Product } from 'app/shared/model/product.model';
+import { ProductService } from './product.service';
 import { ProductComponent } from './product.component';
 import { ProductDetailComponent } from './product-detail.component';
-import { ProductPopupComponent } from './product-dialog.component';
+import { ProductUpdateComponent } from './product-update.component';
 import { ProductDeletePopupComponent } from './product-delete-dialog.component';
+import { IProduct } from 'app/shared/model/product.model';
 
-@Injectable()
-export class ProductResolvePagingParams implements Resolve<any> {
+@Injectable({ providedIn: 'root' })
+export class ProductResolve implements Resolve<IProduct> {
+    constructor(private service: ProductService) {}
 
-    constructor(private paginationUtil: JhiPaginationUtil) {}
-
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        const page = route.queryParams['page'] ? route.queryParams['page'] : '1';
-        const sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'id,asc';
-        return {
-            page: this.paginationUtil.parsePage(page),
-            predicate: this.paginationUtil.parsePredicate(sort),
-            ascending: this.paginationUtil.parseAscending(sort)
-      };
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<IProduct> {
+        const id = route.params['id'] ? route.params['id'] : null;
+        if (id) {
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<Product>) => response.ok),
+                map((product: HttpResponse<Product>) => product.body)
+            );
+        }
+        return of(new Product());
     }
 }
 
 export const productRoute: Routes = [
     {
-        path: 'product',
+        path: '',
         component: ProductComponent,
         resolve: {
-            'pagingParams': ProductResolvePagingParams
+            pagingParams: JhiResolvePagingParams
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            defaultSort: 'id,asc',
+            pageTitle: 'mallApp.product.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/view',
+        component: ProductDetailComponent,
+        resolve: {
+            product: ProductResolve
         },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.product.home.title'
         },
         canActivate: [UserRouteAccessService]
-    }, {
-        path: 'product/:id',
-        component: ProductDetailComponent,
+    },
+    {
+        path: 'new',
+        component: ProductUpdateComponent,
+        resolve: {
+            product: ProductResolve
+        },
         data: {
-            authorities: [],
+            authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.product.home.title'
         },
-        canActivate: []
-    }, {
-        path: 'shop/:shopId/product',
-        component: ProductDetailComponent,
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/edit',
+        component: ProductUpdateComponent,
+        resolve: {
+            product: ProductResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.product.home.title'
@@ -57,28 +83,11 @@ export const productRoute: Routes = [
 
 export const productPopupRoute: Routes = [
     {
-        path: 'product-new',
-        component: ProductPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.product.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'product/:id/edit',
-        component: ProductPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.product.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'product/:id/delete',
+        path: ':id/delete',
         component: ProductDeletePopupComponent,
+        resolve: {
+            product: ProductResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.product.home.title'

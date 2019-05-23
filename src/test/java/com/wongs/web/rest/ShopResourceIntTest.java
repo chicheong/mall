@@ -4,13 +4,10 @@ import com.wongs.MallApp;
 
 import com.wongs.domain.Shop;
 import com.wongs.repository.ShopRepository;
-import com.wongs.service.ProductService;
-import com.wongs.service.ShopService;
-import com.wongs.service.UrlService;
 import com.wongs.repository.search.ShopSearchRepository;
+import com.wongs.service.ShopService;
 import com.wongs.service.dto.ShopDTO;
 import com.wongs.service.mapper.ShopMapper;
-import com.wongs.service.mapper.UrlMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
 
 import org.junit.Before;
@@ -19,6 +16,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -26,18 +25,23 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.ZoneOffset;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.sameInstant;
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -83,18 +87,14 @@ public class ShopResourceIntTest {
 
     @Autowired
     private ShopService shopService;
-    
+
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.ShopSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private ProductService productService;
-    
-    @Autowired
-    private UrlService urlService;
-    
-    @Autowired
-    private UrlMapper urlMapper;
-    
-    @Autowired
-    private ShopSearchRepository shopSearchRepository;
+    private ShopSearchRepository mockShopSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -108,6 +108,9 @@ public class ShopResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restShopMockMvc;
 
     private Shop shop;
@@ -115,12 +118,13 @@ public class ShopResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ShopResource shopResource = new ShopResource(shopService, productService, urlService, urlMapper);
+        final ShopResource shopResource = new ShopResource(shopService);
         this.restShopMockMvc = MockMvcBuilders.standaloneSetup(shopResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -144,7 +148,6 @@ public class ShopResourceIntTest {
 
     @Before
     public void initTest() {
-        shopSearchRepository.deleteAll();
         shop = createEntity(em);
     }
 
@@ -174,10 +177,7 @@ public class ShopResourceIntTest {
         assertThat(testShop.getLastModifiedDate()).isEqualTo(DEFAULT_LAST_MODIFIED_DATE);
 
         // Validate the Shop in Elasticsearch
-        Shop shopEs = shopSearchRepository.findOne(testShop.getId());
-        assertThat(testShop.getCreatedDate()).isEqualTo(testShop.getCreatedDate());
-        assertThat(testShop.getLastModifiedDate()).isEqualTo(testShop.getLastModifiedDate());
-        assertThat(shopEs).isEqualToIgnoringGivenFields(testShop, "createdDate", "lastModifiedDate");
+        verify(mockShopSearchRepository, times(1)).save(testShop);
     }
 
     @Test
@@ -198,6 +198,9 @@ public class ShopResourceIntTest {
         // Validate the Shop in the database
         List<Shop> shopList = shopRepository.findAll();
         assertThat(shopList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the Shop in Elasticsearch
+        verify(mockShopSearchRepository, times(0)).save(shop);
     }
 
     @Test
@@ -239,7 +242,7 @@ public class ShopResourceIntTest {
             .andExpect(jsonPath("$.[*].lastModifiedBy").value(hasItem(DEFAULT_LAST_MODIFIED_BY.toString())))
             .andExpect(jsonPath("$.[*].lastModifiedDate").value(hasItem(sameInstant(DEFAULT_LAST_MODIFIED_DATE))));
     }
-
+    
     @Test
     @Transactional
     public void getShop() throws Exception {
@@ -274,11 +277,11 @@ public class ShopResourceIntTest {
     public void updateShop() throws Exception {
         // Initialize the database
         shopRepository.saveAndFlush(shop);
-        shopSearchRepository.save(shop);
+
         int databaseSizeBeforeUpdate = shopRepository.findAll().size();
 
         // Update the shop
-        Shop updatedShop = shopRepository.findOne(shop.getId());
+        Shop updatedShop = shopRepository.findById(shop.getId()).get();
         // Disconnect from session so that the updates on updatedShop are not directly saved in db
         em.detach(updatedShop);
         updatedShop
@@ -311,10 +314,7 @@ public class ShopResourceIntTest {
         assertThat(testShop.getLastModifiedDate()).isEqualTo(UPDATED_LAST_MODIFIED_DATE);
 
         // Validate the Shop in Elasticsearch
-        Shop shopEs = shopSearchRepository.findOne(testShop.getId());
-        assertThat(testShop.getCreatedDate()).isEqualTo(testShop.getCreatedDate());
-        assertThat(testShop.getLastModifiedDate()).isEqualTo(testShop.getLastModifiedDate());
-        assertThat(shopEs).isEqualToIgnoringGivenFields(testShop, "createdDate", "lastModifiedDate");
+        verify(mockShopSearchRepository, times(1)).save(testShop);
     }
 
     @Test
@@ -325,15 +325,18 @@ public class ShopResourceIntTest {
         // Create the Shop
         ShopDTO shopDTO = shopMapper.toDto(shop);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restShopMockMvc.perform(put("/api/shops")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(shopDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Shop in the database
         List<Shop> shopList = shopRepository.findAll();
-        assertThat(shopList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(shopList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the Shop in Elasticsearch
+        verify(mockShopSearchRepository, times(0)).save(shop);
     }
 
     @Test
@@ -341,21 +344,20 @@ public class ShopResourceIntTest {
     public void deleteShop() throws Exception {
         // Initialize the database
         shopRepository.saveAndFlush(shop);
-        shopSearchRepository.save(shop);
+
         int databaseSizeBeforeDelete = shopRepository.findAll().size();
 
-        // Get the shop
+        // Delete the shop
         restShopMockMvc.perform(delete("/api/shops/{id}", shop.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean shopExistsInEs = shopSearchRepository.exists(shop.getId());
-        assertThat(shopExistsInEs).isFalse();
-
         // Validate the database is empty
         List<Shop> shopList = shopRepository.findAll();
         assertThat(shopList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the Shop in Elasticsearch
+        verify(mockShopSearchRepository, times(1)).deleteById(shop.getId());
     }
 
     @Test
@@ -363,20 +365,20 @@ public class ShopResourceIntTest {
     public void searchShop() throws Exception {
         // Initialize the database
         shopRepository.saveAndFlush(shop);
-        shopSearchRepository.save(shop);
-
+        when(mockShopSearchRepository.search(queryStringQuery("id:" + shop.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(shop), PageRequest.of(0, 1), 1));
         // Search the shop
         restShopMockMvc.perform(get("/api/_search/shops?query=id:" + shop.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(shop.getId().intValue())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
-            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY.toString())))
+            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
-            .andExpect(jsonPath("$.[*].lastModifiedBy").value(hasItem(DEFAULT_LAST_MODIFIED_BY.toString())))
+            .andExpect(jsonPath("$.[*].lastModifiedBy").value(hasItem(DEFAULT_LAST_MODIFIED_BY)))
             .andExpect(jsonPath("$.[*].lastModifiedDate").value(hasItem(sameInstant(DEFAULT_LAST_MODIFIED_DATE))));
     }
 

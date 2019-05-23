@@ -1,53 +1,40 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { JhiLanguageService } from 'ng-jhipster';
+import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from '../../shared';
-import { MallAdminModule } from '../../admin/admin.module';
+import { MallSharedModule } from 'app/shared';
 import {
-    UserInfoService,
-    UserInfoPopupService,
     UserInfoComponent,
     UserInfoDetailComponent,
-    UserInfoDialogComponent,
-    UserInfoPopupComponent,
+    UserInfoUpdateComponent,
     UserInfoDeletePopupComponent,
     UserInfoDeleteDialogComponent,
     userInfoRoute,
-    userInfoPopupRoute,
-    UserInfoResolvePagingParams,
+    userInfoPopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...userInfoRoute,
-    ...userInfoPopupRoute,
-];
+const ENTITY_STATES = [...userInfoRoute, ...userInfoPopupRoute];
 
 @NgModule({
-    imports: [
-        MallSharedModule,
-        MallAdminModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         UserInfoComponent,
         UserInfoDetailComponent,
-        UserInfoDialogComponent,
+        UserInfoUpdateComponent,
         UserInfoDeleteDialogComponent,
-        UserInfoPopupComponent,
-        UserInfoDeletePopupComponent,
+        UserInfoDeletePopupComponent
     ],
-    entryComponents: [
-        UserInfoComponent,
-        UserInfoDialogComponent,
-        UserInfoPopupComponent,
-        UserInfoDeleteDialogComponent,
-        UserInfoDeletePopupComponent,
-    ],
-    providers: [
-        UserInfoService,
-        UserInfoPopupService,
-        UserInfoResolvePagingParams,
-    ],
+    entryComponents: [UserInfoComponent, UserInfoUpdateComponent, UserInfoDeleteDialogComponent, UserInfoDeletePopupComponent],
+    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MallUserInfoModule {}
+export class MallUserInfoModule {
+    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
+        this.languageHelper.language.subscribe((languageKey: string) => {
+            if (languageKey !== undefined) {
+                this.languageService.changeLanguage(languageKey);
+            }
+        });
+    }
+}

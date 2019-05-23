@@ -1,60 +1,49 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="productItem">
+            <h2><span jhiTranslate="mallApp.productItem.detail.title">Product Item</span> {{productItem.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="mallApp.productItem.code">Code</span></dt>
+                <dd>
+                    <span>{{productItem.code}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.productItem.isDefault">Is Default</span></dt>
+                <dd>
+                    <span>{{productItem.isDefault}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.productItem.quantity">Quantity</span></dt>
+                <dd>
+                    <span>{{productItem.quantity}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.productItem.currency">Currency</span></dt>
+                <dd>
+                    <span jhiTranslate="{{'mallApp.CurrencyType.' + productItem.currency}}">{{productItem.currency}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.productItem.price">Price</span></dt>
+                <dd>
+                    <span>{{productItem.price}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.productItem.product">Product</span></dt>
+                <dd>
+                    <div *ngIf="productItem.productId">
+                        <a [routerLink]="['/product', productItem.productId, 'view']">{{productItem.productId}}</a>
+                    </div>
+                </dd>
+            </dl>
 
-<div *ngIf="productItem">
-    <h2><span jhiTranslate="mallApp.productItem.detail.title">Product Item</span> {{productItem.id}}</h2>
-    <hr>
-    <jhi-alert-error></jhi-alert-error>
-    <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="mallApp.productItem.code">Code</span></dt>
-        <dd>
-            <span>{{productItem.code}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productItem.isDefault">Is Default</span></dt>
-        <dd>
-            <span>{{productItem.isDefault}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productItem.quantity">Quantity</span></dt>
-        <dd>
-            <span>{{productItem.quantity}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productItem.currency">Currency</span></dt>
-        <dd>
-            <span jhiTranslate="{{'mallApp.CurrencyType.' + productItem.currency}}">{{productItem.currency}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productItem.price">Price</span></dt>
-        <dd>
-            <span>{{productItem.price}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productItem.color">Color</span></dt>
-        <dd>
-            <div *ngIf="productItem.color">
-                <a [routerLink]="['/product-style', productItem.color?.id]">{{productItem.color?.id}}</a>
-            </div>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productItem.size">Size</span></dt>
-        <dd>
-            <div *ngIf="productItem.size">
-                <a [routerLink]="['/product-style', productItem.size?.id]">{{productItem.size?.id}}</a>
-            </div>
-        </dd>
-        <dt><span jhiTranslate="mallApp.productItem.product">Product</span></dt>
-        <dd>
-            <div *ngIf="productItem.product">
-                <a [routerLink]="['/product', productItem.product?.id]">{{productItem.product?.id}}</a>
-            </div>
-        </dd>
-    </dl>
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
 
-    <button type="submit"
-            (click)="previousState()"
-            class="btn btn-info">
-        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
-    </button>
-
-    <button type="button"
-            [routerLink]="['/', { outlets: { popup: 'product-item/'+ productItem.id + '/edit'} }]"
-            replaceUrl="true"
-            queryParamsHandling="merge"
-            class="btn btn-primary">
-        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
-    </button>
+            <button type="button"
+                    [routerLink]="['/product-item', productItem.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
 </div>

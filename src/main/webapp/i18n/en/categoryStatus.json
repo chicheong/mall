@@ -1,6 +1,6 @@
 {
     "mallApp": {
-        "CategoryStatus" : {
+        "CategoryStatus": {
             "null": "",
             "ACTIVE": "ACTIVE",
             "RESTRICTED": "RESTRICTED",

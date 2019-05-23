@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "shipping" : {
+        "shipping": {
             "home": {
                 "title": "Shippings",
                 "createLabel": "建立一筆新的 Shipping",

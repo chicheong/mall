@@ -1,0 +1,63 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+            <h2 id="jhi-product-item-heading" jhiTranslate="mallApp.productItem.home.createOrEditLabel">Create or edit a Product Item</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!productItem.id">
+                    <label for="id" jhiTranslate="global.field.id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                        [(ngModel)]="productItem.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.productItem.code" for="field_code">Code</label>
+                    <input type="text" class="form-control" name="code" id="field_code"
+                        [(ngModel)]="productItem.code" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.productItem.isDefault" for="field_isDefault">Is Default</label>
+                    <input type="checkbox" class="form-control" name="isDefault" id="field_isDefault"
+                        [(ngModel)]="productItem.isDefault" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.productItem.quantity" for="field_quantity">Quantity</label>
+                    <input type="number" class="form-control" name="quantity" id="field_quantity"
+                        [(ngModel)]="productItem.quantity" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.productItem.currency" for="field_currency">Currency</label>
+                    <select class="form-control" name="currency" [(ngModel)]="productItem.currency" id="field_currency" >
+                        <option value="HKD">{{'mallApp.CurrencyType.HKD' | translate}}</option>
+                        <option value="CNY">{{'mallApp.CurrencyType.CNY' | translate}}</option>
+                        <option value="USD">{{'mallApp.CurrencyType.USD' | translate}}</option>
+                        <option value="EUR">{{'mallApp.CurrencyType.EUR' | translate}}</option>
+                        <option value="JPY">{{'mallApp.CurrencyType.JPY' | translate}}</option>
+                        <option value="KRW">{{'mallApp.CurrencyType.KRW' | translate}}</option>
+                        <option value="TWD">{{'mallApp.CurrencyType.TWD' | translate}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.productItem.price" for="field_price">Price</label>
+                    <input type="number" class="form-control" name="price" id="field_price"
+                        [(ngModel)]="productItem.price" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.productItem.product" for="field_product">Product</label>
+                    <select class="form-control" id="field_product" name="product" [(ngModel)]="productItem.productId" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="productOption.id" *ngFor="let productOption of products; trackBy: trackProductById">{{productOption.id}}</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

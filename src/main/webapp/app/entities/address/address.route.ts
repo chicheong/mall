@@ -1,44 +1,78 @@
 import { Injectable } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiPaginationUtil } from 'ng-jhipster';
-
-import { UserRouteAccessService } from '../../shared';
+import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
+import { UserRouteAccessService } from 'app/core';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { Address } from 'app/shared/model/address.model';
+import { AddressService } from './address.service';
 import { AddressComponent } from './address.component';
 import { AddressDetailComponent } from './address-detail.component';
-import { AddressPopupComponent } from './address-dialog.component';
+import { AddressUpdateComponent } from './address-update.component';
 import { AddressDeletePopupComponent } from './address-delete-dialog.component';
+import { IAddress } from 'app/shared/model/address.model';
 
-@Injectable()
-export class AddressResolvePagingParams implements Resolve<any> {
+@Injectable({ providedIn: 'root' })
+export class AddressResolve implements Resolve<IAddress> {
+    constructor(private service: AddressService) {}
 
-    constructor(private paginationUtil: JhiPaginationUtil) {}
-
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        const page = route.queryParams['page'] ? route.queryParams['page'] : '1';
-        const sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'id,asc';
-        return {
-            page: this.paginationUtil.parsePage(page),
-            predicate: this.paginationUtil.parsePredicate(sort),
-            ascending: this.paginationUtil.parseAscending(sort)
-      };
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<IAddress> {
+        const id = route.params['id'] ? route.params['id'] : null;
+        if (id) {
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<Address>) => response.ok),
+                map((address: HttpResponse<Address>) => address.body)
+            );
+        }
+        return of(new Address());
     }
 }
 
 export const addressRoute: Routes = [
     {
-        path: 'address',
+        path: '',
         component: AddressComponent,
         resolve: {
-            'pagingParams': AddressResolvePagingParams
+            pagingParams: JhiResolvePagingParams
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            defaultSort: 'id,asc',
+            pageTitle: 'mallApp.address.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/view',
+        component: AddressDetailComponent,
+        resolve: {
+            address: AddressResolve
         },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.address.home.title'
         },
         canActivate: [UserRouteAccessService]
-    }, {
-        path: 'address/:id',
-        component: AddressDetailComponent,
+    },
+    {
+        path: 'new',
+        component: AddressUpdateComponent,
+        resolve: {
+            address: AddressResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.address.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/edit',
+        component: AddressUpdateComponent,
+        resolve: {
+            address: AddressResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.address.home.title'
@@ -49,28 +83,11 @@ export const addressRoute: Routes = [
 
 export const addressPopupRoute: Routes = [
     {
-        path: 'address-new',
-        component: AddressPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.address.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'address/:id/edit',
-        component: AddressPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.address.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'address/:id/delete',
+        path: ':id/delete',
         component: AddressDeletePopupComponent,
+        resolve: {
+            address: AddressResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.address.home.title'

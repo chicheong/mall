@@ -1,49 +1,45 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { JhiLanguageService } from 'ng-jhipster';
+import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from '../../shared';
+import { MallSharedModule } from 'app/shared';
 import {
-    PaymentStatusHistoryService,
-    PaymentStatusHistoryPopupService,
     PaymentStatusHistoryComponent,
     PaymentStatusHistoryDetailComponent,
-    PaymentStatusHistoryDialogComponent,
-    PaymentStatusHistoryPopupComponent,
+    PaymentStatusHistoryUpdateComponent,
     PaymentStatusHistoryDeletePopupComponent,
     PaymentStatusHistoryDeleteDialogComponent,
     paymentStatusHistoryRoute,
-    paymentStatusHistoryPopupRoute,
+    paymentStatusHistoryPopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...paymentStatusHistoryRoute,
-    ...paymentStatusHistoryPopupRoute,
-];
+const ENTITY_STATES = [...paymentStatusHistoryRoute, ...paymentStatusHistoryPopupRoute];
 
 @NgModule({
-    imports: [
-        MallSharedModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         PaymentStatusHistoryComponent,
         PaymentStatusHistoryDetailComponent,
-        PaymentStatusHistoryDialogComponent,
+        PaymentStatusHistoryUpdateComponent,
         PaymentStatusHistoryDeleteDialogComponent,
-        PaymentStatusHistoryPopupComponent,
-        PaymentStatusHistoryDeletePopupComponent,
+        PaymentStatusHistoryDeletePopupComponent
     ],
     entryComponents: [
         PaymentStatusHistoryComponent,
-        PaymentStatusHistoryDialogComponent,
-        PaymentStatusHistoryPopupComponent,
+        PaymentStatusHistoryUpdateComponent,
         PaymentStatusHistoryDeleteDialogComponent,
-        PaymentStatusHistoryDeletePopupComponent,
+        PaymentStatusHistoryDeletePopupComponent
     ],
-    providers: [
-        PaymentStatusHistoryService,
-        PaymentStatusHistoryPopupService,
-    ],
+    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MallPaymentStatusHistoryModule {}
+export class MallPaymentStatusHistoryModule {
+    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
+        this.languageHelper.language.subscribe((languageKey: string) => {
+            if (languageKey !== undefined) {
+                this.languageService.changeLanguage(languageKey);
+            }
+        });
+    }
+}

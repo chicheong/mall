@@ -1,44 +1,78 @@
 import { Injectable } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiPaginationUtil } from 'ng-jhipster';
-
-import { UserRouteAccessService } from '../../shared';
+import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
+import { UserRouteAccessService } from 'app/core';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { Url } from 'app/shared/model/url.model';
+import { UrlService } from './url.service';
 import { UrlComponent } from './url.component';
 import { UrlDetailComponent } from './url-detail.component';
-import { UrlPopupComponent } from './url-dialog.component';
+import { UrlUpdateComponent } from './url-update.component';
 import { UrlDeletePopupComponent } from './url-delete-dialog.component';
+import { IUrl } from 'app/shared/model/url.model';
 
-@Injectable()
-export class UrlResolvePagingParams implements Resolve<any> {
+@Injectable({ providedIn: 'root' })
+export class UrlResolve implements Resolve<IUrl> {
+    constructor(private service: UrlService) {}
 
-    constructor(private paginationUtil: JhiPaginationUtil) {}
-
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        const page = route.queryParams['page'] ? route.queryParams['page'] : '1';
-        const sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'id,asc';
-        return {
-            page: this.paginationUtil.parsePage(page),
-            predicate: this.paginationUtil.parsePredicate(sort),
-            ascending: this.paginationUtil.parseAscending(sort)
-      };
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<IUrl> {
+        const id = route.params['id'] ? route.params['id'] : null;
+        if (id) {
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<Url>) => response.ok),
+                map((url: HttpResponse<Url>) => url.body)
+            );
+        }
+        return of(new Url());
     }
 }
 
 export const urlRoute: Routes = [
     {
-        path: 'url',
+        path: '',
         component: UrlComponent,
         resolve: {
-            'pagingParams': UrlResolvePagingParams
+            pagingParams: JhiResolvePagingParams
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            defaultSort: 'id,asc',
+            pageTitle: 'mallApp.url.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/view',
+        component: UrlDetailComponent,
+        resolve: {
+            url: UrlResolve
         },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.url.home.title'
         },
         canActivate: [UserRouteAccessService]
-    }, {
-        path: 'url/:id',
-        component: UrlDetailComponent,
+    },
+    {
+        path: 'new',
+        component: UrlUpdateComponent,
+        resolve: {
+            url: UrlResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.url.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/edit',
+        component: UrlUpdateComponent,
+        resolve: {
+            url: UrlResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.url.home.title'
@@ -49,28 +83,11 @@ export const urlRoute: Routes = [
 
 export const urlPopupRoute: Routes = [
     {
-        path: 'url-new',
-        component: UrlPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.url.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'url/:id/edit',
-        component: UrlPopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.url.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'url/:id/delete',
+        path: ':id/delete',
         component: UrlDeletePopupComponent,
+        resolve: {
+            url: UrlResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.url.home.title'

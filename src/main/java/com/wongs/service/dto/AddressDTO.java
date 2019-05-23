@@ -1,12 +1,6 @@
 package com.wongs.service.dto;
-
-
 import java.io.Serializable;
 import java.util.Objects;
-
-import com.wongs.domain.Address;
-import com.wongs.domain.Country;
-import com.wongs.domain.State;
 
 /**
  * A DTO for the Address entity.
@@ -27,26 +21,11 @@ public class AddressDTO implements Serializable {
 
     private String postalCode;
 
-    private Country country;
 
-    private State state;
+    private Long countryId;
 
-    public AddressDTO() {
-        // Empty constructor needed for Jackson.
-    }
-    
-    public AddressDTO(Address address) {
-        this.id = address.getId();
-    	this.line1 = address.getLine1();
-    	this.line2 = address.getLine2();
-    	this.line3 = address.getLine3();
-    	this.line4 = address.getLine4();
-    	this.city = address.getCity();
-    	this.postalCode = address.getPostalCode();
-    	this.country = address.getCountry();
-    	this.state = address.getState();
-    }
-    
+    private Long stateId;
+
     public Long getId() {
         return id;
     }
@@ -103,20 +82,20 @@ public class AddressDTO implements Serializable {
         this.postalCode = postalCode;
     }
 
-    public Country getCountry() {
-        return country;
+    public Long getCountryId() {
+        return countryId;
     }
 
-    public void setCountry(Country country) {
-        this.country = country;
+    public void setCountryId(Long countryId) {
+        this.countryId = countryId;
     }
 
-    public State getState() {
-        return state;
+    public Long getStateId() {
+        return stateId;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setStateId(Long stateId) {
+        this.stateId = stateId;
     }
 
     @Override
@@ -129,18 +108,10 @@ public class AddressDTO implements Serializable {
         }
 
         AddressDTO addressDTO = (AddressDTO) o;
-        if(addressDTO.getId() == null || getId() == null) {
+        if (addressDTO.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(getId(), addressDTO.getId()) &&
-        		Objects.equals(getLine1(), addressDTO.getLine1()) &&
-        		Objects.equals(getLine2(), addressDTO.getLine2()) &&
-        		Objects.equals(getLine3(), addressDTO.getLine3()) &&
-        		Objects.equals(getLine4(), addressDTO.getLine4()) &&
-        		Objects.equals(getCity(), addressDTO.getCity()) &&
-        		Objects.equals(getPostalCode(), addressDTO.getPostalCode()) &&
-        		Objects.equals(getCountry(), addressDTO.getCountry()) &&
-        		Objects.equals(getState(), addressDTO.getState());
+        return Objects.equals(getId(), addressDTO.getId());
     }
 
     @Override
@@ -158,6 +129,8 @@ public class AddressDTO implements Serializable {
             ", line4='" + getLine4() + "'" +
             ", city='" + getCity() + "'" +
             ", postalCode='" + getPostalCode() + "'" +
+            ", country=" + getCountryId() +
+            ", state=" + getStateId() +
             "}";
     }
 }

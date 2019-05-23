@@ -15,6 +15,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -22,14 +24,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -58,8 +65,13 @@ public class OrderShopResourceIntTest {
     @Autowired
     private OrderShopMapper orderShopMapper;
 
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.OrderShopSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private OrderShopSearchRepository orderShopSearchRepository;
+    private OrderShopSearchRepository mockOrderShopSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -73,6 +85,9 @@ public class OrderShopResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restOrderShopMockMvc;
 
     private OrderShop orderShop;
@@ -80,12 +95,13 @@ public class OrderShopResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final OrderShopResource orderShopResource = new OrderShopResource(orderShopRepository, orderShopMapper, orderShopSearchRepository);
+        final OrderShopResource orderShopResource = new OrderShopResource(orderShopRepository, orderShopMapper, mockOrderShopSearchRepository);
         this.restOrderShopMockMvc = MockMvcBuilders.standaloneSetup(orderShopResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -104,7 +120,6 @@ public class OrderShopResourceIntTest {
 
     @Before
     public void initTest() {
-        orderShopSearchRepository.deleteAll();
         orderShop = createEntity(em);
     }
 
@@ -129,8 +144,7 @@ public class OrderShopResourceIntTest {
         assertThat(testOrderShop.getRemark()).isEqualTo(DEFAULT_REMARK);
 
         // Validate the OrderShop in Elasticsearch
-        OrderShop orderShopEs = orderShopSearchRepository.findOne(testOrderShop.getId());
-        assertThat(orderShopEs).isEqualToIgnoringGivenFields(testOrderShop);
+        verify(mockOrderShopSearchRepository, times(1)).save(testOrderShop);
     }
 
     @Test
@@ -151,6 +165,9 @@ public class OrderShopResourceIntTest {
         // Validate the OrderShop in the database
         List<OrderShop> orderShopList = orderShopRepository.findAll();
         assertThat(orderShopList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the OrderShop in Elasticsearch
+        verify(mockOrderShopSearchRepository, times(0)).save(orderShop);
     }
 
     @Test
@@ -168,7 +185,7 @@ public class OrderShopResourceIntTest {
             .andExpect(jsonPath("$.[*].currency").value(hasItem(DEFAULT_CURRENCY.toString())))
             .andExpect(jsonPath("$.[*].remark").value(hasItem(DEFAULT_REMARK.toString())));
     }
-
+    
     @Test
     @Transactional
     public void getOrderShop() throws Exception {
@@ -198,11 +215,11 @@ public class OrderShopResourceIntTest {
     public void updateOrderShop() throws Exception {
         // Initialize the database
         orderShopRepository.saveAndFlush(orderShop);
-        orderShopSearchRepository.save(orderShop);
+
         int databaseSizeBeforeUpdate = orderShopRepository.findAll().size();
 
         // Update the orderShop
-        OrderShop updatedOrderShop = orderShopRepository.findOne(orderShop.getId());
+        OrderShop updatedOrderShop = orderShopRepository.findById(orderShop.getId()).get();
         // Disconnect from session so that the updates on updatedOrderShop are not directly saved in db
         em.detach(updatedOrderShop);
         updatedOrderShop
@@ -225,8 +242,7 @@ public class OrderShopResourceIntTest {
         assertThat(testOrderShop.getRemark()).isEqualTo(UPDATED_REMARK);
 
         // Validate the OrderShop in Elasticsearch
-        OrderShop orderShopEs = orderShopSearchRepository.findOne(testOrderShop.getId());
-        assertThat(orderShopEs).isEqualToIgnoringGivenFields(testOrderShop);
+        verify(mockOrderShopSearchRepository, times(1)).save(testOrderShop);
     }
 
     @Test
@@ -237,15 +253,18 @@ public class OrderShopResourceIntTest {
         // Create the OrderShop
         OrderShopDTO orderShopDTO = orderShopMapper.toDto(orderShop);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restOrderShopMockMvc.perform(put("/api/order-shops")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(orderShopDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the OrderShop in the database
         List<OrderShop> orderShopList = orderShopRepository.findAll();
-        assertThat(orderShopList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(orderShopList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the OrderShop in Elasticsearch
+        verify(mockOrderShopSearchRepository, times(0)).save(orderShop);
     }
 
     @Test
@@ -253,21 +272,20 @@ public class OrderShopResourceIntTest {
     public void deleteOrderShop() throws Exception {
         // Initialize the database
         orderShopRepository.saveAndFlush(orderShop);
-        orderShopSearchRepository.save(orderShop);
+
         int databaseSizeBeforeDelete = orderShopRepository.findAll().size();
 
-        // Get the orderShop
+        // Delete the orderShop
         restOrderShopMockMvc.perform(delete("/api/order-shops/{id}", orderShop.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean orderShopExistsInEs = orderShopSearchRepository.exists(orderShop.getId());
-        assertThat(orderShopExistsInEs).isFalse();
-
         // Validate the database is empty
         List<OrderShop> orderShopList = orderShopRepository.findAll();
         assertThat(orderShopList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the OrderShop in Elasticsearch
+        verify(mockOrderShopSearchRepository, times(1)).deleteById(orderShop.getId());
     }
 
     @Test
@@ -275,8 +293,8 @@ public class OrderShopResourceIntTest {
     public void searchOrderShop() throws Exception {
         // Initialize the database
         orderShopRepository.saveAndFlush(orderShop);
-        orderShopSearchRepository.save(orderShop);
-
+        when(mockOrderShopSearchRepository.search(queryStringQuery("id:" + orderShop.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(orderShop), PageRequest.of(0, 1), 1));
         // Search the orderShop
         restOrderShopMockMvc.perform(get("/api/_search/order-shops?query=id:" + orderShop.getId()))
             .andExpect(status().isOk())
@@ -284,7 +302,7 @@ public class OrderShopResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(orderShop.getId().intValue())))
             .andExpect(jsonPath("$.[*].total").value(hasItem(DEFAULT_TOTAL.intValue())))
             .andExpect(jsonPath("$.[*].currency").value(hasItem(DEFAULT_CURRENCY.toString())))
-            .andExpect(jsonPath("$.[*].remark").value(hasItem(DEFAULT_REMARK.toString())));
+            .andExpect(jsonPath("$.[*].remark").value(hasItem(DEFAULT_REMARK)));
     }
 
     @Test

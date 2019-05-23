@@ -10,9 +10,12 @@ import com.wongs.web.rest.errors.ExceptionTranslator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -20,18 +23,24 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.ZoneOffset;
 import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.sameInstant;
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -69,8 +78,16 @@ public class CategoryResourceIntTest {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Mock
+    private CategoryRepository categoryRepositoryMock;
+
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.CategorySearchRepositoryMockConfiguration
+     */
     @Autowired
-    private CategorySearchRepository categorySearchRepository;
+    private CategorySearchRepository mockCategorySearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -84,6 +101,9 @@ public class CategoryResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restCategoryMockMvc;
 
     private Category category;
@@ -91,12 +111,13 @@ public class CategoryResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final CategoryResource categoryResource = new CategoryResource(categoryRepository, categorySearchRepository);
+        final CategoryResource categoryResource = new CategoryResource(categoryRepository, mockCategorySearchRepository);
         this.restCategoryMockMvc = MockMvcBuilders.standaloneSetup(categoryResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -119,7 +140,6 @@ public class CategoryResourceIntTest {
 
     @Before
     public void initTest() {
-        categorySearchRepository.deleteAll();
         category = createEntity(em);
     }
 
@@ -147,10 +167,7 @@ public class CategoryResourceIntTest {
         assertThat(testCategory.getLastModifiedDate()).isEqualTo(DEFAULT_LAST_MODIFIED_DATE);
 
         // Validate the Category in Elasticsearch
-        Category categoryEs = categorySearchRepository.findOne(testCategory.getId());
-        assertThat(testCategory.getCreatedDate()).isEqualTo(testCategory.getCreatedDate());
-        assertThat(testCategory.getLastModifiedDate()).isEqualTo(testCategory.getLastModifiedDate());
-        assertThat(categoryEs).isEqualToIgnoringGivenFields(testCategory, "createdDate", "lastModifiedDate");
+        verify(mockCategorySearchRepository, times(1)).save(testCategory);
     }
 
     @Test
@@ -170,6 +187,9 @@ public class CategoryResourceIntTest {
         // Validate the Category in the database
         List<Category> categoryList = categoryRepository.findAll();
         assertThat(categoryList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the Category in Elasticsearch
+        verify(mockCategorySearchRepository, times(0)).save(category);
     }
 
     @Test
@@ -209,6 +229,39 @@ public class CategoryResourceIntTest {
             .andExpect(jsonPath("$.[*].lastModifiedBy").value(hasItem(DEFAULT_LAST_MODIFIED_BY.toString())))
             .andExpect(jsonPath("$.[*].lastModifiedDate").value(hasItem(sameInstant(DEFAULT_LAST_MODIFIED_DATE))));
     }
+    
+    @SuppressWarnings({"unchecked"})
+    public void getAllCategoriesWithEagerRelationshipsIsEnabled() throws Exception {
+        CategoryResource categoryResource = new CategoryResource(categoryRepositoryMock, mockCategorySearchRepository);
+        when(categoryRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        MockMvc restCategoryMockMvc = MockMvcBuilders.standaloneSetup(categoryResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restCategoryMockMvc.perform(get("/api/categories?eagerload=true"))
+        .andExpect(status().isOk());
+
+        verify(categoryRepositoryMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public void getAllCategoriesWithEagerRelationshipsIsNotEnabled() throws Exception {
+        CategoryResource categoryResource = new CategoryResource(categoryRepositoryMock, mockCategorySearchRepository);
+            when(categoryRepositoryMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+            MockMvc restCategoryMockMvc = MockMvcBuilders.standaloneSetup(categoryResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restCategoryMockMvc.perform(get("/api/categories?eagerload=true"))
+        .andExpect(status().isOk());
+
+            verify(categoryRepositoryMock, times(1)).findAllWithEagerRelationships(any());
+    }
 
     @Test
     @Transactional
@@ -243,11 +296,11 @@ public class CategoryResourceIntTest {
     public void updateCategory() throws Exception {
         // Initialize the database
         categoryRepository.saveAndFlush(category);
-        categorySearchRepository.save(category);
+
         int databaseSizeBeforeUpdate = categoryRepository.findAll().size();
 
         // Update the category
-        Category updatedCategory = categoryRepository.findOne(category.getId());
+        Category updatedCategory = categoryRepository.findById(category.getId()).get();
         // Disconnect from session so that the updates on updatedCategory are not directly saved in db
         em.detach(updatedCategory);
         updatedCategory
@@ -277,10 +330,7 @@ public class CategoryResourceIntTest {
         assertThat(testCategory.getLastModifiedDate()).isEqualTo(UPDATED_LAST_MODIFIED_DATE);
 
         // Validate the Category in Elasticsearch
-        Category categoryEs = categorySearchRepository.findOne(testCategory.getId());
-        assertThat(testCategory.getCreatedDate()).isEqualTo(testCategory.getCreatedDate());
-        assertThat(testCategory.getLastModifiedDate()).isEqualTo(testCategory.getLastModifiedDate());
-        assertThat(categoryEs).isEqualToIgnoringGivenFields(testCategory, "createdDate", "lastModifiedDate");
+        verify(mockCategorySearchRepository, times(1)).save(testCategory);
     }
 
     @Test
@@ -290,15 +340,18 @@ public class CategoryResourceIntTest {
 
         // Create the Category
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCategoryMockMvc.perform(put("/api/categories")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(category)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Category in the database
         List<Category> categoryList = categoryRepository.findAll();
-        assertThat(categoryList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(categoryList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the Category in Elasticsearch
+        verify(mockCategorySearchRepository, times(0)).save(category);
     }
 
     @Test
@@ -306,21 +359,20 @@ public class CategoryResourceIntTest {
     public void deleteCategory() throws Exception {
         // Initialize the database
         categoryRepository.saveAndFlush(category);
-        categorySearchRepository.save(category);
+
         int databaseSizeBeforeDelete = categoryRepository.findAll().size();
 
-        // Get the category
+        // Delete the category
         restCategoryMockMvc.perform(delete("/api/categories/{id}", category.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean categoryExistsInEs = categorySearchRepository.exists(category.getId());
-        assertThat(categoryExistsInEs).isFalse();
-
         // Validate the database is empty
         List<Category> categoryList = categoryRepository.findAll();
         assertThat(categoryList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the Category in Elasticsearch
+        verify(mockCategorySearchRepository, times(1)).deleteById(category.getId());
     }
 
     @Test
@@ -328,19 +380,19 @@ public class CategoryResourceIntTest {
     public void searchCategory() throws Exception {
         // Initialize the database
         categoryRepository.saveAndFlush(category);
-        categorySearchRepository.save(category);
-
+        when(mockCategorySearchRepository.search(queryStringQuery("id:" + category.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(category), PageRequest.of(0, 1), 1));
         // Search the category
         restCategoryMockMvc.perform(get("/api/_search/categories?query=id:" + category.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(category.getId().intValue())))
-            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME.toString())))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
+            .andExpect(jsonPath("$.[*].name").value(hasItem(DEFAULT_NAME)))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())))
-            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY.toString())))
+            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
-            .andExpect(jsonPath("$.[*].lastModifiedBy").value(hasItem(DEFAULT_LAST_MODIFIED_BY.toString())))
+            .andExpect(jsonPath("$.[*].lastModifiedBy").value(hasItem(DEFAULT_LAST_MODIFIED_BY)))
             .andExpect(jsonPath("$.[*].lastModifiedDate").value(hasItem(sameInstant(DEFAULT_LAST_MODIFIED_DATE))));
     }
 

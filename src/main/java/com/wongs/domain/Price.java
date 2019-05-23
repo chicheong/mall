@@ -1,5 +1,7 @@
 package com.wongs.domain;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -23,7 +25,7 @@ import com.wongs.domain.enumeration.CurrencyType;
 public class Price implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,7 +36,7 @@ public class Price implements Serializable {
     @Column(name = "jhi_to")
     private ZonedDateTime to;
 
-    @Column(name = "price", precision=10, scale=2)
+    @Column(name = "price", precision = 10, scale = 2)
     private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
@@ -42,6 +44,7 @@ public class Price implements Serializable {
     private CurrencyType currency;
 
     @ManyToOne
+    @JsonIgnoreProperties("prices")
     private ProductItem item;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

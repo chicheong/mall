@@ -1,13 +1,11 @@
-
 {
     "mallApp": {
-        "price" : {
+        "price": {
             "home": {
                 "title": "Prices",
                 "createLabel": "Create a new Price",
                 "createOrEditLabel": "Create or edit a Price",
-                "search": "Search for Price",
-                "advancePrice": "Advance Price"
+                "search": "Search for Price"
             },
             "created": "A new Price is created with identifier {{ param }}",
             "updated": "A Price is updated with identifier {{ param }}",
@@ -22,15 +20,7 @@
             "to": "To",
             "price": "Price",
             "currency": "Currency",
-            "item": "Item",
-            "tooltip": {
-            	"priceField": "Price, e.g. 999"
-            },
-            "button": {
-            	"addOneMoreTimeslot": "Add one more Timeslot",
-            	"remove": "Remove",
-            	"addAndCopyToALL": "Add and Copy to All"
-            }
+            "item": "Item"
         }
     }
 }

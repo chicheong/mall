@@ -1,87 +1,82 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { SERVER_API_URL } from '../../app.constants';
+import { Observable } from 'rxjs';
+import * as moment from 'moment';
+import { DATE_FORMAT } from 'app/shared/constants/input.constants';
+import { map } from 'rxjs/operators';
 
-import { JhiDateUtils } from 'ng-jhipster';
+import { SERVER_API_URL } from 'app/app.constants';
+import { createRequestOption } from 'app/shared';
+import { IShipping } from 'app/shared/model/shipping.model';
 
-import { Shipping } from './shipping.model';
-import { createRequestOption } from '../../shared';
+type EntityResponseType = HttpResponse<IShipping>;
+type EntityArrayResponseType = HttpResponse<IShipping[]>;
 
-export type EntityResponseType = HttpResponse<Shipping>;
-
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ShippingService {
+    public resourceUrl = SERVER_API_URL + 'api/shippings';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/shippings';
 
-    private resourceUrl =  SERVER_API_URL + 'api/shippings';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/shippings';
+    constructor(protected http: HttpClient) {}
 
-    constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }
-
-    create(shipping: Shipping): Observable<EntityResponseType> {
-        const copy = this.convert(shipping);
-        return this.http.post<Shipping>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    create(shipping: IShipping): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(shipping);
+        return this.http
+            .post<IShipping>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    update(shipping: Shipping): Observable<EntityResponseType> {
-        const copy = this.convert(shipping);
-        return this.http.put<Shipping>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    update(shipping: IShipping): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(shipping);
+        return this.http
+            .put<IShipping>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<Shipping>(`${this.resourceUrl}/${id}`, { observe: 'response'})
-            .map((res: EntityResponseType) => this.convertResponse(res));
+        return this.http
+            .get<IShipping>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    query(req?: any): Observable<HttpResponse<Shipping[]>> {
+    query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Shipping[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Shipping[]>) => this.convertArrayResponse(res));
+        return this.http
+            .get<IShipping[]>(this.resourceUrl, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    search(req?: any): Observable<HttpResponse<Shipping[]>> {
+    search(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Shipping[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Shipping[]>) => this.convertArrayResponse(res));
+        return this.http
+            .get<IShipping[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
-    private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: Shipping = this.convertItemFromServer(res.body);
-        return res.clone({body});
+    protected convertDateFromClient(shipping: IShipping): IShipping {
+        const copy: IShipping = Object.assign({}, shipping, {
+            date: shipping.date != null && shipping.date.isValid() ? shipping.date.toJSON() : null
+        });
+        return copy;
     }
 
-    private convertArrayResponse(res: HttpResponse<Shipping[]>): HttpResponse<Shipping[]> {
-        const jsonResponse: Shipping[] = res.body;
-        const body: Shipping[] = [];
-        for (let i = 0; i < jsonResponse.length; i++) {
-            body.push(this.convertItemFromServer(jsonResponse[i]));
+    protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        if (res.body) {
+            res.body.date = res.body.date != null ? moment(res.body.date) : null;
         }
-        return res.clone({body});
+        return res;
     }
 
-    /**
-     * Convert a returned JSON object to Shipping.
-     */
-    private convertItemFromServer(shipping: Shipping): Shipping {
-        const copy: Shipping = Object.assign({}, shipping);
-        copy.date = this.dateUtils
-            .convertDateTimeFromServer(shipping.date);
-        return copy;
-    }
-
-    /**
-     * Convert a Shipping to a JSON which can be sent to the server.
-     */
-    private convert(shipping: Shipping): Shipping {
-        const copy: Shipping = Object.assign({}, shipping);
-
-        copy.date = this.dateUtils.toDate(shipping.date);
-        return copy;
+    protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        if (res.body) {
+            res.body.forEach((shipping: IShipping) => {
+                shipping.date = shipping.date != null ? moment(shipping.date) : null;
+            });
+        }
+        return res;
     }
 }

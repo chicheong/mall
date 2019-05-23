@@ -4,8 +4,8 @@ import com.wongs.MallApp;
 
 import com.wongs.domain.UserInfo;
 import com.wongs.repository.UserInfoRepository;
-import com.wongs.service.UserInfoService;
 import com.wongs.repository.search.UserInfoSearchRepository;
+import com.wongs.service.UserInfoService;
 import com.wongs.service.dto.UserInfoDTO;
 import com.wongs.service.mapper.UserInfoMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
@@ -13,9 +13,12 @@ import com.wongs.web.rest.errors.ExceptionTranslator;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -23,20 +26,26 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 /**
- * Test class for the UserinfoResource REST controller.
+ * Test class for the UserInfoResource REST controller.
  *
- * @see UserinfoResource
+ * @see UserInfoResource
  */
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = MallApp.class)
@@ -51,14 +60,25 @@ public class UserInfoResourceIntTest {
     @Autowired
     private UserInfoRepository userInfoRepository;
 
+    @Mock
+    private UserInfoRepository userInfoRepositoryMock;
+
     @Autowired
     private UserInfoMapper userInfoMapper;
+
+    @Mock
+    private UserInfoService userInfoServiceMock;
 
     @Autowired
     private UserInfoService userInfoService;
 
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.UserInfoSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private UserInfoSearchRepository userInfoSearchRepository;
+    private UserInfoSearchRepository mockUserInfoSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -72,6 +92,9 @@ public class UserInfoResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restUserInfoMockMvc;
 
     private UserInfo userInfo;
@@ -84,7 +107,8 @@ public class UserInfoResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -102,7 +126,6 @@ public class UserInfoResourceIntTest {
 
     @Before
     public void initTest() {
-        userInfoSearchRepository.deleteAll();
         userInfo = createEntity(em);
     }
 
@@ -126,8 +149,7 @@ public class UserInfoResourceIntTest {
         assertThat(testUserInfo.getShopId()).isEqualTo(DEFAULT_SHOP_ID);
 
         // Validate the UserInfo in Elasticsearch
-        UserInfo userInfoEs = userInfoSearchRepository.findOne(testUserInfo.getId());
-        assertThat(userInfoEs).isEqualToIgnoringGivenFields(testUserInfo);
+        verify(mockUserInfoSearchRepository, times(1)).save(testUserInfo);
     }
 
     @Test
@@ -148,6 +170,9 @@ public class UserInfoResourceIntTest {
         // Validate the UserInfo in the database
         List<UserInfo> userInfoList = userInfoRepository.findAll();
         assertThat(userInfoList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the UserInfo in Elasticsearch
+        verify(mockUserInfoSearchRepository, times(0)).save(userInfo);
     }
 
     @Test
@@ -163,6 +188,39 @@ public class UserInfoResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(userInfo.getId().intValue())))
             .andExpect(jsonPath("$.[*].accountId").value(hasItem(DEFAULT_ACCOUNT_ID.intValue())))
             .andExpect(jsonPath("$.[*].shopId").value(hasItem(DEFAULT_SHOP_ID.intValue())));
+    }
+    
+    @SuppressWarnings({"unchecked"})
+    public void getAllUserInfosWithEagerRelationshipsIsEnabled() throws Exception {
+        UserInfoResource userInfoResource = new UserInfoResource(userInfoServiceMock);
+        when(userInfoServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+
+        MockMvc restUserInfoMockMvc = MockMvcBuilders.standaloneSetup(userInfoResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restUserInfoMockMvc.perform(get("/api/user-infos?eagerload=true"))
+        .andExpect(status().isOk());
+
+        verify(userInfoServiceMock, times(1)).findAllWithEagerRelationships(any());
+    }
+
+    @SuppressWarnings({"unchecked"})
+    public void getAllUserInfosWithEagerRelationshipsIsNotEnabled() throws Exception {
+        UserInfoResource userInfoResource = new UserInfoResource(userInfoServiceMock);
+            when(userInfoServiceMock.findAllWithEagerRelationships(any())).thenReturn(new PageImpl(new ArrayList<>()));
+            MockMvc restUserInfoMockMvc = MockMvcBuilders.standaloneSetup(userInfoResource)
+            .setCustomArgumentResolvers(pageableArgumentResolver)
+            .setControllerAdvice(exceptionTranslator)
+            .setConversionService(createFormattingConversionService())
+            .setMessageConverters(jacksonMessageConverter).build();
+
+        restUserInfoMockMvc.perform(get("/api/user-infos?eagerload=true"))
+        .andExpect(status().isOk());
+
+            verify(userInfoServiceMock, times(1)).findAllWithEagerRelationships(any());
     }
 
     @Test
@@ -193,11 +251,11 @@ public class UserInfoResourceIntTest {
     public void updateUserInfo() throws Exception {
         // Initialize the database
         userInfoRepository.saveAndFlush(userInfo);
-        userInfoSearchRepository.save(userInfo);
+
         int databaseSizeBeforeUpdate = userInfoRepository.findAll().size();
 
         // Update the userInfo
-        UserInfo updatedUserInfo = userInfoRepository.findOne(userInfo.getId());
+        UserInfo updatedUserInfo = userInfoRepository.findById(userInfo.getId()).get();
         // Disconnect from session so that the updates on updatedUserInfo are not directly saved in db
         em.detach(updatedUserInfo);
         updatedUserInfo
@@ -218,8 +276,7 @@ public class UserInfoResourceIntTest {
         assertThat(testUserInfo.getShopId()).isEqualTo(UPDATED_SHOP_ID);
 
         // Validate the UserInfo in Elasticsearch
-        UserInfo userInfoEs = userInfoSearchRepository.findOne(testUserInfo.getId());
-        assertThat(userInfoEs).isEqualToIgnoringGivenFields(testUserInfo);
+        verify(mockUserInfoSearchRepository, times(1)).save(testUserInfo);
     }
 
     @Test
@@ -230,15 +287,18 @@ public class UserInfoResourceIntTest {
         // Create the UserInfo
         UserInfoDTO userInfoDTO = userInfoMapper.toDto(userInfo);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restUserInfoMockMvc.perform(put("/api/user-infos")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(userInfoDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the UserInfo in the database
         List<UserInfo> userInfoList = userInfoRepository.findAll();
-        assertThat(userInfoList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(userInfoList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the UserInfo in Elasticsearch
+        verify(mockUserInfoSearchRepository, times(0)).save(userInfo);
     }
 
     @Test
@@ -246,21 +306,20 @@ public class UserInfoResourceIntTest {
     public void deleteUserInfo() throws Exception {
         // Initialize the database
         userInfoRepository.saveAndFlush(userInfo);
-        userInfoSearchRepository.save(userInfo);
+
         int databaseSizeBeforeDelete = userInfoRepository.findAll().size();
 
-        // Get the userInfo
+        // Delete the userInfo
         restUserInfoMockMvc.perform(delete("/api/user-infos/{id}", userInfo.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean userInfoExistsInEs = userInfoSearchRepository.exists(userInfo.getId());
-        assertThat(userInfoExistsInEs).isFalse();
-
         // Validate the database is empty
         List<UserInfo> userInfoList = userInfoRepository.findAll();
         assertThat(userInfoList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the UserInfo in Elasticsearch
+        verify(mockUserInfoSearchRepository, times(1)).deleteById(userInfo.getId());
     }
 
     @Test
@@ -268,8 +327,8 @@ public class UserInfoResourceIntTest {
     public void searchUserInfo() throws Exception {
         // Initialize the database
         userInfoRepository.saveAndFlush(userInfo);
-        userInfoSearchRepository.save(userInfo);
-
+        when(mockUserInfoSearchRepository.search(queryStringQuery("id:" + userInfo.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(userInfo), PageRequest.of(0, 1), 1));
         // Search the userInfo
         restUserInfoMockMvc.perform(get("/api/_search/user-infos?query=id:" + userInfo.getId()))
             .andExpect(status().isOk())

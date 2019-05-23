@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "product" : {
+        "product": {
             "home": {
                 "title": "Products",
                 "createLabel": "建立一筆新的 Product",
@@ -15,16 +14,8 @@
                 "question": "您確定要刪除 Product {{ id }} 嗎?"
             },
             "detail": {
-                "title": "Product",
-                "other": {
-                	"title": "其他資料"
-                }
+                "title": "Product"
             },
-            "items": {
-            	"url": {
-            		"title": "上載產品相片"
-            	}
-            },			
             "name": "Name",
             "code": "Code",
             "brand": "Brand",
@@ -40,15 +31,6 @@
             "item": "Item",
             "shop": "Shop",
             "category": "Category"
-        },
-        "fileUpload" : {
-		    "title" : "File Upload",
-            "error": {
-                "oneFile": "Please upload at least one file",
-                "maxFile": "At a time you can upload only {{ maxFiles }} files",
-                "invalidFile": "Invalid file: {{ name }}",
-                "sizeLimit": "{{ name }} exceed file size limit of {{maxSize}} MB ( {{size}} MB )"
-            }
         }
     }
 }

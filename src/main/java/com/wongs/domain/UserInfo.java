@@ -1,5 +1,6 @@
 package com.wongs.domain;
 
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -21,7 +22,7 @@ import java.util.Objects;
 public class UserInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -43,8 +44,8 @@ public class UserInfo implements Serializable {
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "user_info_account",
-               joinColumns = @JoinColumn(name="user_infos_id", referencedColumnName="id"),
-               inverseJoinColumns = @JoinColumn(name="accounts_id", referencedColumnName="id"))
+               joinColumns = @JoinColumn(name = "user_info_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "account_id", referencedColumnName = "id"))
     private Set<MyAccount> accounts = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

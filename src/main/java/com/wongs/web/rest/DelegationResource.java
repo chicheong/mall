@@ -1,6 +1,4 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.service.DelegationService;
 import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
@@ -50,7 +48,6 @@ public class DelegationResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/delegations")
-    @Timed
     public ResponseEntity<DelegationDTO> createDelegation(@RequestBody DelegationDTO delegationDTO) throws URISyntaxException {
         log.debug("REST request to save Delegation : {}", delegationDTO);
         if (delegationDTO.getId() != null) {
@@ -72,11 +69,10 @@ public class DelegationResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/delegations")
-    @Timed
     public ResponseEntity<DelegationDTO> updateDelegation(@RequestBody DelegationDTO delegationDTO) throws URISyntaxException {
         log.debug("REST request to update Delegation : {}", delegationDTO);
         if (delegationDTO.getId() == null) {
-            return createDelegation(delegationDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         DelegationDTO result = delegationService.save(delegationDTO);
         return ResponseEntity.ok()
@@ -91,12 +87,11 @@ public class DelegationResource {
      * @return the ResponseEntity with status 200 (OK) and the list of delegations in body
      */
     @GetMapping("/delegations")
-    @Timed
     public ResponseEntity<List<DelegationDTO>> getAllDelegations(Pageable pageable) {
         log.debug("REST request to get a page of Delegations");
         Page<DelegationDTO> page = delegationService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/delegations");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -106,11 +101,10 @@ public class DelegationResource {
      * @return the ResponseEntity with status 200 (OK) and with body the delegationDTO, or with status 404 (Not Found)
      */
     @GetMapping("/delegations/{id}")
-    @Timed
     public ResponseEntity<DelegationDTO> getDelegation(@PathVariable Long id) {
         log.debug("REST request to get Delegation : {}", id);
-        DelegationDTO delegationDTO = delegationService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(delegationDTO));
+        Optional<DelegationDTO> delegationDTO = delegationService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(delegationDTO);
     }
 
     /**
@@ -120,7 +114,6 @@ public class DelegationResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/delegations/{id}")
-    @Timed
     public ResponseEntity<Void> deleteDelegation(@PathVariable Long id) {
         log.debug("REST request to delete Delegation : {}", id);
         delegationService.delete(id);
@@ -136,12 +129,11 @@ public class DelegationResource {
      * @return the result of the search
      */
     @GetMapping("/_search/delegations")
-    @Timed
     public ResponseEntity<List<DelegationDTO>> searchDelegations(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Delegations for query {}", query);
         Page<DelegationDTO> page = delegationService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/delegations");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
 }

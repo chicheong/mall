@@ -1,5 +1,6 @@
 package com.wongs.domain;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -20,7 +21,7 @@ import java.util.Objects;
 public class PaymentCard implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -40,8 +41,8 @@ public class PaymentCard implements Serializable {
     @Column(name = "cvc")
     private String cvc;
 
-    @OneToOne
-    @JoinColumn(unique = false)
+    @OneToOne(mappedBy = "paymentCard")
+    @JsonIgnore
     private Payment payment;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

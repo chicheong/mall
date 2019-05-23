@@ -1,48 +1,43 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="payment">
+            <h2><span jhiTranslate="mallApp.payment.detail.title">Payment</span> {{payment.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="mallApp.payment.amount">Amount</span></dt>
+                <dd>
+                    <span>{{payment.amount}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.payment.currency">Currency</span></dt>
+                <dd>
+                    <span jhiTranslate="{{'mallApp.CurrencyType.' + payment.currency}}">{{payment.currency}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.payment.type">Type</span></dt>
+                <dd>
+                    <span jhiTranslate="{{'mallApp.PaymentType.' + payment.type}}">{{payment.type}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.payment.remark">Remark</span></dt>
+                <dd>
+                    <span>{{payment.remark}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.payment.status">Status</span></dt>
+                <dd>
+                    <span jhiTranslate="{{'mallApp.PaymentStatus.' + payment.status}}">{{payment.status}}</span>
+                </dd>
+            </dl>
 
-<div *ngIf="payment">
-    <h2><span jhiTranslate="mallApp.payment.detail.title">Payment</span> {{payment.id}}</h2>
-    <hr>
-    <jhi-alert-error></jhi-alert-error>
-    <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="mallApp.payment.amount">Amount</span></dt>
-        <dd>
-            <span>{{payment.amount}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.payment.currency">Currency</span></dt>
-        <dd>
-            <span jhiTranslate="{{'mallApp.CurrencyType.' + payment.currency}}">{{payment.currency}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.payment.type">Type</span></dt>
-        <dd>
-            <span jhiTranslate="{{'mallApp.PaymentType.' + payment.type}}">{{payment.type}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.payment.remark">Remark</span></dt>
-        <dd>
-            <span>{{payment.remark}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.payment.status">Status</span></dt>
-        <dd>
-            <span jhiTranslate="{{'mallApp.PaymentStatus.' + payment.status}}">{{payment.status}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.payment.order">Order</span></dt>
-        <dd>
-            <div *ngIf="payment.order">
-                <a [routerLink]="['/my-order', payment.order?.id]">{{payment.order?.id}}</a>
-            </div>
-        </dd>
-    </dl>
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
 
-    <button type="submit"
-            (click)="previousState()"
-            class="btn btn-info">
-        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
-    </button>
-
-    <button type="button"
-            [routerLink]="['/', { outlets: { popup: 'payment/'+ payment.id + '/edit'} }]"
-            replaceUrl="true"
-            queryParamsHandling="merge"
-            class="btn btn-primary">
-        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
-    </button>
+            <button type="button"
+                    [routerLink]="['/payment', payment.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
 </div>

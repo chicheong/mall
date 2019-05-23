@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "department" : {
+        "department": {
             "home": {
                 "title": "Departments",
                 "createLabel": "建立一筆新的 Department",

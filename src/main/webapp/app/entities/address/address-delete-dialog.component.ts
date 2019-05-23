@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { Address } from './address.model';
-import { AddressPopupService } from './address-popup.service';
+import { IAddress } from 'app/shared/model/address.model';
 import { AddressService } from './address.service';
 
 @Component({
@@ -13,22 +12,16 @@ import { AddressService } from './address.service';
     templateUrl: './address-delete-dialog.component.html'
 })
 export class AddressDeleteDialogComponent {
+    address: IAddress;
 
-    address: Address;
-
-    constructor(
-        private addressService: AddressService,
-        public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager
-    ) {
-    }
+    constructor(protected addressService: AddressService, public activeModal: NgbActiveModal, protected eventManager: JhiEventManager) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.addressService.delete(id).subscribe((response) => {
+        this.addressService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'addressListModification',
                 content: 'Deleted an address'
@@ -43,22 +36,30 @@ export class AddressDeleteDialogComponent {
     template: ''
 })
 export class AddressDeletePopupComponent implements OnInit, OnDestroy {
+    protected ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private addressPopupService: AddressPopupService
-    ) {}
+    constructor(protected activatedRoute: ActivatedRoute, protected router: Router, protected modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.addressPopupService
-                .open(AddressDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ address }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(AddressDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
+                this.ngbModalRef.componentInstance.address = address;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate(['/address', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate(['/address', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

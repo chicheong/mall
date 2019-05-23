@@ -1,52 +1,53 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="orderShop">
+            <h2><span jhiTranslate="mallApp.orderShop.detail.title">Order Shop</span> {{orderShop.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="mallApp.orderShop.total">Total</span></dt>
+                <dd>
+                    <span>{{orderShop.total}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.orderShop.currency">Currency</span></dt>
+                <dd>
+                    <span jhiTranslate="{{'mallApp.CurrencyType.' + orderShop.currency}}">{{orderShop.currency}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.orderShop.remark">Remark</span></dt>
+                <dd>
+                    <span>{{orderShop.remark}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.orderShop.shipping">Shipping</span></dt>
+                <dd>
+                    <div *ngIf="orderShop.shippingId">
+                        <a [routerLink]="['/shipping', orderShop.shippingId, 'view']">{{orderShop.shippingId}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="mallApp.orderShop.shop">Shop</span></dt>
+                <dd>
+                    <div *ngIf="orderShop.shopId">
+                        <a [routerLink]="['/shop', orderShop.shopId, 'view']">{{orderShop.shopId}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="mallApp.orderShop.order">Order</span></dt>
+                <dd>
+                    <div *ngIf="orderShop.orderId">
+                        <a [routerLink]="['/my-order', orderShop.orderId, 'view']">{{orderShop.orderId}}</a>
+                    </div>
+                </dd>
+            </dl>
 
-<div *ngIf="orderShop">
-    <h2><span jhiTranslate="mallApp.orderShop.detail.title">Order Shop</span> {{orderShop.id}}</h2>
-    <hr>
-    <jhi-alert-error></jhi-alert-error>
-    <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="mallApp.orderShop.total">Total</span></dt>
-        <dd>
-            <span>{{orderShop.total}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.orderShop.currency">Currency</span></dt>
-        <dd>
-            <span jhiTranslate="{{'mallApp.CurrencyType.' + orderShop.currency}}">{{orderShop.currency}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.orderShop.remark">Remark</span></dt>
-        <dd>
-            <span>{{orderShop.remark}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.orderShop.shipping">Shipping</span></dt>
-        <dd>
-            <div *ngIf="orderShop.shipping">
-                <a [routerLink]="['/shipping', orderShop.shipping?.id]">{{orderShop.shipping?.id}}</a>
-            </div>
-        </dd>
-        <dt><span jhiTranslate="mallApp.orderShop.shop">Shop</span></dt>
-        <dd>
-            <div *ngIf="orderShop.shop">
-                <a [routerLink]="['/shop', orderShop.shop?.id]">{{orderShop.shop?.id}}</a>
-            </div>
-        </dd>
-        <dt><span jhiTranslate="mallApp.orderShop.order">Order</span></dt>
-        <dd>
-            <div *ngIf="orderShop.order">
-                <a [routerLink]="['/my-order', orderShop.order?.id]">{{orderShop.order?.id}}</a>
-            </div>
-        </dd>
-    </dl>
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
 
-    <button type="submit"
-            (click)="previousState()"
-            class="btn btn-info">
-        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
-    </button>
-
-    <button type="button"
-            [routerLink]="['/', { outlets: { popup: 'order-shop/'+ orderShop.id + '/edit'} }]"
-            replaceUrl="true"
-            queryParamsHandling="merge"
-            class="btn btn-primary">
-        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
-    </button>
+            <button type="button"
+                    [routerLink]="['/order-shop', orderShop.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
 </div>

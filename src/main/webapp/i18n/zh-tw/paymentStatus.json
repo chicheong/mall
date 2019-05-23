@@ -1,6 +1,6 @@
 {
     "mallApp": {
-        "PaymentStatus" : {
+        "PaymentStatus": {
             "null": "",
             "PENDING": "PENDING",
             "PAID": "PAID",

@@ -1,86 +1,85 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { SERVER_API_URL } from '../../app.constants';
+import { Observable } from 'rxjs';
+import * as moment from 'moment';
+import { DATE_FORMAT } from 'app/shared/constants/input.constants';
+import { map } from 'rxjs/operators';
 
-import { JhiDateUtils } from 'ng-jhipster';
+import { SERVER_API_URL } from 'app/app.constants';
+import { createRequestOption } from 'app/shared';
+import { IProductStyleHistory } from 'app/shared/model/product-style-history.model';
 
-import { ProductStyleHistory } from './product-style-history.model';
-import { createRequestOption } from '../../shared';
+type EntityResponseType = HttpResponse<IProductStyleHistory>;
+type EntityArrayResponseType = HttpResponse<IProductStyleHistory[]>;
 
-export type EntityResponseType = HttpResponse<ProductStyleHistory>;
-
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ProductStyleHistoryService {
+    public resourceUrl = SERVER_API_URL + 'api/product-style-histories';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/product-style-histories';
 
-    private resourceUrl = SERVER_API_URL + 'api/product-style-histories';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/product-style-histories';
+    constructor(protected http: HttpClient) {}
 
-    constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }
-
-    create(productStyleHistory: ProductStyleHistory): Observable<EntityResponseType> {
-        const copy = this.convert(productStyleHistory);
-        return this.http.post<ProductStyleHistory>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    create(productStyleHistory: IProductStyleHistory): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(productStyleHistory);
+        return this.http
+            .post<IProductStyleHistory>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    update(productStyleHistory: ProductStyleHistory): Observable<EntityResponseType> {
-        const copy = this.convert(productStyleHistory);
-        return this.http.put<ProductStyleHistory>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    update(productStyleHistory: IProductStyleHistory): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(productStyleHistory);
+        return this.http
+            .put<IProductStyleHistory>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<ProductStyleHistory>(`${this.resourceUrl}/${id}`, { observe: 'response'})
-            .map((res: EntityResponseType) => this.convertResponse(res));
+        return this.http
+            .get<IProductStyleHistory>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    query(req?: any): Observable<HttpResponse<ProductStyleHistory[]>> {
+    query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<ProductStyleHistory[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<ProductStyleHistory[]>) => this.convertArrayResponse(res));
+        return this.http
+            .get<IProductStyleHistory[]>(this.resourceUrl, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    search(req?: any): Observable<HttpResponse<ProductStyleHistory[]>> {
+    search(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<ProductStyleHistory[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<ProductStyleHistory[]>) => this.convertArrayResponse(res));
+        return this.http
+            .get<IProductStyleHistory[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
-    private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: ProductStyleHistory = this.convertItemFromServer(res.body);
-        return res.clone({body});
+    protected convertDateFromClient(productStyleHistory: IProductStyleHistory): IProductStyleHistory {
+        const copy: IProductStyleHistory = Object.assign({}, productStyleHistory, {
+            createdDate:
+                productStyleHistory.createdDate != null && productStyleHistory.createdDate.isValid()
+                    ? productStyleHistory.createdDate.toJSON()
+                    : null
+        });
+        return copy;
     }
 
-    private convertArrayResponse(res: HttpResponse<ProductStyleHistory[]>): HttpResponse<ProductStyleHistory[]> {
-        const jsonResponse: ProductStyleHistory[] = res.body;
-        const body: ProductStyleHistory[] = [];
-        for (let i = 0; i < jsonResponse.length; i++) {
-            body.push(this.convertItemFromServer(jsonResponse[i]));
+    protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        if (res.body) {
+            res.body.createdDate = res.body.createdDate != null ? moment(res.body.createdDate) : null;
         }
-        return res.clone({body});
+        return res;
     }
 
-    /**
-     * Convert a returned JSON object to ProductStyleHistory.
-     */
-    private convertItemFromServer(productStyleHistory: ProductStyleHistory): ProductStyleHistory {
-        const copy: ProductStyleHistory = Object.assign({}, productStyleHistory);
-        copy.createdDate = this.dateUtils
-            .convertDateTimeFromServer(productStyleHistory.createdDate);
-        return copy;
-    }
-
-    /**
-     * Convert a ProductStyleHistory to a JSON which can be sent to the server.
-     */
-    private convert(productStyleHistory: ProductStyleHistory): ProductStyleHistory {
-        const copy: ProductStyleHistory = Object.assign({}, productStyleHistory);
-        copy.createdDate = this.dateUtils.toDate(productStyleHistory.createdDate);
-        return copy;
+    protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        if (res.body) {
+            res.body.forEach((productStyleHistory: IProductStyleHistory) => {
+                productStyleHistory.createdDate = productStyleHistory.createdDate != null ? moment(productStyleHistory.createdDate) : null;
+            });
+        }
+        return res;
     }
 }

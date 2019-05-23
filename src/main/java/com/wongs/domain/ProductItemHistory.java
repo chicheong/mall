@@ -1,5 +1,6 @@
 package com.wongs.domain;
 
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -23,7 +24,7 @@ import com.wongs.domain.enumeration.CurrencyType;
 public class ProductItemHistory implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -41,7 +42,7 @@ public class ProductItemHistory implements Serializable {
     @Column(name = "currency")
     private CurrencyType currency;
 
-    @Column(name = "price", precision=10, scale=2)
+    @Column(name = "price", precision = 10, scale = 2)
     private BigDecimal price;
 
     @Column(name = "created_by")

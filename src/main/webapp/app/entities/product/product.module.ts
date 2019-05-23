@@ -1,76 +1,40 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { ReactiveFormsModule } from '@angular/forms';
+import { JhiLanguageService } from 'ng-jhipster';
+import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from '../../shared';
+import { MallSharedModule } from 'app/shared';
 import {
-    ProductService,
-    ProductPopupService,
-    ProductDetailPopupService,
-    PricesPopupService,
-    QuantitiesPopupService,
     ProductComponent,
     ProductDetailComponent,
-    ProductDialogComponent,
-    ProductPopupComponent,
+    ProductUpdateComponent,
     ProductDeletePopupComponent,
     ProductDeleteDialogComponent,
-    ProductItemsDialogComponent,
-    ProductItemsUrlDialogComponent,
-    PricesDialogComponent,
-    QuantitiesDialogComponent,
-    ProductDetailOtherDialogComponent,
     productRoute,
-    productPopupRoute,
-    ProductResolvePagingParams,
-    GetItemFromColorSizePipe,
+    productPopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...productRoute,
-    ...productPopupRoute,
-];
+const ENTITY_STATES = [...productRoute, ...productPopupRoute];
 
 @NgModule({
-    imports: [
-        MallSharedModule,
-        ReactiveFormsModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         ProductComponent,
         ProductDetailComponent,
-        ProductDialogComponent,
+        ProductUpdateComponent,
         ProductDeleteDialogComponent,
-        ProductPopupComponent,
-        ProductDeletePopupComponent,
-        ProductItemsDialogComponent,
-        ProductItemsUrlDialogComponent,
-        PricesDialogComponent,
-        QuantitiesDialogComponent,
-        GetItemFromColorSizePipe,
-        ProductDetailOtherDialogComponent,
+        ProductDeletePopupComponent
     ],
-    entryComponents: [
-        ProductComponent,
-        ProductDialogComponent,
-        ProductPopupComponent,
-        ProductDeleteDialogComponent,
-        ProductDeletePopupComponent,
-        ProductItemsDialogComponent,
-        ProductItemsUrlDialogComponent,
-        PricesDialogComponent,
-        QuantitiesDialogComponent,
-        ProductDetailOtherDialogComponent,
-    ],
-    providers: [
-        ProductService,
-        ProductPopupService,
-        ProductResolvePagingParams,
-        ProductDetailPopupService,
-        PricesPopupService,
-        QuantitiesPopupService,
-    ],
+    entryComponents: [ProductComponent, ProductUpdateComponent, ProductDeleteDialogComponent, ProductDeletePopupComponent],
+    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MallProductModule {}
+export class MallProductModule {
+    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
+        this.languageHelper.language.subscribe((languageKey: string) => {
+            if (languageKey !== undefined) {
+                this.languageService.changeLanguage(languageKey);
+            }
+        });
+    }
+}

@@ -13,6 +13,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -20,18 +22,23 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.ZoneOffset;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.sameInstant;
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -54,8 +61,13 @@ public class PaymentStatusHistoryResourceIntTest {
     @Autowired
     private PaymentStatusHistoryRepository paymentStatusHistoryRepository;
 
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.PaymentStatusHistorySearchRepositoryMockConfiguration
+     */
     @Autowired
-    private PaymentStatusHistorySearchRepository paymentStatusHistorySearchRepository;
+    private PaymentStatusHistorySearchRepository mockPaymentStatusHistorySearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -69,6 +81,9 @@ public class PaymentStatusHistoryResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restPaymentStatusHistoryMockMvc;
 
     private PaymentStatusHistory paymentStatusHistory;
@@ -76,12 +91,13 @@ public class PaymentStatusHistoryResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final PaymentStatusHistoryResource paymentStatusHistoryResource = new PaymentStatusHistoryResource(paymentStatusHistoryRepository, paymentStatusHistorySearchRepository);
+        final PaymentStatusHistoryResource paymentStatusHistoryResource = new PaymentStatusHistoryResource(paymentStatusHistoryRepository, mockPaymentStatusHistorySearchRepository);
         this.restPaymentStatusHistoryMockMvc = MockMvcBuilders.standaloneSetup(paymentStatusHistoryResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -99,7 +115,6 @@ public class PaymentStatusHistoryResourceIntTest {
 
     @Before
     public void initTest() {
-        paymentStatusHistorySearchRepository.deleteAll();
         paymentStatusHistory = createEntity(em);
     }
 
@@ -122,9 +137,7 @@ public class PaymentStatusHistoryResourceIntTest {
         assertThat(testPaymentStatusHistory.getStatus()).isEqualTo(DEFAULT_STATUS);
 
         // Validate the PaymentStatusHistory in Elasticsearch
-        PaymentStatusHistory paymentStatusHistoryEs = paymentStatusHistorySearchRepository.findOne(testPaymentStatusHistory.getId());
-        assertThat(testPaymentStatusHistory.getEffectiveDate()).isEqualTo(testPaymentStatusHistory.getEffectiveDate());
-        assertThat(paymentStatusHistoryEs).isEqualToIgnoringGivenFields(testPaymentStatusHistory, "effectiveDate");
+        verify(mockPaymentStatusHistorySearchRepository, times(1)).save(testPaymentStatusHistory);
     }
 
     @Test
@@ -144,6 +157,9 @@ public class PaymentStatusHistoryResourceIntTest {
         // Validate the PaymentStatusHistory in the database
         List<PaymentStatusHistory> paymentStatusHistoryList = paymentStatusHistoryRepository.findAll();
         assertThat(paymentStatusHistoryList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the PaymentStatusHistory in Elasticsearch
+        verify(mockPaymentStatusHistorySearchRepository, times(0)).save(paymentStatusHistory);
     }
 
     @Test
@@ -160,7 +176,7 @@ public class PaymentStatusHistoryResourceIntTest {
             .andExpect(jsonPath("$.[*].effectiveDate").value(hasItem(sameInstant(DEFAULT_EFFECTIVE_DATE))))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
     }
-
+    
     @Test
     @Transactional
     public void getPaymentStatusHistory() throws Exception {
@@ -189,11 +205,11 @@ public class PaymentStatusHistoryResourceIntTest {
     public void updatePaymentStatusHistory() throws Exception {
         // Initialize the database
         paymentStatusHistoryRepository.saveAndFlush(paymentStatusHistory);
-        paymentStatusHistorySearchRepository.save(paymentStatusHistory);
+
         int databaseSizeBeforeUpdate = paymentStatusHistoryRepository.findAll().size();
 
         // Update the paymentStatusHistory
-        PaymentStatusHistory updatedPaymentStatusHistory = paymentStatusHistoryRepository.findOne(paymentStatusHistory.getId());
+        PaymentStatusHistory updatedPaymentStatusHistory = paymentStatusHistoryRepository.findById(paymentStatusHistory.getId()).get();
         // Disconnect from session so that the updates on updatedPaymentStatusHistory are not directly saved in db
         em.detach(updatedPaymentStatusHistory);
         updatedPaymentStatusHistory
@@ -213,9 +229,7 @@ public class PaymentStatusHistoryResourceIntTest {
         assertThat(testPaymentStatusHistory.getStatus()).isEqualTo(UPDATED_STATUS);
 
         // Validate the PaymentStatusHistory in Elasticsearch
-        PaymentStatusHistory paymentStatusHistoryEs = paymentStatusHistorySearchRepository.findOne(testPaymentStatusHistory.getId());
-        assertThat(testPaymentStatusHistory.getEffectiveDate()).isEqualTo(testPaymentStatusHistory.getEffectiveDate());
-        assertThat(paymentStatusHistoryEs).isEqualToIgnoringGivenFields(testPaymentStatusHistory, "effectiveDate");
+        verify(mockPaymentStatusHistorySearchRepository, times(1)).save(testPaymentStatusHistory);
     }
 
     @Test
@@ -225,15 +239,18 @@ public class PaymentStatusHistoryResourceIntTest {
 
         // Create the PaymentStatusHistory
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restPaymentStatusHistoryMockMvc.perform(put("/api/payment-status-histories")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(paymentStatusHistory)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the PaymentStatusHistory in the database
         List<PaymentStatusHistory> paymentStatusHistoryList = paymentStatusHistoryRepository.findAll();
-        assertThat(paymentStatusHistoryList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(paymentStatusHistoryList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the PaymentStatusHistory in Elasticsearch
+        verify(mockPaymentStatusHistorySearchRepository, times(0)).save(paymentStatusHistory);
     }
 
     @Test
@@ -241,21 +258,20 @@ public class PaymentStatusHistoryResourceIntTest {
     public void deletePaymentStatusHistory() throws Exception {
         // Initialize the database
         paymentStatusHistoryRepository.saveAndFlush(paymentStatusHistory);
-        paymentStatusHistorySearchRepository.save(paymentStatusHistory);
+
         int databaseSizeBeforeDelete = paymentStatusHistoryRepository.findAll().size();
 
-        // Get the paymentStatusHistory
+        // Delete the paymentStatusHistory
         restPaymentStatusHistoryMockMvc.perform(delete("/api/payment-status-histories/{id}", paymentStatusHistory.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean paymentStatusHistoryExistsInEs = paymentStatusHistorySearchRepository.exists(paymentStatusHistory.getId());
-        assertThat(paymentStatusHistoryExistsInEs).isFalse();
-
         // Validate the database is empty
         List<PaymentStatusHistory> paymentStatusHistoryList = paymentStatusHistoryRepository.findAll();
         assertThat(paymentStatusHistoryList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the PaymentStatusHistory in Elasticsearch
+        verify(mockPaymentStatusHistorySearchRepository, times(1)).deleteById(paymentStatusHistory.getId());
     }
 
     @Test
@@ -263,8 +279,8 @@ public class PaymentStatusHistoryResourceIntTest {
     public void searchPaymentStatusHistory() throws Exception {
         // Initialize the database
         paymentStatusHistoryRepository.saveAndFlush(paymentStatusHistory);
-        paymentStatusHistorySearchRepository.save(paymentStatusHistory);
-
+        when(mockPaymentStatusHistorySearchRepository.search(queryStringQuery("id:" + paymentStatusHistory.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(paymentStatusHistory), PageRequest.of(0, 1), 1));
         // Search the paymentStatusHistory
         restPaymentStatusHistoryMockMvc.perform(get("/api/_search/payment-status-histories?query=id:" + paymentStatusHistory.getId()))
             .andExpect(status().isOk())

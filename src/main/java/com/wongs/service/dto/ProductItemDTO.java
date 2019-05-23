@@ -1,17 +1,7 @@
 package com.wongs.service.dto;
-
-
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.HashSet;
 import java.util.Objects;
-import java.util.Set;
-
-import com.wongs.domain.Price;
-import com.wongs.domain.Product;
-import com.wongs.domain.ProductItem;
-import com.wongs.domain.ProductStyle;
-import com.wongs.domain.Quantity;
 import com.wongs.domain.enumeration.CurrencyType;
 
 /**
@@ -20,8 +10,6 @@ import com.wongs.domain.enumeration.CurrencyType;
 public class ProductItemDTO implements Serializable {
 
     private Long id;
-    
-    private String tempId;
 
     private String code;
 
@@ -33,42 +21,10 @@ public class ProductItemDTO implements Serializable {
 
     private BigDecimal price;
 
-    private ProductStyleDTO color;
 
-    private ProductStyleDTO size;
+    private Long productId;
 
-    private Product product;
-
-    private Set<PriceDTO> prices = new HashSet<>();
-    private Set<QuantityDTO> quantities = new HashSet<>();
-    
-    private UrlDTO url;
-    
-    private boolean dirtyPrices = false;
-    private boolean dirtyQuantities = false;
-    private boolean dirtyUrl = false;
-    
-    public ProductItemDTO() {
-        // Empty constructor needed for Jackson.
-	}
-
-	public ProductItemDTO(ProductItem productItem) {
-		super();
-		this.id = productItem.getId();
-		this.code = productItem.getCode();
-		this.isDefault = productItem.isIsDefault();
-		this.quantity = productItem.getQuantity();
-		this.currency = productItem.getCurrency();
-		this.price = productItem.getPrice();
-//		this.color = productItem.getColor();
-//		this.size = productItem.getSize();
-		this.product = productItem.getProduct();
-		
-//		this.prices = productItem.getPrices();
-//		this.quantities = productItem.getQuantities();
-	}
-
-	public Long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -76,15 +32,7 @@ public class ProductItemDTO implements Serializable {
         this.id = id;
     }
 
-    public String getTempId() {
-		return tempId;
-	}
-
-	public void setTempId(String tempId) {
-		this.tempId = tempId;
-	}
-
-	public String getCode() {
+    public String getCode() {
         return code;
     }
 
@@ -92,15 +40,15 @@ public class ProductItemDTO implements Serializable {
         this.code = code;
     }
 
-    public Boolean getIsDefault() {
-		return isDefault;
-	}
+    public Boolean isIsDefault() {
+        return isDefault;
+    }
 
-	public void setIsDefault(Boolean isDefault) {
-		this.isDefault = isDefault;
-	}
+    public void setIsDefault(Boolean isDefault) {
+        this.isDefault = isDefault;
+    }
 
-	public Integer getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
@@ -124,79 +72,15 @@ public class ProductItemDTO implements Serializable {
         this.price = price;
     }
 
-	public ProductStyleDTO getColor() {
-		return color;
-	}
+    public Long getProductId() {
+        return productId;
+    }
 
-	public void setColor(ProductStyleDTO color) {
-		this.color = color;
-	}
+    public void setProductId(Long productId) {
+        this.productId = productId;
+    }
 
-	public ProductStyleDTO getSize() {
-		return size;
-	}
-
-	public void setSize(ProductStyleDTO size) {
-		this.size = size;
-	}
-
-	public Product getProduct() {
-		return product;
-	}
-
-	public void setProduct(Product product) {
-		this.product = product;
-	}
-
-	public Set<PriceDTO> getPrices() {
-		return prices;
-	}
-
-	public void setPrices(Set<PriceDTO> prices) {
-		this.prices = prices;
-	}
-
-	public Set<QuantityDTO> getQuantities() {
-		return quantities;
-	}
-
-	public void setQuantities(Set<QuantityDTO> quantities) {
-		this.quantities = quantities;
-	}
-
-	public UrlDTO getUrl() {
-		return url;
-	}
-
-	public void setUrl(UrlDTO url) {
-		this.url = url;
-	}
-
-	public boolean isDirtyPrices() {
-		return dirtyPrices;
-	}
-
-	public void setDirtyPrices(boolean dirtyPrices) {
-		this.dirtyPrices = dirtyPrices;
-	}
-
-	public boolean isDirtyQuantities() {
-		return dirtyQuantities;
-	}
-
-	public void setDirtyQuantities(boolean dirtyQuantities) {
-		this.dirtyQuantities = dirtyQuantities;
-	}
-
-	public boolean isDirtyUrl() {
-		return dirtyUrl;
-	}
-
-	public void setDirtyUrl(boolean dirtyUrl) {
-		this.dirtyUrl = dirtyUrl;
-	}
-
-	@Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -206,7 +90,7 @@ public class ProductItemDTO implements Serializable {
         }
 
         ProductItemDTO productItemDTO = (ProductItemDTO) o;
-        if(productItemDTO.getId() == null || getId() == null) {
+        if (productItemDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), productItemDTO.getId());
@@ -222,10 +106,11 @@ public class ProductItemDTO implements Serializable {
         return "ProductItemDTO{" +
             "id=" + getId() +
             ", code='" + getCode() + "'" +
-            ", isDefault='" + getIsDefault() + "'" +
+            ", isDefault='" + isIsDefault() + "'" +
             ", quantity=" + getQuantity() +
             ", currency='" + getCurrency() + "'" +
             ", price=" + getPrice() +
+            ", product=" + getProductId() +
             "}";
     }
 }

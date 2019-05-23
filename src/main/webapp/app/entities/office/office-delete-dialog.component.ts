@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { Office } from './office.model';
-import { OfficePopupService } from './office-popup.service';
+import { IOffice } from 'app/shared/model/office.model';
 import { OfficeService } from './office.service';
 
 @Component({
@@ -13,22 +12,16 @@ import { OfficeService } from './office.service';
     templateUrl: './office-delete-dialog.component.html'
 })
 export class OfficeDeleteDialogComponent {
+    office: IOffice;
 
-    office: Office;
-
-    constructor(
-        private officeService: OfficeService,
-        public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager
-    ) {
-    }
+    constructor(protected officeService: OfficeService, public activeModal: NgbActiveModal, protected eventManager: JhiEventManager) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.officeService.delete(id).subscribe((response) => {
+        this.officeService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'officeListModification',
                 content: 'Deleted an office'
@@ -43,22 +36,30 @@ export class OfficeDeleteDialogComponent {
     template: ''
 })
 export class OfficeDeletePopupComponent implements OnInit, OnDestroy {
+    protected ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private officePopupService: OfficePopupService
-    ) {}
+    constructor(protected activatedRoute: ActivatedRoute, protected router: Router, protected modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.officePopupService
-                .open(OfficeDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ office }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(OfficeDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
+                this.ngbModalRef.componentInstance.office = office;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate(['/office', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate(['/office', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

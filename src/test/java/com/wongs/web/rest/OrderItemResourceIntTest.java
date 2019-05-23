@@ -15,6 +15,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -22,14 +24,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -58,8 +65,13 @@ public class OrderItemResourceIntTest {
     @Autowired
     private OrderItemMapper orderItemMapper;
 
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.OrderItemSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private OrderItemSearchRepository orderItemSearchRepository;
+    private OrderItemSearchRepository mockOrderItemSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -73,6 +85,9 @@ public class OrderItemResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restOrderItemMockMvc;
 
     private OrderItem orderItem;
@@ -80,12 +95,13 @@ public class OrderItemResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final OrderItemResource orderItemResource = new OrderItemResource(orderItemRepository, orderItemMapper, orderItemSearchRepository);
+        final OrderItemResource orderItemResource = new OrderItemResource(orderItemRepository, orderItemMapper, mockOrderItemSearchRepository);
         this.restOrderItemMockMvc = MockMvcBuilders.standaloneSetup(orderItemResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -104,7 +120,6 @@ public class OrderItemResourceIntTest {
 
     @Before
     public void initTest() {
-        orderItemSearchRepository.deleteAll();
         orderItem = createEntity(em);
     }
 
@@ -129,8 +144,7 @@ public class OrderItemResourceIntTest {
         assertThat(testOrderItem.getCurrency()).isEqualTo(DEFAULT_CURRENCY);
 
         // Validate the OrderItem in Elasticsearch
-        OrderItem orderItemEs = orderItemSearchRepository.findOne(testOrderItem.getId());
-        assertThat(orderItemEs).isEqualToIgnoringGivenFields(testOrderItem);
+        verify(mockOrderItemSearchRepository, times(1)).save(testOrderItem);
     }
 
     @Test
@@ -151,6 +165,9 @@ public class OrderItemResourceIntTest {
         // Validate the OrderItem in the database
         List<OrderItem> orderItemList = orderItemRepository.findAll();
         assertThat(orderItemList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the OrderItem in Elasticsearch
+        verify(mockOrderItemSearchRepository, times(0)).save(orderItem);
     }
 
     @Test
@@ -168,7 +185,7 @@ public class OrderItemResourceIntTest {
             .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
             .andExpect(jsonPath("$.[*].currency").value(hasItem(DEFAULT_CURRENCY.toString())));
     }
-
+    
     @Test
     @Transactional
     public void getOrderItem() throws Exception {
@@ -198,11 +215,11 @@ public class OrderItemResourceIntTest {
     public void updateOrderItem() throws Exception {
         // Initialize the database
         orderItemRepository.saveAndFlush(orderItem);
-        orderItemSearchRepository.save(orderItem);
+
         int databaseSizeBeforeUpdate = orderItemRepository.findAll().size();
 
         // Update the orderItem
-        OrderItem updatedOrderItem = orderItemRepository.findOne(orderItem.getId());
+        OrderItem updatedOrderItem = orderItemRepository.findById(orderItem.getId()).get();
         // Disconnect from session so that the updates on updatedOrderItem are not directly saved in db
         em.detach(updatedOrderItem);
         updatedOrderItem
@@ -225,8 +242,7 @@ public class OrderItemResourceIntTest {
         assertThat(testOrderItem.getCurrency()).isEqualTo(UPDATED_CURRENCY);
 
         // Validate the OrderItem in Elasticsearch
-        OrderItem orderItemEs = orderItemSearchRepository.findOne(testOrderItem.getId());
-        assertThat(orderItemEs).isEqualToIgnoringGivenFields(testOrderItem);
+        verify(mockOrderItemSearchRepository, times(1)).save(testOrderItem);
     }
 
     @Test
@@ -237,15 +253,18 @@ public class OrderItemResourceIntTest {
         // Create the OrderItem
         OrderItemDTO orderItemDTO = orderItemMapper.toDto(orderItem);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restOrderItemMockMvc.perform(put("/api/order-items")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(orderItemDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the OrderItem in the database
         List<OrderItem> orderItemList = orderItemRepository.findAll();
-        assertThat(orderItemList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(orderItemList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the OrderItem in Elasticsearch
+        verify(mockOrderItemSearchRepository, times(0)).save(orderItem);
     }
 
     @Test
@@ -253,21 +272,20 @@ public class OrderItemResourceIntTest {
     public void deleteOrderItem() throws Exception {
         // Initialize the database
         orderItemRepository.saveAndFlush(orderItem);
-        orderItemSearchRepository.save(orderItem);
+
         int databaseSizeBeforeDelete = orderItemRepository.findAll().size();
 
-        // Get the orderItem
+        // Delete the orderItem
         restOrderItemMockMvc.perform(delete("/api/order-items/{id}", orderItem.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean orderItemExistsInEs = orderItemSearchRepository.exists(orderItem.getId());
-        assertThat(orderItemExistsInEs).isFalse();
-
         // Validate the database is empty
         List<OrderItem> orderItemList = orderItemRepository.findAll();
         assertThat(orderItemList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the OrderItem in Elasticsearch
+        verify(mockOrderItemSearchRepository, times(1)).deleteById(orderItem.getId());
     }
 
     @Test
@@ -275,8 +293,8 @@ public class OrderItemResourceIntTest {
     public void searchOrderItem() throws Exception {
         // Initialize the database
         orderItemRepository.saveAndFlush(orderItem);
-        orderItemSearchRepository.save(orderItem);
-
+        when(mockOrderItemSearchRepository.search(queryStringQuery("id:" + orderItem.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(orderItem), PageRequest.of(0, 1), 1));
         // Search the orderItem
         restOrderItemMockMvc.perform(get("/api/_search/order-items?query=id:" + orderItem.getId()))
             .andExpect(status().isOk())

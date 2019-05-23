@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "shipping" : {
+        "shipping": {
             "home": {
                 "title": "Shippings",
                 "createLabel": "Create a new Shipping",

@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "shippingStatusHistory" : {
+        "shippingStatusHistory": {
             "home": {
                 "title": "Shipping Status Histories",
                 "createLabel": "Create a new Shipping Status History",

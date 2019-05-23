@@ -1,6 +1,8 @@
 package com.wongs.domain;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -25,7 +27,7 @@ import com.wongs.domain.enumeration.CommonStatus;
 public class Company implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -42,27 +44,26 @@ public class Company implements Serializable {
     private CommonStatus status;
 
     @ManyToOne
+    @JsonIgnoreProperties("companies")
     private Company parent;
 
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "company_department",
-               joinColumns = @JoinColumn(name="companies_id", referencedColumnName="id"),
-               inverseJoinColumns = @JoinColumn(name="departments_id", referencedColumnName="id"))
+               joinColumns = @JoinColumn(name = "company_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "department_id", referencedColumnName = "id"))
     private Set<Department> departments = new HashSet<>();
 
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "company_office",
-               joinColumns = @JoinColumn(name="companies_id", referencedColumnName="id"),
-               inverseJoinColumns = @JoinColumn(name="offices_id", referencedColumnName="id"))
+               joinColumns = @JoinColumn(name = "company_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "office_id", referencedColumnName = "id"))
     private Set<Office> offices = new HashSet<>();
 
     @OneToMany(mappedBy = "company")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<MyAccount> accounts = new HashSet<>();
-
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;

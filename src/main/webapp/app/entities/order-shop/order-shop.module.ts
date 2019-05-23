@@ -1,51 +1,40 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { JhiLanguageService } from 'ng-jhipster';
+import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from '../../shared';
+import { MallSharedModule } from 'app/shared';
 import {
-    OrderShopService,
-    OrderShopPopupService,
     OrderShopComponent,
     OrderShopDetailComponent,
-    OrderShopDialogComponent,
-    OrderShopPopupComponent,
+    OrderShopUpdateComponent,
     OrderShopDeletePopupComponent,
     OrderShopDeleteDialogComponent,
     orderShopRoute,
-    orderShopPopupRoute,
-    OrderShopResolvePagingParams,
+    orderShopPopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...orderShopRoute,
-    ...orderShopPopupRoute,
-];
+const ENTITY_STATES = [...orderShopRoute, ...orderShopPopupRoute];
 
 @NgModule({
-    imports: [
-        MallSharedModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         OrderShopComponent,
         OrderShopDetailComponent,
-        OrderShopDialogComponent,
+        OrderShopUpdateComponent,
         OrderShopDeleteDialogComponent,
-        OrderShopPopupComponent,
-        OrderShopDeletePopupComponent,
+        OrderShopDeletePopupComponent
     ],
-    entryComponents: [
-        OrderShopComponent,
-        OrderShopDialogComponent,
-        OrderShopPopupComponent,
-        OrderShopDeleteDialogComponent,
-        OrderShopDeletePopupComponent,
-    ],
-    providers: [
-        OrderShopService,
-        OrderShopPopupService,
-        OrderShopResolvePagingParams,
-    ],
+    entryComponents: [OrderShopComponent, OrderShopUpdateComponent, OrderShopDeleteDialogComponent, OrderShopDeletePopupComponent],
+    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MallOrderShopModule {}
+export class MallOrderShopModule {
+    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
+        this.languageHelper.language.subscribe((languageKey: string) => {
+            if (languageKey !== undefined) {
+                this.languageService.changeLanguage(languageKey);
+            }
+        });
+    }
+}

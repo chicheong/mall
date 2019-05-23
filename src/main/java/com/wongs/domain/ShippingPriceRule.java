@@ -1,5 +1,7 @@
 package com.wongs.domain;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -20,7 +22,7 @@ import java.util.Objects;
 public class ShippingPriceRule implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -28,13 +30,14 @@ public class ShippingPriceRule implements Serializable {
     @Column(name = "jhi_type")
     private String type;
 
-    @Column(name = "jhi_value", precision=10, scale=2)
+    @Column(name = "jhi_value", precision = 10, scale = 2)
     private BigDecimal value;
 
-    @Column(name = "price", precision=10, scale=2)
+    @Column(name = "price", precision = 10, scale = 2)
     private BigDecimal price;
 
     @ManyToOne
+    @JsonIgnoreProperties("shippingPriceRules")
     private Shop shop;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

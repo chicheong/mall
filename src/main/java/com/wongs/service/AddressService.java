@@ -7,11 +7,13 @@ import com.wongs.service.dto.AddressDTO;
 import com.wongs.service.mapper.AddressMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
@@ -50,19 +52,6 @@ public class AddressService {
         addressSearchRepository.save(address);
         return result;
     }
-    
-    /**
-     * Save a address.
-     *
-     * @param address the entity to save
-     * @return the persisted entity
-     */
-    public Address save(Address address) {
-        log.debug("Request to save Address : {}", address);
-        Address result = addressRepository.save(address);
-        addressSearchRepository.save(address);
-        return result;
-    }
 
     /**
      * Get all the addresses.
@@ -77,6 +66,7 @@ public class AddressService {
             .map(addressMapper::toDto);
     }
 
+
     /**
      * Get one address by id.
      *
@@ -84,10 +74,10 @@ public class AddressService {
      * @return the entity
      */
     @Transactional(readOnly = true)
-    public AddressDTO findOne(Long id) {
+    public Optional<AddressDTO> findOne(Long id) {
         log.debug("Request to get Address : {}", id);
-        Address address = addressRepository.findOne(id);
-        return addressMapper.toDto(address);
+        return addressRepository.findById(id)
+            .map(addressMapper::toDto);
     }
 
     /**
@@ -97,8 +87,8 @@ public class AddressService {
      */
     public void delete(Long id) {
         log.debug("Request to delete Address : {}", id);
-        addressRepository.delete(id);
-        addressSearchRepository.delete(id);
+        addressRepository.deleteById(id);
+        addressSearchRepository.deleteById(id);
     }
 
     /**
@@ -111,7 +101,7 @@ public class AddressService {
     @Transactional(readOnly = true)
     public Page<AddressDTO> search(String query, Pageable pageable) {
         log.debug("Request to search for a page of Addresses for query {}", query);
-        Page<Address> result = addressSearchRepository.search(queryStringQuery(query), pageable);
-        return result.map(addressMapper::toDto);
+        return addressSearchRepository.search(queryStringQuery(query), pageable)
+            .map(addressMapper::toDto);
     }
 }

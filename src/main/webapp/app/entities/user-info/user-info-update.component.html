@@ -1,0 +1,54 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+            <h2 id="jhi-user-info-heading" jhiTranslate="mallApp.userInfo.home.createOrEditLabel">Create or edit a User Info</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!userInfo.id">
+                    <label for="id" jhiTranslate="global.field.id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                        [(ngModel)]="userInfo.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.userInfo.accountId" for="field_accountId">Account Id</label>
+                    <input type="number" class="form-control" name="accountId" id="field_accountId"
+                        [(ngModel)]="userInfo.accountId" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.userInfo.shopId" for="field_shopId">Shop Id</label>
+                    <input type="number" class="form-control" name="shopId" id="field_shopId"
+                        [(ngModel)]="userInfo.shopId" />
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.userInfo.user" for="field_user">User</label>
+                    <select class="form-control" id="field_user" name="user" [(ngModel)]="userInfo.userId" >
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="userOption.id" *ngFor="let userOption of users; trackBy: trackUserById">{{userOption.login}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.userInfo.defaultAccount" for="field_defaultAccount">Default Account</label>
+                    <select class="form-control" id="field_defaultAccount" name="defaultAccount" [(ngModel)]="userInfo.defaultAccountId">
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="myAccountOption.id" *ngFor="let myAccountOption of defaultaccounts; trackBy: trackMyAccountById">{{myAccountOption.id}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label jhiTranslate="mallApp.userInfo.account" for="field_account">Account</label>
+                    <select class="form-control" id="field_account" multiple name="account" [(ngModel)]="userInfo.accounts">
+                        <option [ngValue]="getSelected(userInfo.accounts, myAccountOption)" *ngFor="let myAccountOption of myaccounts; trackBy: trackMyAccountById">{{myAccountOption.id}}</option>
+                    </select>
+                </div>
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

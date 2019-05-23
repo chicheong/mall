@@ -1,8 +1,5 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.domain.ShippingType;
-
 import com.wongs.repository.ShippingTypeRepository;
 import com.wongs.repository.search.ShippingTypeSearchRepository;
 import com.wongs.web.rest.errors.BadRequestAlertException;
@@ -56,7 +53,6 @@ public class ShippingTypeResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/shipping-types")
-    @Timed
     public ResponseEntity<ShippingType> createShippingType(@RequestBody ShippingType shippingType) throws URISyntaxException {
         log.debug("REST request to save ShippingType : {}", shippingType);
         if (shippingType.getId() != null) {
@@ -79,11 +75,10 @@ public class ShippingTypeResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/shipping-types")
-    @Timed
     public ResponseEntity<ShippingType> updateShippingType(@RequestBody ShippingType shippingType) throws URISyntaxException {
         log.debug("REST request to update ShippingType : {}", shippingType);
         if (shippingType.getId() == null) {
-            return createShippingType(shippingType);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         ShippingType result = shippingTypeRepository.save(shippingType);
         shippingTypeSearchRepository.save(result);
@@ -99,12 +94,11 @@ public class ShippingTypeResource {
      * @return the ResponseEntity with status 200 (OK) and the list of shippingTypes in body
      */
     @GetMapping("/shipping-types")
-    @Timed
     public ResponseEntity<List<ShippingType>> getAllShippingTypes(Pageable pageable) {
         log.debug("REST request to get a page of ShippingTypes");
         Page<ShippingType> page = shippingTypeRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/shipping-types");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -114,11 +108,10 @@ public class ShippingTypeResource {
      * @return the ResponseEntity with status 200 (OK) and with body the shippingType, or with status 404 (Not Found)
      */
     @GetMapping("/shipping-types/{id}")
-    @Timed
     public ResponseEntity<ShippingType> getShippingType(@PathVariable Long id) {
         log.debug("REST request to get ShippingType : {}", id);
-        ShippingType shippingType = shippingTypeRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(shippingType));
+        Optional<ShippingType> shippingType = shippingTypeRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(shippingType);
     }
 
     /**
@@ -128,11 +121,10 @@ public class ShippingTypeResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/shipping-types/{id}")
-    @Timed
     public ResponseEntity<Void> deleteShippingType(@PathVariable Long id) {
         log.debug("REST request to delete ShippingType : {}", id);
-        shippingTypeRepository.delete(id);
-        shippingTypeSearchRepository.delete(id);
+        shippingTypeRepository.deleteById(id);
+        shippingTypeSearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -145,12 +137,11 @@ public class ShippingTypeResource {
      * @return the result of the search
      */
     @GetMapping("/_search/shipping-types")
-    @Timed
     public ResponseEntity<List<ShippingType>> searchShippingTypes(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of ShippingTypes for query {}", query);
         Page<ShippingType> page = shippingTypeSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/shipping-types");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
 }

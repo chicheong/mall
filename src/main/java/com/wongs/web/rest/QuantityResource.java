@@ -1,8 +1,5 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.domain.Quantity;
-
 import com.wongs.repository.QuantityRepository;
 import com.wongs.repository.search.QuantitySearchRepository;
 import com.wongs.web.rest.errors.BadRequestAlertException;
@@ -61,7 +58,6 @@ public class QuantityResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/quantities")
-    @Timed
     public ResponseEntity<QuantityDTO> createQuantity(@RequestBody QuantityDTO quantityDTO) throws URISyntaxException {
         log.debug("REST request to save Quantity : {}", quantityDTO);
         if (quantityDTO.getId() != null) {
@@ -86,11 +82,10 @@ public class QuantityResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/quantities")
-    @Timed
     public ResponseEntity<QuantityDTO> updateQuantity(@RequestBody QuantityDTO quantityDTO) throws URISyntaxException {
         log.debug("REST request to update Quantity : {}", quantityDTO);
         if (quantityDTO.getId() == null) {
-            return createQuantity(quantityDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         Quantity quantity = quantityMapper.toEntity(quantityDTO);
         quantity = quantityRepository.save(quantity);
@@ -108,12 +103,11 @@ public class QuantityResource {
      * @return the ResponseEntity with status 200 (OK) and the list of quantities in body
      */
     @GetMapping("/quantities")
-    @Timed
     public ResponseEntity<List<QuantityDTO>> getAllQuantities(Pageable pageable) {
         log.debug("REST request to get a page of Quantities");
-        Page<Quantity> page = quantityRepository.findAll(pageable);
+        Page<QuantityDTO> page = quantityRepository.findAll(pageable).map(quantityMapper::toDto);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/quantities");
-        return new ResponseEntity<>(quantityMapper.toDto(page.getContent()), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -123,12 +117,11 @@ public class QuantityResource {
      * @return the ResponseEntity with status 200 (OK) and with body the quantityDTO, or with status 404 (Not Found)
      */
     @GetMapping("/quantities/{id}")
-    @Timed
     public ResponseEntity<QuantityDTO> getQuantity(@PathVariable Long id) {
         log.debug("REST request to get Quantity : {}", id);
-        Quantity quantity = quantityRepository.findOne(id);
-        QuantityDTO quantityDTO = quantityMapper.toDto(quantity);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(quantityDTO));
+        Optional<QuantityDTO> quantityDTO = quantityRepository.findById(id)
+            .map(quantityMapper::toDto);
+        return ResponseUtil.wrapOrNotFound(quantityDTO);
     }
 
     /**
@@ -138,11 +131,10 @@ public class QuantityResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/quantities/{id}")
-    @Timed
     public ResponseEntity<Void> deleteQuantity(@PathVariable Long id) {
         log.debug("REST request to delete Quantity : {}", id);
-        quantityRepository.delete(id);
-        quantitySearchRepository.delete(id);
+        quantityRepository.deleteById(id);
+        quantitySearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -155,12 +147,11 @@ public class QuantityResource {
      * @return the result of the search
      */
     @GetMapping("/_search/quantities")
-    @Timed
     public ResponseEntity<List<QuantityDTO>> searchQuantities(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Quantities for query {}", query);
         Page<Quantity> page = quantitySearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/quantities");
-        return new ResponseEntity<>(quantityMapper.toDto(page.getContent()), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(quantityMapper.toDto(page.getContent()));
     }
 
 }

@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "shippingType" : {
+        "shippingType": {
             "home": {
                 "title": "Shipping Types",
                 "createLabel": "建立一筆新的 Shipping Type",

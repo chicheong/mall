@@ -1,51 +1,40 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { JhiLanguageService } from 'ng-jhipster';
+import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from '../../shared';
+import { MallSharedModule } from 'app/shared';
 import {
-    ProductItemService,
-    ProductItemPopupService,
     ProductItemComponent,
     ProductItemDetailComponent,
-    ProductItemDialogComponent,
-    ProductItemPopupComponent,
+    ProductItemUpdateComponent,
     ProductItemDeletePopupComponent,
     ProductItemDeleteDialogComponent,
     productItemRoute,
-    productItemPopupRoute,
-    ProductItemResolvePagingParams,
+    productItemPopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...productItemRoute,
-    ...productItemPopupRoute,
-];
+const ENTITY_STATES = [...productItemRoute, ...productItemPopupRoute];
 
 @NgModule({
-    imports: [
-        MallSharedModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         ProductItemComponent,
         ProductItemDetailComponent,
-        ProductItemDialogComponent,
+        ProductItemUpdateComponent,
         ProductItemDeleteDialogComponent,
-        ProductItemPopupComponent,
-        ProductItemDeletePopupComponent,
+        ProductItemDeletePopupComponent
     ],
-    entryComponents: [
-        ProductItemComponent,
-        ProductItemDialogComponent,
-        ProductItemPopupComponent,
-        ProductItemDeleteDialogComponent,
-        ProductItemDeletePopupComponent,
-    ],
-    providers: [
-        ProductItemService,
-        ProductItemPopupService,
-        ProductItemResolvePagingParams,
-    ],
+    entryComponents: [ProductItemComponent, ProductItemUpdateComponent, ProductItemDeleteDialogComponent, ProductItemDeletePopupComponent],
+    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MallProductItemModule {}
+export class MallProductItemModule {
+    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
+        this.languageHelper.language.subscribe((languageKey: string) => {
+            if (languageKey !== undefined) {
+                this.languageService.changeLanguage(languageKey);
+            }
+        });
+    }
+}

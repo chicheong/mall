@@ -1,44 +1,45 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="price">
+            <h2><span jhiTranslate="mallApp.price.detail.title">Price</span> {{price.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="mallApp.price.from">From</span></dt>
+                <dd>
+                    <span>{{price.from}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.price.to">To</span></dt>
+                <dd>
+                    <span>{{price.to}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.price.price">Price</span></dt>
+                <dd>
+                    <span>{{price.price}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.price.currency">Currency</span></dt>
+                <dd>
+                    <span jhiTranslate="{{'mallApp.CurrencyType.' + price.currency}}">{{price.currency}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.price.item">Item</span></dt>
+                <dd>
+                    <div *ngIf="price.itemId">
+                        <a [routerLink]="['/product-item', price.itemId, 'view']">{{price.itemId}}</a>
+                    </div>
+                </dd>
+            </dl>
 
-<div *ngIf="price">
-    <h2><span jhiTranslate="mallApp.price.detail.title">Price</span> {{price.id}}</h2>
-    <hr>
-    <jhi-alert-error></jhi-alert-error>
-    <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="mallApp.price.from">From</span></dt>
-        <dd>
-            <span>{{price.from | date:'medium'}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.price.to">To</span></dt>
-        <dd>
-            <span>{{price.to | date:'medium'}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.price.price">Price</span></dt>
-        <dd>
-            <span>{{price.price}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.price.currency">Currency</span></dt>
-        <dd>
-            <span jhiTranslate="{{'mallApp.CurrencyType.' + price.currency}}">{{price.currency}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.price.item">Item</span></dt>
-        <dd>
-            <div *ngIf="price.item">
-                <a [routerLink]="['/product-item', price.item?.id]">{{price.item?.id}}</a>
-            </div>
-        </dd>
-    </dl>
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
 
-    <button type="submit"
-            (click)="previousState()"
-            class="btn btn-info">
-        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
-    </button>
-
-    <button type="button"
-            [routerLink]="['/', { outlets: { popup: 'price/'+ price.id + '/edit'} }]"
-            replaceUrl="true"
-            queryParamsHandling="merge"
-            class="btn btn-primary">
-        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
-    </button>
+            <button type="button"
+                    [routerLink]="['/price', price.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
 </div>

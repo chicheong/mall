@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { Department } from './department.model';
-import { DepartmentPopupService } from './department-popup.service';
+import { IDepartment } from 'app/shared/model/department.model';
 import { DepartmentService } from './department.service';
 
 @Component({
@@ -13,22 +12,20 @@ import { DepartmentService } from './department.service';
     templateUrl: './department-delete-dialog.component.html'
 })
 export class DepartmentDeleteDialogComponent {
-
-    department: Department;
+    department: IDepartment;
 
     constructor(
-        private departmentService: DepartmentService,
+        protected departmentService: DepartmentService,
         public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager
-    ) {
-    }
+        protected eventManager: JhiEventManager
+    ) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.departmentService.delete(id).subscribe((response) => {
+        this.departmentService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'departmentListModification',
                 content: 'Deleted an department'
@@ -43,22 +40,30 @@ export class DepartmentDeleteDialogComponent {
     template: ''
 })
 export class DepartmentDeletePopupComponent implements OnInit, OnDestroy {
+    protected ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private departmentPopupService: DepartmentPopupService
-    ) {}
+    constructor(protected activatedRoute: ActivatedRoute, protected router: Router, protected modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.departmentPopupService
-                .open(DepartmentDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ department }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(DepartmentDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
+                this.ngbModalRef.componentInstance.department = department;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate(['/department', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate(['/department', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

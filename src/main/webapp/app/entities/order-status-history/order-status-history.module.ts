@@ -1,49 +1,45 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { JhiLanguageService } from 'ng-jhipster';
+import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from '../../shared';
+import { MallSharedModule } from 'app/shared';
 import {
-    OrderStatusHistoryService,
-    OrderStatusHistoryPopupService,
     OrderStatusHistoryComponent,
     OrderStatusHistoryDetailComponent,
-    OrderStatusHistoryDialogComponent,
-    OrderStatusHistoryPopupComponent,
+    OrderStatusHistoryUpdateComponent,
     OrderStatusHistoryDeletePopupComponent,
     OrderStatusHistoryDeleteDialogComponent,
     orderStatusHistoryRoute,
-    orderStatusHistoryPopupRoute,
+    orderStatusHistoryPopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...orderStatusHistoryRoute,
-    ...orderStatusHistoryPopupRoute,
-];
+const ENTITY_STATES = [...orderStatusHistoryRoute, ...orderStatusHistoryPopupRoute];
 
 @NgModule({
-    imports: [
-        MallSharedModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         OrderStatusHistoryComponent,
         OrderStatusHistoryDetailComponent,
-        OrderStatusHistoryDialogComponent,
+        OrderStatusHistoryUpdateComponent,
         OrderStatusHistoryDeleteDialogComponent,
-        OrderStatusHistoryPopupComponent,
-        OrderStatusHistoryDeletePopupComponent,
+        OrderStatusHistoryDeletePopupComponent
     ],
     entryComponents: [
         OrderStatusHistoryComponent,
-        OrderStatusHistoryDialogComponent,
-        OrderStatusHistoryPopupComponent,
+        OrderStatusHistoryUpdateComponent,
         OrderStatusHistoryDeleteDialogComponent,
-        OrderStatusHistoryDeletePopupComponent,
+        OrderStatusHistoryDeletePopupComponent
     ],
-    providers: [
-        OrderStatusHistoryService,
-        OrderStatusHistoryPopupService,
-    ],
+    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MallOrderStatusHistoryModule {}
+export class MallOrderStatusHistoryModule {
+    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
+        this.languageHelper.language.subscribe((languageKey: string) => {
+            if (languageKey !== undefined) {
+                this.languageService.changeLanguage(languageKey);
+            }
+        });
+    }
+}

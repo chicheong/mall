@@ -1,8 +1,5 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.domain.ShippingStatusHistory;
-
 import com.wongs.repository.ShippingStatusHistoryRepository;
 import com.wongs.repository.search.ShippingStatusHistorySearchRepository;
 import com.wongs.web.rest.errors.BadRequestAlertException;
@@ -56,7 +53,6 @@ public class ShippingStatusHistoryResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/shipping-status-histories")
-    @Timed
     public ResponseEntity<ShippingStatusHistory> createShippingStatusHistory(@RequestBody ShippingStatusHistory shippingStatusHistory) throws URISyntaxException {
         log.debug("REST request to save ShippingStatusHistory : {}", shippingStatusHistory);
         if (shippingStatusHistory.getId() != null) {
@@ -79,11 +75,10 @@ public class ShippingStatusHistoryResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/shipping-status-histories")
-    @Timed
     public ResponseEntity<ShippingStatusHistory> updateShippingStatusHistory(@RequestBody ShippingStatusHistory shippingStatusHistory) throws URISyntaxException {
         log.debug("REST request to update ShippingStatusHistory : {}", shippingStatusHistory);
         if (shippingStatusHistory.getId() == null) {
-            return createShippingStatusHistory(shippingStatusHistory);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         ShippingStatusHistory result = shippingStatusHistoryRepository.save(shippingStatusHistory);
         shippingStatusHistorySearchRepository.save(result);
@@ -99,12 +94,11 @@ public class ShippingStatusHistoryResource {
      * @return the ResponseEntity with status 200 (OK) and the list of shippingStatusHistories in body
      */
     @GetMapping("/shipping-status-histories")
-    @Timed
     public ResponseEntity<List<ShippingStatusHistory>> getAllShippingStatusHistories(Pageable pageable) {
         log.debug("REST request to get a page of ShippingStatusHistories");
         Page<ShippingStatusHistory> page = shippingStatusHistoryRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/shipping-status-histories");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -114,11 +108,10 @@ public class ShippingStatusHistoryResource {
      * @return the ResponseEntity with status 200 (OK) and with body the shippingStatusHistory, or with status 404 (Not Found)
      */
     @GetMapping("/shipping-status-histories/{id}")
-    @Timed
     public ResponseEntity<ShippingStatusHistory> getShippingStatusHistory(@PathVariable Long id) {
         log.debug("REST request to get ShippingStatusHistory : {}", id);
-        ShippingStatusHistory shippingStatusHistory = shippingStatusHistoryRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(shippingStatusHistory));
+        Optional<ShippingStatusHistory> shippingStatusHistory = shippingStatusHistoryRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(shippingStatusHistory);
     }
 
     /**
@@ -128,11 +121,10 @@ public class ShippingStatusHistoryResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/shipping-status-histories/{id}")
-    @Timed
     public ResponseEntity<Void> deleteShippingStatusHistory(@PathVariable Long id) {
         log.debug("REST request to delete ShippingStatusHistory : {}", id);
-        shippingStatusHistoryRepository.delete(id);
-        shippingStatusHistorySearchRepository.delete(id);
+        shippingStatusHistoryRepository.deleteById(id);
+        shippingStatusHistorySearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -145,12 +137,11 @@ public class ShippingStatusHistoryResource {
      * @return the result of the search
      */
     @GetMapping("/_search/shipping-status-histories")
-    @Timed
     public ResponseEntity<List<ShippingStatusHistory>> searchShippingStatusHistories(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of ShippingStatusHistories for query {}", query);
         Page<ShippingStatusHistory> page = shippingStatusHistorySearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/shipping-status-histories");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
 }

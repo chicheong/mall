@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "myAccount" : {
+        "myAccount": {
             "home": {
                 "title": "My Accounts",
                 "createLabel": "建立一筆新的 My Account",

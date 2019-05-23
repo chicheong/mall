@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { ProductItemHistory } from './product-item-history.model';
-import { ProductItemHistoryPopupService } from './product-item-history-popup.service';
+import { IProductItemHistory } from 'app/shared/model/product-item-history.model';
 import { ProductItemHistoryService } from './product-item-history.service';
 
 @Component({
@@ -13,22 +12,20 @@ import { ProductItemHistoryService } from './product-item-history.service';
     templateUrl: './product-item-history-delete-dialog.component.html'
 })
 export class ProductItemHistoryDeleteDialogComponent {
-
-    productItemHistory: ProductItemHistory;
+    productItemHistory: IProductItemHistory;
 
     constructor(
-        private productItemHistoryService: ProductItemHistoryService,
+        protected productItemHistoryService: ProductItemHistoryService,
         public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager
-    ) {
-    }
+        protected eventManager: JhiEventManager
+    ) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.productItemHistoryService.delete(id).subscribe((response) => {
+        this.productItemHistoryService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'productItemHistoryListModification',
                 content: 'Deleted an productItemHistory'
@@ -43,22 +40,33 @@ export class ProductItemHistoryDeleteDialogComponent {
     template: ''
 })
 export class ProductItemHistoryDeletePopupComponent implements OnInit, OnDestroy {
+    protected ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private productItemHistoryPopupService: ProductItemHistoryPopupService
-    ) {}
+    constructor(protected activatedRoute: ActivatedRoute, protected router: Router, protected modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.productItemHistoryPopupService
-                .open(ProductItemHistoryDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ productItemHistory }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(ProductItemHistoryDeleteDialogComponent as Component, {
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                this.ngbModalRef.componentInstance.productItemHistory = productItemHistory;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate(['/product-item-history', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate(['/product-item-history', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

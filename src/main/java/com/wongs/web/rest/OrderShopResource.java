@@ -1,8 +1,5 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.domain.OrderShop;
-
 import com.wongs.repository.OrderShopRepository;
 import com.wongs.repository.search.OrderShopSearchRepository;
 import com.wongs.web.rest.errors.BadRequestAlertException;
@@ -61,7 +58,6 @@ public class OrderShopResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/order-shops")
-    @Timed
     public ResponseEntity<OrderShopDTO> createOrderShop(@RequestBody OrderShopDTO orderShopDTO) throws URISyntaxException {
         log.debug("REST request to save OrderShop : {}", orderShopDTO);
         if (orderShopDTO.getId() != null) {
@@ -86,11 +82,10 @@ public class OrderShopResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/order-shops")
-    @Timed
     public ResponseEntity<OrderShopDTO> updateOrderShop(@RequestBody OrderShopDTO orderShopDTO) throws URISyntaxException {
         log.debug("REST request to update OrderShop : {}", orderShopDTO);
         if (orderShopDTO.getId() == null) {
-            return createOrderShop(orderShopDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         OrderShop orderShop = orderShopMapper.toEntity(orderShopDTO);
         orderShop = orderShopRepository.save(orderShop);
@@ -108,12 +103,11 @@ public class OrderShopResource {
      * @return the ResponseEntity with status 200 (OK) and the list of orderShops in body
      */
     @GetMapping("/order-shops")
-    @Timed
     public ResponseEntity<List<OrderShopDTO>> getAllOrderShops(Pageable pageable) {
         log.debug("REST request to get a page of OrderShops");
-        Page<OrderShop> page = orderShopRepository.findAll(pageable);
+        Page<OrderShopDTO> page = orderShopRepository.findAll(pageable).map(orderShopMapper::toDto);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/order-shops");
-        return new ResponseEntity<>(orderShopMapper.toDto(page.getContent()), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -123,12 +117,11 @@ public class OrderShopResource {
      * @return the ResponseEntity with status 200 (OK) and with body the orderShopDTO, or with status 404 (Not Found)
      */
     @GetMapping("/order-shops/{id}")
-    @Timed
     public ResponseEntity<OrderShopDTO> getOrderShop(@PathVariable Long id) {
         log.debug("REST request to get OrderShop : {}", id);
-        OrderShop orderShop = orderShopRepository.findOne(id);
-        OrderShopDTO orderShopDTO = orderShopMapper.toDto(orderShop);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(orderShopDTO));
+        Optional<OrderShopDTO> orderShopDTO = orderShopRepository.findById(id)
+            .map(orderShopMapper::toDto);
+        return ResponseUtil.wrapOrNotFound(orderShopDTO);
     }
 
     /**
@@ -138,11 +131,10 @@ public class OrderShopResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/order-shops/{id}")
-    @Timed
     public ResponseEntity<Void> deleteOrderShop(@PathVariable Long id) {
         log.debug("REST request to delete OrderShop : {}", id);
-        orderShopRepository.delete(id);
-        orderShopSearchRepository.delete(id);
+        orderShopRepository.deleteById(id);
+        orderShopSearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -155,12 +147,11 @@ public class OrderShopResource {
      * @return the result of the search
      */
     @GetMapping("/_search/order-shops")
-    @Timed
     public ResponseEntity<List<OrderShopDTO>> searchOrderShops(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of OrderShops for query {}", query);
         Page<OrderShop> page = orderShopSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/order-shops");
-        return new ResponseEntity<>(orderShopMapper.toDto(page.getContent()), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(orderShopMapper.toDto(page.getContent()));
     }
 
 }

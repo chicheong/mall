@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "shippingStatusHistory" : {
+        "shippingStatusHistory": {
             "home": {
                 "title": "Shipping Status Histories",
                 "createLabel": "建立一筆新的 Shipping Status History",

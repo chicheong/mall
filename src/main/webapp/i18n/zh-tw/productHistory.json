@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "productHistory" : {
+        "productHistory": {
             "home": {
                 "title": "Product Histories",
                 "createLabel": "建立一筆新的 Product History",

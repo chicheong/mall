@@ -1,51 +1,45 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { JhiLanguageService } from 'ng-jhipster';
+import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from '../../shared';
+import { MallSharedModule } from 'app/shared';
 import {
-    ShippingTypeService,
-    ShippingTypePopupService,
     ShippingTypeComponent,
     ShippingTypeDetailComponent,
-    ShippingTypeDialogComponent,
-    ShippingTypePopupComponent,
+    ShippingTypeUpdateComponent,
     ShippingTypeDeletePopupComponent,
     ShippingTypeDeleteDialogComponent,
     shippingTypeRoute,
-    shippingTypePopupRoute,
-    ShippingTypeResolvePagingParams,
+    shippingTypePopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...shippingTypeRoute,
-    ...shippingTypePopupRoute,
-];
+const ENTITY_STATES = [...shippingTypeRoute, ...shippingTypePopupRoute];
 
 @NgModule({
-    imports: [
-        MallSharedModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
+    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
     declarations: [
         ShippingTypeComponent,
         ShippingTypeDetailComponent,
-        ShippingTypeDialogComponent,
+        ShippingTypeUpdateComponent,
         ShippingTypeDeleteDialogComponent,
-        ShippingTypePopupComponent,
-        ShippingTypeDeletePopupComponent,
+        ShippingTypeDeletePopupComponent
     ],
     entryComponents: [
         ShippingTypeComponent,
-        ShippingTypeDialogComponent,
-        ShippingTypePopupComponent,
+        ShippingTypeUpdateComponent,
         ShippingTypeDeleteDialogComponent,
-        ShippingTypeDeletePopupComponent,
+        ShippingTypeDeletePopupComponent
     ],
-    providers: [
-        ShippingTypeService,
-        ShippingTypePopupService,
-        ShippingTypeResolvePagingParams,
-    ],
+    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MallShippingTypeModule {}
+export class MallShippingTypeModule {
+    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
+        this.languageHelper.language.subscribe((languageKey: string) => {
+            if (languageKey !== undefined) {
+                this.languageService.changeLanguage(languageKey);
+            }
+        });
+    }
+}

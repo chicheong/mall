@@ -1,8 +1,5 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.domain.PaymentStatusHistory;
-
 import com.wongs.repository.PaymentStatusHistoryRepository;
 import com.wongs.repository.search.PaymentStatusHistorySearchRepository;
 import com.wongs.web.rest.errors.BadRequestAlertException;
@@ -56,7 +53,6 @@ public class PaymentStatusHistoryResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/payment-status-histories")
-    @Timed
     public ResponseEntity<PaymentStatusHistory> createPaymentStatusHistory(@RequestBody PaymentStatusHistory paymentStatusHistory) throws URISyntaxException {
         log.debug("REST request to save PaymentStatusHistory : {}", paymentStatusHistory);
         if (paymentStatusHistory.getId() != null) {
@@ -79,11 +75,10 @@ public class PaymentStatusHistoryResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/payment-status-histories")
-    @Timed
     public ResponseEntity<PaymentStatusHistory> updatePaymentStatusHistory(@RequestBody PaymentStatusHistory paymentStatusHistory) throws URISyntaxException {
         log.debug("REST request to update PaymentStatusHistory : {}", paymentStatusHistory);
         if (paymentStatusHistory.getId() == null) {
-            return createPaymentStatusHistory(paymentStatusHistory);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         PaymentStatusHistory result = paymentStatusHistoryRepository.save(paymentStatusHistory);
         paymentStatusHistorySearchRepository.save(result);
@@ -99,12 +94,11 @@ public class PaymentStatusHistoryResource {
      * @return the ResponseEntity with status 200 (OK) and the list of paymentStatusHistories in body
      */
     @GetMapping("/payment-status-histories")
-    @Timed
     public ResponseEntity<List<PaymentStatusHistory>> getAllPaymentStatusHistories(Pageable pageable) {
         log.debug("REST request to get a page of PaymentStatusHistories");
         Page<PaymentStatusHistory> page = paymentStatusHistoryRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/payment-status-histories");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -114,11 +108,10 @@ public class PaymentStatusHistoryResource {
      * @return the ResponseEntity with status 200 (OK) and with body the paymentStatusHistory, or with status 404 (Not Found)
      */
     @GetMapping("/payment-status-histories/{id}")
-    @Timed
     public ResponseEntity<PaymentStatusHistory> getPaymentStatusHistory(@PathVariable Long id) {
         log.debug("REST request to get PaymentStatusHistory : {}", id);
-        PaymentStatusHistory paymentStatusHistory = paymentStatusHistoryRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(paymentStatusHistory));
+        Optional<PaymentStatusHistory> paymentStatusHistory = paymentStatusHistoryRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(paymentStatusHistory);
     }
 
     /**
@@ -128,11 +121,10 @@ public class PaymentStatusHistoryResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/payment-status-histories/{id}")
-    @Timed
     public ResponseEntity<Void> deletePaymentStatusHistory(@PathVariable Long id) {
         log.debug("REST request to delete PaymentStatusHistory : {}", id);
-        paymentStatusHistoryRepository.delete(id);
-        paymentStatusHistorySearchRepository.delete(id);
+        paymentStatusHistoryRepository.deleteById(id);
+        paymentStatusHistorySearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -145,12 +137,11 @@ public class PaymentStatusHistoryResource {
      * @return the result of the search
      */
     @GetMapping("/_search/payment-status-histories")
-    @Timed
     public ResponseEntity<List<PaymentStatusHistory>> searchPaymentStatusHistories(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of PaymentStatusHistories for query {}", query);
         Page<PaymentStatusHistory> page = paymentStatusHistorySearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/payment-status-histories");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
 }

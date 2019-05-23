@@ -1,8 +1,5 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.domain.CurrencyRate;
-
 import com.wongs.repository.CurrencyRateRepository;
 import com.wongs.repository.search.CurrencyRateSearchRepository;
 import com.wongs.web.rest.errors.BadRequestAlertException;
@@ -51,7 +48,6 @@ public class CurrencyRateResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/currency-rates")
-    @Timed
     public ResponseEntity<CurrencyRate> createCurrencyRate(@RequestBody CurrencyRate currencyRate) throws URISyntaxException {
         log.debug("REST request to save CurrencyRate : {}", currencyRate);
         if (currencyRate.getId() != null) {
@@ -74,11 +70,10 @@ public class CurrencyRateResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/currency-rates")
-    @Timed
     public ResponseEntity<CurrencyRate> updateCurrencyRate(@RequestBody CurrencyRate currencyRate) throws URISyntaxException {
         log.debug("REST request to update CurrencyRate : {}", currencyRate);
         if (currencyRate.getId() == null) {
-            return createCurrencyRate(currencyRate);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         CurrencyRate result = currencyRateRepository.save(currencyRate);
         currencyRateSearchRepository.save(result);
@@ -93,11 +88,10 @@ public class CurrencyRateResource {
      * @return the ResponseEntity with status 200 (OK) and the list of currencyRates in body
      */
     @GetMapping("/currency-rates")
-    @Timed
     public List<CurrencyRate> getAllCurrencyRates() {
         log.debug("REST request to get all CurrencyRates");
         return currencyRateRepository.findAll();
-        }
+    }
 
     /**
      * GET  /currency-rates/:id : get the "id" currencyRate.
@@ -106,11 +100,10 @@ public class CurrencyRateResource {
      * @return the ResponseEntity with status 200 (OK) and with body the currencyRate, or with status 404 (Not Found)
      */
     @GetMapping("/currency-rates/{id}")
-    @Timed
     public ResponseEntity<CurrencyRate> getCurrencyRate(@PathVariable Long id) {
         log.debug("REST request to get CurrencyRate : {}", id);
-        CurrencyRate currencyRate = currencyRateRepository.findOne(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(currencyRate));
+        Optional<CurrencyRate> currencyRate = currencyRateRepository.findById(id);
+        return ResponseUtil.wrapOrNotFound(currencyRate);
     }
 
     /**
@@ -120,11 +113,10 @@ public class CurrencyRateResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/currency-rates/{id}")
-    @Timed
     public ResponseEntity<Void> deleteCurrencyRate(@PathVariable Long id) {
         log.debug("REST request to delete CurrencyRate : {}", id);
-        currencyRateRepository.delete(id);
-        currencyRateSearchRepository.delete(id);
+        currencyRateRepository.deleteById(id);
+        currencyRateSearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -136,7 +128,6 @@ public class CurrencyRateResource {
      * @return the result of the search
      */
     @GetMapping("/_search/currency-rates")
-    @Timed
     public List<CurrencyRate> searchCurrencyRates(@RequestParam String query) {
         log.debug("REST request to search CurrencyRates for query {}", query);
         return StreamSupport

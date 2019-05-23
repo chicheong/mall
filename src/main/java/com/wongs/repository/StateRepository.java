@@ -1,13 +1,12 @@
 package com.wongs.repository;
 
 import com.wongs.domain.State;
-import org.springframework.stereotype.Repository;
-
 import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.Repository;
 
 
 /**
- * Spring Data JPA repository for the State entity.
+ * Spring Data  repository for the State entity.
  */
 @SuppressWarnings("unused")
 @Repository

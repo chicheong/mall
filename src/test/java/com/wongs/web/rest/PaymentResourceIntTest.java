@@ -4,8 +4,8 @@ import com.wongs.MallApp;
 
 import com.wongs.domain.Payment;
 import com.wongs.repository.PaymentRepository;
-import com.wongs.service.PaymentService;
 import com.wongs.repository.search.PaymentSearchRepository;
+import com.wongs.service.PaymentService;
 import com.wongs.service.dto.PaymentDTO;
 import com.wongs.service.mapper.PaymentMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
@@ -16,6 +16,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -23,14 +25,19 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -70,8 +77,13 @@ public class PaymentResourceIntTest {
     @Autowired
     private PaymentService paymentService;
 
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.PaymentSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private PaymentSearchRepository paymentSearchRepository;
+    private PaymentSearchRepository mockPaymentSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -85,6 +97,9 @@ public class PaymentResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restPaymentMockMvc;
 
     private Payment payment;
@@ -97,7 +112,8 @@ public class PaymentResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -118,7 +134,6 @@ public class PaymentResourceIntTest {
 
     @Before
     public void initTest() {
-        paymentSearchRepository.deleteAll();
         payment = createEntity(em);
     }
 
@@ -145,8 +160,7 @@ public class PaymentResourceIntTest {
         assertThat(testPayment.getStatus()).isEqualTo(DEFAULT_STATUS);
 
         // Validate the Payment in Elasticsearch
-        Payment paymentEs = paymentSearchRepository.findOne(testPayment.getId());
-        assertThat(paymentEs).isEqualToIgnoringGivenFields(testPayment);
+        verify(mockPaymentSearchRepository, times(1)).save(testPayment);
     }
 
     @Test
@@ -167,6 +181,9 @@ public class PaymentResourceIntTest {
         // Validate the Payment in the database
         List<Payment> paymentList = paymentRepository.findAll();
         assertThat(paymentList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the Payment in Elasticsearch
+        verify(mockPaymentSearchRepository, times(0)).save(payment);
     }
 
     @Test
@@ -186,7 +203,7 @@ public class PaymentResourceIntTest {
             .andExpect(jsonPath("$.[*].remark").value(hasItem(DEFAULT_REMARK.toString())))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
     }
-
+    
     @Test
     @Transactional
     public void getPayment() throws Exception {
@@ -218,11 +235,11 @@ public class PaymentResourceIntTest {
     public void updatePayment() throws Exception {
         // Initialize the database
         paymentRepository.saveAndFlush(payment);
-        paymentSearchRepository.save(payment);
+
         int databaseSizeBeforeUpdate = paymentRepository.findAll().size();
 
         // Update the payment
-        Payment updatedPayment = paymentRepository.findOne(payment.getId());
+        Payment updatedPayment = paymentRepository.findById(payment.getId()).get();
         // Disconnect from session so that the updates on updatedPayment are not directly saved in db
         em.detach(updatedPayment);
         updatedPayment
@@ -249,8 +266,7 @@ public class PaymentResourceIntTest {
         assertThat(testPayment.getStatus()).isEqualTo(UPDATED_STATUS);
 
         // Validate the Payment in Elasticsearch
-        Payment paymentEs = paymentSearchRepository.findOne(testPayment.getId());
-        assertThat(paymentEs).isEqualToIgnoringGivenFields(testPayment);
+        verify(mockPaymentSearchRepository, times(1)).save(testPayment);
     }
 
     @Test
@@ -261,15 +277,18 @@ public class PaymentResourceIntTest {
         // Create the Payment
         PaymentDTO paymentDTO = paymentMapper.toDto(payment);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restPaymentMockMvc.perform(put("/api/payments")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(paymentDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Payment in the database
         List<Payment> paymentList = paymentRepository.findAll();
-        assertThat(paymentList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(paymentList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the Payment in Elasticsearch
+        verify(mockPaymentSearchRepository, times(0)).save(payment);
     }
 
     @Test
@@ -277,21 +296,20 @@ public class PaymentResourceIntTest {
     public void deletePayment() throws Exception {
         // Initialize the database
         paymentRepository.saveAndFlush(payment);
-        paymentSearchRepository.save(payment);
+
         int databaseSizeBeforeDelete = paymentRepository.findAll().size();
 
-        // Get the payment
+        // Delete the payment
         restPaymentMockMvc.perform(delete("/api/payments/{id}", payment.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean paymentExistsInEs = paymentSearchRepository.exists(payment.getId());
-        assertThat(paymentExistsInEs).isFalse();
-
         // Validate the database is empty
         List<Payment> paymentList = paymentRepository.findAll();
         assertThat(paymentList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the Payment in Elasticsearch
+        verify(mockPaymentSearchRepository, times(1)).deleteById(payment.getId());
     }
 
     @Test
@@ -299,8 +317,8 @@ public class PaymentResourceIntTest {
     public void searchPayment() throws Exception {
         // Initialize the database
         paymentRepository.saveAndFlush(payment);
-        paymentSearchRepository.save(payment);
-
+        when(mockPaymentSearchRepository.search(queryStringQuery("id:" + payment.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(payment), PageRequest.of(0, 1), 1));
         // Search the payment
         restPaymentMockMvc.perform(get("/api/_search/payments?query=id:" + payment.getId()))
             .andExpect(status().isOk())
@@ -309,7 +327,7 @@ public class PaymentResourceIntTest {
             .andExpect(jsonPath("$.[*].amount").value(hasItem(DEFAULT_AMOUNT.intValue())))
             .andExpect(jsonPath("$.[*].currency").value(hasItem(DEFAULT_CURRENCY.toString())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
-            .andExpect(jsonPath("$.[*].remark").value(hasItem(DEFAULT_REMARK.toString())))
+            .andExpect(jsonPath("$.[*].remark").value(hasItem(DEFAULT_REMARK)))
             .andExpect(jsonPath("$.[*].status").value(hasItem(DEFAULT_STATUS.toString())));
     }
 

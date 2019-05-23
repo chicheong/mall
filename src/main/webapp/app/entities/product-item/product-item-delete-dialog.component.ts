@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { ProductItem } from './product-item.model';
-import { ProductItemPopupService } from './product-item-popup.service';
+import { IProductItem } from 'app/shared/model/product-item.model';
 import { ProductItemService } from './product-item.service';
 
 @Component({
@@ -13,22 +12,20 @@ import { ProductItemService } from './product-item.service';
     templateUrl: './product-item-delete-dialog.component.html'
 })
 export class ProductItemDeleteDialogComponent {
-
-    productItem: ProductItem;
+    productItem: IProductItem;
 
     constructor(
-        private productItemService: ProductItemService,
+        protected productItemService: ProductItemService,
         public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager
-    ) {
-    }
+        protected eventManager: JhiEventManager
+    ) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.productItemService.delete(id).subscribe((response) => {
+        this.productItemService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'productItemListModification',
                 content: 'Deleted an productItem'
@@ -43,22 +40,33 @@ export class ProductItemDeleteDialogComponent {
     template: ''
 })
 export class ProductItemDeletePopupComponent implements OnInit, OnDestroy {
+    protected ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private productItemPopupService: ProductItemPopupService
-    ) {}
+    constructor(protected activatedRoute: ActivatedRoute, protected router: Router, protected modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.productItemPopupService
-                .open(ProductItemDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ productItem }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(ProductItemDeleteDialogComponent as Component, {
+                    size: 'lg',
+                    backdrop: 'static'
+                });
+                this.ngbModalRef.componentInstance.productItem = productItem;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate(['/product-item', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate(['/product-item', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

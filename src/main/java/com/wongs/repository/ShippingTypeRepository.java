@@ -1,13 +1,12 @@
 package com.wongs.repository;
 
 import com.wongs.domain.ShippingType;
-import org.springframework.stereotype.Repository;
-
 import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.Repository;
 
 
 /**
- * Spring Data JPA repository for the ShippingType entity.
+ * Spring Data  repository for the ShippingType entity.
  */
 @SuppressWarnings("unused")
 @Repository

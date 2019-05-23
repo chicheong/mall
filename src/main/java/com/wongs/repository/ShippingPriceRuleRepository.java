@@ -1,13 +1,12 @@
 package com.wongs.repository;
 
 import com.wongs.domain.ShippingPriceRule;
-import org.springframework.stereotype.Repository;
-
 import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.Repository;
 
 
 /**
- * Spring Data JPA repository for the ShippingPriceRule entity.
+ * Spring Data  repository for the ShippingPriceRule entity.
  */
 @SuppressWarnings("unused")
 @Repository

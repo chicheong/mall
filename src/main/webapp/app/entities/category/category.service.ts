@@ -1,91 +1,86 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { SERVER_API_URL } from '../../app.constants';
+import { Observable } from 'rxjs';
+import * as moment from 'moment';
+import { DATE_FORMAT } from 'app/shared/constants/input.constants';
+import { map } from 'rxjs/operators';
 
-import { JhiDateUtils } from 'ng-jhipster';
+import { SERVER_API_URL } from 'app/app.constants';
+import { createRequestOption } from 'app/shared';
+import { ICategory } from 'app/shared/model/category.model';
 
-import { Category } from './category.model';
-import { createRequestOption } from '../../shared';
+type EntityResponseType = HttpResponse<ICategory>;
+type EntityArrayResponseType = HttpResponse<ICategory[]>;
 
-export type EntityResponseType = HttpResponse<Category>;
-
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class CategoryService {
+    public resourceUrl = SERVER_API_URL + 'api/categories';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/categories';
 
-    private resourceUrl =  SERVER_API_URL + 'api/categories';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/categories';
+    constructor(protected http: HttpClient) {}
 
-    constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }
-
-    create(category: Category): Observable<EntityResponseType> {
-        const copy = this.convert(category);
-        return this.http.post<Category>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    create(category: ICategory): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(category);
+        return this.http
+            .post<ICategory>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    update(category: Category): Observable<EntityResponseType> {
-        const copy = this.convert(category);
-        return this.http.put<Category>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    update(category: ICategory): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(category);
+        return this.http
+            .put<ICategory>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<Category>(`${this.resourceUrl}/${id}`, { observe: 'response'})
-            .map((res: EntityResponseType) => this.convertResponse(res));
+        return this.http
+            .get<ICategory>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    query(req?: any): Observable<HttpResponse<Category[]>> {
+    query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Category[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Category[]>) => this.convertArrayResponse(res));
+        return this.http
+            .get<ICategory[]>(this.resourceUrl, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    search(req?: any): Observable<HttpResponse<Category[]>> {
+    search(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Category[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Category[]>) => this.convertArrayResponse(res));
+        return this.http
+            .get<ICategory[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
-    private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: Category = this.convertItemFromServer(res.body);
-        return res.clone({body});
+    protected convertDateFromClient(category: ICategory): ICategory {
+        const copy: ICategory = Object.assign({}, category, {
+            createdDate: category.createdDate != null && category.createdDate.isValid() ? category.createdDate.toJSON() : null,
+            lastModifiedDate:
+                category.lastModifiedDate != null && category.lastModifiedDate.isValid() ? category.lastModifiedDate.toJSON() : null
+        });
+        return copy;
     }
 
-    private convertArrayResponse(res: HttpResponse<Category[]>): HttpResponse<Category[]> {
-        const jsonResponse: Category[] = res.body;
-        const body: Category[] = [];
-        for (let i = 0; i < jsonResponse.length; i++) {
-            body.push(this.convertItemFromServer(jsonResponse[i]));
+    protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        if (res.body) {
+            res.body.createdDate = res.body.createdDate != null ? moment(res.body.createdDate) : null;
+            res.body.lastModifiedDate = res.body.lastModifiedDate != null ? moment(res.body.lastModifiedDate) : null;
         }
-        return res.clone({body});
+        return res;
     }
 
-    /**
-     * Convert a returned JSON object to Category.
-     */
-    private convertItemFromServer(category: Category): Category {
-        const copy: Category = Object.assign({}, category);
-        copy.createdDate = this.dateUtils
-            .convertDateTimeFromServer(category.createdDate);
-        copy.lastModifiedDate = this.dateUtils
-            .convertDateTimeFromServer(category.lastModifiedDate);
-        return copy;
-    }
-
-    /**
-     * Convert a Category to a JSON which can be sent to the server.
-     */
-    private convert(category: Category): Category {
-        const copy: Category = Object.assign({}, category);
-
-        copy.createdDate = this.dateUtils.toDate(category.createdDate);
-
-        copy.lastModifiedDate = this.dateUtils.toDate(category.lastModifiedDate);
-        return copy;
+    protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        if (res.body) {
+            res.body.forEach((category: ICategory) => {
+                category.createdDate = category.createdDate != null ? moment(category.createdDate) : null;
+                category.lastModifiedDate = category.lastModifiedDate != null ? moment(category.lastModifiedDate) : null;
+            });
+        }
+        return res;
     }
 }

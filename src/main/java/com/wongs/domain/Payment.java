@@ -1,5 +1,6 @@
 package com.wongs.domain;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -29,12 +30,12 @@ import com.wongs.domain.enumeration.PaymentStatus;
 public class Payment implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "amount", precision=10, scale=2)
+    @Column(name = "amount", precision = 10, scale = 2)
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
@@ -52,15 +53,13 @@ public class Payment implements Serializable {
     @Column(name = "status")
     private PaymentStatus status;
 
-    @OneToOne
-    @JoinColumn(unique = false)
+    @OneToOne(mappedBy = "payment")
+    @JsonIgnore
     private MyOrder order;
 
     @OneToMany(mappedBy = "payment")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<PaymentStatusHistory> statusHistories = new HashSet<>();
-
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;

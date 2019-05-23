@@ -1,54 +1,40 @@
 /* tslint:disable max-line-length */
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 import { MallTestModule } from '../../../test.module';
-import { ShippingDetailComponent } from '../../../../../../main/webapp/app/entities/shipping/shipping-detail.component';
-import { ShippingService } from '../../../../../../main/webapp/app/entities/shipping/shipping.service';
-import { Shipping } from '../../../../../../main/webapp/app/entities/shipping/shipping.model';
+import { ShippingDetailComponent } from 'app/entities/shipping/shipping-detail.component';
+import { Shipping } from 'app/shared/model/shipping.model';
 
 describe('Component Tests', () => {
-
     describe('Shipping Management Detail Component', () => {
         let comp: ShippingDetailComponent;
         let fixture: ComponentFixture<ShippingDetailComponent>;
-        let service: ShippingService;
+        const route = ({ data: of({ shipping: new Shipping(123) }) } as any) as ActivatedRoute;
 
-        beforeEach(async(() => {
+        beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [MallTestModule],
                 declarations: [ShippingDetailComponent],
-                providers: [
-                    ShippingService
-                ]
+                providers: [{ provide: ActivatedRoute, useValue: route }]
             })
-            .overrideTemplate(ShippingDetailComponent, '')
-            .compileComponents();
-        }));
-
-        beforeEach(() => {
+                .overrideTemplate(ShippingDetailComponent, '')
+                .compileComponents();
             fixture = TestBed.createComponent(ShippingDetailComponent);
             comp = fixture.componentInstance;
-            service = fixture.debugElement.injector.get(ShippingService);
         });
 
         describe('OnInit', () => {
             it('Should call load all on init', () => {
                 // GIVEN
 
-                spyOn(service, 'find').and.returnValue(Observable.of(new HttpResponse({
-                    body: new Shipping(123)
-                })));
-
                 // WHEN
                 comp.ngOnInit();
 
                 // THEN
-                expect(service.find).toHaveBeenCalledWith(123);
-                expect(comp.shipping).toEqual(jasmine.objectContaining({id: 123}));
+                expect(comp.shipping).toEqual(jasmine.objectContaining({ id: 123 }));
             });
         });
     });
-
 });

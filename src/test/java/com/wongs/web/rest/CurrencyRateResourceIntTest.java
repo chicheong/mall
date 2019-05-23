@@ -20,6 +20,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
@@ -27,12 +28,16 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.ZoneOffset;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.sameInstant;
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -65,8 +70,13 @@ public class CurrencyRateResourceIntTest {
     @Autowired
     private CurrencyRateRepository currencyRateRepository;
 
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.CurrencyRateSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private CurrencyRateSearchRepository currencyRateSearchRepository;
+    private CurrencyRateSearchRepository mockCurrencyRateSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -80,6 +90,9 @@ public class CurrencyRateResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restCurrencyRateMockMvc;
 
     private CurrencyRate currencyRate;
@@ -87,12 +100,13 @@ public class CurrencyRateResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final CurrencyRateResource currencyRateResource = new CurrencyRateResource(currencyRateRepository, currencyRateSearchRepository);
+        final CurrencyRateResource currencyRateResource = new CurrencyRateResource(currencyRateRepository, mockCurrencyRateSearchRepository);
         this.restCurrencyRateMockMvc = MockMvcBuilders.standaloneSetup(currencyRateResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -113,7 +127,6 @@ public class CurrencyRateResourceIntTest {
 
     @Before
     public void initTest() {
-        currencyRateSearchRepository.deleteAll();
         currencyRate = createEntity(em);
     }
 
@@ -139,10 +152,7 @@ public class CurrencyRateResourceIntTest {
         assertThat(testCurrencyRate.getTargetCurrency()).isEqualTo(DEFAULT_TARGET_CURRENCY);
 
         // Validate the CurrencyRate in Elasticsearch
-        CurrencyRate currencyRateEs = currencyRateSearchRepository.findOne(testCurrencyRate.getId());
-        assertThat(testCurrencyRate.getFrom()).isEqualTo(testCurrencyRate.getFrom());
-        assertThat(testCurrencyRate.getTo()).isEqualTo(testCurrencyRate.getTo());
-        assertThat(currencyRateEs).isEqualToIgnoringGivenFields(testCurrencyRate, "from", "to");
+        verify(mockCurrencyRateSearchRepository, times(1)).save(testCurrencyRate);
     }
 
     @Test
@@ -162,6 +172,9 @@ public class CurrencyRateResourceIntTest {
         // Validate the CurrencyRate in the database
         List<CurrencyRate> currencyRateList = currencyRateRepository.findAll();
         assertThat(currencyRateList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the CurrencyRate in Elasticsearch
+        verify(mockCurrencyRateSearchRepository, times(0)).save(currencyRate);
     }
 
     @Test
@@ -181,7 +194,7 @@ public class CurrencyRateResourceIntTest {
             .andExpect(jsonPath("$.[*].sourceCurrency").value(hasItem(DEFAULT_SOURCE_CURRENCY.toString())))
             .andExpect(jsonPath("$.[*].targetCurrency").value(hasItem(DEFAULT_TARGET_CURRENCY.toString())));
     }
-
+    
     @Test
     @Transactional
     public void getCurrencyRate() throws Exception {
@@ -213,11 +226,11 @@ public class CurrencyRateResourceIntTest {
     public void updateCurrencyRate() throws Exception {
         // Initialize the database
         currencyRateRepository.saveAndFlush(currencyRate);
-        currencyRateSearchRepository.save(currencyRate);
+
         int databaseSizeBeforeUpdate = currencyRateRepository.findAll().size();
 
         // Update the currencyRate
-        CurrencyRate updatedCurrencyRate = currencyRateRepository.findOne(currencyRate.getId());
+        CurrencyRate updatedCurrencyRate = currencyRateRepository.findById(currencyRate.getId()).get();
         // Disconnect from session so that the updates on updatedCurrencyRate are not directly saved in db
         em.detach(updatedCurrencyRate);
         updatedCurrencyRate
@@ -243,10 +256,7 @@ public class CurrencyRateResourceIntTest {
         assertThat(testCurrencyRate.getTargetCurrency()).isEqualTo(UPDATED_TARGET_CURRENCY);
 
         // Validate the CurrencyRate in Elasticsearch
-        CurrencyRate currencyRateEs = currencyRateSearchRepository.findOne(testCurrencyRate.getId());
-        assertThat(testCurrencyRate.getFrom()).isEqualTo(testCurrencyRate.getFrom());
-        assertThat(testCurrencyRate.getTo()).isEqualTo(testCurrencyRate.getTo());
-        assertThat(currencyRateEs).isEqualToIgnoringGivenFields(testCurrencyRate, "from", "to");
+        verify(mockCurrencyRateSearchRepository, times(1)).save(testCurrencyRate);
     }
 
     @Test
@@ -256,15 +266,18 @@ public class CurrencyRateResourceIntTest {
 
         // Create the CurrencyRate
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restCurrencyRateMockMvc.perform(put("/api/currency-rates")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(currencyRate)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the CurrencyRate in the database
         List<CurrencyRate> currencyRateList = currencyRateRepository.findAll();
-        assertThat(currencyRateList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(currencyRateList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the CurrencyRate in Elasticsearch
+        verify(mockCurrencyRateSearchRepository, times(0)).save(currencyRate);
     }
 
     @Test
@@ -272,21 +285,20 @@ public class CurrencyRateResourceIntTest {
     public void deleteCurrencyRate() throws Exception {
         // Initialize the database
         currencyRateRepository.saveAndFlush(currencyRate);
-        currencyRateSearchRepository.save(currencyRate);
+
         int databaseSizeBeforeDelete = currencyRateRepository.findAll().size();
 
-        // Get the currencyRate
+        // Delete the currencyRate
         restCurrencyRateMockMvc.perform(delete("/api/currency-rates/{id}", currencyRate.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean currencyRateExistsInEs = currencyRateSearchRepository.exists(currencyRate.getId());
-        assertThat(currencyRateExistsInEs).isFalse();
-
         // Validate the database is empty
         List<CurrencyRate> currencyRateList = currencyRateRepository.findAll();
         assertThat(currencyRateList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the CurrencyRate in Elasticsearch
+        verify(mockCurrencyRateSearchRepository, times(1)).deleteById(currencyRate.getId());
     }
 
     @Test
@@ -294,8 +306,8 @@ public class CurrencyRateResourceIntTest {
     public void searchCurrencyRate() throws Exception {
         // Initialize the database
         currencyRateRepository.saveAndFlush(currencyRate);
-        currencyRateSearchRepository.save(currencyRate);
-
+        when(mockCurrencyRateSearchRepository.search(queryStringQuery("id:" + currencyRate.getId())))
+            .thenReturn(Collections.singletonList(currencyRate));
         // Search the currencyRate
         restCurrencyRateMockMvc.perform(get("/api/_search/currency-rates?query=id:" + currencyRate.getId()))
             .andExpect(status().isOk())

@@ -1,8 +1,4 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
-import com.wongs.permission.PermissionUtils;
-import com.wongs.security.SecurityUtils;
 import com.wongs.service.ProductService;
 import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.web.rest.util.HeaderUtil;
@@ -18,14 +14,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.time.Instant;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Calendar;
-import java.util.Date;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
@@ -57,29 +48,12 @@ public class ProductResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/products")
-    @Timed
-    public ResponseEntity<ProductDTO> createProduct(@Valid @RequestBody ProductDTO productDTO) throws URISyntaxException {
+    public ResponseEntity<ProductDTO> createProduct(@RequestBody ProductDTO productDTO) throws URISyntaxException {
         log.debug("REST request to save Product : {}", productDTO);
         if (productDTO.getId() != null) {
             throw new BadRequestAlertException("A new product cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        // Check user permission
-        if (!(PermissionUtils.isCreatable(productService.getPermission(productDTO))))
-        	throw new BadRequestAlertException("You do not have permssion to create a product", ENTITY_NAME, "permission");
-        
-        Instant now = Instant.now();
-        productDTO.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
-        productDTO.setCreatedDate(ZonedDateTime.ofInstant(now, ZoneId.systemDefault()));
-        productDTO.setLastModifiedBy(SecurityUtils.getCurrentUserLogin().get());
-        productDTO.setLastModifiedDate(ZonedDateTime.ofInstant(now, ZoneId.systemDefault()));
-
         ProductDTO result = productService.save(productDTO);
-        // Get product with List after service committed
-        result = productService.findOneWithLists(result.getId());
-        log.error(ResponseEntity.created(new URI("/api/products/" + result.getId()))
-	        .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
-	        .body(result).toString());
-        
         return ResponseEntity.created(new URI("/api/products/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -95,23 +69,12 @@ public class ProductResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/products")
-    @Timed
-    public ResponseEntity<ProductDTO> updateProduct(@Valid @RequestBody ProductDTO productDTO) throws URISyntaxException {
+    public ResponseEntity<ProductDTO> updateProduct(@RequestBody ProductDTO productDTO) throws URISyntaxException {
         log.debug("REST request to update Product : {}", productDTO);
-        
-        // Check user permission
-        if (!(PermissionUtils.isUpdatable(productService.getPermission(productDTO))))
-        	throw new BadRequestAlertException("You do not have permssion to update a product", ENTITY_NAME, "permission");
-        
-        productDTO.setLastModifiedBy(SecurityUtils.getCurrentUserLogin().get());
-        productDTO.setLastModifiedDate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
-        
         if (productDTO.getId() == null) {
-            return createProduct(productDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         ProductDTO result = productService.save(productDTO);
-        // Get product with List after service committed
-        result = productService.findOneWithLists(result.getId());
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, productDTO.getId().toString()))
             .body(result);
@@ -124,12 +87,11 @@ public class ProductResource {
      * @return the ResponseEntity with status 200 (OK) and the list of products in body
      */
     @GetMapping("/products")
-    @Timed
     public ResponseEntity<List<ProductDTO>> getAllProducts(Pageable pageable) {
         log.debug("REST request to get a page of Products");
         Page<ProductDTO> page = productService.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/products");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -139,11 +101,10 @@ public class ProductResource {
      * @return the ResponseEntity with status 200 (OK) and with body the productDTO, or with status 404 (Not Found)
      */
     @GetMapping("/products/{id}")
-    @Timed
     public ResponseEntity<ProductDTO> getProduct(@PathVariable Long id) {
         log.debug("REST request to get Product : {}", id);
-        ProductDTO productDTO = productService.findOneWithLists(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(productDTO));
+        Optional<ProductDTO> productDTO = productService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(productDTO);
     }
 
     /**
@@ -153,14 +114,8 @@ public class ProductResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/products/{id}")
-    @Timed
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         log.debug("REST request to delete Product : {}", id);
-        
-        // Check user permission
-        if (!(PermissionUtils.isDeletable(productService.getPermission(id))))
-        	throw new BadRequestAlertException("You do not have permssion to delete a product", ENTITY_NAME, "permission");
-        
         productService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
@@ -174,12 +129,11 @@ public class ProductResource {
      * @return the result of the search
      */
     @GetMapping("/_search/products")
-    @Timed
     public ResponseEntity<List<ProductDTO>> searchProducts(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Products for query {}", query);
         Page<ProductDTO> page = productService.search(query, pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/products");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
 }

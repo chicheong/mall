@@ -1,6 +1,8 @@
 package com.wongs.domain;
 
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -25,7 +27,7 @@ import com.wongs.domain.enumeration.CurrencyType;
 public class ProductItem implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -43,28 +45,25 @@ public class ProductItem implements Serializable {
     @Column(name = "currency")
     private CurrencyType currency;
 
-    @Column(name = "price", precision=10, scale=2)
+    @Column(name = "price", precision = 10, scale = 2)
     private BigDecimal price;
 
-    @OneToOne
-	@JoinColumn(unique = false)
+    @OneToOne(mappedBy = "productItem")
+    @JsonIgnore
     private ProductStyle color;
 
-    @OneToOne
-	@JoinColumn(unique = false)
+    @OneToOne(mappedBy = "productItem")
+    @JsonIgnore
     private ProductStyle size;
 
     @OneToMany(mappedBy = "item")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Price> prices = new HashSet<>();
-
     @OneToMany(mappedBy = "item")
-    @JsonIgnore
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Quantity> quantities = new HashSet<>();
-
     @ManyToOne
+    @JsonIgnoreProperties("items")
     private Product product;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

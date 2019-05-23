@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
-import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { Company } from './company.model';
-import { CompanyPopupService } from './company-popup.service';
+import { ICompany } from 'app/shared/model/company.model';
 import { CompanyService } from './company.service';
 
 @Component({
@@ -13,22 +12,16 @@ import { CompanyService } from './company.service';
     templateUrl: './company-delete-dialog.component.html'
 })
 export class CompanyDeleteDialogComponent {
+    company: ICompany;
 
-    company: Company;
-
-    constructor(
-        private companyService: CompanyService,
-        public activeModal: NgbActiveModal,
-        private eventManager: JhiEventManager
-    ) {
-    }
+    constructor(protected companyService: CompanyService, public activeModal: NgbActiveModal, protected eventManager: JhiEventManager) {}
 
     clear() {
         this.activeModal.dismiss('cancel');
     }
 
     confirmDelete(id: number) {
-        this.companyService.delete(id).subscribe((response) => {
+        this.companyService.delete(id).subscribe(response => {
             this.eventManager.broadcast({
                 name: 'companyListModification',
                 content: 'Deleted an company'
@@ -43,22 +36,30 @@ export class CompanyDeleteDialogComponent {
     template: ''
 })
 export class CompanyDeletePopupComponent implements OnInit, OnDestroy {
+    protected ngbModalRef: NgbModalRef;
 
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private companyPopupService: CompanyPopupService
-    ) {}
+    constructor(protected activatedRoute: ActivatedRoute, protected router: Router, protected modalService: NgbModal) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
-            this.companyPopupService
-                .open(CompanyDeleteDialogComponent as Component, params['id']);
+        this.activatedRoute.data.subscribe(({ company }) => {
+            setTimeout(() => {
+                this.ngbModalRef = this.modalService.open(CompanyDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
+                this.ngbModalRef.componentInstance.company = company;
+                this.ngbModalRef.result.then(
+                    result => {
+                        this.router.navigate(['/company', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    },
+                    reason => {
+                        this.router.navigate(['/company', { outlets: { popup: null } }]);
+                        this.ngbModalRef = null;
+                    }
+                );
+            }, 0);
         });
     }
 
     ngOnDestroy() {
-        this.routeSub.unsubscribe();
+        this.ngbModalRef = null;
     }
 }

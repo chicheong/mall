@@ -1,55 +1,24 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse } from '@angular/common/http';
-import { Subscription } from 'rxjs/Subscription';
-import { JhiEventManager } from 'ng-jhipster';
 
-import { Shop } from './shop.model';
-import { ShopService } from './shop.service';
+import { IShop } from 'app/shared/model/shop.model';
 
 @Component({
     selector: 'jhi-shop-detail',
     templateUrl: './shop-detail.component.html'
 })
-export class ShopDetailComponent implements OnInit, OnDestroy {
+export class ShopDetailComponent implements OnInit {
+    shop: IShop;
 
-    shop: Shop;
-    private subscription: Subscription;
-    private eventSubscriber: Subscription;
-
-    constructor(
-        private eventManager: JhiEventManager,
-        private shopService: ShopService,
-        private route: ActivatedRoute
-    ) {
-    }
+    constructor(protected activatedRoute: ActivatedRoute) {}
 
     ngOnInit() {
-        this.subscription = this.route.params.subscribe((params) => {
-            this.load(params['id']);
+        this.activatedRoute.data.subscribe(({ shop }) => {
+            this.shop = shop;
         });
-        this.registerChangeInShops();
     }
 
-    load(id) {
-        this.shopService.find(id)
-            .subscribe((shopResponse: HttpResponse<Shop>) => {
-                this.shop = shopResponse.body;
-            });
-    }
     previousState() {
         window.history.back();
-    }
-
-    ngOnDestroy() {
-        this.subscription.unsubscribe();
-        this.eventManager.destroy(this.eventSubscriber);
-    }
-
-    registerChangeInShops() {
-        this.eventSubscriber = this.eventManager.subscribe(
-            'shopListModification',
-            (response) => this.load(this.shop.id)
-        );
     }
 }

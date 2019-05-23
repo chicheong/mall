@@ -1,14 +1,8 @@
 package com.wongs.service.dto;
-
-
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
-
-import com.wongs.domain.MyAccount;
-import com.wongs.domain.User;
-import com.wongs.domain.UserInfo;
+import java.util.Objects;
 
 /**
  * A DTO for the UserInfo entity.
@@ -21,24 +15,15 @@ public class UserInfoDTO implements Serializable {
 
     private Long shopId;
 
-    private User user;
 
-    private MyAccount defaultAccount;
+    private Long userId;
+
+    private String userLogin;
+
+    private Long defaultAccountId;
 
     private Set<MyAccountDTO> accounts = new HashSet<>();
 
-    public UserInfoDTO() {
-        // Empty constructor needed for Jackson.
-    }
-    
-    public UserInfoDTO(UserInfo userInfo) {
-        this.id = userInfo.getId();
-    	this.accountId = userInfo.getAccountId();
-    	this.shopId = userInfo.getShopId();
-    	this.user = userInfo.getUser();
-    	this.defaultAccount = userInfo.getDefaultAccount();
-    }
-    
     public Long getId() {
         return id;
     }
@@ -63,20 +48,28 @@ public class UserInfoDTO implements Serializable {
         this.shopId = shopId;
     }
 
-    public User getUser() {
-        return user;
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 
-    public MyAccount getDefaultAccount() {
-        return defaultAccount;
+    public String getUserLogin() {
+        return userLogin;
     }
 
-    public void setDefaultAccount(MyAccount myAccount) {
-        this.defaultAccount = myAccount;
+    public void setUserLogin(String userLogin) {
+        this.userLogin = userLogin;
+    }
+
+    public Long getDefaultAccountId() {
+        return defaultAccountId;
+    }
+
+    public void setDefaultAccountId(Long myAccountId) {
+        this.defaultAccountId = myAccountId;
     }
 
     public Set<MyAccountDTO> getAccounts() {
@@ -97,7 +90,7 @@ public class UserInfoDTO implements Serializable {
         }
 
         UserInfoDTO userInfoDTO = (UserInfoDTO) o;
-        if(userInfoDTO.getId() == null || getId() == null) {
+        if (userInfoDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), userInfoDTO.getId());
@@ -114,6 +107,9 @@ public class UserInfoDTO implements Serializable {
             "id=" + getId() +
             ", accountId=" + getAccountId() +
             ", shopId=" + getShopId() +
+            ", user=" + getUserId() +
+            ", user='" + getUserLogin() + "'" +
+            ", defaultAccount=" + getDefaultAccountId() +
             "}";
     }
 }

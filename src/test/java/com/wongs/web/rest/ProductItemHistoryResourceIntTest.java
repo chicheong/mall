@@ -13,6 +13,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -20,6 +22,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.math.BigDecimal;
@@ -27,12 +30,16 @@ import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.ZoneOffset;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.sameInstant;
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -70,8 +77,13 @@ public class ProductItemHistoryResourceIntTest {
     @Autowired
     private ProductItemHistoryRepository productItemHistoryRepository;
 
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.ProductItemHistorySearchRepositoryMockConfiguration
+     */
     @Autowired
-    private ProductItemHistorySearchRepository productItemHistorySearchRepository;
+    private ProductItemHistorySearchRepository mockProductItemHistorySearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -85,6 +97,9 @@ public class ProductItemHistoryResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restProductItemHistoryMockMvc;
 
     private ProductItemHistory productItemHistory;
@@ -92,12 +107,13 @@ public class ProductItemHistoryResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final ProductItemHistoryResource productItemHistoryResource = new ProductItemHistoryResource(productItemHistoryRepository, productItemHistorySearchRepository);
+        final ProductItemHistoryResource productItemHistoryResource = new ProductItemHistoryResource(productItemHistoryRepository, mockProductItemHistorySearchRepository);
         this.restProductItemHistoryMockMvc = MockMvcBuilders.standaloneSetup(productItemHistoryResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -120,7 +136,6 @@ public class ProductItemHistoryResourceIntTest {
 
     @Before
     public void initTest() {
-        productItemHistorySearchRepository.deleteAll();
         productItemHistory = createEntity(em);
     }
 
@@ -148,9 +163,7 @@ public class ProductItemHistoryResourceIntTest {
         assertThat(testProductItemHistory.getCreatedDate()).isEqualTo(DEFAULT_CREATED_DATE);
 
         // Validate the ProductItemHistory in Elasticsearch
-        ProductItemHistory productItemHistoryEs = productItemHistorySearchRepository.findOne(testProductItemHistory.getId());
-        assertThat(testProductItemHistory.getCreatedDate()).isEqualTo(testProductItemHistory.getCreatedDate());
-        assertThat(productItemHistoryEs).isEqualToIgnoringGivenFields(testProductItemHistory, "createdDate");
+        verify(mockProductItemHistorySearchRepository, times(1)).save(testProductItemHistory);
     }
 
     @Test
@@ -170,6 +183,9 @@ public class ProductItemHistoryResourceIntTest {
         // Validate the ProductItemHistory in the database
         List<ProductItemHistory> productItemHistoryList = productItemHistoryRepository.findAll();
         assertThat(productItemHistoryList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the ProductItemHistory in Elasticsearch
+        verify(mockProductItemHistorySearchRepository, times(0)).save(productItemHistory);
     }
 
     @Test
@@ -191,7 +207,7 @@ public class ProductItemHistoryResourceIntTest {
             .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY.toString())))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))));
     }
-
+    
     @Test
     @Transactional
     public void getProductItemHistory() throws Exception {
@@ -225,11 +241,11 @@ public class ProductItemHistoryResourceIntTest {
     public void updateProductItemHistory() throws Exception {
         // Initialize the database
         productItemHistoryRepository.saveAndFlush(productItemHistory);
-        productItemHistorySearchRepository.save(productItemHistory);
+
         int databaseSizeBeforeUpdate = productItemHistoryRepository.findAll().size();
 
         // Update the productItemHistory
-        ProductItemHistory updatedProductItemHistory = productItemHistoryRepository.findOne(productItemHistory.getId());
+        ProductItemHistory updatedProductItemHistory = productItemHistoryRepository.findById(productItemHistory.getId()).get();
         // Disconnect from session so that the updates on updatedProductItemHistory are not directly saved in db
         em.detach(updatedProductItemHistory);
         updatedProductItemHistory
@@ -259,9 +275,7 @@ public class ProductItemHistoryResourceIntTest {
         assertThat(testProductItemHistory.getCreatedDate()).isEqualTo(UPDATED_CREATED_DATE);
 
         // Validate the ProductItemHistory in Elasticsearch
-        ProductItemHistory productItemHistoryEs = productItemHistorySearchRepository.findOne(testProductItemHistory.getId());
-        assertThat(testProductItemHistory.getCreatedDate()).isEqualTo(testProductItemHistory.getCreatedDate());
-        assertThat(productItemHistoryEs).isEqualToIgnoringGivenFields(testProductItemHistory, "createdDate");
+        verify(mockProductItemHistorySearchRepository, times(1)).save(testProductItemHistory);
     }
 
     @Test
@@ -271,15 +285,18 @@ public class ProductItemHistoryResourceIntTest {
 
         // Create the ProductItemHistory
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restProductItemHistoryMockMvc.perform(put("/api/product-item-histories")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(productItemHistory)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the ProductItemHistory in the database
         List<ProductItemHistory> productItemHistoryList = productItemHistoryRepository.findAll();
-        assertThat(productItemHistoryList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(productItemHistoryList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the ProductItemHistory in Elasticsearch
+        verify(mockProductItemHistorySearchRepository, times(0)).save(productItemHistory);
     }
 
     @Test
@@ -287,21 +304,20 @@ public class ProductItemHistoryResourceIntTest {
     public void deleteProductItemHistory() throws Exception {
         // Initialize the database
         productItemHistoryRepository.saveAndFlush(productItemHistory);
-        productItemHistorySearchRepository.save(productItemHistory);
+
         int databaseSizeBeforeDelete = productItemHistoryRepository.findAll().size();
 
-        // Get the productItemHistory
+        // Delete the productItemHistory
         restProductItemHistoryMockMvc.perform(delete("/api/product-item-histories/{id}", productItemHistory.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean productItemHistoryExistsInEs = productItemHistorySearchRepository.exists(productItemHistory.getId());
-        assertThat(productItemHistoryExistsInEs).isFalse();
-
         // Validate the database is empty
         List<ProductItemHistory> productItemHistoryList = productItemHistoryRepository.findAll();
         assertThat(productItemHistoryList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the ProductItemHistory in Elasticsearch
+        verify(mockProductItemHistorySearchRepository, times(1)).deleteById(productItemHistory.getId());
     }
 
     @Test
@@ -309,19 +325,19 @@ public class ProductItemHistoryResourceIntTest {
     public void searchProductItemHistory() throws Exception {
         // Initialize the database
         productItemHistoryRepository.saveAndFlush(productItemHistory);
-        productItemHistorySearchRepository.save(productItemHistory);
-
+        when(mockProductItemHistorySearchRepository.search(queryStringQuery("id:" + productItemHistory.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(productItemHistory), PageRequest.of(0, 1), 1));
         // Search the productItemHistory
         restProductItemHistoryMockMvc.perform(get("/api/_search/product-item-histories?query=id:" + productItemHistory.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(productItemHistory.getId().intValue())))
-            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE.toString())))
+            .andExpect(jsonPath("$.[*].code").value(hasItem(DEFAULT_CODE)))
             .andExpect(jsonPath("$.[*].isDefault").value(hasItem(DEFAULT_IS_DEFAULT.booleanValue())))
             .andExpect(jsonPath("$.[*].quantity").value(hasItem(DEFAULT_QUANTITY)))
             .andExpect(jsonPath("$.[*].currency").value(hasItem(DEFAULT_CURRENCY.toString())))
             .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
-            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY.toString())))
+            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))));
     }
 

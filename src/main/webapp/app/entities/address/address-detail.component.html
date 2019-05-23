@@ -1,58 +1,59 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="address">
+            <h2><span jhiTranslate="mallApp.address.detail.title">Address</span> {{address.id}}</h2>
+            <hr>
+            <jhi-alert-error></jhi-alert-error>
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="mallApp.address.line1">Line 1</span></dt>
+                <dd>
+                    <span>{{address.line1}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.address.line2">Line 2</span></dt>
+                <dd>
+                    <span>{{address.line2}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.address.line3">Line 3</span></dt>
+                <dd>
+                    <span>{{address.line3}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.address.line4">Line 4</span></dt>
+                <dd>
+                    <span>{{address.line4}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.address.city">City</span></dt>
+                <dd>
+                    <span>{{address.city}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.address.postalCode">Postal Code</span></dt>
+                <dd>
+                    <span>{{address.postalCode}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.address.country">Country</span></dt>
+                <dd>
+                    <div *ngIf="address.countryId">
+                        <a [routerLink]="['/country', address.countryId, 'view']">{{address.countryId}}</a>
+                    </div>
+                </dd>
+                <dt><span jhiTranslate="mallApp.address.state">State</span></dt>
+                <dd>
+                    <div *ngIf="address.stateId">
+                        <a [routerLink]="['/state', address.stateId, 'view']">{{address.stateId}}</a>
+                    </div>
+                </dd>
+            </dl>
 
-<div *ngIf="address">
-    <h2><span jhiTranslate="mallApp.address.detail.title">Address</span> {{address.id}}</h2>
-    <hr>
-    <jhi-alert-error></jhi-alert-error>
-    <dl class="row-md jh-entity-details">
-        <dt><span jhiTranslate="mallApp.address.line1">Line 1</span></dt>
-        <dd>
-            <span>{{address.line1}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.address.line2">Line 2</span></dt>
-        <dd>
-            <span>{{address.line2}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.address.line3">Line 3</span></dt>
-        <dd>
-            <span>{{address.line3}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.address.line4">Line 4</span></dt>
-        <dd>
-            <span>{{address.line4}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.address.city">City</span></dt>
-        <dd>
-            <span>{{address.city}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.address.postalCode">Postal Code</span></dt>
-        <dd>
-            <span>{{address.postalCode}}</span>
-        </dd>
-        <dt><span jhiTranslate="mallApp.address.country">Country</span></dt>
-        <dd>
-            <div *ngIf="address.country">
-                <a [routerLink]="['/country', address.country?.id]">{{address.country?.id}}</a>
-            </div>
-        </dd>
-        <dt><span jhiTranslate="mallApp.address.state">State</span></dt>
-        <dd>
-            <div *ngIf="address.state">
-                <a [routerLink]="['/state', address.state?.id]">{{address.state?.id}}</a>
-            </div>
-        </dd>
-    </dl>
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+            </button>
 
-    <button type="submit"
-            (click)="previousState()"
-            class="btn btn-info">
-        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
-    </button>
-
-    <button type="button"
-            [routerLink]="['/', { outlets: { popup: 'address/'+ address.id + '/edit'} }]"
-            replaceUrl="true"
-            queryParamsHandling="merge"
-            class="btn btn-primary">
-        <span class="fa fa-pencil"></span>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
-    </button>
+            <button type="button"
+                    [routerLink]="['/address', address.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+            </button>
+        </div>
+    </div>
 </div>

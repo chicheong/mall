@@ -1,8 +1,5 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.domain.ProductStyle;
-
 import com.wongs.repository.ProductStyleRepository;
 import com.wongs.repository.search.ProductStyleSearchRepository;
 import com.wongs.web.rest.errors.BadRequestAlertException;
@@ -56,7 +53,6 @@ public class ProductStyleResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/product-styles")
-    @Timed
     public ResponseEntity<ProductStyleDTO> createProductStyle(@RequestBody ProductStyleDTO productStyleDTO) throws URISyntaxException {
         log.debug("REST request to save ProductStyle : {}", productStyleDTO);
         if (productStyleDTO.getId() != null) {
@@ -81,11 +77,10 @@ public class ProductStyleResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/product-styles")
-    @Timed
     public ResponseEntity<ProductStyleDTO> updateProductStyle(@RequestBody ProductStyleDTO productStyleDTO) throws URISyntaxException {
         log.debug("REST request to update ProductStyle : {}", productStyleDTO);
         if (productStyleDTO.getId() == null) {
-            return createProductStyle(productStyleDTO);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         ProductStyle productStyle = productStyleMapper.toEntity(productStyleDTO);
         productStyle = productStyleRepository.save(productStyle);
@@ -102,12 +97,11 @@ public class ProductStyleResource {
      * @return the ResponseEntity with status 200 (OK) and the list of productStyles in body
      */
     @GetMapping("/product-styles")
-    @Timed
     public List<ProductStyleDTO> getAllProductStyles() {
         log.debug("REST request to get all ProductStyles");
         List<ProductStyle> productStyles = productStyleRepository.findAll();
         return productStyleMapper.toDto(productStyles);
-        }
+    }
 
     /**
      * GET  /product-styles/:id : get the "id" productStyle.
@@ -116,12 +110,11 @@ public class ProductStyleResource {
      * @return the ResponseEntity with status 200 (OK) and with body the productStyleDTO, or with status 404 (Not Found)
      */
     @GetMapping("/product-styles/{id}")
-    @Timed
     public ResponseEntity<ProductStyleDTO> getProductStyle(@PathVariable Long id) {
         log.debug("REST request to get ProductStyle : {}", id);
-        ProductStyle productStyle = productStyleRepository.findOne(id);
-        ProductStyleDTO productStyleDTO = productStyleMapper.toDto(productStyle);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(productStyleDTO));
+        Optional<ProductStyleDTO> productStyleDTO = productStyleRepository.findById(id)
+            .map(productStyleMapper::toDto);
+        return ResponseUtil.wrapOrNotFound(productStyleDTO);
     }
 
     /**
@@ -131,11 +124,10 @@ public class ProductStyleResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/product-styles/{id}")
-    @Timed
     public ResponseEntity<Void> deleteProductStyle(@PathVariable Long id) {
         log.debug("REST request to delete ProductStyle : {}", id);
-        productStyleRepository.delete(id);
-        productStyleSearchRepository.delete(id);
+        productStyleRepository.deleteById(id);
+        productStyleSearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -147,7 +139,6 @@ public class ProductStyleResource {
      * @return the result of the search
      */
     @GetMapping("/_search/product-styles")
-    @Timed
     public List<ProductStyleDTO> searchProductStyles(@RequestParam String query) {
         log.debug("REST request to search ProductStyles for query {}", query);
         return StreamSupport

@@ -1,87 +1,86 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { SERVER_API_URL } from '../../app.constants';
+import { Observable } from 'rxjs';
+import * as moment from 'moment';
+import { DATE_FORMAT } from 'app/shared/constants/input.constants';
+import { map } from 'rxjs/operators';
 
-import { JhiDateUtils } from 'ng-jhipster';
+import { SERVER_API_URL } from 'app/app.constants';
+import { createRequestOption } from 'app/shared';
+import { IShippingStatusHistory } from 'app/shared/model/shipping-status-history.model';
 
-import { ShippingStatusHistory } from './shipping-status-history.model';
-import { createRequestOption } from '../../shared';
+type EntityResponseType = HttpResponse<IShippingStatusHistory>;
+type EntityArrayResponseType = HttpResponse<IShippingStatusHistory[]>;
 
-export type EntityResponseType = HttpResponse<ShippingStatusHistory>;
-
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ShippingStatusHistoryService {
+    public resourceUrl = SERVER_API_URL + 'api/shipping-status-histories';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/shipping-status-histories';
 
-    private resourceUrl =  SERVER_API_URL + 'api/shipping-status-histories';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/shipping-status-histories';
+    constructor(protected http: HttpClient) {}
 
-    constructor(private http: HttpClient, private dateUtils: JhiDateUtils) { }
-
-    create(shippingStatusHistory: ShippingStatusHistory): Observable<EntityResponseType> {
-        const copy = this.convert(shippingStatusHistory);
-        return this.http.post<ShippingStatusHistory>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    create(shippingStatusHistory: IShippingStatusHistory): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(shippingStatusHistory);
+        return this.http
+            .post<IShippingStatusHistory>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    update(shippingStatusHistory: ShippingStatusHistory): Observable<EntityResponseType> {
-        const copy = this.convert(shippingStatusHistory);
-        return this.http.put<ShippingStatusHistory>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    update(shippingStatusHistory: IShippingStatusHistory): Observable<EntityResponseType> {
+        const copy = this.convertDateFromClient(shippingStatusHistory);
+        return this.http
+            .put<IShippingStatusHistory>(this.resourceUrl, copy, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<ShippingStatusHistory>(`${this.resourceUrl}/${id}`, { observe: 'response'})
-            .map((res: EntityResponseType) => this.convertResponse(res));
+        return this.http
+            .get<IShippingStatusHistory>(`${this.resourceUrl}/${id}`, { observe: 'response' })
+            .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
-    query(req?: any): Observable<HttpResponse<ShippingStatusHistory[]>> {
+    query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<ShippingStatusHistory[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<ShippingStatusHistory[]>) => this.convertArrayResponse(res));
+        return this.http
+            .get<IShippingStatusHistory[]>(this.resourceUrl, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    search(req?: any): Observable<HttpResponse<ShippingStatusHistory[]>> {
+    search(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<ShippingStatusHistory[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<ShippingStatusHistory[]>) => this.convertArrayResponse(res));
+        return this.http
+            .get<IShippingStatusHistory[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
+            .pipe(map((res: EntityArrayResponseType) => this.convertDateArrayFromServer(res)));
     }
 
-    private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: ShippingStatusHistory = this.convertItemFromServer(res.body);
-        return res.clone({body});
+    protected convertDateFromClient(shippingStatusHistory: IShippingStatusHistory): IShippingStatusHistory {
+        const copy: IShippingStatusHistory = Object.assign({}, shippingStatusHistory, {
+            effectiveDate:
+                shippingStatusHistory.effectiveDate != null && shippingStatusHistory.effectiveDate.isValid()
+                    ? shippingStatusHistory.effectiveDate.toJSON()
+                    : null
+        });
+        return copy;
     }
 
-    private convertArrayResponse(res: HttpResponse<ShippingStatusHistory[]>): HttpResponse<ShippingStatusHistory[]> {
-        const jsonResponse: ShippingStatusHistory[] = res.body;
-        const body: ShippingStatusHistory[] = [];
-        for (let i = 0; i < jsonResponse.length; i++) {
-            body.push(this.convertItemFromServer(jsonResponse[i]));
+    protected convertDateFromServer(res: EntityResponseType): EntityResponseType {
+        if (res.body) {
+            res.body.effectiveDate = res.body.effectiveDate != null ? moment(res.body.effectiveDate) : null;
         }
-        return res.clone({body});
+        return res;
     }
 
-    /**
-     * Convert a returned JSON object to ShippingStatusHistory.
-     */
-    private convertItemFromServer(shippingStatusHistory: ShippingStatusHistory): ShippingStatusHistory {
-        const copy: ShippingStatusHistory = Object.assign({}, shippingStatusHistory);
-        copy.effectiveDate = this.dateUtils
-            .convertDateTimeFromServer(shippingStatusHistory.effectiveDate);
-        return copy;
-    }
-
-    /**
-     * Convert a ShippingStatusHistory to a JSON which can be sent to the server.
-     */
-    private convert(shippingStatusHistory: ShippingStatusHistory): ShippingStatusHistory {
-        const copy: ShippingStatusHistory = Object.assign({}, shippingStatusHistory);
-
-        copy.effectiveDate = this.dateUtils.toDate(shippingStatusHistory.effectiveDate);
-        return copy;
+    protected convertDateArrayFromServer(res: EntityArrayResponseType): EntityArrayResponseType {
+        if (res.body) {
+            res.body.forEach((shippingStatusHistory: IShippingStatusHistory) => {
+                shippingStatusHistory.effectiveDate =
+                    shippingStatusHistory.effectiveDate != null ? moment(shippingStatusHistory.effectiveDate) : null;
+            });
+        }
+        return res;
     }
 }

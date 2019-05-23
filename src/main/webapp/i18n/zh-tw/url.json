@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "url" : {
+        "url": {
             "home": {
                 "title": "Urls",
                 "createLabel": "建立一筆新的 Url",
@@ -12,7 +11,7 @@
             "updated": "識別碼為 {{ param }} 的 Url 更新成功",
             "deleted": "識別碼為 {{ param }} 的 Url 刪除成功",
             "delete": {
-                "question": "您確定要刪除這張嗎?"
+                "question": "您確定要刪除 Url {{ id }} 嗎?"
             },
             "detail": {
                 "title": "Url"
@@ -20,7 +19,7 @@
             "entityType": "Entity Type",
             "entityId": "Entity Id",
             "path": "Path",
-			"fileName": "File Name",
+            "fileName": "File Name",
             "sequence": "Sequence",
             "description": "Description",
             "createdBy": "Created By",

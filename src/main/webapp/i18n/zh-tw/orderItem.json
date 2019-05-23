@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "orderItem" : {
+        "orderItem": {
             "home": {
                 "title": "Order Items",
                 "createLabel": "建立一筆新的 Order Item",

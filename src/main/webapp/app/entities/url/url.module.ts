@@ -1,51 +1,34 @@
 import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { RouterModule } from '@angular/router';
+import { JhiLanguageService } from 'ng-jhipster';
+import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from '../../shared';
+import { MallSharedModule } from 'app/shared';
 import {
-    UrlService,
-    UrlPopupService,
     UrlComponent,
     UrlDetailComponent,
-    UrlDialogComponent,
-    UrlPopupComponent,
+    UrlUpdateComponent,
     UrlDeletePopupComponent,
     UrlDeleteDialogComponent,
     urlRoute,
-    urlPopupRoute,
-    UrlResolvePagingParams,
+    urlPopupRoute
 } from './';
 
-const ENTITY_STATES = [
-    ...urlRoute,
-    ...urlPopupRoute,
-];
+const ENTITY_STATES = [...urlRoute, ...urlPopupRoute];
 
 @NgModule({
-    imports: [
-        MallSharedModule,
-        RouterModule.forChild(ENTITY_STATES)
-    ],
-    declarations: [
-        UrlComponent,
-        UrlDetailComponent,
-        UrlDialogComponent,
-        UrlDeleteDialogComponent,
-        UrlPopupComponent,
-        UrlDeletePopupComponent,
-    ],
-    entryComponents: [
-        UrlComponent,
-        UrlDialogComponent,
-        UrlPopupComponent,
-        UrlDeleteDialogComponent,
-        UrlDeletePopupComponent,
-    ],
-    providers: [
-        UrlService,
-        UrlPopupService,
-        UrlResolvePagingParams,
-    ],
+    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
+    declarations: [UrlComponent, UrlDetailComponent, UrlUpdateComponent, UrlDeleteDialogComponent, UrlDeletePopupComponent],
+    entryComponents: [UrlComponent, UrlUpdateComponent, UrlDeleteDialogComponent, UrlDeletePopupComponent],
+    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
-export class MallUrlModule {}
+export class MallUrlModule {
+    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
+        this.languageHelper.language.subscribe((languageKey: string) => {
+            if (languageKey !== undefined) {
+                this.languageService.changeLanguage(languageKey);
+            }
+        });
+    }
+}

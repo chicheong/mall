@@ -1,55 +1,24 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse } from '@angular/common/http';
-import { Subscription } from 'rxjs/Subscription';
-import { JhiEventManager } from 'ng-jhipster';
 
-import { ProductItemHistory } from './product-item-history.model';
-import { ProductItemHistoryService } from './product-item-history.service';
+import { IProductItemHistory } from 'app/shared/model/product-item-history.model';
 
 @Component({
     selector: 'jhi-product-item-history-detail',
     templateUrl: './product-item-history-detail.component.html'
 })
-export class ProductItemHistoryDetailComponent implements OnInit, OnDestroy {
+export class ProductItemHistoryDetailComponent implements OnInit {
+    productItemHistory: IProductItemHistory;
 
-    productItemHistory: ProductItemHistory;
-    private subscription: Subscription;
-    private eventSubscriber: Subscription;
-
-    constructor(
-        private eventManager: JhiEventManager,
-        private productItemHistoryService: ProductItemHistoryService,
-        private route: ActivatedRoute
-    ) {
-    }
+    constructor(protected activatedRoute: ActivatedRoute) {}
 
     ngOnInit() {
-        this.subscription = this.route.params.subscribe((params) => {
-            this.load(params['id']);
+        this.activatedRoute.data.subscribe(({ productItemHistory }) => {
+            this.productItemHistory = productItemHistory;
         });
-        this.registerChangeInProductItemHistories();
     }
 
-    load(id) {
-        this.productItemHistoryService.find(id)
-            .subscribe((productItemHistoryResponse: HttpResponse<ProductItemHistory>) => {
-                this.productItemHistory = productItemHistoryResponse.body;
-            });
-    }
     previousState() {
         window.history.back();
-    }
-
-    ngOnDestroy() {
-        this.subscription.unsubscribe();
-        this.eventManager.destroy(this.eventSubscriber);
-    }
-
-    registerChangeInProductItemHistories() {
-        this.eventSubscriber = this.eventManager.subscribe(
-            'productItemHistoryListModification',
-            (response) => this.load(this.productItemHistory.id)
-        );
     }
 }

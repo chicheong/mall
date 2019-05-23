@@ -1,5 +1,7 @@
 package com.wongs.domain;
 
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -25,7 +27,7 @@ import com.wongs.domain.enumeration.CategoryStatus;
 public class Category implements Serializable {
 
     private static final long serialVersionUID = 1L;
-
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -54,13 +56,14 @@ public class Category implements Serializable {
     private ZonedDateTime lastModifiedDate;
 
     @ManyToOne
+    @JsonIgnoreProperties("categories")
     private Category parent;
 
     @ManyToMany
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JoinTable(name = "category_product",
-               joinColumns = @JoinColumn(name="categories_id", referencedColumnName="id"),
-               inverseJoinColumns = @JoinColumn(name="products_id", referencedColumnName="id"))
+               joinColumns = @JoinColumn(name = "category_id", referencedColumnName = "id"),
+               inverseJoinColumns = @JoinColumn(name = "product_id", referencedColumnName = "id"))
     private Set<Product> products = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

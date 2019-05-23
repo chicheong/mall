@@ -1,55 +1,24 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse } from '@angular/common/http';
-import { Subscription } from 'rxjs/Subscription';
-import { JhiEventManager } from 'ng-jhipster';
 
-import { ProductItem } from './product-item.model';
-import { ProductItemService } from './product-item.service';
+import { IProductItem } from 'app/shared/model/product-item.model';
 
 @Component({
     selector: 'jhi-product-item-detail',
     templateUrl: './product-item-detail.component.html'
 })
-export class ProductItemDetailComponent implements OnInit, OnDestroy {
+export class ProductItemDetailComponent implements OnInit {
+    productItem: IProductItem;
 
-    productItem: ProductItem;
-    private subscription: Subscription;
-    private eventSubscriber: Subscription;
-
-    constructor(
-        private eventManager: JhiEventManager,
-        private productItemService: ProductItemService,
-        private route: ActivatedRoute
-    ) {
-    }
+    constructor(protected activatedRoute: ActivatedRoute) {}
 
     ngOnInit() {
-        this.subscription = this.route.params.subscribe((params) => {
-            this.load(params['id']);
+        this.activatedRoute.data.subscribe(({ productItem }) => {
+            this.productItem = productItem;
         });
-        this.registerChangeInProductItems();
     }
 
-    load(id) {
-        this.productItemService.find(id)
-            .subscribe((productItemResponse: HttpResponse<ProductItem>) => {
-                this.productItem = productItemResponse.body;
-            });
-    }
     previousState() {
         window.history.back();
-    }
-
-    ngOnDestroy() {
-        this.subscription.unsubscribe();
-        this.eventManager.destroy(this.eventSubscriber);
-    }
-
-    registerChangeInProductItems() {
-        this.eventSubscriber = this.eventManager.subscribe(
-            'productItemListModification',
-            (response) => this.load(this.productItem.id)
-        );
     }
 }

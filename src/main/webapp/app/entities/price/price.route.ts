@@ -1,44 +1,78 @@
 import { Injectable } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
 import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiPaginationUtil } from 'ng-jhipster';
-
-import { UserRouteAccessService } from '../../shared';
+import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
+import { UserRouteAccessService } from 'app/core';
+import { Observable, of } from 'rxjs';
+import { filter, map } from 'rxjs/operators';
+import { Price } from 'app/shared/model/price.model';
+import { PriceService } from './price.service';
 import { PriceComponent } from './price.component';
 import { PriceDetailComponent } from './price-detail.component';
-import { PricePopupComponent } from './price-dialog.component';
+import { PriceUpdateComponent } from './price-update.component';
 import { PriceDeletePopupComponent } from './price-delete-dialog.component';
+import { IPrice } from 'app/shared/model/price.model';
 
-@Injectable()
-export class PriceResolvePagingParams implements Resolve<any> {
+@Injectable({ providedIn: 'root' })
+export class PriceResolve implements Resolve<IPrice> {
+    constructor(private service: PriceService) {}
 
-    constructor(private paginationUtil: JhiPaginationUtil) {}
-
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        const page = route.queryParams['page'] ? route.queryParams['page'] : '1';
-        const sort = route.queryParams['sort'] ? route.queryParams['sort'] : 'id,asc';
-        return {
-            page: this.paginationUtil.parsePage(page),
-            predicate: this.paginationUtil.parsePredicate(sort),
-            ascending: this.paginationUtil.parseAscending(sort)
-      };
+    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<IPrice> {
+        const id = route.params['id'] ? route.params['id'] : null;
+        if (id) {
+            return this.service.find(id).pipe(
+                filter((response: HttpResponse<Price>) => response.ok),
+                map((price: HttpResponse<Price>) => price.body)
+            );
+        }
+        return of(new Price());
     }
 }
 
 export const priceRoute: Routes = [
     {
-        path: 'price',
+        path: '',
         component: PriceComponent,
         resolve: {
-            'pagingParams': PriceResolvePagingParams
+            pagingParams: JhiResolvePagingParams
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            defaultSort: 'id,asc',
+            pageTitle: 'mallApp.price.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/view',
+        component: PriceDetailComponent,
+        resolve: {
+            price: PriceResolve
         },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.price.home.title'
         },
         canActivate: [UserRouteAccessService]
-    }, {
-        path: 'price/:id',
-        component: PriceDetailComponent,
+    },
+    {
+        path: 'new',
+        component: PriceUpdateComponent,
+        resolve: {
+            price: PriceResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.price.home.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/edit',
+        component: PriceUpdateComponent,
+        resolve: {
+            price: PriceResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.price.home.title'
@@ -49,28 +83,11 @@ export const priceRoute: Routes = [
 
 export const pricePopupRoute: Routes = [
     {
-        path: 'price-new',
-        component: PricePopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.price.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'price/:id/edit',
-        component: PricePopupComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.price.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    },
-    {
-        path: 'price/:id/delete',
+        path: ':id/delete',
         component: PriceDeletePopupComponent,
+        resolve: {
+            price: PriceResolve
+        },
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.price.home.title'

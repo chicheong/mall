@@ -1,8 +1,8 @@
 <div>
-    <h2>
+    <h2 id="page-heading">
         <span jhiTranslate="mallApp.url.home.title">Urls</span>
-        <button class="btn btn-primary float-right jh-create-entity create-url" [routerLink]="['/', { outlets: { popup: ['url-new'] } }]">
-            <span class="fa fa-plus"></span>
+        <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-url" [routerLink]="['/url/new']">
+            <fa-icon [icon]="'plus'"></fa-icon>
             <span class="hidden-sm-down"  jhiTranslate="mallApp.url.home.createLabel">
             Create new Url
             </span>
@@ -15,10 +15,10 @@
                 <div class="input-group w-100 mt-3">
                     <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'mallApp.url.home.search' | translate }}">
                     <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
-                        <span class="fa fa-search"></span>
+                        <fa-icon [icon]="'search'"></fa-icon>
                     </button>
                     <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
-                        <span class="fa fa-trash-o"></span>
+                        <fa-icon [icon]="'trash-alt'"></fa-icon>
                     </button>
                 </div>
             </form>
@@ -29,23 +29,23 @@
         <table class="table table-striped">
             <thead>
             <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="entityType"><span jhiTranslate="mallApp.url.entityType">Entity Type</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="entityId"><span jhiTranslate="mallApp.url.entityId">Entity Id</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="path"><span jhiTranslate="mallApp.url.path">Path</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="fileName"><span jhiTranslate="mallApp.url.fileName">File Name</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="sequence"><span jhiTranslate="mallApp.url.sequence">Sequence</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="description"><span jhiTranslate="mallApp.url.description">Description</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="createdBy"><span jhiTranslate="mallApp.url.createdBy">Created By</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="createdDate"><span jhiTranslate="mallApp.url.createdDate">Created Date</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="lastModifiedBy"><span jhiTranslate="mallApp.url.lastModifiedBy">Last Modified By</span> <span class="fa fa-sort"></span></th>
-            <th jhiSortBy="lastModifiedDate"><span jhiTranslate="mallApp.url.lastModifiedDate">Last Modified Date</span> <span class="fa fa-sort"></span></th>
+            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="entityType"><span jhiTranslate="mallApp.url.entityType">Entity Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="entityId"><span jhiTranslate="mallApp.url.entityId">Entity Id</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="path"><span jhiTranslate="mallApp.url.path">Path</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="fileName"><span jhiTranslate="mallApp.url.fileName">File Name</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="sequence"><span jhiTranslate="mallApp.url.sequence">Sequence</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="description"><span jhiTranslate="mallApp.url.description">Description</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="createdBy"><span jhiTranslate="mallApp.url.createdBy">Created By</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="createdDate"><span jhiTranslate="mallApp.url.createdDate">Created Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="lastModifiedBy"><span jhiTranslate="mallApp.url.lastModifiedBy">Last Modified By</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="lastModifiedDate"><span jhiTranslate="mallApp.url.lastModifiedDate">Last Modified Date</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
             <tbody>
             <tr *ngFor="let url of urls ;trackBy: trackId">
-                <td><a [routerLink]="['../url', url.id ]">{{url.id}}</a></td>
+                <td><a [routerLink]="['/url', url.id, 'view' ]">{{url.id}}</a></td>
                 <td>{{url.entityType}}</td>
                 <td>{{url.entityId}}</td>
                 <td>{{url.path}}</td>
@@ -59,25 +59,23 @@
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
-                                [routerLink]="['../url', url.id ]"
+                                [routerLink]="['/url', url.id, 'view' ]"
                                 class="btn btn-info btn-sm">
-                            <span class="fa fa-eye"></span>
+                            <fa-icon [icon]="'eye'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'url/'+ url.id + '/edit'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
+                                [routerLink]="['/url', url.id, 'edit']"
                                 class="btn btn-primary btn-sm">
-                            <span class="fa fa-pencil"></span>
+                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
                         </button>
                         <button type="submit"
-                                [routerLink]="['/', { outlets: { popup: 'url/'+ url.id + '/delete'} }]"
+                                [routerLink]="['/', 'url', { outlets: { popup: url.id + '/delete'} }]"
                                 replaceUrl="true"
                                 queryParamsHandling="merge"
                                 class="btn btn-danger btn-sm">
-                            <span class="fa fa-remove"></span>
+                            <fa-icon [icon]="'times'"></fa-icon>
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
                         </button>
                     </div>
@@ -88,7 +86,7 @@
     </div>
     <div *ngIf="urls && urls.length">
         <div class="row justify-content-center">
-            <jhi-item-count [page]="page" [total]="queryCount" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+            <jhi-item-count [page]="page" [total]="totalItems" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
         </div>
         <div class="row justify-content-center">
             <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>

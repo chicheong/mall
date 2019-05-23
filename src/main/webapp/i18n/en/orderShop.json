@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "orderShop" : {
+        "orderShop": {
             "home": {
                 "title": "Order Shops",
                 "createLabel": "Create a new Order Shop",

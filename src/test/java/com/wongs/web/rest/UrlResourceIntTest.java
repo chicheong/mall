@@ -4,8 +4,8 @@ import com.wongs.MallApp;
 
 import com.wongs.domain.Url;
 import com.wongs.repository.UrlRepository;
-import com.wongs.service.UrlService;
 import com.wongs.repository.search.UrlSearchRepository;
+import com.wongs.service.UrlService;
 import com.wongs.service.dto.UrlDTO;
 import com.wongs.service.mapper.UrlMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
@@ -16,6 +16,8 @@ import org.junit.runner.RunWith;
 import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -23,18 +25,23 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import javax.persistence.EntityManager;
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.time.ZoneOffset;
 import java.time.ZoneId;
+import java.util.Collections;
 import java.util.List;
+
 
 import static com.wongs.web.rest.TestUtil.sameInstant;
 import static com.wongs.web.rest.TestUtil.createFormattingConversionService;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 import static org.hamcrest.Matchers.hasItem;
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -86,8 +93,13 @@ public class UrlResourceIntTest {
     @Autowired
     private UrlService urlService;
 
+    /**
+     * This repository is mocked in the com.wongs.repository.search test package.
+     *
+     * @see com.wongs.repository.search.UrlSearchRepositoryMockConfiguration
+     */
     @Autowired
-    private UrlSearchRepository urlSearchRepository;
+    private UrlSearchRepository mockUrlSearchRepository;
 
     @Autowired
     private MappingJackson2HttpMessageConverter jacksonMessageConverter;
@@ -101,6 +113,9 @@ public class UrlResourceIntTest {
     @Autowired
     private EntityManager em;
 
+    @Autowired
+    private Validator validator;
+
     private MockMvc restUrlMockMvc;
 
     private Url url;
@@ -113,7 +128,8 @@ public class UrlResourceIntTest {
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)
             .setConversionService(createFormattingConversionService())
-            .setMessageConverters(jacksonMessageConverter).build();
+            .setMessageConverters(jacksonMessageConverter)
+            .setValidator(validator).build();
     }
 
     /**
@@ -139,7 +155,6 @@ public class UrlResourceIntTest {
 
     @Before
     public void initTest() {
-        urlSearchRepository.deleteAll();
         url = createEntity(em);
     }
 
@@ -171,10 +186,7 @@ public class UrlResourceIntTest {
         assertThat(testUrl.getLastModifiedDate()).isEqualTo(DEFAULT_LAST_MODIFIED_DATE);
 
         // Validate the Url in Elasticsearch
-        Url urlEs = urlSearchRepository.findOne(testUrl.getId());
-        assertThat(testUrl.getCreatedDate()).isEqualTo(testUrl.getCreatedDate());
-        assertThat(testUrl.getLastModifiedDate()).isEqualTo(testUrl.getLastModifiedDate());
-        assertThat(urlEs).isEqualToIgnoringGivenFields(testUrl, "createdDate", "lastModifiedDate");
+        verify(mockUrlSearchRepository, times(1)).save(testUrl);
     }
 
     @Test
@@ -195,6 +207,9 @@ public class UrlResourceIntTest {
         // Validate the Url in the database
         List<Url> urlList = urlRepository.findAll();
         assertThat(urlList).hasSize(databaseSizeBeforeCreate);
+
+        // Validate the Url in Elasticsearch
+        verify(mockUrlSearchRepository, times(0)).save(url);
     }
 
     @Test
@@ -219,7 +234,7 @@ public class UrlResourceIntTest {
             .andExpect(jsonPath("$.[*].lastModifiedBy").value(hasItem(DEFAULT_LAST_MODIFIED_BY.toString())))
             .andExpect(jsonPath("$.[*].lastModifiedDate").value(hasItem(sameInstant(DEFAULT_LAST_MODIFIED_DATE))));
     }
-
+    
     @Test
     @Transactional
     public void getUrl() throws Exception {
@@ -256,11 +271,11 @@ public class UrlResourceIntTest {
     public void updateUrl() throws Exception {
         // Initialize the database
         urlRepository.saveAndFlush(url);
-        urlSearchRepository.save(url);
+
         int databaseSizeBeforeUpdate = urlRepository.findAll().size();
 
         // Update the url
-        Url updatedUrl = urlRepository.findOne(url.getId());
+        Url updatedUrl = urlRepository.findById(url.getId()).get();
         // Disconnect from session so that the updates on updatedUrl are not directly saved in db
         em.detach(updatedUrl);
         updatedUrl
@@ -297,10 +312,7 @@ public class UrlResourceIntTest {
         assertThat(testUrl.getLastModifiedDate()).isEqualTo(UPDATED_LAST_MODIFIED_DATE);
 
         // Validate the Url in Elasticsearch
-        Url urlEs = urlSearchRepository.findOne(testUrl.getId());
-        assertThat(testUrl.getCreatedDate()).isEqualTo(testUrl.getCreatedDate());
-        assertThat(testUrl.getLastModifiedDate()).isEqualTo(testUrl.getLastModifiedDate());
-        assertThat(urlEs).isEqualToIgnoringGivenFields(testUrl, "createdDate", "lastModifiedDate");
+        verify(mockUrlSearchRepository, times(1)).save(testUrl);
     }
 
     @Test
@@ -311,15 +323,18 @@ public class UrlResourceIntTest {
         // Create the Url
         UrlDTO urlDTO = urlMapper.toDto(url);
 
-        // If the entity doesn't have an ID, it will be created instead of just being updated
+        // If the entity doesn't have an ID, it will throw BadRequestAlertException
         restUrlMockMvc.perform(put("/api/urls")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
             .content(TestUtil.convertObjectToJsonBytes(urlDTO)))
-            .andExpect(status().isCreated());
+            .andExpect(status().isBadRequest());
 
         // Validate the Url in the database
         List<Url> urlList = urlRepository.findAll();
-        assertThat(urlList).hasSize(databaseSizeBeforeUpdate + 1);
+        assertThat(urlList).hasSize(databaseSizeBeforeUpdate);
+
+        // Validate the Url in Elasticsearch
+        verify(mockUrlSearchRepository, times(0)).save(url);
     }
 
     @Test
@@ -327,21 +342,20 @@ public class UrlResourceIntTest {
     public void deleteUrl() throws Exception {
         // Initialize the database
         urlRepository.saveAndFlush(url);
-        urlSearchRepository.save(url);
+
         int databaseSizeBeforeDelete = urlRepository.findAll().size();
 
-        // Get the url
+        // Delete the url
         restUrlMockMvc.perform(delete("/api/urls/{id}", url.getId())
             .accept(TestUtil.APPLICATION_JSON_UTF8))
             .andExpect(status().isOk());
 
-        // Validate Elasticsearch is empty
-        boolean urlExistsInEs = urlSearchRepository.exists(url.getId());
-        assertThat(urlExistsInEs).isFalse();
-
         // Validate the database is empty
         List<Url> urlList = urlRepository.findAll();
         assertThat(urlList).hasSize(databaseSizeBeforeDelete - 1);
+
+        // Validate the Url in Elasticsearch
+        verify(mockUrlSearchRepository, times(1)).deleteById(url.getId());
     }
 
     @Test
@@ -349,22 +363,22 @@ public class UrlResourceIntTest {
     public void searchUrl() throws Exception {
         // Initialize the database
         urlRepository.saveAndFlush(url);
-        urlSearchRepository.save(url);
-
+        when(mockUrlSearchRepository.search(queryStringQuery("id:" + url.getId()), PageRequest.of(0, 20)))
+            .thenReturn(new PageImpl<>(Collections.singletonList(url), PageRequest.of(0, 1), 1));
         // Search the url
         restUrlMockMvc.perform(get("/api/_search/urls?query=id:" + url.getId()))
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(url.getId().intValue())))
-            .andExpect(jsonPath("$.[*].entityType").value(hasItem(DEFAULT_ENTITY_TYPE.toString())))
+            .andExpect(jsonPath("$.[*].entityType").value(hasItem(DEFAULT_ENTITY_TYPE)))
             .andExpect(jsonPath("$.[*].entityId").value(hasItem(DEFAULT_ENTITY_ID.intValue())))
-            .andExpect(jsonPath("$.[*].path").value(hasItem(DEFAULT_PATH.toString())))
-            .andExpect(jsonPath("$.[*].fileName").value(hasItem(DEFAULT_FILE_NAME.toString())))
+            .andExpect(jsonPath("$.[*].path").value(hasItem(DEFAULT_PATH)))
+            .andExpect(jsonPath("$.[*].fileName").value(hasItem(DEFAULT_FILE_NAME)))
             .andExpect(jsonPath("$.[*].sequence").value(hasItem(DEFAULT_SEQUENCE)))
-            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION.toString())))
-            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY.toString())))
+            .andExpect(jsonPath("$.[*].description").value(hasItem(DEFAULT_DESCRIPTION)))
+            .andExpect(jsonPath("$.[*].createdBy").value(hasItem(DEFAULT_CREATED_BY)))
             .andExpect(jsonPath("$.[*].createdDate").value(hasItem(sameInstant(DEFAULT_CREATED_DATE))))
-            .andExpect(jsonPath("$.[*].lastModifiedBy").value(hasItem(DEFAULT_LAST_MODIFIED_BY.toString())))
+            .andExpect(jsonPath("$.[*].lastModifiedBy").value(hasItem(DEFAULT_LAST_MODIFIED_BY)))
             .andExpect(jsonPath("$.[*].lastModifiedDate").value(hasItem(sameInstant(DEFAULT_LAST_MODIFIED_DATE))));
     }
 

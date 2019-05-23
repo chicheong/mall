@@ -1,8 +1,5 @@
 package com.wongs.web.rest;
-
-import com.codahale.metrics.annotation.Timed;
 import com.wongs.domain.Department;
-
 import com.wongs.repository.DepartmentRepository;
 import com.wongs.repository.search.DepartmentSearchRepository;
 import com.wongs.web.rest.errors.BadRequestAlertException;
@@ -57,7 +54,6 @@ public class DepartmentResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PostMapping("/departments")
-    @Timed
     public ResponseEntity<Department> createDepartment(@Valid @RequestBody Department department) throws URISyntaxException {
         log.debug("REST request to save Department : {}", department);
         if (department.getId() != null) {
@@ -80,11 +76,10 @@ public class DepartmentResource {
      * @throws URISyntaxException if the Location URI syntax is incorrect
      */
     @PutMapping("/departments")
-    @Timed
     public ResponseEntity<Department> updateDepartment(@Valid @RequestBody Department department) throws URISyntaxException {
         log.debug("REST request to update Department : {}", department);
         if (department.getId() == null) {
-            return createDepartment(department);
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
         Department result = departmentRepository.save(department);
         departmentSearchRepository.save(result);
@@ -97,15 +92,20 @@ public class DepartmentResource {
      * GET  /departments : get all the departments.
      *
      * @param pageable the pagination information
+     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many)
      * @return the ResponseEntity with status 200 (OK) and the list of departments in body
      */
     @GetMapping("/departments")
-    @Timed
-    public ResponseEntity<List<Department>> getAllDepartments(Pageable pageable) {
+    public ResponseEntity<List<Department>> getAllDepartments(Pageable pageable, @RequestParam(required = false, defaultValue = "false") boolean eagerload) {
         log.debug("REST request to get a page of Departments");
-        Page<Department> page = departmentRepository.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/departments");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        Page<Department> page;
+        if (eagerload) {
+            page = departmentRepository.findAllWithEagerRelationships(pageable);
+        } else {
+            page = departmentRepository.findAll(pageable);
+        }
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, String.format("/api/departments?eagerload=%b", eagerload));
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
@@ -115,11 +115,10 @@ public class DepartmentResource {
      * @return the ResponseEntity with status 200 (OK) and with body the department, or with status 404 (Not Found)
      */
     @GetMapping("/departments/{id}")
-    @Timed
     public ResponseEntity<Department> getDepartment(@PathVariable Long id) {
         log.debug("REST request to get Department : {}", id);
-        Department department = departmentRepository.findOneWithEagerRelationships(id);
-        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(department));
+        Optional<Department> department = departmentRepository.findOneWithEagerRelationships(id);
+        return ResponseUtil.wrapOrNotFound(department);
     }
 
     /**
@@ -129,11 +128,10 @@ public class DepartmentResource {
      * @return the ResponseEntity with status 200 (OK)
      */
     @DeleteMapping("/departments/{id}")
-    @Timed
     public ResponseEntity<Void> deleteDepartment(@PathVariable Long id) {
         log.debug("REST request to delete Department : {}", id);
-        departmentRepository.delete(id);
-        departmentSearchRepository.delete(id);
+        departmentRepository.deleteById(id);
+        departmentSearchRepository.deleteById(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }
 
@@ -146,12 +144,11 @@ public class DepartmentResource {
      * @return the result of the search
      */
     @GetMapping("/_search/departments")
-    @Timed
     public ResponseEntity<List<Department>> searchDepartments(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Departments for query {}", query);
         Page<Department> page = departmentSearchRepository.search(queryStringQuery(query), pageable);
         HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/departments");
-        return new ResponseEntity<>(page.getContent(), headers, HttpStatus.OK);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
 }

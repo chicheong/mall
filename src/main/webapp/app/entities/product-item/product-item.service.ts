@@ -1,81 +1,44 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { SERVER_API_URL } from '../../app.constants';
+import { Observable } from 'rxjs';
 
-import { ProductItem } from './product-item.model';
-import { createRequestOption } from '../../shared';
+import { SERVER_API_URL } from 'app/app.constants';
+import { createRequestOption } from 'app/shared';
+import { IProductItem } from 'app/shared/model/product-item.model';
 
-export type EntityResponseType = HttpResponse<ProductItem>;
+type EntityResponseType = HttpResponse<IProductItem>;
+type EntityArrayResponseType = HttpResponse<IProductItem[]>;
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ProductItemService {
+    public resourceUrl = SERVER_API_URL + 'api/product-items';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/product-items';
 
-    private resourceUrl =  SERVER_API_URL + 'api/product-items';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/product-items';
+    constructor(protected http: HttpClient) {}
 
-    constructor(private http: HttpClient) { }
-
-    create(productItem: ProductItem): Observable<EntityResponseType> {
-        const copy = this.convert(productItem);
-        return this.http.post<ProductItem>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    create(productItem: IProductItem): Observable<EntityResponseType> {
+        return this.http.post<IProductItem>(this.resourceUrl, productItem, { observe: 'response' });
     }
 
-    update(productItem: ProductItem): Observable<EntityResponseType> {
-        const copy = this.convert(productItem);
-        return this.http.put<ProductItem>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    update(productItem: IProductItem): Observable<EntityResponseType> {
+        return this.http.put<IProductItem>(this.resourceUrl, productItem, { observe: 'response' });
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<ProductItem>(`${this.resourceUrl}/${id}`, { observe: 'response'})
-            .map((res: EntityResponseType) => this.convertResponse(res));
+        return this.http.get<IProductItem>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    query(req?: any): Observable<HttpResponse<ProductItem[]>> {
+    query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<ProductItem[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<ProductItem[]>) => this.convertArrayResponse(res));
+        return this.http.get<IProductItem[]>(this.resourceUrl, { params: options, observe: 'response' });
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    search(req?: any): Observable<HttpResponse<ProductItem[]>> {
+    search(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<ProductItem[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<ProductItem[]>) => this.convertArrayResponse(res));
-    }
-
-    private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: ProductItem = this.convertItemFromServer(res.body);
-        return res.clone({body});
-    }
-
-    private convertArrayResponse(res: HttpResponse<ProductItem[]>): HttpResponse<ProductItem[]> {
-        const jsonResponse: ProductItem[] = res.body;
-        const body: ProductItem[] = [];
-        for (let i = 0; i < jsonResponse.length; i++) {
-            body.push(this.convertItemFromServer(jsonResponse[i]));
-        }
-        return res.clone({body});
-    }
-
-    /**
-     * Convert a returned JSON object to ProductItem.
-     */
-    private convertItemFromServer(productItem: ProductItem): ProductItem {
-        const copy: ProductItem = Object.assign({}, productItem);
-        return copy;
-    }
-
-    /**
-     * Convert a ProductItem to a JSON which can be sent to the server.
-     */
-    private convert(productItem: ProductItem): ProductItem {
-        const copy: ProductItem = Object.assign({}, productItem);
-        return copy;
+        return this.http.get<IProductItem[]>(this.resourceSearchUrl, { params: options, observe: 'response' });
     }
 }

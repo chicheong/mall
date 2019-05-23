@@ -1,54 +1,40 @@
 /* tslint:disable max-line-length */
-import { ComponentFixture, TestBed, async } from '@angular/core/testing';
-import { HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ActivatedRoute } from '@angular/router';
+import { of } from 'rxjs';
 
 import { MallTestModule } from '../../../test.module';
-import { PaymentStatusHistoryDetailComponent } from '../../../../../../main/webapp/app/entities/payment-status-history/payment-status-history-detail.component';
-import { PaymentStatusHistoryService } from '../../../../../../main/webapp/app/entities/payment-status-history/payment-status-history.service';
-import { PaymentStatusHistory } from '../../../../../../main/webapp/app/entities/payment-status-history/payment-status-history.model';
+import { PaymentStatusHistoryDetailComponent } from 'app/entities/payment-status-history/payment-status-history-detail.component';
+import { PaymentStatusHistory } from 'app/shared/model/payment-status-history.model';
 
 describe('Component Tests', () => {
-
     describe('PaymentStatusHistory Management Detail Component', () => {
         let comp: PaymentStatusHistoryDetailComponent;
         let fixture: ComponentFixture<PaymentStatusHistoryDetailComponent>;
-        let service: PaymentStatusHistoryService;
+        const route = ({ data: of({ paymentStatusHistory: new PaymentStatusHistory(123) }) } as any) as ActivatedRoute;
 
-        beforeEach(async(() => {
+        beforeEach(() => {
             TestBed.configureTestingModule({
                 imports: [MallTestModule],
                 declarations: [PaymentStatusHistoryDetailComponent],
-                providers: [
-                    PaymentStatusHistoryService
-                ]
+                providers: [{ provide: ActivatedRoute, useValue: route }]
             })
-            .overrideTemplate(PaymentStatusHistoryDetailComponent, '')
-            .compileComponents();
-        }));
-
-        beforeEach(() => {
+                .overrideTemplate(PaymentStatusHistoryDetailComponent, '')
+                .compileComponents();
             fixture = TestBed.createComponent(PaymentStatusHistoryDetailComponent);
             comp = fixture.componentInstance;
-            service = fixture.debugElement.injector.get(PaymentStatusHistoryService);
         });
 
         describe('OnInit', () => {
             it('Should call load all on init', () => {
                 // GIVEN
 
-                spyOn(service, 'find').and.returnValue(Observable.of(new HttpResponse({
-                    body: new PaymentStatusHistory(123)
-                })));
-
                 // WHEN
                 comp.ngOnInit();
 
                 // THEN
-                expect(service.find).toHaveBeenCalledWith(123);
-                expect(comp.paymentStatusHistory).toEqual(jasmine.objectContaining({id: 123}));
+                expect(comp.paymentStatusHistory).toEqual(jasmine.objectContaining({ id: 123 }));
             });
         });
     });
-
 });

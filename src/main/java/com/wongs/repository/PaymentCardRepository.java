@@ -1,13 +1,12 @@
 package com.wongs.repository;
 
 import com.wongs.domain.PaymentCard;
-import org.springframework.stereotype.Repository;
-
 import org.springframework.data.jpa.repository.*;
+import org.springframework.stereotype.Repository;
 
 
 /**
- * Spring Data JPA repository for the PaymentCard entity.
+ * Spring Data  repository for the PaymentCard entity.
  */
 @SuppressWarnings("unused")
 @Repository

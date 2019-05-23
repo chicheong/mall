@@ -1,0 +1,67 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+            <h2 id="jhi-currency-rate-heading" jhiTranslate="mallApp.currencyRate.home.createOrEditLabel">Create or edit a Currency Rate</h2>
+            <div>
+                <jhi-alert-error></jhi-alert-error>
+                <div class="form-group" [hidden]="!currencyRate.id">
+                    <label for="id" jhiTranslate="global.field.id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id"
+                        [(ngModel)]="currencyRate.id" readonly />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.currencyRate.from" for="field_from">From</label>
+                    <div class="d-flex">
+                        <input id="field_from" type="datetime-local" class="form-control" name="from" [(ngModel)]="from" placeholder="YYYY-MM-DD HH:mm"
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.currencyRate.to" for="field_to">To</label>
+                    <div class="d-flex">
+                        <input id="field_to" type="datetime-local" class="form-control" name="to" [(ngModel)]="to" placeholder="YYYY-MM-DD HH:mm"
+                        />
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.currencyRate.rate" for="field_rate">Rate</label>
+                    <input type="number" class="form-control" name="rate" id="field_rate"
+                        [(ngModel)]="currencyRate.rate" />
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.currencyRate.sourceCurrency" for="field_sourceCurrency">Source Currency</label>
+                    <select class="form-control" name="sourceCurrency" [(ngModel)]="currencyRate.sourceCurrency" id="field_sourceCurrency" >
+                        <option value="HKD">{{'mallApp.CurrencyType.HKD' | translate}}</option>
+                        <option value="CNY">{{'mallApp.CurrencyType.CNY' | translate}}</option>
+                        <option value="USD">{{'mallApp.CurrencyType.USD' | translate}}</option>
+                        <option value="EUR">{{'mallApp.CurrencyType.EUR' | translate}}</option>
+                        <option value="JPY">{{'mallApp.CurrencyType.JPY' | translate}}</option>
+                        <option value="KRW">{{'mallApp.CurrencyType.KRW' | translate}}</option>
+                        <option value="TWD">{{'mallApp.CurrencyType.TWD' | translate}}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.currencyRate.targetCurrency" for="field_targetCurrency">Target Currency</label>
+                    <select class="form-control" name="targetCurrency" [(ngModel)]="currencyRate.targetCurrency" id="field_targetCurrency" >
+                        <option value="HKD">{{'mallApp.CurrencyType.HKD' | translate}}</option>
+                        <option value="CNY">{{'mallApp.CurrencyType.CNY' | translate}}</option>
+                        <option value="USD">{{'mallApp.CurrencyType.USD' | translate}}</option>
+                        <option value="EUR">{{'mallApp.CurrencyType.EUR' | translate}}</option>
+                        <option value="JPY">{{'mallApp.CurrencyType.JPY' | translate}}</option>
+                        <option value="KRW">{{'mallApp.CurrencyType.KRW' | translate}}</option>
+                        <option value="TWD">{{'mallApp.CurrencyType.TWD' | translate}}</option>
+                    </select>
+                </div>
+
+            </div>
+            <div>
+                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
+                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                </button>
+                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+                </button>
+            </div>
+        </form>
+    </div>
+</div>

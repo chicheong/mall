@@ -1,81 +1,44 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { SERVER_API_URL } from '../../app.constants';
+import { Observable } from 'rxjs';
 
-import { Office } from './office.model';
-import { createRequestOption } from '../../shared';
+import { SERVER_API_URL } from 'app/app.constants';
+import { createRequestOption } from 'app/shared';
+import { IOffice } from 'app/shared/model/office.model';
 
-export type EntityResponseType = HttpResponse<Office>;
+type EntityResponseType = HttpResponse<IOffice>;
+type EntityArrayResponseType = HttpResponse<IOffice[]>;
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class OfficeService {
+    public resourceUrl = SERVER_API_URL + 'api/offices';
+    public resourceSearchUrl = SERVER_API_URL + 'api/_search/offices';
 
-    private resourceUrl =  SERVER_API_URL + 'api/offices';
-    private resourceSearchUrl = SERVER_API_URL + 'api/_search/offices';
+    constructor(protected http: HttpClient) {}
 
-    constructor(private http: HttpClient) { }
-
-    create(office: Office): Observable<EntityResponseType> {
-        const copy = this.convert(office);
-        return this.http.post<Office>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    create(office: IOffice): Observable<EntityResponseType> {
+        return this.http.post<IOffice>(this.resourceUrl, office, { observe: 'response' });
     }
 
-    update(office: Office): Observable<EntityResponseType> {
-        const copy = this.convert(office);
-        return this.http.put<Office>(this.resourceUrl, copy, { observe: 'response' })
-            .map((res: EntityResponseType) => this.convertResponse(res));
+    update(office: IOffice): Observable<EntityResponseType> {
+        return this.http.put<IOffice>(this.resourceUrl, office, { observe: 'response' });
     }
 
     find(id: number): Observable<EntityResponseType> {
-        return this.http.get<Office>(`${this.resourceUrl}/${id}`, { observe: 'response'})
-            .map((res: EntityResponseType) => this.convertResponse(res));
+        return this.http.get<IOffice>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    query(req?: any): Observable<HttpResponse<Office[]>> {
+    query(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Office[]>(this.resourceUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Office[]>) => this.convertArrayResponse(res));
+        return this.http.get<IOffice[]>(this.resourceUrl, { params: options, observe: 'response' });
     }
 
     delete(id: number): Observable<HttpResponse<any>> {
-        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response'});
+        return this.http.delete<any>(`${this.resourceUrl}/${id}`, { observe: 'response' });
     }
 
-    search(req?: any): Observable<HttpResponse<Office[]>> {
+    search(req?: any): Observable<EntityArrayResponseType> {
         const options = createRequestOption(req);
-        return this.http.get<Office[]>(this.resourceSearchUrl, { params: options, observe: 'response' })
-            .map((res: HttpResponse<Office[]>) => this.convertArrayResponse(res));
-    }
-
-    private convertResponse(res: EntityResponseType): EntityResponseType {
-        const body: Office = this.convertItemFromServer(res.body);
-        return res.clone({body});
-    }
-
-    private convertArrayResponse(res: HttpResponse<Office[]>): HttpResponse<Office[]> {
-        const jsonResponse: Office[] = res.body;
-        const body: Office[] = [];
-        for (let i = 0; i < jsonResponse.length; i++) {
-            body.push(this.convertItemFromServer(jsonResponse[i]));
-        }
-        return res.clone({body});
-    }
-
-    /**
-     * Convert a returned JSON object to Office.
-     */
-    private convertItemFromServer(office: Office): Office {
-        const copy: Office = Object.assign({}, office);
-        return copy;
-    }
-
-    /**
-     * Convert a Office to a JSON which can be sent to the server.
-     */
-    private convert(office: Office): Office {
-        const copy: Office = Object.assign({}, office);
-        return copy;
+        return this.http.get<IOffice[]>(this.resourceSearchUrl, { params: options, observe: 'response' });
     }
 }

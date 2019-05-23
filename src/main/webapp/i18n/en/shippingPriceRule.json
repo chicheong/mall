@@ -1,7 +1,6 @@
-
 {
     "mallApp": {
-        "shippingPriceRule" : {
+        "shippingPriceRule": {
             "home": {
                 "title": "Shipping Price Rules",
                 "createLabel": "Create a new Shipping Price Rule",
