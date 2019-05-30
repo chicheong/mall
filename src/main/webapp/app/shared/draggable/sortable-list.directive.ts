@@ -32,14 +32,14 @@ export class SortableListDirective implements AfterContentInit {
   private clientRects: ClientRect[];
 
   ngAfterContentInit(): void {
-    this.sortables.forEach((sortable) => {
+    this.sortables.forEach(sortable => {
       sortable.dragStart.subscribe(() => this.measureClientRects());
-      sortable.dragMove.subscribe((event) => this.detectSorting(sortable, event));
+      sortable.dragMove.subscribe(event => this.detectSorting(sortable, event));
     });
   }
 
   private measureClientRects() {
-    this.clientRects = this.sortables.map((sortable) => sortable.element.nativeElement.getBoundingClientRect());
+    this.clientRects = this.sortables.map(sortable => sortable.element.nativeElement.getBoundingClientRect());
   }
 
   private detectSorting(sortable: SortableDirective, event: PointerEvent) {
@@ -49,8 +49,8 @@ export class SortableListDirective implements AfterContentInit {
     this.clientRects
       .slice()
       .sort((rectA, rectB) => distance(rectA, currentRect) - distance(rectB, currentRect))
-      .filter((rect) => rect !== currentRect)
-      .some((rect) => {
+      .filter(rect => rect !== currentRect)
+      .some(rect => {
         const isHorizontal = rect.top === currentRect.top;
         const isBefore = isHorizontal ?
           rect.left < currentRect.left :

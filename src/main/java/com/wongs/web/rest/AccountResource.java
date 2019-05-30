@@ -1,26 +1,39 @@
 package com.wongs.web.rest;
 
 
-import com.wongs.domain.User;
-import com.wongs.repository.UserRepository;
-import com.wongs.security.SecurityUtils;
-import com.wongs.service.MailService;
-import com.wongs.service.UserService;
-import com.wongs.service.dto.PasswordChangeDTO;
-import com.wongs.service.dto.UserDTO;
-import com.wongs.web.rest.errors.*;
-import com.wongs.web.rest.vm.KeyAndPasswordVM;
-import com.wongs.web.rest.vm.ManagedUserVM;
+import java.util.Optional;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.util.*;
+import com.wongs.domain.User;
+import com.wongs.repository.UserRepository;
+import com.wongs.security.SecurityUtils;
+import com.wongs.service.MailService;
+import com.wongs.service.MyAccountService;
+import com.wongs.service.UserInfoService;
+import com.wongs.service.UserService;
+import com.wongs.service.dto.PasswordChangeDTO;
+import com.wongs.service.dto.UserDTO;
+import com.wongs.web.rest.errors.EmailAlreadyUsedException;
+import com.wongs.web.rest.errors.EmailNotFoundException;
+import com.wongs.web.rest.errors.InternalServerErrorException;
+import com.wongs.web.rest.errors.InvalidPasswordException;
+import com.wongs.web.rest.errors.LoginAlreadyUsedException;
+import com.wongs.web.rest.vm.KeyAndPasswordVM;
+import com.wongs.web.rest.vm.ManagedUserVM;
 
 /**
  * REST controller for managing the current user's account.
@@ -34,13 +47,17 @@ public class AccountResource {
     private final UserRepository userRepository;
 
     private final UserService userService;
+    private final UserInfoService userInfoService;
+    private final MyAccountService myAccountService;
 
     private final MailService mailService;
 
-    public AccountResource(UserRepository userRepository, UserService userService, MailService mailService) {
+    public AccountResource(UserRepository userRepository, UserService userService, UserInfoService userInfoService, MyAccountService myAccountService, MailService mailService) {
 
         this.userRepository = userRepository;
         this.userService = userService;
+        this.userInfoService = userInfoService;
+        this.myAccountService = myAccountService;
         this.mailService = mailService;
     }
 
@@ -96,9 +113,13 @@ public class AccountResource {
      */
     @GetMapping("/account")
     public UserDTO getAccount() {
-        return userService.getUserWithAuthorities()
-            .map(UserDTO::new)
-            .orElseThrow(() -> new InternalServerErrorException("User could not be found"));
+        return userService.getUserWithAuthorities()  //.map(UserDTO::new)
+        		.map(user -> {
+                	UserDTO userDTO = new UserDTO(user);
+    				userDTO.setUserInfo(userInfoService.findOneWithAccountsByUserLogin(user.getLogin()));
+    				userDTO.setMyAccount(userDTO.getUserInfo() != null? myAccountService.findOne(userDTO.getUserInfo().getDefaultAccount().getId()).orElse(null) : null);
+    				return userDTO;
+        		}).orElseThrow(() -> new InternalServerErrorException("User could not be found"));
     }
 
     /**

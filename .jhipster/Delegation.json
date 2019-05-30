@@ -1,13 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "account",
-            "otherEntityName": "myAccount",
-            "otherEntityField": "id"
-        }
-    ],
+    "name": "Delegation",
     "fields": [
         {
             "fieldName": "from",
@@ -48,10 +40,22 @@
             "fieldType": "ZonedDateTime"
         }
     ],
-    "changelogDate": "20180221114432",
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "myAccount",
+            "otherEntityRelationshipName": "delegation",
+            "relationshipName": "account",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190527101520",
     "entityTableName": "delegation",
     "dto": "mapstruct",
     "pagination": "infinite-scroll",
     "service": "serviceClass",
-    "jpaMetamodelFiltering": false
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

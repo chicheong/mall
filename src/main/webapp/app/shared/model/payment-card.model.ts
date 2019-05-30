@@ -8,6 +8,7 @@ export interface IPaymentCard {
     expirationYear?: string;
     cvc?: string;
     payment?: IPayment;
+    expiration?: string;
 }
 
 export class PaymentCard implements IPaymentCard {
@@ -18,6 +19,8 @@ export class PaymentCard implements IPaymentCard {
         public expirationMonth?: string,
         public expirationYear?: string,
         public cvc?: string,
-        public payment?: IPayment
+        public payment?: IPayment,
+        // For temporary storing expirationMonth and expirationYear
+        public expiration?: string
     ) {}
 }

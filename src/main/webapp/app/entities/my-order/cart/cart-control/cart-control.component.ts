@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable, Subscription } from 'rxjs';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { MyOrder } from './../../my-order.model';
-import { MyOrderService } from './../../my-order.service';
+import { IMyOrder } from 'app/shared/model/my-order.model';
+import { MyOrderService } from 'app/entities/my-order';
 
 import { CartControl } from './cart-control';
 import { CartControlType } from './cart-control-type';

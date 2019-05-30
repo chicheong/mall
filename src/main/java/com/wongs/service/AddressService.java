@@ -52,6 +52,19 @@ public class AddressService {
         addressSearchRepository.save(address);
         return result;
     }
+    
+    /**
+     * Save a address.
+     *
+     * @param address the entity to save
+     * @return the persisted entity
+     */
+    public Address save(Address address) {
+        log.debug("Request to save Address : {}", address);
+        Address result = addressRepository.save(address);
+        addressSearchRepository.save(address);
+        return result;
+    }
 
     /**
      * Get all the addresses.
@@ -65,7 +78,6 @@ public class AddressService {
         return addressRepository.findAll(pageable)
             .map(addressMapper::toDto);
     }
-
 
     /**
      * Get one address by id.

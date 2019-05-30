@@ -1,6 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [],
+    "name": "Country",
     "fields": [
         {
             "fieldName": "code",
@@ -36,10 +35,14 @@
             "fieldValidateRulesMaxlength": 100
         }
     ],
-    "changelogDate": "20180221114429",
+    "relationships": [],
+    "changelogDate": "20190527101516",
     "entityTableName": "country",
     "dto": "no",
     "pagination": "pagination",
     "service": "no",
-    "jpaMetamodelFiltering": false
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

@@ -1,7 +1,13 @@
 package com.wongs.service.dto;
+
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
+
+import com.wongs.domain.OrderItem;
+import com.wongs.domain.OrderShop;
+import com.wongs.domain.ProductItem;
 import com.wongs.domain.enumeration.CurrencyType;
 
 /**
@@ -17,50 +23,74 @@ public class OrderItemDTO implements Serializable {
 
     private CurrencyType currency;
 
+    private ProductItem productItem;
+    
+    private OrderShop shop;
 
-    private Long shopId;
+    public OrderItemDTO() {
+        // Empty constructor needed for Jackson.
+	}
+
+	public OrderItemDTO(OrderItem orderItem) {
+		super();
+		this.id = orderItem.getId();
+		this.quantity = orderItem.getQuantity();
+		this.price = orderItem.getPrice();
+		this.currency = orderItem.getCurrency();
+		
+		this.productItem = orderItem.getProductItem();
+		this.shop = orderItem.getShop();
+	}
 
     public Long getId() {
-        return id;
-    }
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public Integer getQuantity() {
-        return quantity;
-    }
+	public Integer getQuantity() {
+		return quantity;
+	}
 
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
 
-    public BigDecimal getPrice() {
-        return price;
-    }
+	public BigDecimal getPrice() {
+		return price;
+	}
 
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
+	public void setPrice(BigDecimal price) {
+		this.price = price;
+	}
 
-    public CurrencyType getCurrency() {
-        return currency;
-    }
+	public CurrencyType getCurrency() {
+		return currency;
+	}
 
-    public void setCurrency(CurrencyType currency) {
-        this.currency = currency;
-    }
+	public void setCurrency(CurrencyType currency) {
+		this.currency = currency;
+	}
 
-    public Long getShopId() {
-        return shopId;
-    }
+	public ProductItem getProductItem() {
+		return productItem;
+	}
 
-    public void setShopId(Long orderShopId) {
-        this.shopId = orderShopId;
-    }
+	public void setProductItem(ProductItem productItem) {
+		this.productItem = productItem;
+	}
 
-    @Override
+	public OrderShop getShop() {
+		return shop;
+	}
+
+	public void setShop(OrderShop shop) {
+		this.shop = shop;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -70,7 +100,7 @@ public class OrderItemDTO implements Serializable {
         }
 
         OrderItemDTO orderItemDTO = (OrderItemDTO) o;
-        if (orderItemDTO.getId() == null || getId() == null) {
+        if(orderItemDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), orderItemDTO.getId());
@@ -88,7 +118,6 @@ public class OrderItemDTO implements Serializable {
             ", quantity=" + getQuantity() +
             ", price=" + getPrice() +
             ", currency='" + getCurrency() + "'" +
-            ", shop=" + getShopId() +
             "}";
     }
 }

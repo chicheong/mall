@@ -1,16 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable, Subscription } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Subscription } from 'rxjs/Rx';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
-import { ProductItem } from '../product-item';
-import { ProductStyle } from '../product-style';
-import { Price } from '../price';
-import { Quantity } from '../quantity';
-import { Product } from './product.model';
+import { IProductItem, ProductItem } from 'app/shared/model/product-item.model';
+import { IProductStyle } from 'app/shared/model/product-style.model';
+import { IPrice, Price } from 'app/shared/model/price.model';
+import { IQuantity, Quantity } from 'app/shared/model/quantity.model';
+import { IProduct } from 'app/shared/model/product.model';
 
 import { PricesPopupService } from './prices-popup.service';
 import { PricesDialogComponent } from './prices-dialog.component';
@@ -19,7 +18,7 @@ import { QuantitiesDialogComponent } from './quantities-dialog.component';
 
 import { GetItemFromColorSizePipe } from './get-item-from-color-size.pipe';
 
-import { UuidService } from '../../shared';
+import { UuidService } from 'app/shared';
 
 export const enum ProductItemsDialogType {
     CODE = 'CODE',
@@ -39,10 +38,10 @@ export const enum ProductItemsBroadcastName {
 })
 export class ProductItemsDialogComponent implements OnInit {
 
-    product: Product;
-    productItems: ProductItem[] = [];
-    colors: ProductStyle[];
-    sizes: ProductStyle[];
+    product: IProduct;
+    productItems: IProductItem[] = [];
+    colors: IProductStyle[];
+    sizes: IProductStyle[];
     type: ProductItemsDialogType = ProductItemsDialogType.CODE;
     private eventSubscriber: Subscription;
     broadcastName: string;
@@ -58,8 +57,8 @@ export class ProductItemsDialogComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.product.items.forEach((item) => {
-            const productItem: ProductItem = Object.assign(new ProductItem(), item);
+        this.product.items.forEach(item => {
+            const productItem: IProductItem = Object.assign(new ProductItem(), item);
             this.productItems.push(productItem);
         });
         this.colors = this.product.colors;
@@ -71,7 +70,7 @@ export class ProductItemsDialogComponent implements OnInit {
 
     registerChangeInPrices() {
         this.eventSubscriber = this.eventManager.subscribe(
-            ProductItemsBroadcastName.PRICES, (response) => {
+            ProductItemsBroadcastName.PRICES, response => {
                 if (response.type === ProductItemsDialogType.SINGLE) {
                     this.updatePrices(response.obj);
                 } else if (response.type === ProductItemsDialogType.ALL) {
@@ -83,7 +82,7 @@ export class ProductItemsDialogComponent implements OnInit {
 
     registerChangeInQuantities() {
         this.eventSubscriber = this.eventManager.subscribe(
-            ProductItemsBroadcastName.QUANTITIES, (response) => {
+            ProductItemsBroadcastName.QUANTITIES, response => {
                 if (response.type === ProductItemsDialogType.SINGLE) {
                     this.updateQuantities(response.obj);
                 } else if (response.type === ProductItemsDialogType.ALL) {
@@ -93,9 +92,9 @@ export class ProductItemsDialogComponent implements OnInit {
         );
     }
 
-    updatePrices(productItem: ProductItem) {
+    updatePrices(productItem: IProductItem) {
         console.error('updatePrices');
-        this.productItems.forEach((item) => {
+        this.productItems.forEach(item => {
             if (item.id && item.id === productItem.id) {
                 console.error('item found');
                 item.prices = productItem.prices;
@@ -110,17 +109,17 @@ export class ProductItemsDialogComponent implements OnInit {
         });
     }
 
-    updatePricesForAll(productItem: ProductItem) {
+    updatePricesForAll(productItem: IProductItem) {
         console.error('updatePricesForAll');
-        this.productItems.forEach((item) => {
+        this.productItems.forEach(item => {
             if (item.id && item.id === productItem.id) {
                 item.prices = productItem.prices;
             } else if (item.tempId && item.tempId === productItem.tempId) {
                 item.prices = productItem.prices;
             } else {
                 item.prices = [];
-                productItem.prices.forEach((price) => {
-                    const obj: Price = Object.assign(new Price(), price);
+                productItem.prices.forEach(price => {
+                    const obj: IPrice = Object.assign(new Price(), price);
                     obj.id = undefined;
                     obj.tempId = this.uuidService.get();
                     item.prices.push(obj);
@@ -130,9 +129,9 @@ export class ProductItemsDialogComponent implements OnInit {
         });
     }
 
-    updateQuantities(productItem: ProductItem) {
+    updateQuantities(productItem: IProductItem) {
         console.error('updateQuantities');
-        this.productItems.forEach((item) => {
+        this.productItems.forEach(item => {
             if (item.id && item.id === productItem.id) {
                 console.error('item found with id');
                 item.quantities = productItem.quantities;
@@ -147,12 +146,12 @@ export class ProductItemsDialogComponent implements OnInit {
         });
     }
 
-    updateQuantitiesForAll(productItem: ProductItem) {
+    updateQuantitiesForAll(productItem: IProductItem) {
         console.error('updateQuantitiesForAll');
-        this.productItems.forEach((item) => {
+        this.productItems.forEach(item => {
             item.quantities = productItem.quantities;
         });
-        this.productItems.forEach((item) => {
+        this.productItems.forEach(item => {
             if (item.id && item.id === productItem.id) {
                 item.quantities = productItem.quantities;
             } else if (item.tempId && item.tempId === productItem.tempId) {
@@ -160,7 +159,7 @@ export class ProductItemsDialogComponent implements OnInit {
                 item.quantities = productItem.quantities;
             } else {
                 item.quantities = [];
-                productItem.quantities.forEach((quantity) => {
+                productItem.quantities.forEach(quantity => {
                     const obj: Quantity = Object.assign(new Quantity(), quantity);
                     obj.id = undefined;
                     obj.tempId = this.uuidService.get();
@@ -181,21 +180,21 @@ export class ProductItemsDialogComponent implements OnInit {
         this.activeModal.dismiss('OK');
     }
 
-    editPrices(item: ProductItem) {
+    editPrices(item: IProductItem) {
         console.error('item: ' + item);
         this.pricesPopupService.open(PricesDialogComponent as Component, item);
     }
 
-    editQuantities(item: ProductItem) {
+    editQuantities(item: IProductItem) {
         console.error('item: ' + item);
         this.quantitiesPopupService.open(QuantitiesDialogComponent as Component, item);
     }
 
-    trackProductStyleById(index: number, item: ProductStyle) {
+    trackProductStyleById(index: number, item: IProductStyle) {
         return item.id;
     }
 
-    trackProductById(index: number, item: Product) {
+    trackProductById(index: number, item: IProduct) {
         return item.id;
     }
 }

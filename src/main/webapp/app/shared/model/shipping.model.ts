@@ -1,15 +1,8 @@
 import { Moment } from 'moment';
+import { IOrderShop } from 'app/shared/model/order-shop.model';
 import { IShippingStatusHistory } from 'app/shared/model/shipping-status-history.model';
-
-export const enum CurrencyType {
-    HKD = 'HKD',
-    CNY = 'CNY',
-    USD = 'USD',
-    EUR = 'EUR',
-    JPY = 'JPY',
-    KRW = 'KRW',
-    TWD = 'TWD'
-}
+import { IShippingType } from 'app/shared/model/shipping-type.model';
+import { CurrencyType } from './price.model';
 
 export const enum ShippingStatus {
     PENDING = 'PENDING',
@@ -24,8 +17,9 @@ export interface IShipping {
     currency?: CurrencyType;
     date?: Moment;
     status?: ShippingStatus;
+    shop?: IOrderShop;
     statusHistories?: IShippingStatusHistory[];
-    typeId?: number;
+    type?: IShippingType;
 }
 
 export class Shipping implements IShipping {
@@ -35,7 +29,8 @@ export class Shipping implements IShipping {
         public currency?: CurrencyType,
         public date?: Moment,
         public status?: ShippingStatus,
+        public shop?: IOrderShop,
         public statusHistories?: IShippingStatusHistory[],
-        public typeId?: number
+        public type?: IShippingType
     ) {}
 }

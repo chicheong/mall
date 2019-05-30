@@ -7,7 +7,8 @@ import { take, map } from 'rxjs/operators';
 import * as moment from 'moment';
 import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
 import { ShippingService } from 'app/entities/shipping/shipping.service';
-import { IShipping, Shipping, CurrencyType, ShippingStatus } from 'app/shared/model/shipping.model';
+import { IShipping, Shipping, ShippingStatus } from 'app/shared/model/shipping.model';
+import { CurrencyType } from 'app/shared/model/price.model';
 
 describe('Service Tests', () => {
     describe('Shipping Service', () => {

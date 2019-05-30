@@ -15,12 +15,12 @@
                 </dd>
                 <dt><span jhiTranslate="mallApp.userInfo.user">User</span></dt>
                 <dd>
-                    {{userInfo.userLogin}}
+                    {{userInfo.user?.login}}
                 </dd>
                 <dt><span jhiTranslate="mallApp.userInfo.defaultAccount">Default Account</span></dt>
                 <dd>
-                    <div *ngIf="userInfo.defaultAccountId">
-                        <a [routerLink]="['/my-account', userInfo.defaultAccountId, 'view']">{{userInfo.defaultAccountId}}</a>
+                    <div *ngIf="userInfo.defaultAccount">
+                        <a [routerLink]="['/my-account', userInfo.defaultAccount?.id, 'view']">{{userInfo.defaultAccount?.id}}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="mallApp.userInfo.account">Account</span></dt>

@@ -1,6 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [],
+    "name": "Url",
     "fields": [
         {
             "fieldName": "entityType",
@@ -18,7 +17,7 @@
             "fieldName": "fileName",
             "fieldType": "String"
         },
-		{
+        {
             "fieldName": "sequence",
             "fieldType": "Integer"
         },
@@ -43,10 +42,14 @@
             "fieldType": "ZonedDateTime"
         }
     ],
-    "changelogDate": "20180221114443",
+    "relationships": [],
+    "changelogDate": "20190527101535",
     "entityTableName": "url",
     "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceClass",
-    "jpaMetamodelFiltering": false
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

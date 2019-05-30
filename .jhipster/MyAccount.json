@@ -1,46 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "one-to-many",
-            "relationshipName": "delegation",
-            "otherEntityName": "delegation",
-            "otherEntityRelationshipName": "account"
-        },
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "company",
-            "otherEntityName": "company",
-            "otherEntityField": "code"
-        },
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "department",
-            "otherEntityName": "department",
-            "otherEntityField": "code"
-        },
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "office",
-            "otherEntityName": "office",
-            "otherEntityField": "code"
-        },
-        {
-            "relationshipType": "many-to-many",
-            "otherEntityRelationshipName": "account",
-            "relationshipName": "shop",
-            "otherEntityName": "shop",
-            "otherEntityField": "id",
-            "ownerSide": true
-        },
-        {
-            "relationshipType": "many-to-many",
-            "relationshipName": "userInfo",
-            "otherEntityName": "userInfo",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "account"
-        }
-    ],
+    "name": "MyAccount",
     "fields": [
         {
             "fieldName": "balance",
@@ -52,10 +11,58 @@
             "fieldValues": "PERSONAL,COMPANY"
         }
     ],
-    "changelogDate": "20180221114424",
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "delegation",
+            "otherEntityRelationshipName": "account",
+            "relationshipName": "delegation"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "company",
+            "otherEntityRelationshipName": "account",
+            "relationshipName": "company",
+            "otherEntityField": "code"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "department",
+            "otherEntityRelationshipName": "account",
+            "relationshipName": "department",
+            "otherEntityField": "code"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "office",
+            "otherEntityRelationshipName": "account",
+            "relationshipName": "office",
+            "otherEntityField": "code"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityName": "shop",
+            "otherEntityRelationshipName": "account",
+            "relationshipName": "shop",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityName": "userInfo",
+            "otherEntityRelationshipName": "account",
+            "relationshipName": "userInfo",
+            "otherEntityField": "login",
+            "ownerSide": false
+        }
+    ],
+    "changelogDate": "20190527101511",
     "entityTableName": "my_account",
     "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceClass",
-    "jpaMetamodelFiltering": false
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

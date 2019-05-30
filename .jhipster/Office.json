@@ -1,35 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "one-to-one",
-            "relationshipName": "address",
-            "otherEntityName": "address",
-            "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "office"
-        },
-        {
-            "relationshipType": "one-to-many",
-            "relationshipName": "account",
-            "otherEntityName": "myAccount",
-            "otherEntityRelationshipName": "office"
-        },
-        {
-            "relationshipType": "many-to-many",
-            "relationshipName": "company",
-            "otherEntityName": "company",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "office"
-        },
-        {
-            "relationshipType": "many-to-many",
-            "relationshipName": "department",
-            "otherEntityName": "department",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "office"
-        }
-    ],
+    "name": "Office",
     "fields": [
         {
             "fieldName": "code",
@@ -48,10 +18,45 @@
             "fieldValues": "ACTIVE,INACTIVE"
         }
     ],
-    "changelogDate": "20180221114427",
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "address",
+            "otherEntityRelationshipName": "office",
+            "relationshipName": "address",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "myAccount",
+            "otherEntityRelationshipName": "office",
+            "relationshipName": "account"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityName": "company",
+            "otherEntityRelationshipName": "office",
+            "relationshipName": "company",
+            "otherEntityField": "code",
+            "ownerSide": false
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityName": "department",
+            "otherEntityRelationshipName": "office",
+            "relationshipName": "department",
+            "otherEntityField": "code",
+            "ownerSide": false
+        }
+    ],
+    "changelogDate": "20190527101514",
     "entityTableName": "office",
     "dto": "no",
     "pagination": "pagination",
     "service": "no",
-    "jpaMetamodelFiltering": false
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

@@ -1,14 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable, Subscription } from 'rxjs';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { MyOrder } from './../../my-order.model';
-import { MyOrderService } from './../../my-order.service';
+import { IMyOrder } from 'app/shared/model/my-order.model';
+import { MyOrderService } from 'app/entities/my-order';
 
-import { CartComponent } from './../../cart.component';
+import { CartComponent } from 'app/entities/my-order/cart.component';
 
 @Component({
     selector: 'jhi-shipping-info',
@@ -36,12 +35,12 @@ export class CartShippingComponent extends CartComponent implements OnInit, OnDe
                 this.myOrderService.update(this.myOrder));
     }
 
-    private subscribeToSaveResponse(result: Observable<HttpResponse<MyOrder>>) {
-        result.subscribe((res: HttpResponse<MyOrder>) =>
+    private subscribeToSaveResponse(result: Observable<HttpResponse<IMyOrder>>) {
+        result.subscribe((res: HttpResponse<IMyOrder>) =>
             this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
-    private onSaveSuccess(result: MyOrder) {
+    private onSaveSuccess(result: IMyOrder) {
         this.myOrder = result;
         this.eventManager.broadcast({ name: 'myOrderModification', content: 'OK', obj: result});
         this.isSaving = false;

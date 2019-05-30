@@ -54,13 +54,13 @@
                 <td>{{myOrder.remark}}</td>
                 <td jhiTranslate="{{'mallApp.OrderStatus.' + myOrder.status}}">{{myOrder.status}}</td>
                 <td>
-                    <div *ngIf="myOrder.shippingAddressId">
-                        <a [routerLink]="['../address', myOrder.shippingAddressId , 'view' ]" >{{myOrder.shippingAddressId}}</a>
+                    <div *ngIf="myOrder.shippingAddress">
+                        <a [routerLink]="['../address', myOrder.shippingAddress?.id , 'view' ]" >{{myOrder.shippingAddress?.id}}</a>
                     </div>
                 </td>
                 <td>
-                    <div *ngIf="myOrder.billingAddressId">
-                        <a [routerLink]="['../address', myOrder.billingAddressId , 'view' ]" >{{myOrder.billingAddressId}}</a>
+                    <div *ngIf="myOrder.billingAddress">
+                        <a [routerLink]="['../address', myOrder.billingAddress?.id , 'view' ]" >{{myOrder.billingAddress?.id}}</a>
                     </div>
                 </td>
                 <td>

@@ -16,9 +16,11 @@
                     <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'mallApp.product.home.search' | translate }}">
                     <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
                         <fa-icon [icon]="'search'"></fa-icon>
+
                     </button>
                     <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
                         <fa-icon [icon]="'trash-alt'"></fa-icon>
+
                     </button>
                 </div>
             </form>
@@ -51,9 +53,9 @@
                 <td>{{product.name}}</td>
                 <td>{{product.code}}</td>
                 <td>{{product.brand}}</td>
-                <td>{{product.description}}</td>
-                <td>{{product.content}}</td>
-                <td>{{product.remark}}</td>
+                <td class='thread-dump-modal-lock short-note'>{{product.description}}</td>
+                <td class='thread-dump-modal-lock short-note'>{{product.content}}</td>
+                <td class='thread-dump-modal-lock short-note'>{{product.remark}}</td>
                 <td jhiTranslate="{{'mallApp.ProductStatus.' + product.status}}">{{product.status}}</td>
                 <td>{{product.createdBy}}</td>
                 <td>{{product.createdDate | date:'medium'}}</td>
@@ -64,18 +66,27 @@
                         <a [routerLink]="['../shop', product.shopId , 'view' ]" >{{product.shopId}}</a>
                     </div>
                 </td>
+                <!--<td>
+                    <div *ngIf="product.userInfo">
+                        <a [routerLink]="['../user-info', product.userInfo?.id ]" >{{product.userInfo?.id}}</a>
+                    </div>
+                </td>-->
                 <td class="text-right">
                     <div class="btn-group flex-btn-group-container">
                         <button type="submit"
                                 [routerLink]="['/product', product.id, 'view' ]"
                                 class="btn btn-info btn-sm">
                             <fa-icon [icon]="'eye'"></fa-icon>
+
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
                         </button>
                         <button type="submit"
                                 [routerLink]="['/product', product.id, 'edit']"
+
+
                                 class="btn btn-primary btn-sm">
                             <fa-icon [icon]="'pencil-alt'"></fa-icon>
+
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
                         </button>
                         <button type="submit"
@@ -84,6 +95,7 @@
                                 queryParamsHandling="merge"
                                 class="btn btn-danger btn-sm">
                             <fa-icon [icon]="'times'"></fa-icon>
+
                             <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
                         </button>
                     </div>

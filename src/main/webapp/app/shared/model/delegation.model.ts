@@ -1,4 +1,5 @@
 import { Moment } from 'moment';
+import { IMyAccount } from 'app/shared/model/my-account.model';
 
 export const enum DelegationType {
     ACCOUNT = 'ACCOUNT',
@@ -23,7 +24,7 @@ export interface IDelegation {
     createdDate?: Moment;
     lastModifiedBy?: string;
     lastModifiedDate?: Moment;
-    accountId?: number;
+    account?: IMyAccount;
 }
 
 export class Delegation implements IDelegation {
@@ -38,6 +39,6 @@ export class Delegation implements IDelegation {
         public createdDate?: Moment,
         public lastModifiedBy?: string,
         public lastModifiedDate?: Moment,
-        public accountId?: number
+        public account?: IMyAccount
     ) {}
 }

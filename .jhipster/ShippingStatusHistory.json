@@ -1,13 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "shipping",
-            "otherEntityName": "shipping",
-            "otherEntityField": "id"
-        }
-    ],
+    "name": "ShippingStatusHistory",
     "fields": [
         {
             "fieldName": "effectiveDate",
@@ -19,10 +11,22 @@
             "fieldValues": "PENDING,SHIPPED,COMPLETED,CANCELLED"
         }
     ],
-    "changelogDate": "20180621083508",
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "shipping",
+            "otherEntityRelationshipName": "statusHistory",
+            "relationshipName": "shipping",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190527101539",
     "entityTableName": "shipping_status_history",
     "dto": "no",
     "pagination": "infinite-scroll",
     "service": "no",
-    "jpaMetamodelFiltering": false
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

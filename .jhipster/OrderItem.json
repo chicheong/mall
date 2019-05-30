@@ -1,21 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "one-to-one",
-            "relationshipName": "productItem",
-            "otherEntityName": "productItem",
-            "otherEntityField": "id",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "orderItem"
-        },
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "shop",
-            "otherEntityName": "orderShop",
-            "otherEntityField": "id"
-        }
-    ],
+    "name": "OrderItem",
     "fields": [
         {
             "fieldName": "quantity",
@@ -31,10 +15,30 @@
             "fieldValues": "HKD,CNY,USD,EUR,JPY,KRW,TWD"
         }
     ],
-    "changelogDate": "20190508141134",
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "productItem",
+            "otherEntityRelationshipName": "orderItem",
+            "relationshipName": "productItem",
+            "otherEntityField": "id",
+            "ownerSide": false
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "orderShop",
+            "otherEntityRelationshipName": "item",
+            "relationshipName": "shop",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190527101533",
     "entityTableName": "order_item",
     "dto": "mapstruct",
     "pagination": "pagination",
-    "service": "no",
-    "jpaMetamodelFiltering": false
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

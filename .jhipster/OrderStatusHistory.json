@@ -1,13 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "order",
-            "otherEntityName": "myOrder",
-            "otherEntityField": "id"
-        }
-    ],
+    "name": "OrderStatusHistory",
     "fields": [
         {
             "fieldName": "effectiveDate",
@@ -19,10 +11,22 @@
             "fieldValues": "PENDING,COMFIRMED,COMPLETED,CANCELLED"
         }
     ],
-    "changelogDate": "20180221114445",
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "myOrder",
+            "otherEntityRelationshipName": "statusHistory",
+            "relationshipName": "order",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190527101534",
     "entityTableName": "order_status_history",
     "dto": "no",
     "pagination": "infinite-scroll",
     "service": "no",
-    "jpaMetamodelFiltering": false
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

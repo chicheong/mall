@@ -7,6 +7,61 @@
                 "createOrEditLabel": "Create or edit a My Order",
                 "search": "Search for My Order"
             },
+            "checkout": {
+                "title": "Checkout"
+            },
+            "cart": {
+            	"control": {
+            	    "button": {
+	            		"review": "Shopping Cart",
+	            		"shipping": "Shipping Info",
+	            		"method": "Shipping Method",
+	            		"billing": "Billing Info",
+	            		"payment": "Payment"
+	            	}
+            	},
+            	"summary": {
+            	},
+            	"billing": {
+            		"title": "Billing Info"
+            	},
+            	"payment": {
+            		"title": "Payment",
+            		"button": {
+						"checkout": "Continue to checkout"
+	            	},
+					"stripe": {
+						"incorrect_number": "The card number is incorrect.",
+						"invalid_number": "The card number is not a valid credit card number.",
+						"invalid_expiry_month": "The card's expiration month is invalid.",
+						"invalid_expiry_year": "The card's expiration year is invalid.",
+						"invalid_cvc": "The card's security code is invalid.",
+						"expired_card": "The card has expired.",
+						"incorrect_cvc": "The card's security code is incorrect.",
+						"incorrect_zip": "The card's zip code failed validation.",
+						"card_declined": "The card was declined.",
+						"missing": "There is no card on a customer that is being charged.",
+						"processing_error": "An error occurred while processing the card.",
+						"rate_limit":  "An error occurred due to requests hitting the API too quickly. Please let us know if you're consistently running into this error."
+	            	}            	
+            	},
+            	"review": {
+            		"title": "Shopping Cart",
+            		"currentTotal": "Current Total"
+            	},
+            	"method": {
+            		"title": "Shipping Method"
+            	},
+            	"shipping": {
+            		"title": "Shipping Info"
+            	},
+            	"confirmation": {
+            		"title": "Payment Confirmation",
+					"button": {
+						"continueShopping": "Continue Shopping"
+	            	}
+            	}
+            },
             "created": "A new My Order is created with identifier {{ param }}",
             "updated": "A My Order is updated with identifier {{ param }}",
             "deleted": "A My Order is deleted with identifier {{ param }}",

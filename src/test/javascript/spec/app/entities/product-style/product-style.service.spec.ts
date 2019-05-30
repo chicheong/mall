@@ -21,7 +21,7 @@ describe('Service Tests', () => {
             service = injector.get(ProductStyleService);
             httpMock = injector.get(HttpTestingController);
 
-            elemDefault = new ProductStyle(0, 'AAAAAAA', 'AAAAAAA', false, ProductStyleType.COLOR);
+            elemDefault = new ProductStyle(0, 0, 'AAAAAAA', 'AAAAAAA', false, ProductStyleType.COLOR);
         });
 
         describe('Service methods', async () => {

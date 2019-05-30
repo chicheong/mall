@@ -5,7 +5,8 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { of } from 'rxjs';
 import { take, map } from 'rxjs/operators';
 import { OrderItemService } from 'app/entities/order-item/order-item.service';
-import { IOrderItem, OrderItem, CurrencyType } from 'app/shared/model/order-item.model';
+import { IOrderItem, OrderItem } from 'app/shared/model/order-item.model';
+import { CurrencyType } from 'app/shared/model//price.model';
 
 describe('Service Tests', () => {
     describe('OrderItem Service', () => {

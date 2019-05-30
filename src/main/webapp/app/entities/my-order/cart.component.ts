@@ -1,17 +1,18 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable, Subscription } from 'rxjs';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { MyOrder } from './my-order.model';
+import { IMyOrder } from 'app/shared/model/my-order.model';
 import { MyOrderService } from './my-order.service';
 
-import { Shipping, ShippingStatus } from './../shipping';
-import { Address } from './../address';
-import { Payment, PaymentStatus } from './../payment';
-import { ShippingType } from './../shipping-type';
+import { IShipping } from 'app/shared/model/shipping.model';
+import { ShippingStatus } from 'app/shared/model/shipping.model';
+import { IAddress } from 'app/shared/model/address.model';
+import { IPayment, Payment } from 'app/shared/model/payment.model';
+import { PaymentStatus } from 'app/shared/model/payment.model';
+import { IShippingType } from 'app/shared/model/shipping-type.model';
 
 import { CartControl } from './cart/cart-control/cart-control';
 
@@ -21,7 +22,7 @@ import { CartControl } from './cart/cart-control/cart-control';
 })
 export class CartComponent implements OnInit, OnDestroy {
 
-    myOrder: MyOrder;
+    myOrder: IMyOrder;
     cartControl: CartControl;
     path: String;
     subscription: Subscription;
@@ -40,7 +41,7 @@ export class CartComponent implements OnInit, OnDestroy {
         this.route.snapshot.url.push(urlSegment);
         this.path = urlSegment.path;
 
-        this.subscription = this.route.params.subscribe((params) => {
+        this.subscription = this.route.params.subscribe(params => {
             this.load(params['id']);
         });
         this.registerChangeInMyOrders();
@@ -48,9 +49,9 @@ export class CartComponent implements OnInit, OnDestroy {
 
     load(id) {
         this.myOrderService.find(id)
-            .subscribe((myOrderResponse: HttpResponse<MyOrder>) => {
+            .subscribe((myOrderResponse: HttpResponse<IMyOrder>) => {
                 this.myOrder = myOrderResponse.body;
-                this.myOrder.shops.forEach((shop) => {
+                this.myOrder.shops.forEach(shop => {
 //                  console.error('item.price: ' + item.price + ', item.quantity: ' + item.quantity);
                 });
                 // Initialize Shipping if not exist
@@ -89,7 +90,7 @@ export class CartComponent implements OnInit, OnDestroy {
                 if (!this.myOrder) {
                     console.error('!this.myOrder');
                 } else if (!this.myOrder.payment) {
-                    const payment: Payment = Object.assign(new Payment());
+                    const payment: IPayment = Object.assign(new Payment());
                     payment.status = PaymentStatus.PENDING;
                     this.myOrder.payment = payment;
                 }
@@ -111,7 +112,7 @@ export class CartComponent implements OnInit, OnDestroy {
     registerChangeInMyOrders() {
         this.eventSubscriber = this.eventManager.subscribe(
             'myOrderListModification',
-            (response) => this.load(this.myOrder.id)
+            response => this.load(this.myOrder.id)
         );
     }
 }

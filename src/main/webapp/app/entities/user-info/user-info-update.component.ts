@@ -52,11 +52,11 @@ export class UserInfoUpdateComponent implements OnInit {
             )
             .subscribe(
                 (res: IMyAccount[]) => {
-                    if (!this.userInfo.defaultAccountId) {
+                    if (!this.userInfo.defaultAccount) {
                         this.defaultaccounts = res;
                     } else {
                         this.myAccountService
-                            .find(this.userInfo.defaultAccountId)
+                            .find(this.userInfo.defaultAccount.id)
                             .pipe(
                                 filter((subResMayBeOk: HttpResponse<IMyAccount>) => subResMayBeOk.ok),
                                 map((subResponse: HttpResponse<IMyAccount>) => subResponse.body)

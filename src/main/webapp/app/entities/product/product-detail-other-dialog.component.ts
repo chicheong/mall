@@ -1,16 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable, Subscription } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Subscription } from 'rxjs/Rx';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
-import { ProductItem } from '../product-item';
-import { ProductStyle } from '../product-style';
-import { Price } from '../price';
-import { Quantity } from '../quantity';
-import { Product } from './product.model';
+import { IProductItem } from 'app/shared/model/product-item.model';
+import { IProductStyle } from 'app/shared/model/product-style.model';
+import { IPrice } from 'app/shared/model/price.model';
+import { IQuantity } from 'app/shared/model/quantity.model';
+import { IProduct } from 'app/shared/model/product.model';
 
 import { PricesPopupService } from './prices-popup.service';
 import { PricesDialogComponent } from './prices-dialog.component';
@@ -19,7 +18,7 @@ import { QuantitiesDialogComponent } from './quantities-dialog.component';
 
 import { GetItemFromColorSizePipe } from './get-item-from-color-size.pipe';
 
-import { UuidService } from '../../shared';
+import { UuidService } from 'app/shared';
 
 @Component({
     selector: 'jhi-product-detail-other-dialog',
@@ -27,7 +26,7 @@ import { UuidService } from '../../shared';
 })
 export class ProductDetailOtherDialogComponent implements OnInit {
 
-    product: Product;
+    product: IProduct;
     private eventSubscriber: Subscription;
     broadcastName: string;
 

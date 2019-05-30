@@ -1,19 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "one-to-many",
-            "relationshipName": "statusHistory",
-            "otherEntityName": "shippingStatusHistory",
-            "otherEntityRelationshipName": "shipping"
-        },
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "type",
-            "otherEntityName": "shippingType",
-            "otherEntityField": "id"
-        }
-    ],
+    "name": "Shipping",
     "fields": [
         {
             "fieldName": "price",
@@ -34,10 +20,28 @@
             "fieldValues": "PENDING,SHIPPED,COMPLETED,CANCELLED"
         }
     ],
-    "changelogDate": "20190508141138",
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "shippingStatusHistory",
+            "otherEntityRelationshipName": "shipping",
+            "relationshipName": "statusHistory"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "shippingType",
+            "otherEntityRelationshipName": "shipping",
+            "relationshipName": "type",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190527101537",
     "entityTableName": "shipping",
     "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceClass",
-    "jpaMetamodelFiltering": false
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

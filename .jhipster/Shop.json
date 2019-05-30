@@ -1,20 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "one-to-many",
-            "relationshipName": "shippingPriceRule",
-            "otherEntityName": "shippingPriceRule",
-            "otherEntityRelationshipName": "shop"
-        },
-        {
-            "relationshipType": "many-to-many",
-            "relationshipName": "account",
-            "otherEntityName": "myAccount",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "shop"
-        }
-    ],
+    "name": "Shop",
     "fields": [
         {
             "fieldName": "code",
@@ -53,10 +38,29 @@
             "fieldType": "ZonedDateTime"
         }
     ],
-    "changelogDate": "20190508041408",
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "shippingPriceRule",
+            "otherEntityRelationshipName": "shop",
+            "relationshipName": "shippingPriceRule"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityName": "myAccount",
+            "otherEntityRelationshipName": "shop",
+            "relationshipName": "account",
+            "otherEntityField": "id",
+            "ownerSide": false
+        }
+    ],
+    "changelogDate": "20190527101518",
     "entityTableName": "shop",
     "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceClass",
-    "jpaMetamodelFiltering": false
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

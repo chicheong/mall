@@ -5,7 +5,8 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { of } from 'rxjs';
 import { take, map } from 'rxjs/operators';
 import { ShippingTypeService } from 'app/entities/shipping-type/shipping-type.service';
-import { IShippingType, ShippingType, CurrencyType } from 'app/shared/model/shipping-type.model';
+import { IShippingType, ShippingType } from 'app/shared/model/shipping-type.model';
+import { CurrencyType } from 'app/shared/model/price.model';
 
 describe('Service Tests', () => {
     describe('ShippingType Service', () => {

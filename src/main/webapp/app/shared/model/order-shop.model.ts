@@ -1,24 +1,18 @@
+import { IShipping } from 'app/shared/model/shipping.model';
+import { IShop } from 'app/shared/model/shop.model';
 import { IOrderItem } from 'app/shared/model/order-item.model';
-
-export const enum CurrencyType {
-    HKD = 'HKD',
-    CNY = 'CNY',
-    USD = 'USD',
-    EUR = 'EUR',
-    JPY = 'JPY',
-    KRW = 'KRW',
-    TWD = 'TWD'
-}
+import { IMyOrder } from 'app/shared/model/my-order.model';
+import { CurrencyType } from './price.model';
 
 export interface IOrderShop {
     id?: number;
     total?: number;
     currency?: CurrencyType;
     remark?: string;
-    shippingId?: number;
-    shopId?: number;
+    shipping?: IShipping;
+    shop?: IShop;
     items?: IOrderItem[];
-    orderId?: number;
+    order?: IMyOrder;
 }
 
 export class OrderShop implements IOrderShop {
@@ -27,9 +21,9 @@ export class OrderShop implements IOrderShop {
         public total?: number,
         public currency?: CurrencyType,
         public remark?: string,
-        public shippingId?: number,
-        public shopId?: number,
+        public shipping?: IShipping,
+        public shop?: IShop,
         public items?: IOrderItem[],
-        public orderId?: number
+        public order?: IMyOrder
     ) {}
 }

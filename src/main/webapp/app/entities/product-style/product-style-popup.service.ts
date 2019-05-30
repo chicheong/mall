@@ -2,7 +2,7 @@ import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpResponse } from '@angular/common/http';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { ProductStyle } from './product-style.model';
+import { IProductStyle, ProductStyle } from 'app/shared/model/product-style.model';
 import { ProductStyleService } from './product-style.service';
 
 @Injectable()
@@ -32,7 +32,7 @@ export class ProductStylePopupService {
                     this.ngbModalRef = this.productStyleModalRef(component, id, broadcastName);
                     resolve(this.ngbModalRef);
                 } else {
-                    this.productStyleService.find(id).subscribe((productStyleResponse: HttpResponse<ProductStyle>) => {
+                    this.productStyleService.find(id).subscribe((productStyleResponse: HttpResponse<IProductStyle>) => {
                         this.ngbModalRef = this.productStyleModalRef(component, productStyleResponse.body, broadcastName);
                         resolve(this.ngbModalRef);
                     });
@@ -47,14 +47,14 @@ export class ProductStylePopupService {
         });
     }
 
-    productStyleModalRef(component: Component, productStyle: ProductStyle, broadcastName?: string): NgbModalRef {
+    productStyleModalRef(component: Component, productStyle: IProductStyle, broadcastName?: string): NgbModalRef {
         const modalRef = this.modalService.open(component, { size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.productStyle = productStyle;
         modalRef.componentInstance.broadcastName = broadcastName;
-        modalRef.result.then((result) => {
+        modalRef.result.then(result => {
             this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true, queryParamsHandling: 'merge' });
             this.ngbModalRef = null;
-        }, (reason) => {
+        }, reason => {
             this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true, queryParamsHandling: 'merge' });
             this.ngbModalRef = null;
         });

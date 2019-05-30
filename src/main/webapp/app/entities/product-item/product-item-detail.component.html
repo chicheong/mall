@@ -25,10 +25,22 @@
                 <dd>
                     <span>{{productItem.price}}</span>
                 </dd>
+        		<dt><span jhiTranslate="mallApp.productItem.color">Color</span></dt>
+        		<dd>
+            		<div *ngIf="productItem.color">
+                		<a [routerLink]="['/product-style', productItem.color?.id]">{{productItem.color?.id}}</a>
+					</div>
+        		</dd>
+        		<dt><span jhiTranslate="mallApp.productItem.size">Size</span></dt>
+				<dd>
+            		<div *ngIf="productItem.size">
+                		<a [routerLink]="['/product-style', productItem.size?.id]">{{productItem.size?.id}}</a>
+            		</div>
+        		</dd>     
                 <dt><span jhiTranslate="mallApp.productItem.product">Product</span></dt>
                 <dd>
-                    <div *ngIf="productItem.productId">
-                        <a [routerLink]="['/product', productItem.productId, 'view']">{{productItem.productId}}</a>
+                    <div *ngIf="productItem.product">
+                        <a [routerLink]="['/product', productItem.product?.id, 'view']">{{productItem.product?.id}}</a>
                     </div>
                 </dd>
             </dl>

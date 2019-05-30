@@ -19,20 +19,20 @@
                 </dd>
                 <dt><span jhiTranslate="mallApp.orderShop.shipping">Shipping</span></dt>
                 <dd>
-                    <div *ngIf="orderShop.shippingId">
-                        <a [routerLink]="['/shipping', orderShop.shippingId, 'view']">{{orderShop.shippingId}}</a>
+                    <div *ngIf="orderShop.shipping">
+                        <a [routerLink]="['/shipping', orderShop.shipping?.id, 'view']">{{orderShop.shipping?.id}}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="mallApp.orderShop.shop">Shop</span></dt>
                 <dd>
-                    <div *ngIf="orderShop.shopId">
-                        <a [routerLink]="['/shop', orderShop.shopId, 'view']">{{orderShop.shopId}}</a>
+                    <div *ngIf="orderShop.shop">
+                        <a [routerLink]="['/shop', orderShop.shop?.id, 'view']">{{orderShop.shop?.id}}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="mallApp.orderShop.order">Order</span></dt>
                 <dd>
-                    <div *ngIf="orderShop.orderId">
-                        <a [routerLink]="['/my-order', orderShop.orderId, 'view']">{{orderShop.orderId}}</a>
+                    <div *ngIf="orderShop.order">
+                        <a [routerLink]="['/my-order', orderShop.order?.id, 'view']">{{orderShop.order?.id}}</a>
                     </div>
                 </dd>
             </dl>

@@ -1,73 +1,203 @@
 <div class="row justify-content-center">
-    <div class="col-8">
-        <div *ngIf="product">
-            <h2><span jhiTranslate="mallApp.product.detail.title">Product</span> {{product.id}}</h2>
-            <hr>
+    <div class="col-8" *ngIf="product" [ngSwitch]="isEditing">
+		<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
             <jhi-alert-error></jhi-alert-error>
-            <dl class="row-md jh-entity-details">
-                <dt><span jhiTranslate="mallApp.product.name">Name</span></dt>
-                <dd>
-                    <span>{{product.name}}</span>
-                </dd>
-                <dt><span jhiTranslate="mallApp.product.code">Code</span></dt>
-                <dd>
-                    <span>{{product.code}}</span>
-                </dd>
-                <dt><span jhiTranslate="mallApp.product.brand">Brand</span></dt>
-                <dd>
-                    <span>{{product.brand}}</span>
-                </dd>
-                <dt><span jhiTranslate="mallApp.product.description">Description</span></dt>
-                <dd>
-                    <span>{{product.description}}</span>
-                </dd>
-                <dt><span jhiTranslate="mallApp.product.content">Content</span></dt>
-                <dd>
-                    <span>{{product.content}}</span>
-                </dd>
-                <dt><span jhiTranslate="mallApp.product.remark">Remark</span></dt>
-                <dd>
-                    <span>{{product.remark}}</span>
-                </dd>
-                <dt><span jhiTranslate="mallApp.product.status">Status</span></dt>
-                <dd>
-                    <span jhiTranslate="{{'mallApp.ProductStatus.' + product.status}}">{{product.status}}</span>
-                </dd>
-                <dt><span jhiTranslate="mallApp.product.createdBy">Created By</span></dt>
-                <dd>
-                    <span>{{product.createdBy}}</span>
-                </dd>
-                <dt><span jhiTranslate="mallApp.product.createdDate">Created Date</span></dt>
-                <dd>
-                    <span>{{product.createdDate}}</span>
-                </dd>
-                <dt><span jhiTranslate="mallApp.product.lastModifiedBy">Last Modified By</span></dt>
-                <dd>
-                    <span>{{product.lastModifiedBy}}</span>
-                </dd>
-                <dt><span jhiTranslate="mallApp.product.lastModifiedDate">Last Modified Date</span></dt>
-                <dd>
-                    <span>{{product.lastModifiedDate}}</span>
-                </dd>
-                <dt><span jhiTranslate="mallApp.product.shop">Shop</span></dt>
-                <dd>
-                    <div *ngIf="product.shopId">
-                        <a [routerLink]="['/shop', product.shopId, 'view']">{{product.shopId}}</a>
-                    </div>
-                </dd>
-            </dl>
-
-            <button type="submit"
-                    (click)="previousState()"
-                    class="btn btn-info">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
-            </button>
-
-            <button type="button"
-                    [routerLink]="['/product', product.id, 'edit']"
-                    class="btn btn-primary">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
-            </button>
-        </div>
-    </div>
+			<div class="row"> <!-- *jhiHasAnyAuthority="'ROLE_USER'" -->
+				<div class="col-md-1">
+					<div>photo listing</div>
+					<div jhiSortableList (sort)="sort($event)" *ngSwitchCase="true">
+						<div *ngFor="let url of product.urls | orderBy: 'sequence'" class="img-wrap">	  			
+							<img [src]="url.path"
+								class="img-thumbnail"
+								(click)="selectUrl(url)"
+								alt=""
+								style="width: 100px">
+							<button type="button" [disabled]="isSaving" class="fa fa-remove close" (click)="popupDeleteUrl(url)">
+							</button>
+							<div class="box movable" jhiSortable>
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								<div class="box" *jhiDraggableHelper >
+								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+								</div>
+							</div>
+						</div>
+					</div>	
+					<!-- <div class="col-md-1" jhiSortableList (sort)="sort($event)" *ngSwitchCase="false">
+						<div *ngFor="let url of product.urls | orderBy: 'sequence'" class="box img-wrap" 
+							[ngStyle]="{'background': '#fff url(' + url.path + ') no-repeat 0 0', 'background-size': 'contain'}"
+							(click)="selectUrl(url)" jhiSortable>
+							<img [src]="url.path"
+								class="img-thumbnail"
+								alt="">
+							<button *ngSwitchCase="false" type="button" [disabled]="isSaving" class="fa fa-remove close" (click)="popupDeleteUrl(url)">
+							</button>
+							<div class="box" *jhiDraggableHelper>
+								<img [src]="url.path"
+									class="img-thumbnail"
+									alt="">
+							</div>
+						</div>
+					</div> -->
+					<div *ngSwitchCase="false">
+						<div *ngFor="let url of product.urls | orderBy: 'sequence'" class="img-wrap">
+							<img [src]="url.path"
+								class="img-thumbnail"
+								(click)="selectUrl(url)"
+								alt="">
+						</div>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div>
+						<button *ngSwitchCase="true" type="button" [disabled]="isSaving" class="btn btn-primary" (click)="uploadProductUrl()">
+							<span class="fa fa-upload"></span>&nbsp;<span jhiTranslate="entity.action.upload"> Upload</span>
+						</button>
+					</div>
+					<div>main photo</div>
+					<div>
+						<span class="hipster img-fluid img-rounded" *ngIf="selectedUrl && selectedUrl.path">
+							<img [src]="selectedUrl.path"
+								class="img-fluid"
+								alt="">
+						</span>
+					</div>    
+				</div>
+				<div class="col-md-6">
+					<div>
+						<button type="button" [disabled]="isSaving" class="btn btn-info" (click)="previousState()">
+							<span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+						</button>
+						<button *ngSwitchCase="true" type="button" [disabled]="isSaving || !product.id" class="btn btn-default" (click)="cancel()">
+							<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+						</button>
+						<button *ngSwitchCase="true" type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
+							<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+						</button>	        
+						<button *ngSwitchCase="false" [hidden]="!isEditable" type="submit" [disabled]="isSaving" class="btn btn-primary" (click)="edit()">
+							<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+						</button>
+					</div>
+					<div>
+						<div class="row-md jh-entity-details">
+							<div *ngSwitchCase="false">
+								<span >{{product.name}}</span>
+							</div>			  	
+							<div *ngSwitchCase="true">
+								<span >Product Name</span>
+								<span ><textarea class="form-control" name="name" id="field_name" [(ngModel)]="product.name" rows="5" cols="50"></textarea></span>
+							</div>
+							<!-- <div>
+								<span *ngIf="product.brand || isEditing==true">by </span><span *ngSwitchCase="false">{{product.brand}}</span>
+								<span *ngSwitchCase="true"><input type="text" class="form-control" name="brand" id="field_brand" [(ngModel)]="product.brand"  /></span>
+							</div> -->
+							<div>
+								<span>123 customer reviews</span>
+							</div>
+							<div class="border" *ngIf="selectedItem.id">
+								<div >
+									Price: <span>{{selectedItem?selectedItem.currency : 'Fuck you'}} {{selectedItem?selectedItem.price : 'asshole'}}</span>
+								</div>
+								<div>
+									You Save: $5.90 (28%)
+								</div>
+							</div>
+							<div *ngSwitchCase="true">
+								<div *ngIf="product.colors">
+									<div>Color</div>
+									<span *ngFor="let color of product.colors">
+										<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editStyle(color)">
+											<span>{{color.name}}</span>
+										</button>
+									</span>
+									<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="addColor()">
+										<span>+</span>
+									</button>
+								</div>
+								<div *ngIf="product.sizes">
+									<div>Size</div>
+									<span *ngFor="let size of product.sizes">
+										<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editStyle(size)">
+											<span>{{size.name}}</span>
+										</button>
+									</span>
+									<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="addSize()">
+										<span>+</span>
+									</button>
+								</div>
+							</div>
+							<div *ngSwitchCase="false">
+								<div *ngIf="product.colors" class="m-1">
+									<span *ngFor="let color of product.colors">
+										<button type="button" [disabled]="color.disabled" (click)="changeStyle(color)" [ngClass]="(this.selectedColor == color) ? 'btn-success' : 'btn-light'" class="btn btn-sm">{{color.name}}</button>
+									</span>
+								</div>
+								<div *ngIf="product.sizes" class="m-1">
+									<span *ngFor="let size of product.sizes">
+										<button type="button" [disabled]="size.disabled" (click)="changeStyle(size)" [ngClass]="(this.selectedSize == size) ? 'btn-success' : 'btn-light'" class="btn btn-sm">{{size.name}}</button>
+									</span>
+								</div>
+							</div>
+							<div *ngSwitchCase="true">
+								<div>Item</div>
+								<div *ngIf="product.items" class="m-1">
+									<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editItems('CODE')">
+										<span>CODE</span>
+									</button>
+									<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editItemsUrl()">
+										<span>PHOTO</span>
+									</button>		        
+								</div>
+								<div *ngIf="product.items" class="m-1">
+									<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editItems('PRICE')">
+										<span>PRICE</span>
+									</button>
+									<button [disabled]="isSaving" type="button" class="btn btn-default" (click)="editItems('QUANTITY')">
+										<span>QUANTITY</span>
+									</button>			        
+								</div>
+							</div>
+							<div *ngSwitchCase="false">
+								<button type="button" [disabled]="isSaving || !(selectedItem && selectedItem.price)" class="btn btn-default" (click)="addToCart()">
+									<span>Add to Cart</span>
+								</button>
+							</div>
+							<div>&nbsp;</div>
+							<div>
+								<span *ngSwitchCase="false">{{product.description}}</span>
+								<span *ngSwitchCase="true"><textarea class="form-control" name="description" id="field_description" [(ngModel)]="product.description" rows="5" cols="50"></textarea></span>
+							</div>
+							<div class="m-1"> 
+								<button *ngSwitchCase="true" [disabled]="isSaving" type="button" class="btn btn-default" (click)="editOther()">
+									<span>Other Information</span>
+								</button>
+							</div>
+							
+							<div *ngIf="false">
+								In stock/Pre-order/Out-of-order
+							</div>
+							<div *ngIf="false">
+								Estimated Delivery Date: Monday, Feb. 8 when you choose Two-Day Shipping at checkout.
+							</div>
+							<div *ngIf="false">
+								Ships from and sold by Koozam.
+							</div>
+							<div *ngIf="false">
+								Size: With Backpack
+							</div>
+							<div *ngIf="false">
+								Options
+							</div>	
+							<div *ngIf="false">
+								Item Description
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-2">
+					<div>other</div>
+					<div>other</div>
+				</div>
+			</div>
+		</form>
+	</div>
 </div>

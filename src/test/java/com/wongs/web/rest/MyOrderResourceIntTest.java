@@ -4,8 +4,14 @@ import com.wongs.MallApp;
 
 import com.wongs.domain.MyOrder;
 import com.wongs.repository.MyOrderRepository;
-import com.wongs.repository.search.MyOrderSearchRepository;
+import com.wongs.service.MyAccountService;
 import com.wongs.service.MyOrderService;
+import com.wongs.service.PaymentService;
+import com.wongs.service.ShippingService;
+import com.wongs.service.StripeClient;
+import com.wongs.service.UserInfoService;
+import com.wongs.service.UserService;
+import com.wongs.repository.search.MyOrderSearchRepository;
 import com.wongs.service.dto.MyOrderDTO;
 import com.wongs.service.mapper.MyOrderMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
@@ -81,6 +87,24 @@ public class MyOrderResourceIntTest {
 
     @Autowired
     private MyOrderService myOrderService;
+    
+    @Autowired
+    private UserInfoService userInfoService;
+    
+    @Autowired
+    private MyAccountService myAccountService;
+    
+    @Autowired
+    private UserService userService;
+    
+    @Autowired
+    private ShippingService shippingService;
+    
+    @Autowired
+    private PaymentService paymentService;
+
+    @Autowired
+    private StripeClient stripeClient;
 
     /**
      * This repository is mocked in the com.wongs.repository.search test package.
@@ -112,7 +136,7 @@ public class MyOrderResourceIntTest {
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
-        final MyOrderResource myOrderResource = new MyOrderResource(myOrderService);
+        final MyOrderResource myOrderResource = new MyOrderResource(myOrderService, userInfoService, myAccountService, userService, shippingService, paymentService, stripeClient);
         this.restMyOrderMockMvc = MockMvcBuilders.standaloneSetup(myOrderResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)
             .setControllerAdvice(exceptionTranslator)

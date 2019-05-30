@@ -7,7 +7,8 @@ import { take, map } from 'rxjs/operators';
 import * as moment from 'moment';
 import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
 import { CurrencyRateService } from 'app/entities/currency-rate/currency-rate.service';
-import { ICurrencyRate, CurrencyRate, CurrencyType } from 'app/shared/model/currency-rate.model';
+import { ICurrencyRate, CurrencyRate } from 'app/shared/model/currency-rate.model';
+import { CurrencyType } from 'app/shared/model//price.model';
 
 describe('Service Tests', () => {
     describe('CurrencyRate Service', () => {

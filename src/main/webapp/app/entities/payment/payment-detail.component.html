@@ -25,6 +25,12 @@
                 <dd>
                     <span jhiTranslate="{{'mallApp.PaymentStatus.' + payment.status}}">{{payment.status}}</span>
                 </dd>
+        		<dt><span jhiTranslate="mallApp.payment.order">Order</span></dt>
+		        <dd>
+            		<div *ngIf="payment.order">
+                		<a [routerLink]="['/my-order', payment.order?.id]">{{payment.order?.id}}</a>
+            		</div>
+        		</dd>                
             </dl>
 
             <button type="submit"

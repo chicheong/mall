@@ -33,9 +33,9 @@
             <th jhiSortBy="total"><span jhiTranslate="mallApp.orderShop.total">Total</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="currency"><span jhiTranslate="mallApp.orderShop.currency">Currency</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="remark"><span jhiTranslate="mallApp.orderShop.remark">Remark</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="shippingId"><span jhiTranslate="mallApp.orderShop.shipping">Shipping</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="shopId"><span jhiTranslate="mallApp.orderShop.shop">Shop</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="orderId"><span jhiTranslate="mallApp.orderShop.order">Order</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="shipping.id"><span jhiTranslate="mallApp.orderShop.shipping">Shipping</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="shop.id"><span jhiTranslate="mallApp.orderShop.shop">Shop</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="order.id"><span jhiTranslate="mallApp.orderShop.order">Order</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -46,18 +46,18 @@
                 <td jhiTranslate="{{'mallApp.CurrencyType.' + orderShop.currency}}">{{orderShop.currency}}</td>
                 <td>{{orderShop.remark}}</td>
                 <td>
-                    <div *ngIf="orderShop.shippingId">
-                        <a [routerLink]="['../shipping', orderShop.shippingId , 'view' ]" >{{orderShop.shippingId}}</a>
+                    <div *ngIf="orderShop.shipping">
+                        <a [routerLink]="['../shipping', orderShop.shipping?.id , 'view' ]" >{{orderShop.shipping?.id}}</a>
                     </div>
                 </td>
                 <td>
-                    <div *ngIf="orderShop.shopId">
-                        <a [routerLink]="['../shop', orderShop.shopId , 'view' ]" >{{orderShop.shopId}}</a>
+                    <div *ngIf="orderShop.shop">
+                        <a [routerLink]="['../shop', orderShop.shop?.id , 'view' ]" >{{orderShop.shop?.id}}</a>
                     </div>
                 </td>
                 <td>
-                    <div *ngIf="orderShop.orderId">
-                        <a [routerLink]="['../my-order', orderShop.orderId , 'view' ]" >{{orderShop.orderId}}</a>
+                    <div *ngIf="orderShop.order">
+                        <a [routerLink]="['../my-order', orderShop.order?.id , 'view' ]" >{{orderShop.order?.id}}</a>
                     </div>
                 </td>
                 <td class="text-right">

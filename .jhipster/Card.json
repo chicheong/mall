@@ -1,18 +1,10 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "account",
-            "otherEntityName": "myAccount",
-            "otherEntityField": "id"
-        }
-    ],
+    "name": "Card",
     "fields": [
         {
             "fieldName": "holderName",
             "fieldType": "String"
-        },	
+        },
         {
             "fieldName": "cardNumber",
             "fieldType": "String"
@@ -21,19 +13,31 @@
             "fieldName": "expirationMonth",
             "fieldType": "String"
         },
-		{
+        {
             "fieldName": "expirationYear",
             "fieldType": "String"
-        },		
+        },
         {
             "fieldName": "cvc",
             "fieldType": "String"
         }
     ],
-    "changelogDate": "20180621083505",
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "myAccount",
+            "otherEntityRelationshipName": "card",
+            "relationshipName": "account",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190527101536",
     "entityTableName": "card",
     "dto": "no",
     "pagination": "pagination",
     "service": "no",
-    "jpaMetamodelFiltering": false
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

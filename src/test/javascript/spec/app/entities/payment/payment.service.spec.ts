@@ -5,7 +5,8 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { of } from 'rxjs';
 import { take, map } from 'rxjs/operators';
 import { PaymentService } from 'app/entities/payment/payment.service';
-import { IPayment, Payment, CurrencyType, PaymentType, PaymentStatus } from 'app/shared/model/payment.model';
+import { IPayment, Payment, PaymentType, PaymentStatus } from 'app/shared/model/payment.model';
+import { CurrencyType } from 'app/shared/model//price.model';
 
 describe('Service Tests', () => {
     describe('Payment Service', () => {

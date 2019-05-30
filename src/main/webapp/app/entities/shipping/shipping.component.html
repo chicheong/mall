@@ -46,8 +46,8 @@
                 <td>{{shipping.date | date:'medium'}}</td>
                 <td jhiTranslate="{{'mallApp.ShippingStatus.' + shipping.status}}">{{shipping.status}}</td>
                 <td>
-                    <div *ngIf="shipping.typeId">
-                        <a [routerLink]="['../shipping-type', shipping.typeId , 'view' ]" >{{shipping.typeId}}</a>
+                    <div *ngIf="shipping.type">
+                        <a [routerLink]="['../shipping-type', shipping.type?.id , 'view' ]" >{{shipping.type?.id}}</a>
                     </div>
                 </td>
                 <td class="text-right">

@@ -35,7 +35,9 @@
             <th jhiSortBy="quantity"><span jhiTranslate="mallApp.productItem.quantity">Quantity</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="currency"><span jhiTranslate="mallApp.productItem.currency">Currency</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="price"><span jhiTranslate="mallApp.productItem.price">Price</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="productId"><span jhiTranslate="mallApp.productItem.product">Product</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="color.id"><span jhiTranslate="mallApp.productItem.color">Color</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="size.id"><span jhiTranslate="mallApp.productItem.size">Size</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="product.id"><span jhiTranslate="mallApp.productItem.product">Product</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -48,8 +50,18 @@
                 <td jhiTranslate="{{'mallApp.CurrencyType.' + productItem.currency}}">{{productItem.currency}}</td>
                 <td>{{productItem.price}}</td>
                 <td>
-                    <div *ngIf="productItem.productId">
-                        <a [routerLink]="['../product', productItem.productId , 'view' ]" >{{productItem.productId}}</a>
+                    <div *ngIf="productItem.color">
+                        <a [routerLink]="['../product-style', productItem.color?.id ]" >{{productItem.color?.id}}</a>
+                    </div>
+                </td>
+                <td>
+                    <div *ngIf="productItem.size">
+                        <a [routerLink]="['../product-style', productItem.size?.id ]" >{{productItem.size?.id}}</a>
+                    </div>
+                </td>                
+                <td>
+                    <div *ngIf="productItem.product">
+                        <a [routerLink]="['../product', productItem.product?.id , 'view' ]" >{{productItem.product?.id}}</a>
                     </div>
                 </td>
                 <td class="text-right">

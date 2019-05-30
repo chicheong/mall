@@ -54,7 +54,7 @@ public class Payment implements Serializable {
     private PaymentStatus status;
 
     @OneToOne(mappedBy = "payment")
-    @JsonIgnore
+    @JsonIgnore //@JoinColumn(unique = false)
     private MyOrder order;
 
     @OneToMany(mappedBy = "payment")

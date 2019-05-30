@@ -2,8 +2,9 @@ import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { HttpResponse } from '@angular/common/http';
-import { DatePipe } from '@angular/common';
-import { Product } from './product.model';
+import * as moment from 'moment';
+import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
+import { IProduct, Product } from 'app/shared/model/product.model';
 import { ProductService } from './product.service';
 
 @Injectable()
@@ -11,7 +12,6 @@ export class ProductPopupService {
     private ngbModalRef: NgbModalRef;
 
     constructor(
-        private datePipe: DatePipe,
         private modalService: NgbModal,
         private router: Router,
         private productService: ProductService
@@ -28,12 +28,10 @@ export class ProductPopupService {
 
             if (id) {
                 this.productService.find(id)
-                    .subscribe((productResponse: HttpResponse<Product>) => {
-                        const product: Product = productResponse.body;
-                        product.createdDate = this.datePipe
-                            .transform(product.createdDate, 'yyyy-MM-ddTHH:mm:ss');
-                        product.lastModifiedDate = this.datePipe
-                            .transform(product.lastModifiedDate, 'yyyy-MM-ddTHH:mm:ss');
+                    .subscribe((productResponse: HttpResponse<IProduct>) => {
+                        const product: IProduct = productResponse.body;
+                        product.createdDate = product.createdDate != null ? moment(product.createdDate, DATE_TIME_FORMAT) : null;
+                        product.lastModifiedDate = product.lastModifiedDate != null ? moment(product.lastModifiedDate, DATE_TIME_FORMAT) : null;
                         this.ngbModalRef = this.productModalRef(component, product);
                         resolve(this.ngbModalRef);
                     });
@@ -47,13 +45,13 @@ export class ProductPopupService {
         });
     }
 
-    productModalRef(component: Component, product: Product): NgbModalRef {
+    productModalRef(component: Component, product: IProduct): NgbModalRef {
         const modalRef = this.modalService.open(component, { size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.product = product;
-        modalRef.result.then((result) => {
+        modalRef.result.then(result => {
             this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true, queryParamsHandling: 'merge' });
             this.ngbModalRef = null;
-        }, (reason) => {
+        }, reason => {
             this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true, queryParamsHandling: 'merge' });
             this.ngbModalRef = null;
         });

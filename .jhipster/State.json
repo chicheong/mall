@@ -1,13 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "country",
-            "otherEntityName": "country",
-            "otherEntityField": "id"
-        }
-    ],
+    "name": "State",
     "fields": [
         {
             "fieldName": "code",
@@ -35,10 +27,22 @@
             "fieldValidateRulesMaxlength": 100
         }
     ],
-    "changelogDate": "20180221114430",
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "country",
+            "otherEntityRelationshipName": "state",
+            "relationshipName": "country",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190527101517",
     "entityTableName": "state",
     "dto": "no",
     "pagination": "pagination",
     "service": "no",
-    "jpaMetamodelFiltering": false
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

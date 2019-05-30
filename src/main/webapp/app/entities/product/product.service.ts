@@ -9,6 +9,12 @@ import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
 import { IProduct } from 'app/shared/model/product.model';
 
+import { IPrice } from 'app/shared/model/price.model';
+import { IQuantity } from 'app/shared/model/quantity.model';
+
+import { PriceService } from 'app/entities/price';
+import { QuantityService } from 'app/entities/quantity';
+
 type EntityResponseType = HttpResponse<IProduct>;
 type EntityArrayResponseType = HttpResponse<IProduct[]>;
 
@@ -17,7 +23,11 @@ export class ProductService {
     public resourceUrl = SERVER_API_URL + 'api/products';
     public resourceSearchUrl = SERVER_API_URL + 'api/_search/products';
 
-    constructor(protected http: HttpClient) {}
+    constructor(
+        protected http: HttpClient,
+        private priceService: PriceService,
+        private quantityService: QuantityService
+    ) {}
 
     create(product: IProduct): Observable<EntityResponseType> {
         const copy = this.convertDateFromClient(product);
@@ -82,5 +92,69 @@ export class ProductService {
             });
         }
         return res;
+    }
+
+    /**
+     * Convert a returned JSON object to Product.
+     */
+    private convertItemFromServer(product: IProduct): IProduct {
+        const copy: IProduct = Object.assign({}, product);
+        copy.createdDate = product.createdDate != null ? moment(product.createdDate) : null;
+        copy.lastModifiedDate = product.lastModifiedDate != null ? moment(product.lastModifiedDate) : null;
+        if (copy.items) {
+            copy.items.forEach(item => {
+                if (item.prices) {
+                    const prices: IPrice[] = [];
+                    item.prices.forEach(price => {
+                        // const copyPrice = this.priceService.convertItemFromServer(price);
+                        prices.push(price);
+                    });
+                    item.prices = prices;
+                }
+                if (item.quantities) {
+                    const quantities: IQuantity[] = [];
+                    item.quantities.forEach(quantity => {
+                        // const copyQuantity = this.quantityService.convertItemFromServer(quantity);
+                        quantities.push(quantity);
+                    });
+                    item.quantities = quantities;
+                }
+            });
+        }
+        return copy;
+    }
+
+    /**
+     * Convert a Product to a JSON which can be sent to the server.
+     */
+    private convert(product: IProduct): IProduct {
+        const copy: IProduct = Object.assign({}, product);
+
+        console.error('product.createdDate: ' + JSON.stringify(product.createdDate));
+        console.error('product.lastModifiedDate: ' + JSON.stringify(product.lastModifiedDate));
+        console.error('product.id: ' + product.id);
+        // copy.createdDate = this.dateUtils.toDate(product.createdDate);
+        // copy.lastModifiedDate = this.dateUtils.toDate(product.lastModifiedDate);
+        if (copy.items) {
+            copy.items.forEach(item => {
+                if (item.prices) {
+                    const prices: IPrice[] = [];
+                    item.prices.forEach(price => {
+                        // const copyPrice = this.priceService.convert(price);
+                        prices.push(price);
+                    });
+                    item.prices = prices;
+                }
+                if (item.quantities) {
+                    const quantities: IQuantity[] = [];
+                    item.quantities.forEach(quantity => {
+                        // const copyQuantity = this.quantityService.convert(quantity);
+                        quantities.push(quantity);
+                    });
+                    item.quantities = quantities;
+                }
+            });
+        }
+        return copy;
     }
 }

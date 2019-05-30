@@ -6,7 +6,7 @@ export interface IUserInfo {
     shopId?: number;
     userLogin?: string;
     userId?: number;
-    defaultAccountId?: number;
+    defaultAccount?: IMyAccount;
     accounts?: IMyAccount[];
 }
 
@@ -17,7 +17,7 @@ export class UserInfo implements IUserInfo {
         public shopId?: number,
         public userLogin?: string,
         public userId?: number,
-        public defaultAccountId?: number,
+        public defaultAccount?: IMyAccount,
         public accounts?: IMyAccount[]
     ) {}
 }

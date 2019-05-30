@@ -50,10 +50,10 @@ export const productRoute: Routes = [
             product: ProductResolve
         },
         data: {
-            authorities: ['ROLE_USER'],
+            authorities: [],
             pageTitle: 'mallApp.product.home.title'
         },
-        canActivate: [UserRouteAccessService]
+        canActivate: []
     },
     {
         path: 'new',

@@ -1,6 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [],
+    "name": "ShippingType",
     "fields": [
         {
             "fieldName": "name",
@@ -20,10 +19,14 @@
             "fieldValues": "HKD,CNY,USD,EUR,JPY,KRW,TWD"
         }
     ],
-    "changelogDate": "20180621083507",
+    "relationships": [],
+    "changelogDate": "20190527101538",
     "entityTableName": "shipping_type",
     "dto": "no",
     "pagination": "pagination",
     "service": "no",
-    "jpaMetamodelFiltering": false
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

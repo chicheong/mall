@@ -1,7 +1,11 @@
 package com.wongs.service.dto;
+
+
 import java.time.ZonedDateTime;
 import java.io.Serializable;
 import java.util.Objects;
+
+import com.wongs.domain.Url;
 
 /**
  * A DTO for the Url entity.
@@ -30,7 +34,24 @@ public class UrlDTO implements Serializable {
 
     private ZonedDateTime lastModifiedDate;
 
-
+    public UrlDTO() {
+        // Empty constructor needed for Jackson.
+    }
+    
+    public UrlDTO(Url url) {
+        this.id = url.getId();
+    	this.entityType = url.getEntityType();
+    	this.entityId = url.getEntityId();
+    	this.path = url.getPath();
+    	this.fileName = url.getFileName();
+    	this.sequence = url.getSequence();
+    	this.description = url.getDescription();
+    	this.createdBy = url.getCreatedBy();
+    	this.createdDate = url.getCreatedDate();
+    	this.lastModifiedBy = url.getLastModifiedBy();
+    	this.lastModifiedDate = url.getLastModifiedDate();
+    }
+    
     public Long getId() {
         return id;
     }
@@ -129,10 +150,16 @@ public class UrlDTO implements Serializable {
         }
 
         UrlDTO urlDTO = (UrlDTO) o;
-        if (urlDTO.getId() == null || getId() == null) {
+        if(urlDTO.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(getId(), urlDTO.getId());
+        return Objects.equals(getId(), urlDTO.getId()) &&
+        		Objects.equals(getEntityType(), urlDTO.getEntityType()) &&
+        		Objects.equals(getEntityId(), urlDTO.getEntityId()) &&
+        		Objects.equals(getPath(), urlDTO.getPath()) &&
+        		Objects.equals(getFileName(), urlDTO.getFileName()) &&
+        		Objects.equals(getSequence(), urlDTO.getSequence()) &&
+        		Objects.equals(getDescription(), urlDTO.getDescription());
     }
 
     @Override

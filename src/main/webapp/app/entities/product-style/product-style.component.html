@@ -46,8 +46,8 @@
                 <td>{{productStyle.isDefault}}</td>
                 <td jhiTranslate="{{'mallApp.ProductStyleType.' + productStyle.type}}">{{productStyle.type}}</td>
                 <td>
-                    <div *ngIf="productStyle.productId">
-                        <a [routerLink]="['../product', productStyle.productId , 'view' ]" >{{productStyle.productId}}</a>
+                    <div *ngIf="productStyle.product">
+                        <a [routerLink]="['../product', productStyle.product?.id , 'view' ]" >{{productStyle.product?.id}}</a>
                     </div>
                 </td>
                 <td class="text-right">

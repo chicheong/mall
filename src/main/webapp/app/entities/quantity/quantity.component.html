@@ -33,7 +33,7 @@
             <th jhiSortBy="from"><span jhiTranslate="mallApp.quantity.from">From</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="to"><span jhiTranslate="mallApp.quantity.to">To</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="quantity"><span jhiTranslate="mallApp.quantity.quantity">Quantity</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="itemId"><span jhiTranslate="mallApp.quantity.item">Item</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="item.id"><span jhiTranslate="mallApp.quantity.item">Item</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -44,8 +44,8 @@
                 <td>{{quantity.to | date:'medium'}}</td>
                 <td>{{quantity.quantity}}</td>
                 <td>
-                    <div *ngIf="quantity.itemId">
-                        <a [routerLink]="['../product-item', quantity.itemId , 'view' ]" >{{quantity.itemId}}</a>
+                    <div *ngIf="quantity.item">
+                        <a [routerLink]="['../product-item', quantity.item?.id , 'view' ]" >{{quantity.item?.id}}</a>
                     </div>
                 </td>
                 <td class="text-right">

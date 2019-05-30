@@ -32,8 +32,8 @@
             <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="accountId"><span jhiTranslate="mallApp.userInfo.accountId">Account Id</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="shopId"><span jhiTranslate="mallApp.userInfo.shopId">Shop Id</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="userLogin"><span jhiTranslate="mallApp.userInfo.user">User</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="defaultAccountId"><span jhiTranslate="mallApp.userInfo.defaultAccount">Default Account</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="user.login"><span jhiTranslate="mallApp.userInfo.user">User</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="defaultAccount.id"><span jhiTranslate="mallApp.userInfo.defaultAccount">Default Account</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -43,11 +43,11 @@
                 <td>{{userInfo.accountId}}</td>
                 <td>{{userInfo.shopId}}</td>
                 <td>
-                    {{userInfo.userLogin}}
+                    {{userInfo.user?.login}}
                 </td>
                 <td>
-                    <div *ngIf="userInfo.defaultAccountId">
-                        <a [routerLink]="['../my-account', userInfo.defaultAccountId , 'view' ]" >{{userInfo.defaultAccountId}}</a>
+                    <div *ngIf="userInfo.defaultAccount">
+                        <a [routerLink]="['../my-account', userInfo.defaultAccount?.id , 'view' ]" >{{userInfo.defaultAccount?.id}}</a>
                     </div>
                 </td>
                 <td class="text-right">

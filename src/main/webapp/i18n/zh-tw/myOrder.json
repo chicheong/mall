@@ -6,6 +6,61 @@
                 "createLabel": "建立一筆新的 My Order",
                 "createOrEditLabel": "建立或編輯 My Order",
                 "search": "搜尋 My Order"
+            },		
+            "checkout": {
+                "title": "結賬"
+            },
+            "cart": {
+            	"control": {
+            	    "button": {
+	            		"review": "購物車",
+	            		"shipping": "運送資料",
+	            		"method": "運送方法",
+	            		"billing": "計費資料",
+	            		"payment": "付款"
+	            	}
+            	},
+            	"summary": {
+            	},
+            	"billing": {
+					"title": "計費資料"
+            	},
+            	"payment": {
+					"title": "付款",
+            		"button": {
+						"checkout": "結帳"
+	            	},					
+					"stripe": {
+						"incorrect_number": "卡號碼不正確",
+						"invalid_number": "信用卡號碼無效",
+						"invalid_expiry_month": "卡到期月份不正確",
+						"invalid_expiry_year": "卡到期年份不正確",
+						"invalid_cvc": "卡安全碼無效",
+						"expired_card": "卡已過期",
+						"incorrect_cvc": "卡安全碼不正確",
+						"incorrect_zip": "卡zip碼驗證錯誤",
+						"card_declined": "使用此卡被拒絕",
+						"missing": "此客戶沒有可扣數的卡可使用",
+						"processing_error": "處理此卡時出現錯誤",
+						"rate_limit":  "同一時段太多查詢。如果情況不斷出現，請與我們聯絡。"
+					}
+            	},
+            	"review": {
+					"title": "購物車",
+					"currentTotal": "現時總數"
+            	},
+            	"method": {
+					"title": "運送方法"
+            	},
+            	"shipping": {
+					"title": "運送資料"
+            	},
+            	"confirmation": {
+            		"title": "付款確定",
+					"button": {
+						"continueShopping": "繼續購物"
+	            	}
+            	}
             },
             "created": "新的 My Order 建立成功，識別碼為 {{ param }}",
             "updated": "識別碼為 {{ param }} 的 My Order 更新成功",

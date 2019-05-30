@@ -5,7 +5,8 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { of } from 'rxjs';
 import { take, map } from 'rxjs/operators';
 import { ProductItemService } from 'app/entities/product-item/product-item.service';
-import { IProductItem, ProductItem, CurrencyType } from 'app/shared/model/product-item.model';
+import { IProductItem, ProductItem } from 'app/shared/model/product-item.model';
+import { CurrencyType } from 'app/shared/model/price.model';
 
 describe('Service Tests', () => {
     describe('ProductItem Service', () => {
@@ -21,7 +22,7 @@ describe('Service Tests', () => {
             service = injector.get(ProductItemService);
             httpMock = injector.get(HttpTestingController);
 
-            elemDefault = new ProductItem(0, 'AAAAAAA', false, 0, CurrencyType.HKD, 0);
+            elemDefault = new ProductItem(0, 0, 'AAAAAAA', false, 0, CurrencyType.HKD, 0);
         });
 
         describe('Service methods', async () => {

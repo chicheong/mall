@@ -1,13 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "item",
-            "otherEntityName": "productItem",
-            "otherEntityField": "id"
-        }
-    ],
+    "name": "Price",
     "fields": [
         {
             "fieldName": "from",
@@ -27,10 +19,22 @@
             "fieldValues": "HKD,CNY,USD,EUR,JPY,KRW,TWD"
         }
     ],
-    "changelogDate": "20180221114440",
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "productItem",
+            "otherEntityRelationshipName": "price",
+            "relationshipName": "item",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190527101528",
     "entityTableName": "price",
     "dto": "mapstruct",
     "pagination": "pagination",
-    "service": "no",
-    "jpaMetamodelFiltering": false
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

@@ -1,21 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "one-to-one",
-            "relationshipName": "order",
-            "otherEntityName": "myOrder",
-            "otherEntityField": "id",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "payment"
-        },        
-		{
-            "relationshipType": "one-to-many",
-            "relationshipName": "statusHistory",
-            "otherEntityName": "paymentStatusHistory",
-            "otherEntityRelationshipName": "payment"
-        }
-    ],
+    "name": "Payment",
     "fields": [
         {
             "fieldName": "amount",
@@ -41,10 +25,29 @@
             "fieldValues": "PENDING,PAID,CANCELLED"
         }
     ],
-    "changelogDate": "20180621083509",
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "myOrder",
+            "otherEntityRelationshipName": "payment",
+            "relationshipName": "order",
+            "otherEntityField": "id",
+            "ownerSide": false
+        },
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "paymentStatusHistory",
+            "otherEntityRelationshipName": "payment",
+            "relationshipName": "statusHistory"
+        }
+    ],
+    "changelogDate": "20190527101540",
     "entityTableName": "payment",
     "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceClass",
-    "jpaMetamodelFiltering": false
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

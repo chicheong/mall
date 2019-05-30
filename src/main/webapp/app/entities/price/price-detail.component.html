@@ -23,8 +23,8 @@
                 </dd>
                 <dt><span jhiTranslate="mallApp.price.item">Item</span></dt>
                 <dd>
-                    <div *ngIf="price.itemId">
-                        <a [routerLink]="['/product-item', price.itemId, 'view']">{{price.itemId}}</a>
+                    <div *ngIf="price.item">
+                        <a [routerLink]="['/product-item', price.item?.id, 'view']">{{price.item?.id}}</a>
                     </div>
                 </dd>
             </dl>

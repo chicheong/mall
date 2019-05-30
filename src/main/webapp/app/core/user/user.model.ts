@@ -1,3 +1,6 @@
+import { IUserInfo } from 'app/shared/model/user-info.model';
+import { IMyAccount } from 'app/shared/model/my-account.model';
+
 export interface IUser {
     id?: any;
     login?: string;
@@ -12,6 +15,8 @@ export interface IUser {
     lastModifiedBy?: string;
     lastModifiedDate?: Date;
     password?: string;
+    userInfo?: IUserInfo;
+    myAccount?: IMyAccount;
 }
 
 export class User implements IUser {
@@ -28,7 +33,9 @@ export class User implements IUser {
         public createdDate?: Date,
         public lastModifiedBy?: string,
         public lastModifiedDate?: Date,
-        public password?: string
+        public password?: string,
+        public userInfo?: IUserInfo,
+        public myAccount?: IMyAccount
     ) {
         this.id = id ? id : null;
         this.login = login ? login : null;
@@ -43,5 +50,7 @@ export class User implements IUser {
         this.lastModifiedBy = lastModifiedBy ? lastModifiedBy : null;
         this.lastModifiedDate = lastModifiedDate ? lastModifiedDate : null;
         this.password = password ? password : null;
+        this.userInfo = userInfo ? userInfo : null;
+        this.myAccount = myAccount ? myAccount : null;
     }
 }

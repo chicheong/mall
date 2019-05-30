@@ -46,11 +46,11 @@ export class MyOrderUpdateComponent implements OnInit {
             )
             .subscribe(
                 (res: IAddress[]) => {
-                    if (!this.myOrder.shippingAddressId) {
+                    if (!this.myOrder.shippingAddress) {
                         this.shippingaddresses = res;
                     } else {
                         this.addressService
-                            .find(this.myOrder.shippingAddressId)
+                            .find(this.myOrder.shippingAddress.id)
                             .pipe(
                                 filter((subResMayBeOk: HttpResponse<IAddress>) => subResMayBeOk.ok),
                                 map((subResponse: HttpResponse<IAddress>) => subResponse.body)
@@ -71,11 +71,11 @@ export class MyOrderUpdateComponent implements OnInit {
             )
             .subscribe(
                 (res: IAddress[]) => {
-                    if (!this.myOrder.billingAddressId) {
+                    if (!this.myOrder.billingAddress) {
                         this.billingaddresses = res;
                     } else {
                         this.addressService
-                            .find(this.myOrder.billingAddressId)
+                            .find(this.myOrder.billingAddress.id)
                             .pipe(
                                 filter((subResMayBeOk: HttpResponse<IAddress>) => subResMayBeOk.ok),
                                 map((subResponse: HttpResponse<IAddress>) => subResponse.body)

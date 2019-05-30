@@ -1,36 +1,12 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "one-to-many",
-            "relationshipName": "style",
-            "otherEntityName": "productStyle",
-            "otherEntityRelationshipName": "product"
-        },
-        {
-            "relationshipType": "one-to-many",
-            "relationshipName": "item",
-            "otherEntityName": "productItem",
-            "otherEntityRelationshipName": "product"
-        },
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "shop",
-            "otherEntityName": "shop",
-            "otherEntityField": "id"
-        },
-        {
-            "relationshipType": "many-to-many",
-            "relationshipName": "category",
-            "otherEntityName": "category",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "product"
-        }
-    ],
+    "name": "Product",
     "fields": [
         {
             "fieldName": "name",
-            "fieldType": "String"
+            "fieldType": "String",
+            "fieldValidateRules": [
+                "required"
+            ]
         },
         {
             "fieldName": "code",
@@ -74,10 +50,42 @@
             "fieldType": "ZonedDateTime"
         }
     ],
-    "changelogDate": "20180221114434",
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "productStyle",
+            "otherEntityRelationshipName": "product",
+            "relationshipName": "style"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "productItem",
+            "otherEntityRelationshipName": "product",
+            "relationshipName": "item"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "shop",
+            "otherEntityRelationshipName": "product",
+            "relationshipName": "shop",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityName": "category",
+            "otherEntityRelationshipName": "product",
+            "relationshipName": "category",
+            "otherEntityField": "id",
+            "ownerSide": false
+        }
+    ],
+    "changelogDate": "20190527101522",
     "entityTableName": "product",
     "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceClass",
-    "jpaMetamodelFiltering": false
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

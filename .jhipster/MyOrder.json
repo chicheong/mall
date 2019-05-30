@@ -1,41 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "one-to-one",
-            "relationshipName": "shippingAddress",
-            "otherEntityName": "address",
-            "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "myOrder"
-        },
-        {
-            "relationshipType": "one-to-one",
-            "relationshipName": "billingAddress",
-            "otherEntityName": "address",
-            "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "myOrder"
-        },
-        {
-            "relationshipType": "one-to-many",
-            "relationshipName": "shop",
-            "otherEntityName": "orderShop",
-            "otherEntityRelationshipName": "order"
-        },
-        {
-            "relationshipType": "one-to-many",
-            "relationshipName": "statusHistory",
-            "otherEntityName": "orderStatusHistory",
-            "otherEntityRelationshipName": "order"
-        },
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "account",
-            "otherEntityName": "myAccount",
-            "otherEntityField": "id"
-        }
-    ],
+    "name": "MyOrder",
     "fields": [
         {
             "fieldName": "receiver",
@@ -68,10 +32,50 @@
             "fieldValues": "PENDING,COMFIRMED,COMPLETED,CANCELLED"
         }
     ],
-    "changelogDate": "20190508041421",
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "address",
+            "otherEntityRelationshipName": "myOrder",
+            "relationshipName": "shippingAddress",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "address",
+            "otherEntityRelationshipName": "myOrder",
+            "relationshipName": "billingAddress",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "orderShop",
+            "otherEntityRelationshipName": "order",
+            "relationshipName": "shop"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "orderStatusHistory",
+            "otherEntityRelationshipName": "order",
+            "relationshipName": "statusHistory"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "myAccount",
+            "otherEntityRelationshipName": "myOrder",
+            "relationshipName": "account",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190527101531",
     "entityTableName": "my_order",
     "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceClass",
-    "jpaMetamodelFiltering": false
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

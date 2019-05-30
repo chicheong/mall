@@ -5,7 +5,8 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { of } from 'rxjs';
 import { take, map } from 'rxjs/operators';
 import { OrderShopService } from 'app/entities/order-shop/order-shop.service';
-import { IOrderShop, OrderShop, CurrencyType } from 'app/shared/model/order-shop.model';
+import { IOrderShop, OrderShop } from 'app/shared/model/order-shop.model';
+import { CurrencyType } from 'app/shared/model//price.model';
 
 describe('Service Tests', () => {
     describe('OrderShop Service', () => {

@@ -1,6 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [],
+    "name": "CurrencyRate",
     "fields": [
         {
             "fieldName": "from",
@@ -25,10 +24,14 @@
             "fieldValues": "HKD,CNY,USD,EUR,JPY,KRW,TWD"
         }
     ],
-    "changelogDate": "20180221114442",
+    "relationships": [],
+    "changelogDate": "20190527101530",
     "entityTableName": "currency_rate",
     "dto": "no",
     "pagination": "no",
     "service": "no",
-    "jpaMetamodelFiltering": false
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

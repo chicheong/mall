@@ -1,3 +1,16 @@
+<div class="navbar navbar-fixed-top py-0">
+	<div class="navbar-header pull-left py-0">
+      <a class="navbar-brand py-0" href="#">&nbsp;</a>
+    </div>
+	<div class="pull-right" *ngIf="languages && languages.length > 1">
+		<span *ngFor="let language of languages">
+			<button type="button" class="btn btn-outline-secondary btn-xs py-0" [jhiActiveMenu]="language" (click)="changeLanguage(language);collapseNavbar();">
+				<span class="d-none d-md-block">{{language | findLanguageFromKey}}</span>
+				<span class="d-md-none">{{language | findLanguageFromKey: true}}</span>
+			</button>
+		</span>
+	</div>
+</div>
 <nav class="navbar navbar-dark navbar-expand-md bg-dark">
     <a class="navbar-brand logo" routerLink="/" (click)="collapseNavbar()">
         <span class="logo-img"></span>
@@ -8,14 +21,31 @@
     </a>
     <div class="navbar-collapse collapse" id="navbarResponsive" [ngbCollapse]="isNavbarCollapsed" [ngSwitch]="isAuthenticated()">
         <ul class="navbar-nav ml-auto">
-            <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <!-- <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                 <a class="nav-link" routerLink="/" (click)="collapseNavbar()">
                     <span>
                         <fa-icon icon="home"></fa-icon>
                         <span jhiTranslate="global.menu.home">Home</span>
                     </span>
                 </a>
-            </li>
+            </li> -->
+			<span class="btn-group">
+				<input type="text" class="form-control" placeholder="What you want to find out today?" id="query" name="query" value="">
+				<button type="button" class="btn btn-light"><span class="fa fa-search"></span></button>
+			</span> 
+            <li ngbDropdown class="nav-item dropdown pointer" *ngSwitchCase="true">
+                <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="languagesnavBarDropdown" *ngIf="myAccount && myAccount.shops && myAccount.shops.length > 0">
+                    <span>
+						<fa-icon icon="cubes"></fa-icon>
+                        <span jhiTranslate="global.menu.entities.shop">Shop</span>
+                    </span>
+                </a>
+                <ul class="dropdown-menu" ngbDropdownMenu *ngIf="myAccount && myAccount.shops && myAccount.shops.length > 1">
+                    <li *ngFor="let shop of myAccount.shops">
+                        <a class="dropdown-item"  [routerLink]="'shop/' + shop.code" routerLinkActive="active" [jhiActiveMenu]="shop" href="javascript:void(0);" (click)="collapseNavbar();">{{shop.name}}</a>
+                    </li>
+                </ul>
+            </li>			
             <!-- jhipster-needle-add-element-to-menu - JHipster will add new menu items here -->
             <li *ngSwitchCase="true" ngbDropdown class="nav-item dropdown pointer" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="entity-menu">
@@ -287,7 +317,7 @@
                     </li>
                 </ul>
             </li>
-            <li ngbDropdown class="nav-item dropdown pointer" *ngIf="languages && languages.length > 1">
+            <!-- <li ngbDropdown class="nav-item dropdown pointer" *ngIf="languages && languages.length > 1">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="languagesnavBarDropdown">
                     <span>
                         <fa-icon icon="flag"></fa-icon>
@@ -299,7 +329,7 @@
                         <a class="dropdown-item" [jhiActiveMenu]="language" href="javascript:void(0);" (click)="changeLanguage(language);collapseNavbar();">{{language | findLanguageFromKey}}</a>
                     </li>
                 </ul>
-            </li>
+            </li> -->
             <li ngbDropdown class="nav-item dropdown pointer" placement="bottom-right" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="account-menu">
                   <span *ngIf="!getImageUrl()">
@@ -313,6 +343,12 @@
                   </span>
                 </a>
                 <ul class="dropdown-menu" ngbDropdownMenu aria-labelledby="account-menu">
+                    <!-- <li *ngSwitchCase="true">
+                        <a class="dropdown-item" routerLink="settings" routerLinkActive="active" (click)="collapseNavbar()">
+							<fa-icon icon="wrench" fixedWidth="true"></fa-icon>
+                            <span>Switch to Account</span>
+                        </a>
+                    </li> -->				
                     <li *ngSwitchCase="true">
                         <a class="dropdown-item" routerLink="settings" routerLinkActive="active" (click)="collapseNavbar()">
                             <fa-icon icon="wrench" fixedWidth="true"></fa-icon>
@@ -344,6 +380,16 @@
                         </a>
                     </li>
                 </ul>
+            </li>
+            <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngSwitchCase="true">
+	            <span *ngIf="myAccount && myAccount.myOrder && noOfItems > 0">
+	                <a class="nav-link" [routerLink]="['/my-order/'+ myAccount.myOrder.id + '/review']" (click)="collapseNavbar()">
+	                    <span>
+	                    	<fa-icon icon="shopping-cart" fixedWidth="true"></fa-icon>
+	                        <span jhiTranslate="global.menu.cart">Cart</span>&nbsp;({{noOfItems}})
+	                    </span>
+	                </a>
+	            </span>
             </li>
         </ul>
     </div>

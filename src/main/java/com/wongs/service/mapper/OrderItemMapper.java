@@ -1,24 +1,71 @@
 package com.wongs.service.mapper;
 
-import com.wongs.domain.*;
-import com.wongs.service.dto.OrderItemDTO;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.mapstruct.*;
+import org.springframework.stereotype.Service;
+
+import com.wongs.domain.OrderItem;
+import com.wongs.service.dto.OrderItemDTO;
 
 /**
  * Mapper for the entity OrderItem and its DTO OrderItemDTO.
  */
-@Mapper(componentModel = "spring", uses = {OrderShopMapper.class})
-public interface OrderItemMapper extends EntityMapper<OrderItemDTO, OrderItem> {
+@Service
+public class OrderItemMapper {
 
-    @Mapping(source = "shop.id", target = "shopId")
-    OrderItemDTO toDto(OrderItem orderItem);
+	public OrderItemDTO toDto(OrderItem orderItem) {
+		if (orderItem == null) return null;
+		return new OrderItemDTO(orderItem);
+	}
 
-    @Mapping(target = "productItem", ignore = true)
-    @Mapping(source = "shopId", target = "shop")
-    OrderItem toEntity(OrderItemDTO orderItemDTO);
+    public Set<OrderItemDTO> toDto(Set<OrderItem> orderItems) {
+        return orderItems.stream()
+            .filter(Objects::nonNull)
+            .map(this::toDto)
+            .collect(Collectors.toSet());
+    }
+    
+    public List<OrderItemDTO> toDto(List<OrderItem> orderItems) {
+        return orderItems.stream()
+            .filter(Objects::nonNull)
+            .map(this::toDto)
+            .collect(Collectors.toList());
+    }
 
-    default OrderItem fromId(Long id) {
+    public OrderItem toEntity(OrderItemDTO orderItemDTO) {
+        if (orderItemDTO == null) {
+            return null;
+        } else {
+        	OrderItem orderItem = new OrderItem();
+        	orderItem.setId(orderItemDTO.getId());
+        	orderItem.setQuantity(orderItemDTO.getQuantity());
+        	orderItem.setPrice(orderItemDTO.getPrice());
+        	orderItem.setCurrency(orderItemDTO.getCurrency());
+        	
+        	orderItem.setProductItem(orderItemDTO.getProductItem());
+        	orderItem.setShop(orderItemDTO.getShop());
+            return orderItem;
+        }
+    }
+
+    public Set<OrderItem> toEntity(Set<OrderItemDTO> orderItemDTOs) {
+        return orderItemDTOs.stream()
+            .filter(Objects::nonNull)
+            .map(this::toEntity)
+            .collect(Collectors.toSet());	
+    }
+    
+    public List<OrderItem> toEntity(List<OrderItemDTO> orderItemDTOs) {
+        return orderItemDTOs.stream()
+            .filter(Objects::nonNull)
+            .map(this::toEntity)
+            .collect(Collectors.toList());	
+    }
+
+    public OrderItem fromId(Long id) {
         if (id == null) {
             return null;
         }

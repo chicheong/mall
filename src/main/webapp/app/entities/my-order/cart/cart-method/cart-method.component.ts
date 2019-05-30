@@ -1,15 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable, Subscription } from 'rxjs';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
-import { MyOrder } from './../../my-order.model';
-import { MyOrderService } from './../../my-order.service';
-import { ShippingType, ShippingTypeService } from './../../../shipping-type';
+import { IMyOrder } from 'app/shared/model/my-order.model';
+import { MyOrderService } from 'app/entities/my-order';
+import { IShippingType } from 'app/shared/model/shipping-type.model';
+import { ShippingTypeService } from 'app/entities/shipping-type';
 
-import { CartComponent } from './../../cart.component';
+import { CartComponent } from 'app/entities/my-order/cart.component';
 
 @Component({
     selector: 'jhi-shipping',
@@ -18,7 +18,7 @@ import { CartComponent } from './../../cart.component';
 export class CartMethodComponent extends CartComponent implements OnInit, OnDestroy {
 
     isSaving: boolean;
-    shippingTypes: ShippingType[];
+    shippingTypes: IShippingType[];
 
     constructor(
         private jhiAlertService: JhiAlertService,
@@ -34,13 +34,13 @@ export class CartMethodComponent extends CartComponent implements OnInit, OnDest
         this.isSaving = false;
         this.shippingTypeService
             .query({filter: 'empty'})
-            .subscribe((res: HttpResponse<ShippingType[]>) => {
+            .subscribe((res: HttpResponse<IShippingType[]>) => {
                 this.shippingTypes = res.body;
             }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     onSelectionChange(entry) {
-        const shippingType: ShippingType = Object.assign({}, entry);
+        const shippingType: IShippingType = Object.assign({}, entry);
 //        this.myOrder.shipping.type = shippingType;
 //        this.myOrder.shipping.price = shippingType.price;
 //        this.myOrder.shipping.currency = shippingType.currency;
@@ -53,12 +53,12 @@ export class CartMethodComponent extends CartComponent implements OnInit, OnDest
                 this.myOrderService.update(this.myOrder));
     }
 
-    private subscribeToSaveResponse(result: Observable<HttpResponse<MyOrder>>) {
-        result.subscribe((res: HttpResponse<MyOrder>) =>
+    private subscribeToSaveResponse(result: Observable<HttpResponse<IMyOrder>>) {
+        result.subscribe((res: HttpResponse<IMyOrder>) =>
             this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
-    private onSaveSuccess(result: MyOrder) {
+    private onSaveSuccess(result: IMyOrder) {
         this.myOrder = result;
         this.eventManager.broadcast({ name: 'myOrderModification', content: 'OK', obj: result});
         this.isSaving = false;

@@ -1,17 +1,22 @@
 package com.wongs.service.dto;
 
-import com.wongs.config.Constants;
-
-import com.wongs.domain.Authority;
-import com.wongs.domain.User;
-
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-
-import javax.validation.constraints.*;
 import java.time.Instant;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
+
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
+
+import com.wongs.config.Constants;
+import com.wongs.domain.Authority;
+import com.wongs.domain.MyAccount;
+import com.wongs.domain.MyOrder;
+import com.wongs.domain.Shop;
+import com.wongs.domain.User;
+import com.wongs.domain.UserInfo;
 
 /**
  * A DTO representing a user, with his authorities.
@@ -32,10 +37,10 @@ public class UserDTO {
     private String lastName;
 
     @Email
-    @Size(min = 5, max = 254)
+    @Size(min = 5, max = 100)
     private String email;
 
-    @Size(max = 256)
+    @Size(max = 5000000)
     private String imageUrl;
 
     private boolean activated = false;
@@ -52,6 +57,10 @@ public class UserDTO {
     private Instant lastModifiedDate;
 
     private Set<String> authorities;
+    
+    private UserInfoDTO userInfo = null;
+    
+    private MyAccountDTO myAccount = null;
 
     public UserDTO() {
         // Empty constructor needed for Jackson.
@@ -178,8 +187,27 @@ public class UserDTO {
     public void setAuthorities(Set<String> authorities) {
         this.authorities = authorities;
     }
+    
+    public UserInfoDTO getUserInfo() {
+		return userInfo;
+	}
 
-    @Override
+	public void setUserInfo(UserInfoDTO userInfo) {
+		this.userInfo = userInfo;
+	}
+
+	public MyAccountDTO getMyAccount() {
+		return myAccount;
+	}
+
+	public void setMyAccount(MyAccountDTO myAccount) {
+		this.myAccount = myAccount;
+//		if (myAccount != null && myAccount.getShops() != null) {
+//			this.shops = myAccount.getShops();
+//		}
+	}
+
+	@Override
     public String toString() {
         return "UserDTO{" +
             "login='" + login + '\'' +
@@ -194,6 +222,8 @@ public class UserDTO {
             ", lastModifiedBy='" + lastModifiedBy + '\'' +
             ", lastModifiedDate=" + lastModifiedDate +
             ", authorities=" + authorities +
+            ", userIno=" + userInfo +
+            ", myAccount=" + myAccount +
             "}";
     }
 }

@@ -1,17 +1,18 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable, Subscription } from 'rxjs';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { MyOrder } from './../../my-order.model';
-import { MyOrderService } from './../../my-order.service';
+import { IMyOrder } from 'app/shared/model/my-order.model';
+import { MyOrderService } from 'app/entities/my-order';
 
-import { Shipping, ShippingStatus } from '../../../shipping';
-import { Address } from '../../../address';
-import { Payment, PaymentStatus } from '../../../payment';
-import { ShippingType } from '../../../shipping-type';
+import { IShipping } from 'app/shared/model/shipping.model';
+import { ShippingStatus } from 'app/shared/model/shipping.model';
+import { IAddress } from 'app/shared/model/address.model';
+import { IPayment, Payment } from 'app/shared/model/payment.model';
+import { PaymentStatus } from 'app/shared/model/payment.model';
+import { IShippingType } from 'app/shared/model/shipping-type.model';
 
 @Component({
     selector: 'jhi-pending-cart',
@@ -19,7 +20,7 @@ import { ShippingType } from '../../../shipping-type';
 })
 export class CartPendingComponent implements OnInit, OnDestroy {
 
-    myOrder: MyOrder;
+    myOrder: IMyOrder;
     subscription: Subscription;
     eventSubscriber: Subscription;
     isSaving: boolean;
@@ -32,7 +33,7 @@ export class CartPendingComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        this.subscription = this.route.params.subscribe((params) => {
+        this.subscription = this.route.params.subscribe(params => {
             this.load(params['id']);
         });
         this.registerChangeInMyOrders();
@@ -41,9 +42,9 @@ export class CartPendingComponent implements OnInit, OnDestroy {
 
     load(id) {
         this.myOrderService.find(id)
-            .subscribe((myOrderResponse: HttpResponse<MyOrder>) => {
+            .subscribe((myOrderResponse: HttpResponse<IMyOrder>) => {
                 this.myOrder = myOrderResponse.body;
-                this.myOrder.shops.forEach((shop) => {
+                this.myOrder.shops.forEach(shop => {
 //                   console.error('item.price: ' + item.price + ', item.quantity: ' + item.quantity);
                 });
                 // Initialize Shipping if not exist
@@ -80,7 +81,7 @@ export class CartPendingComponent implements OnInit, OnDestroy {
                 if (!this.myOrder) {
                     console.error('!this.myOrder');
                 } else if (!this.myOrder.payment) {
-                    const payment: Payment = Object.assign(new Payment());
+                    const payment: IPayment = Object.assign(new Payment());
                     payment.status = PaymentStatus.PENDING;
                     this.myOrder.payment = payment;
                 }
@@ -101,12 +102,12 @@ export class CartPendingComponent implements OnInit, OnDestroy {
                 this.myOrderService.update(this.myOrder), goNext);
     }
 
-    private subscribeToSaveResponse(result: Observable<HttpResponse<MyOrder>>, goNext: boolean) {
-        result.subscribe((res: HttpResponse<MyOrder>) =>
+    private subscribeToSaveResponse(result: Observable<HttpResponse<IMyOrder>>, goNext: boolean) {
+        result.subscribe((res: HttpResponse<IMyOrder>) =>
             this.onSaveSuccess(res.body, goNext), (res: HttpErrorResponse) => this.onSaveError());
     }
 
-    private onSaveSuccess(result: MyOrder, goNext: boolean) {
+    private onSaveSuccess(result: IMyOrder, goNext: boolean) {
         this.myOrder = result;
         this.eventManager.broadcast({ name: 'myOrderModification', content: 'OK', obj: result});
         this.isSaving = false;
@@ -126,7 +127,7 @@ export class CartPendingComponent implements OnInit, OnDestroy {
     registerChangeInMyOrders() {
         this.eventSubscriber = this.eventManager.subscribe(
             'myOrderListModification',
-            (response) => this.load(this.myOrder.id)
+            response => this.load(this.myOrder.id)
         );
     }
 

@@ -17,6 +17,13 @@ import java.util.Optional;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.Collection;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  * Service Implementation for managing Delegation.
  */
@@ -103,5 +110,13 @@ public class DelegationService {
         log.debug("Request to search for a page of Delegations for query {}", query);
         return delegationSearchRepository.search(queryStringQuery(query), pageable)
             .map(delegationMapper::toDto);
+    }
+    
+    // not in use
+    @Transactional(readOnly = true)
+    public Set<Delegation> findByTypeAndDelegationIdList(String type, Collection<String> ids) {
+        log.debug("Request to find Delegations for type {} and {}", type, ids);
+        Set<Delegation> result = delegationRepository.findByTypeAndDelegationIdList(type, ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()), ids);
+        return result;
     }
 }

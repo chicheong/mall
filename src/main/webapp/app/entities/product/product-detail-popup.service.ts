@@ -2,11 +2,11 @@ import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
-import { Product } from './product.model';
+import { IProduct } from 'app/shared/model/product.model';
 import { ProductItemsDialogType } from './product-items-dialog.component';
 
-import { ProductItem } from './../product-item/product-item.model';
-import { ProductStyle, ProductStyleType } from './../product-style';
+import { IProductItem } from 'app/shared/model/product-item.model';
+import { IProductStyle, ProductStyleType } from 'app/shared/model/product-style.model';
 
 @Injectable()
 export class ProductDetailPopupService {
@@ -20,7 +20,7 @@ export class ProductDetailPopupService {
         this.ngbModalRef = null;
     }
 
-    open(component: Component, product?: Product, broadcastName?: string, type?: ProductItemsDialogType): Promise<NgbModalRef> {
+    open(component: Component, product?: IProduct, broadcastName?: string, type?: ProductItemsDialogType): Promise<NgbModalRef> {
         return new Promise<NgbModalRef>((resolve, reject) => {
             const isOpen = this.ngbModalRef !== null;
             if (isOpen) {
@@ -40,15 +40,15 @@ export class ProductDetailPopupService {
         });
     }
 
-    productItemModalRef(component: Component, product: Product, broadcastName: string, type: ProductItemsDialogType): NgbModalRef {
+    productItemModalRef(component: Component, product: IProduct, broadcastName: string, type: ProductItemsDialogType): NgbModalRef {
         const modalRef = this.modalService.open(component, { size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.product = product;
         modalRef.componentInstance.broadcastName = broadcastName;
         modalRef.componentInstance.type = type;
-        modalRef.result.then((result) => {
+        modalRef.result.then(result => {
             this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true, queryParamsHandling: 'merge' });
             this.ngbModalRef = null;
-        }, (reason) => {
+        }, reason => {
             this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true, queryParamsHandling: 'merge' });
             this.ngbModalRef = null;
         });

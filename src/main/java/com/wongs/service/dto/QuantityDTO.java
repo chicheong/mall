@@ -1,7 +1,12 @@
 package com.wongs.service.dto;
-import java.time.ZonedDateTime;
+
+
 import java.io.Serializable;
+import java.time.ZonedDateTime;
 import java.util.Objects;
+
+import com.wongs.domain.ProductItem;
+import com.wongs.domain.Quantity;
 
 /**
  * A DTO for the Quantity entity.
@@ -9,6 +14,8 @@ import java.util.Objects;
 public class QuantityDTO implements Serializable {
 
     private Long id;
+    
+    private String tempId;
 
     private ZonedDateTime from;
 
@@ -16,18 +23,37 @@ public class QuantityDTO implements Serializable {
 
     private Integer quantity;
 
+    private ProductItem item;
 
-    private Long itemId;
+    public QuantityDTO() {
+        // Empty constructor needed for Jackson.
+	}
 
-    public Long getId() {
+	public QuantityDTO(Quantity quantity) {
+		this.id = quantity.getId();
+		this.from = quantity.getFrom();
+		this.to = quantity.getTo();
+		this.quantity = quantity.getQuantity();
+		this.item = quantity.getItem();
+	}
+
+	public Long getId() {
         return id;
     }
 
     public void setId(Long id) {
         this.id = id;
-    }
+    }    
 
-    public ZonedDateTime getFrom() {
+    public String getTempId() {
+		return tempId;
+	}
+
+	public void setTempId(String tempId) {
+		this.tempId = tempId;
+	}
+
+	public ZonedDateTime getFrom() {
         return from;
     }
 
@@ -51,15 +77,15 @@ public class QuantityDTO implements Serializable {
         this.quantity = quantity;
     }
 
-    public Long getItemId() {
-        return itemId;
-    }
+    public ProductItem getItem() {
+		return item;
+	}
 
-    public void setItemId(Long productItemId) {
-        this.itemId = productItemId;
-    }
+	public void setItem(ProductItem item) {
+		this.item = item;
+	}
 
-    @Override
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -69,7 +95,7 @@ public class QuantityDTO implements Serializable {
         }
 
         QuantityDTO quantityDTO = (QuantityDTO) o;
-        if (quantityDTO.getId() == null || getId() == null) {
+        if(quantityDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), quantityDTO.getId());
@@ -87,7 +113,6 @@ public class QuantityDTO implements Serializable {
             ", from='" + getFrom() + "'" +
             ", to='" + getTo() + "'" +
             ", quantity=" + getQuantity() +
-            ", item=" + getItemId() +
             "}";
     }
 }

@@ -1,13 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "item",
-            "otherEntityName": "productItem",
-            "otherEntityField": "id"
-        }
-    ],
+    "name": "Quantity",
     "fields": [
         {
             "fieldName": "from",
@@ -22,10 +14,22 @@
             "fieldType": "Integer"
         }
     ],
-    "changelogDate": "20180221114441",
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "productItem",
+            "otherEntityRelationshipName": "quantity",
+            "relationshipName": "item",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190527101529",
     "entityTableName": "quantity",
     "dto": "mapstruct",
     "pagination": "pagination",
-    "service": "no",
-    "jpaMetamodelFiltering": false
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

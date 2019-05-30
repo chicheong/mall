@@ -31,14 +31,14 @@
                 </dd>
                 <dt><span jhiTranslate="mallApp.address.country">Country</span></dt>
                 <dd>
-                    <div *ngIf="address.countryId">
-                        <a [routerLink]="['/country', address.countryId, 'view']">{{address.countryId}}</a>
+                    <div *ngIf="address.country">
+                        <a [routerLink]="['/country', address.country?.id, 'view']">{{address.country?.id}}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="mallApp.address.state">State</span></dt>
                 <dd>
-                    <div *ngIf="address.stateId">
-                        <a [routerLink]="['/state', address.stateId, 'view']">{{address.stateId}}</a>
+                    <div *ngIf="address.state">
+                        <a [routerLink]="['/state', address.state?.id, 'view']">{{address.state?.id}}</a>
                     </div>
                 </dd>
             </dl>

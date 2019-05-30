@@ -5,7 +5,10 @@
                 "title": "Product Items",
                 "createLabel": "建立一筆新的 Product Item",
                 "createOrEditLabel": "建立或編輯 Product Item",
-                "search": "搜尋 Product Item"
+                "search": "搜尋 Product Item",
+				"updateCodes": "更新 Product Codes",
+                "updatePrices": "更新 Product Prices",
+                "updateQuantities": "更新 Product Quantities"
             },
             "created": "新的 Product Item 建立成功，識別碼為 {{ param }}",
             "updated": "識別碼為 {{ param }} 的 Product Item 更新成功",
@@ -23,8 +26,6 @@
             "price": "Price",
             "color": "Color",
             "size": "Size",
-            "price": "Price",
-            "quantity": "Quantity",
             "product": "Product"
         }
     }

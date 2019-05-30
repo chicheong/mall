@@ -41,7 +41,7 @@ public class OrderItem implements Serializable {
     private CurrencyType currency;
 
     @OneToOne(mappedBy = "orderItem")
-    @JsonIgnore
+    @JsonIgnore //@JoinColumn(unique = false)
     private ProductItem productItem;
 
     @ManyToOne

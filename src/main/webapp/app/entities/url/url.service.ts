@@ -26,6 +26,15 @@ export class UrlService {
             .pipe(map((res: EntityResponseType) => this.convertDateFromServer(res)));
     }
 
+    createMultiple(urls: IUrl[]): Observable<HttpResponse<IUrl[]>> {
+        const copies: IUrl[] = [];
+//        urls.forEach(url => {
+//            copies.push(this.convert(url));
+//        });
+        return this.http.post<IUrl[]>(this.resourceUrl + '/multiple', copies, { observe: 'response' })
+            .pipe(map((res: HttpResponse<IUrl[]>) => this.convertDateArrayFromServer(res)));
+    }
+
     update(url: IUrl): Observable<EntityResponseType> {
         const copy = this.convertDateFromClient(url);
         return this.http

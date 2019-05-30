@@ -1,16 +1,16 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable, Subscription } from 'rxjs';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
-import { MyOrder } from './../../my-order.model';
-import { MyOrderService } from './../../my-order.service';
-import { PaymentCard } from './../../../payment-card';
-import { Payment, PaymentType, PaymentStatus } from './../../../payment';
+import { IMyOrder } from 'app/shared/model/my-order.model';
+import { MyOrderService } from 'app/entities/my-order';
+import { IPaymentCard, PaymentCard } from 'app/shared/model/payment-card.model';
+import { IPayment, PaymentType } from 'app/shared/model/payment.model';
+import { PaymentStatus } from 'app/shared/model/payment.model';
 
-import { CartComponent } from './../../cart.component';
+import { CartComponent } from 'app/entities/my-order/cart.component';
 
 declare let paypal: any;
 
@@ -25,7 +25,7 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
     showContinue: boolean;
 
     /********** For Stripe card starts **********/
-    paymentCard: PaymentCard;
+    paymentCard: IPaymentCard;
     stripeErrorCodePrefix = 'mallApp.myOrder.cart.payment.stripe.';
     // these are the known stripe error code@20180719
     stripeErrorCode = new Array('incorrect_number', 'invalid_number', 'invalid_expiry_month',
@@ -113,7 +113,7 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
             });
         },
         onAuthorize: (data, actions) => {
-            return actions.payment.execute().then((payment) => {
+            return actions.payment.execute().then(payment => {
                 // Do something when payment is successful.
                 // window.alert('Thank you for your purchase! with payment: ' + payment);
                 this.myOrder.payment.type = PaymentType.PAYPAL;
@@ -257,12 +257,12 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<HttpResponse<MyOrder>>, goNext: boolean) {
-        result.subscribe((res: HttpResponse<MyOrder>) =>
+    private subscribeToSaveResponse(result: Observable<HttpResponse<IMyOrder>>, goNext: boolean) {
+        result.subscribe((res: HttpResponse<IMyOrder>) =>
             this.onSaveSuccess(res.body, goNext), (res: HttpErrorResponse) => this.onSaveError());
     }
 
-    private onSaveSuccess(result: MyOrder, goNext: boolean) {
+    private onSaveSuccess(result: IMyOrder, goNext: boolean) {
         this.myOrder = result;
         this.eventManager.broadcast({ name: 'myOrderModification', content: 'OK', obj: result});
         this.isSaving = false;

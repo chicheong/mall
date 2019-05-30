@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
-import { Subscription } from 'rxjs/Subscription';
+import { Observable, Subscription } from 'rxjs';
 import { JhiEventManager } from 'ng-jhipster';
 
-import { MyOrder } from './my-order.model';
+import { IMyOrder } from 'app/shared/model/my-order.model';
 import { MyOrderService } from './my-order.service';
 
 @Component({
@@ -14,7 +13,7 @@ import { MyOrderService } from './my-order.service';
 })
 export class CheckoutComponent implements OnInit, OnDestroy {
 
-    myOrder: MyOrder;
+    myOrder: IMyOrder;
     isSaving: boolean;
     private subscription: Subscription;
     private eventSubscriber: Subscription;
@@ -29,7 +28,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.isSaving = false;
-        this.subscription = this.route.params.subscribe((params) => {
+        this.subscription = this.route.params.subscribe(params => {
             this.load(params['id']);
         });
         this.registerChangeInMyOrders();
@@ -37,7 +36,7 @@ export class CheckoutComponent implements OnInit, OnDestroy {
 
     load(id) {
         this.myOrderService.find(id)
-        .subscribe((myOrderResponse: HttpResponse<MyOrder>) => {
+        .subscribe((myOrderResponse: HttpResponse<IMyOrder>) => {
             this.myOrder = myOrderResponse.body;
             this.myOrder.shops.forEach((shop) => {
 //              console.error('item.price: ' + item.price + ', item.quantity: ' + item.quantity);
@@ -54,12 +53,12 @@ export class CheckoutComponent implements OnInit, OnDestroy {
                 this.myOrderService.update(this.myOrder));
     }
 
-    private subscribeToSaveResponse(result: Observable<HttpResponse<MyOrder>>) {
-        result.subscribe((res: HttpResponse<MyOrder>) =>
+    private subscribeToSaveResponse(result: Observable<HttpResponse<IMyOrder>>) {
+        result.subscribe((res: HttpResponse<IMyOrder>) =>
             this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
-    private onSaveSuccess(result: MyOrder) {
+    private onSaveSuccess(result: IMyOrder) {
         this.myOrder = result;
         this.eventManager.broadcast({ name: 'myOrderModification', content: 'OK', obj: result});
         this.isSaving = false;

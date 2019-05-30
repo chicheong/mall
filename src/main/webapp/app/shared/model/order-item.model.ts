@@ -1,20 +1,14 @@
-export const enum CurrencyType {
-    HKD = 'HKD',
-    CNY = 'CNY',
-    USD = 'USD',
-    EUR = 'EUR',
-    JPY = 'JPY',
-    KRW = 'KRW',
-    TWD = 'TWD'
-}
+import { IProductItem } from 'app/shared/model/product-item.model';
+import { IOrderShop } from 'app/shared/model/order-shop.model';
+import { CurrencyType } from './price.model';
 
 export interface IOrderItem {
     id?: number;
     quantity?: number;
     price?: number;
     currency?: CurrencyType;
-    productItemId?: number;
-    shopId?: number;
+    productItem?: IProductItem;
+    shop?: IOrderShop;
 }
 
 export class OrderItem implements IOrderItem {
@@ -23,7 +17,7 @@ export class OrderItem implements IOrderItem {
         public quantity?: number,
         public price?: number,
         public currency?: CurrencyType,
-        public productItemId?: number,
-        public shopId?: number
+        public productItem?: IProductItem,
+        public shop?: IOrderShop
     ) {}
 }

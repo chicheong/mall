@@ -1,21 +1,22 @@
 package com.wongs.service;
 
-import com.wongs.domain.Url;
-import com.wongs.repository.UrlRepository;
-import com.wongs.repository.search.UrlSearchRepository;
-import com.wongs.service.dto.UrlDTO;
-import com.wongs.service.mapper.UrlMapper;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import java.util.Optional;
+import java.util.Set;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.wongs.domain.Url;
+import com.wongs.repository.UrlRepository;
+import com.wongs.repository.search.UrlSearchRepository;
+import com.wongs.service.dto.UrlDTO;
+import com.wongs.service.mapper.UrlMapper;
 
 /**
  * Service Implementation for managing Url.
@@ -26,15 +27,14 @@ public class UrlService {
 
     private final Logger log = LoggerFactory.getLogger(UrlService.class);
 
-    private final UrlRepository urlRepository;
-
     private final UrlMapper urlMapper;
-
+    
+    private final UrlRepository urlRepository;
     private final UrlSearchRepository urlSearchRepository;
 
-    public UrlService(UrlRepository urlRepository, UrlMapper urlMapper, UrlSearchRepository urlSearchRepository) {
-        this.urlRepository = urlRepository;
+    public UrlService(UrlMapper urlMapper, UrlRepository urlRepository, UrlSearchRepository urlSearchRepository) {
         this.urlMapper = urlMapper;
+    	this.urlRepository = urlRepository;
         this.urlSearchRepository = urlSearchRepository;
     }
 
@@ -66,7 +66,33 @@ public class UrlService {
             .map(urlMapper::toDto);
     }
 
-
+    /**
+     * Get all url by entityType and entityId.
+     *
+     * @param entityType
+     * @param entityId
+     * @return the list of entities
+     */
+    @Transactional(readOnly = true)
+    public Set<Url> findByEntityTypeAndEntityId(String entityType, Long entityId) {
+        log.debug("Request to get Url by entityType : {}, and entityId : {}", entityType, entityId);
+        return urlRepository.findByEntityTypeAndEntityId(entityType, entityId);
+    }
+    
+    /**
+     * Get one url by entityType and entityId.
+     *
+     * @param entityType
+     * @param entityId
+     * @return an entity
+     */
+    @Transactional(readOnly = true)
+    public Url findOneByEntityTypeAndEntityId(String entityType, Long entityId) {
+        log.debug("Request to get Url by entityType : {}, and entityId : {}", entityType, entityId);
+        Set<Url> urls = this.findByEntityTypeAndEntityId(entityType, entityId);
+        return urls.stream().findFirst().orElse(null);
+    }
+    
     /**
      * Get one url by id.
      *

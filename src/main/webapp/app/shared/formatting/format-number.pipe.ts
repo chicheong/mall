@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import 'rxjs/util/isNumeric';
+// import 'rxjs/util/isNumeric';
 
 @Pipe({name: 'formatNumber'})
 export class FormatNumberPipe implements PipeTransform {

@@ -1,21 +1,23 @@
 package com.wongs.service;
 
-import com.wongs.domain.MyAccount;
-import com.wongs.repository.MyAccountRepository;
-import com.wongs.repository.search.MyAccountSearchRepository;
-import com.wongs.service.dto.MyAccountDTO;
-import com.wongs.service.mapper.MyAccountMapper;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import com.wongs.domain.MyAccount;
+import com.wongs.domain.enumeration.OrderStatus;
+import com.wongs.repository.MyAccountRepository;
+import com.wongs.repository.search.MyAccountSearchRepository;
+import com.wongs.service.dto.MyAccountDTO;
+import com.wongs.service.mapper.MyAccountMapper;
+import com.wongs.service.mapper.ShopMapper;
 
 /**
  * Service Implementation for managing MyAccount.
@@ -26,16 +28,22 @@ public class MyAccountService {
 
     private final Logger log = LoggerFactory.getLogger(MyAccountService.class);
 
-    private final MyAccountRepository myAccountRepository;
-
     private final MyAccountMapper myAccountMapper;
-
+    private final ShopMapper shopMapper;
+    
+    private final MyAccountRepository myAccountRepository;
     private final MyAccountSearchRepository myAccountSearchRepository;
-
-    public MyAccountService(MyAccountRepository myAccountRepository, MyAccountMapper myAccountMapper, MyAccountSearchRepository myAccountSearchRepository) {
-        this.myAccountRepository = myAccountRepository;
+    
+    private final MyOrderService myOrderService;
+    
+    public MyAccountService(MyAccountMapper myAccountMapper, ShopMapper shopMapper, 
+    		MyAccountRepository myAccountRepository, MyAccountSearchRepository myAccountSearchRepository,
+    		MyOrderService myOrderService) {
         this.myAccountMapper = myAccountMapper;
+        this.shopMapper = shopMapper;
+    	this.myAccountRepository = myAccountRepository;
         this.myAccountSearchRepository = myAccountSearchRepository;
+        this.myOrderService = myOrderService;
     }
 
     /**
@@ -47,6 +55,9 @@ public class MyAccountService {
     public MyAccountDTO save(MyAccountDTO myAccountDTO) {
         log.debug("Request to save MyAccount : {}", myAccountDTO);
         MyAccount myAccount = myAccountMapper.toEntity(myAccountDTO);
+        myAccount.setUserInfos(myAccountDTO.getUserInfos());
+        myAccount.setShops(shopMapper.toEntity(myAccountDTO.getShops()));
+        myAccount.setDelegations(myAccountDTO.getDelegations());
         myAccount = myAccountRepository.save(myAccount);
         MyAccountDTO result = myAccountMapper.toDto(myAccount);
         myAccountSearchRepository.save(myAccount);
@@ -85,8 +96,13 @@ public class MyAccountService {
     @Transactional(readOnly = true)
     public Optional<MyAccountDTO> findOne(Long id) {
         log.debug("Request to get MyAccount : {}", id);
-        return myAccountRepository.findOneWithEagerRelationships(id)
-            .map(myAccountMapper::toDto);
+        
+        MyAccount myAccount = myAccountRepository.findOneWithEagerRelationships(id).orElse(null);
+        MyAccountDTO myAccountDTO = myAccountMapper.toDto(myAccount);
+        myAccountDTO.setShops(shopMapper.toDto(myAccount.getShops()));
+        myAccountDTO.setMyOrder(myOrderService.findByAccountAndStatus(myAccount, OrderStatus.PENDING));
+        myAccountDTO.setDelegations(myAccount.getDelegations());
+        return Optional.of(myAccountDTO);
     }
 
     /**
@@ -96,7 +112,7 @@ public class MyAccountService {
      */
     public void delete(Long id) {
         log.debug("Request to delete MyAccount : {}", id);
-        myAccountRepository.deleteById(id);
+        myAccountRepository.deleteById(id);	
         myAccountSearchRepository.deleteById(id);
     }
 

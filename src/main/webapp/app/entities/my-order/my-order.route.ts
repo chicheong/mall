@@ -11,6 +11,14 @@ import { MyOrderComponent } from './my-order.component';
 import { MyOrderDetailComponent } from './my-order-detail.component';
 import { MyOrderUpdateComponent } from './my-order-update.component';
 import { MyOrderDeletePopupComponent } from './my-order-delete-dialog.component';
+import { CartPendingComponent } from './cart/cart-pending/cart-pending.component';
+import { CartReviewComponent } from './cart/cart-review/cart-review.component';
+import { CartShippingComponent } from './cart/cart-shipping/cart-shipping.component';
+import { CartMethodComponent } from './cart/cart-method/cart-method.component';
+import { CartBillingComponent } from './cart/cart-billing/cart-billing.component';
+import { CartPaymentComponent } from './cart/cart-payment/cart-payment.component';
+import { CartConfirmationComponent } from './cart/cart-confirmation/cart-confirmation.component';
+import { CheckoutComponent } from './checkout.component';
 import { IMyOrder } from 'app/shared/model/my-order.model';
 
 @Injectable({ providedIn: 'root' })

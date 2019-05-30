@@ -1,27 +1,73 @@
 package com.wongs.service.mapper;
 
-import com.wongs.domain.*;
-import com.wongs.service.dto.ProductItemDTO;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.mapstruct.*;
+import org.springframework.stereotype.Service;
+
+import com.wongs.domain.ProductItem;
+import com.wongs.service.dto.ProductItemDTO;
 
 /**
  * Mapper for the entity ProductItem and its DTO ProductItemDTO.
  */
-@Mapper(componentModel = "spring", uses = {ProductMapper.class})
-public interface ProductItemMapper extends EntityMapper<ProductItemDTO, ProductItem> {
+@Service
+public class ProductItemMapper {
 
-    @Mapping(source = "product.id", target = "productId")
-    ProductItemDTO toDto(ProductItem productItem);
+	public ProductItemDTO toDto(ProductItem productItem) {
+		if (productItem == null) return null;
+		return new ProductItemDTO(productItem);
+	}
 
-    @Mapping(target = "color", ignore = true)
-    @Mapping(target = "size", ignore = true)
-    @Mapping(target = "prices", ignore = true)
-    @Mapping(target = "quantities", ignore = true)
-    @Mapping(source = "productId", target = "product")
-    ProductItem toEntity(ProductItemDTO productItemDTO);
+    public Set<ProductItemDTO> toDto(Set<ProductItem> productItems) {
+        return productItems.stream()
+            .filter(Objects::nonNull)
+            .map(this::toDto)
+            .collect(Collectors.toSet());
+    }
+    
+    public List<ProductItemDTO> toDto(List<ProductItem> productItems) {
+        return productItems.stream()
+            .filter(Objects::nonNull)
+            .map(this::toDto)
+            .collect(Collectors.toList());
+    }
 
-    default ProductItem fromId(Long id) {
+    public ProductItem toEntity(ProductItemDTO productItemDTO) {
+        if (productItemDTO == null) {
+            return null;
+        } else {
+        	ProductItem productItem = new ProductItem();
+        	productItem.setId(productItemDTO.getId());
+        	productItem.setCode(productItemDTO.getCode());
+        	productItem.setIsDefault(productItemDTO.getIsDefault());
+        	productItem.setQuantity(productItemDTO.getQuantity());
+        	productItem.setCurrency(productItemDTO.getCurrency());
+        	productItem.setPrice(productItemDTO.getPrice());
+//        	productItem.setColor(productItemDTO.getColor());
+//        	productItem.setSize(productItemDTO.getSize());
+    		productItem.setProduct(productItemDTO.getProduct());
+            return productItem;
+        }
+    }
+
+    public Set<ProductItem> toEntity(Set<ProductItemDTO> productItemDTOs) {
+        return productItemDTOs.stream()
+            .filter(Objects::nonNull)
+            .map(this::toEntity)
+            .collect(Collectors.toSet());	
+    }
+    
+    public List<ProductItem> toEntity(List<ProductItemDTO> productItemDTOs) {
+        return productItemDTOs.stream()
+            .filter(Objects::nonNull)
+            .map(this::toEntity)
+            .collect(Collectors.toList());	
+    }
+
+    public ProductItem fromId(Long id) {
         if (id == null) {
             return null;
         }

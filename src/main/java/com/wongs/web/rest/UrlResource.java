@@ -136,4 +136,25 @@ public class UrlResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
+    /**
+     * POST  /urls/multiple : Create new urls.
+     *
+     * @param urlDTO the urlDTO to create
+     * @return the ResponseEntity with status 201 (Created) and with body the new urlDTO, or with status 400 (Bad Request) if the url has already an ID
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @PostMapping("/urls/multiple")
+    public ResponseEntity<List<UrlDTO>> createUrls(@RequestBody List<UrlDTO> urlDTOs) throws URISyntaxException {
+        for (UrlDTO urlDTO : urlDTOs) {
+        	if (urlDTO.getId() != null) {
+                throw new BadRequestAlertException("new urls cannot already have ID(s)", ENTITY_NAME, "idexists");
+            }
+        }
+        for (UrlDTO urlDTO : urlDTOs) {
+            UrlDTO result = urlService.save(urlDTO);
+        }        
+        return ResponseEntity.created(new URI("/api/urls/"))
+            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, ""))
+            .body(urlDTOs);
+    }
 }

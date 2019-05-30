@@ -10,8 +10,14 @@ import {
     ProductUpdateComponent,
     ProductDeletePopupComponent,
     ProductDeleteDialogComponent,
+    ProductItemsDialogComponent,
+    ProductItemsUrlDialogComponent,
+    PricesDialogComponent,
+    QuantitiesDialogComponent,
+    ProductDetailOtherDialogComponent,
     productRoute,
-    productPopupRoute
+    productPopupRoute,
+    GetItemFromColorSizePipe,
 } from './';
 
 const ENTITY_STATES = [...productRoute, ...productPopupRoute];
@@ -23,9 +29,21 @@ const ENTITY_STATES = [...productRoute, ...productPopupRoute];
         ProductDetailComponent,
         ProductUpdateComponent,
         ProductDeleteDialogComponent,
-        ProductDeletePopupComponent
+        ProductDeletePopupComponent,
+        ProductItemsDialogComponent,
+        ProductItemsUrlDialogComponent,
+        PricesDialogComponent,
+        QuantitiesDialogComponent,
+        GetItemFromColorSizePipe,
+        ProductDetailOtherDialogComponent
     ],
-    entryComponents: [ProductComponent, ProductUpdateComponent, ProductDeleteDialogComponent, ProductDeletePopupComponent],
+    entryComponents: [ProductComponent, ProductUpdateComponent, ProductDeleteDialogComponent, ProductDeletePopupComponent,
+        ProductItemsDialogComponent,
+        ProductItemsUrlDialogComponent,
+        PricesDialogComponent,
+        QuantitiesDialogComponent,
+        ProductDetailOtherDialogComponent
+    ],
     providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

@@ -2,11 +2,11 @@ import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, HostListener
 import { ActivatedRoute } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService, JhiAlert } from 'ng-jhipster';
 
-import { Url } from '../../entities/url';
+import { IUrl, Url } from 'app/shared/model/url.model';
 import { FileUploadResult } from './file-upload-result.model';
 
 @Component({
@@ -90,13 +90,13 @@ export class FileUploadComponent implements OnInit {
             const reader = new FileReader();
             const file = files[i];
             reader.readAsDataURL(file);
-            reader.onload = (thisEvent) => { // called once readAsDataURL is completed
+            reader.onload = thisEvent => { // called once readAsDataURL is completed
                 const url = new Url();
                 url.entityType = this.url.entityType;
                 url.entityId = this.url.entityId;
                 url.fileName = file.name;
                 url.sequence = this.url.sequence ? (this.url.sequence + i) : 1 + i;
-                url.path = (<FileReader>thisEvent.target).result;
+                url.path = (<FileReader>thisEvent.target).result as string;
                 urls.push(url);
                 counter++;
                 if (counter === files.length) {

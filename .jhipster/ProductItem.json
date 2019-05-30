@@ -1,41 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "one-to-one",
-            "relationshipName": "color",
-            "otherEntityName": "productStyle",
-            "otherEntityField": "id",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "productItem"
-        },
-        {
-            "relationshipType": "one-to-one",
-            "relationshipName": "size",
-            "otherEntityName": "productStyle",
-            "otherEntityField": "id",
-            "ownerSide": false,
-            "otherEntityRelationshipName": "productItem"
-        },
-        {
-            "relationshipType": "one-to-many",
-            "relationshipName": "price",
-            "otherEntityName": "price",
-            "otherEntityRelationshipName": "item"
-        },
-        {
-            "relationshipType": "one-to-many",
-            "relationshipName": "quantity",
-            "otherEntityName": "quantity",
-            "otherEntityRelationshipName": "item"
-        },
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "product",
-            "otherEntityName": "product",
-            "otherEntityField": "id"
-        }
-    ],
+    "name": "ProductItem",
     "fields": [
         {
             "fieldName": "code",
@@ -59,10 +23,50 @@
             "fieldType": "BigDecimal"
         }
     ],
-    "changelogDate": "20180221114436",
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "productStyle",
+            "otherEntityRelationshipName": "productItem",
+            "relationshipName": "color",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "productStyle",
+            "otherEntityRelationshipName": "productItem",
+            "relationshipName": "size",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "price",
+            "otherEntityRelationshipName": "item",
+            "relationshipName": "price"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "quantity",
+            "otherEntityRelationshipName": "item",
+            "relationshipName": "quantity"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "product",
+            "otherEntityRelationshipName": "item",
+            "relationshipName": "product",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190527101524",
     "entityTableName": "product_item",
     "dto": "mapstruct",
     "pagination": "pagination",
-    "service": "no",
-    "jpaMetamodelFiltering": false
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

@@ -1,17 +1,6 @@
 package com.wongs.service;
 
-import com.wongs.domain.Payment;
-import com.wongs.repository.PaymentRepository;
-import com.wongs.repository.search.PaymentSearchRepository;
-import com.wongs.service.dto.PaymentDTO;
-import com.wongs.service.mapper.PaymentMapper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
+import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -19,7 +8,21 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.wongs.domain.MyOrder;
+import com.wongs.domain.Payment;
+import com.wongs.domain.enumeration.PaymentStatus;
+import com.wongs.repository.PaymentRepository;
+import com.wongs.repository.search.PaymentSearchRepository;
+import com.wongs.service.dto.PaymentDTO;
+import com.wongs.service.mapper.MyOrderMapper;
+import com.wongs.service.mapper.PaymentMapper;
 
 /**
  * Service Implementation for managing Payment.
@@ -30,15 +33,16 @@ public class PaymentService {
 
     private final Logger log = LoggerFactory.getLogger(PaymentService.class);
 
-    private final PaymentRepository paymentRepository;
-
     private final PaymentMapper paymentMapper;
-
+    private final MyOrderMapper myOrderMapper;
+    
+    private final PaymentRepository paymentRepository;
     private final PaymentSearchRepository paymentSearchRepository;
 
-    public PaymentService(PaymentRepository paymentRepository, PaymentMapper paymentMapper, PaymentSearchRepository paymentSearchRepository) {
-        this.paymentRepository = paymentRepository;
+    public PaymentService(PaymentMapper paymentMapper, MyOrderMapper myOrderMapper, PaymentRepository paymentRepository, PaymentSearchRepository paymentSearchRepository) {
         this.paymentMapper = paymentMapper;
+    	this.myOrderMapper = myOrderMapper;
+    	this.paymentRepository = paymentRepository;
         this.paymentSearchRepository = paymentSearchRepository;
     }
 
@@ -56,6 +60,22 @@ public class PaymentService {
         paymentSearchRepository.save(payment);
         return result;
     }
+    
+    /**
+     * Create a payment from MyOrder
+     *
+     * @param paymentDTO the entity to create
+     * @return the persisted entity
+     */
+    public PaymentDTO create(MyOrder myOrder) {
+        log.debug("Request to create Payment from MyOrder : {}", myOrder);
+        PaymentDTO payment = new PaymentDTO();
+        payment.setOrder(myOrder);
+        payment.setCurrency(myOrder.getCurrency());
+        payment.setStatus(PaymentStatus.PENDING);
+        return this.save(payment);
+    }
+
 
     /**
      * Get all the payments.
@@ -99,6 +119,19 @@ public class PaymentService {
             .map(paymentMapper::toDto);
     }
 
+    /**
+     * Get one payment by MyOrder.
+     *
+     * @param MyOrder
+     * @return the entity
+     */
+    @Transactional(readOnly = true)
+    public PaymentDTO findByOrder(MyOrder myOrder) {
+        log.debug("Request to get Payment from MyOrder : {}", myOrder);
+        Payment payment = paymentRepository.findByOrder(myOrder);
+        return paymentMapper.toDto(payment);
+    }
+    
     /**
      * Delete the payment by id.
      *

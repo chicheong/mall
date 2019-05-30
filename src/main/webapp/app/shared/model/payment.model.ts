@@ -1,14 +1,7 @@
+import { IMyOrder } from 'app/shared/model/my-order.model';
+import { IPaymentCard } from 'app/shared/model/payment-card.model';
 import { IPaymentStatusHistory } from 'app/shared/model/payment-status-history.model';
-
-export const enum CurrencyType {
-    HKD = 'HKD',
-    CNY = 'CNY',
-    USD = 'USD',
-    EUR = 'EUR',
-    JPY = 'JPY',
-    KRW = 'KRW',
-    TWD = 'TWD'
-}
+import { CurrencyType } from './price.model';
 
 export const enum PaymentType {
     CREDIT_CARD = 'CREDIT_CARD',
@@ -32,7 +25,9 @@ export interface IPayment {
     type?: PaymentType;
     remark?: string;
     status?: PaymentStatus;
-    orderId?: number;
+    order?: IMyOrder;
+    token?: string;
+    paymentCard?: IPaymentCard;
     statusHistories?: IPaymentStatusHistory[];
 }
 
@@ -44,7 +39,9 @@ export class Payment implements IPayment {
         public type?: PaymentType,
         public remark?: string,
         public status?: PaymentStatus,
-        public orderId?: number,
+        public order?: IMyOrder,
+        public token?: string,
+        public paymentCard?: IPaymentCard,
         public statusHistories?: IPaymentStatusHistory[]
     ) {}
 }

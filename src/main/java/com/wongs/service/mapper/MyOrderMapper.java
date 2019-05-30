@@ -1,34 +1,91 @@
 package com.wongs.service.mapper;
 
-import com.wongs.domain.*;
-import com.wongs.service.dto.MyOrderDTO;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.mapstruct.*;
+import org.springframework.stereotype.Service;
+
+import com.wongs.domain.MyAccount;
+import com.wongs.domain.MyOrder;
+import com.wongs.service.dto.MyOrderDTO;
 
 /**
  * Mapper for the entity MyOrder and its DTO MyOrderDTO.
  */
-@Mapper(componentModel = "spring", uses = {AddressMapper.class, MyAccountMapper.class})
-public interface MyOrderMapper extends EntityMapper<MyOrderDTO, MyOrder> {
+@Service
+public class MyOrderMapper {
 
-    @Mapping(source = "shippingAddress.id", target = "shippingAddressId")
-    @Mapping(source = "billingAddress.id", target = "billingAddressId")
-    @Mapping(source = "account.id", target = "accountId")
-    MyOrderDTO toDto(MyOrder myOrder);
+	public MyOrderDTO toDto(MyOrder myOrder) {
+		if (myOrder == null) return null;
+		return new MyOrderDTO(myOrder);
+	}
 
-    @Mapping(source = "shippingAddressId", target = "shippingAddress")
-    @Mapping(source = "billingAddressId", target = "billingAddress")
-    @Mapping(target = "shops", ignore = true)
-    @Mapping(target = "statusHistories", ignore = true)
-    @Mapping(source = "accountId", target = "account")
-    MyOrder toEntity(MyOrderDTO myOrderDTO);
+    public Set<MyOrderDTO> toDto(Set<MyOrder> myOrders) {
+        return myOrders.stream()
+            .filter(Objects::nonNull)
+            .map(this::toDto)
+            .collect(Collectors.toSet());
+    }
+	
+    public List<MyOrderDTO> toDto(List<MyOrder> myOrders) {
+        return myOrders.stream()
+            .filter(Objects::nonNull)
+            .map(this::toDto)
+            .collect(Collectors.toList());
+    }
 
-    default MyOrder fromId(Long id) {
+    public MyOrder toEntity(MyOrderDTO myOrderDTO) {
+        if (myOrderDTO == null) {
+            return null;
+        } else {
+        	MyOrder myOrder = new MyOrder();
+        	myOrder.setId(myOrderDTO.getId());
+        	myOrder.setReceiver(myOrderDTO.getReceiver());
+        	myOrder.setTotal(myOrderDTO.getTotal());
+        	myOrder.setCurrency(myOrderDTO.getCurrency());
+        	myOrder.setContactNum(myOrderDTO.getContactNum());
+        	myOrder.setEmail(myOrderDTO.getEmail());
+        	myOrder.setRemark(myOrderDTO.getRemark());
+        	myOrder.setStatus(myOrderDTO.getStatus());
+        	myOrder.setShippingAddress(myOrderDTO.getShippingAddress());
+        	myOrder.setBillingAddress(myOrderDTO.getBillingAddress());
+        	
+//        	myOrder.setShops(myOrderDTO.getShops());
+        	myOrder.setStatusHistories(myOrderDTO.getStatusHistories());
+        	myOrder.setAccount(this.myAccountFromId(myOrderDTO.getAccountId()));
+        	
+            return myOrder;
+        }
+    }
+
+    public Set<MyOrder> toEntity(Set<MyOrderDTO> myOrderDTOs) {
+        return myOrderDTOs.stream()
+            .filter(Objects::nonNull)
+            .map(this::toEntity)
+            .collect(Collectors.toSet());
+    }
+    
+    public List<MyOrder> toEntity(List<MyOrderDTO> myOrderDTOs) {
+        return myOrderDTOs.stream()
+            .filter(Objects::nonNull)
+            .map(this::toEntity)
+            .collect(Collectors.toList());
+    }
+
+    public MyOrder fromId(Long id) {
         if (id == null) {
             return null;
         }
         MyOrder myOrder = new MyOrder();
         myOrder.setId(id);
         return myOrder;
+    }
+    
+    public MyAccount myAccountFromId(Long id) {
+    	MyAccount myAccount = new MyAccount();
+    	myAccount.setId(id);
+    	return myAccount;
     }
 }

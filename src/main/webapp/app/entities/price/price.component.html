@@ -34,7 +34,7 @@
             <th jhiSortBy="to"><span jhiTranslate="mallApp.price.to">To</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="price"><span jhiTranslate="mallApp.price.price">Price</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="currency"><span jhiTranslate="mallApp.price.currency">Currency</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="itemId"><span jhiTranslate="mallApp.price.item">Item</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="item.id"><span jhiTranslate="mallApp.price.item">Item</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -46,8 +46,8 @@
                 <td>{{price.price}}</td>
                 <td jhiTranslate="{{'mallApp.CurrencyType.' + price.currency}}">{{price.currency}}</td>
                 <td>
-                    <div *ngIf="price.itemId">
-                        <a [routerLink]="['../product-item', price.itemId , 'view' ]" >{{price.itemId}}</a>
+                    <div *ngIf="price.item">
+                        <a [routerLink]="['../product-item', price.item?.id , 'view' ]" >{{price.item?.id}}</a>
                     </div>
                 </td>
                 <td class="text-right">

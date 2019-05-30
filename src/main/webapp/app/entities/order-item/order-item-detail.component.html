@@ -17,10 +17,16 @@
                 <dd>
                     <span jhiTranslate="{{'mallApp.CurrencyType.' + orderItem.currency}}">{{orderItem.currency}}</span>
                 </dd>
+        		<dt><span jhiTranslate="mallApp.orderItem.productItem">Product Item</span></dt>
+        		<dd>
+            		<div *ngIf="orderItem.productItem">
+                		<a [routerLink]="['/product-item', orderItem.productItem?.id]">{{orderItem.productItem?.id}}</a>
+            		</div>
+        		</dd>                
                 <dt><span jhiTranslate="mallApp.orderItem.shop">Shop</span></dt>
                 <dd>
-                    <div *ngIf="orderItem.shopId">
-                        <a [routerLink]="['/order-shop', orderItem.shopId, 'view']">{{orderItem.shopId}}</a>
+                    <div *ngIf="orderItem.shop">
+                        <a [routerLink]="['/order-shop', orderItem.shop?.id, 'view']">{{orderItem.shop?.id}}</a>
                     </div>
                 </dd>
             </dl>

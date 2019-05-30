@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { HttpResponse } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
-import { Shop } from './shop.model';
+import { IShop, Shop } from 'app/shared/model/shop.model';
 import { ShopService } from './shop.service';
 
 @Injectable()
@@ -29,12 +29,12 @@ export class ShopPopupService {
 
             if (id) {
                 this.shopService.find(id)
-                    .subscribe((shopResponse: HttpResponse<Shop>) => {
-                        const shop: Shop = shopResponse.body;
-                        shop.createdDate = this.datePipe
-                            .transform(shop.createdDate, 'yyyy-MM-ddTHH:mm:ss');
-                        shop.lastModifiedDate = this.datePipe
-                            .transform(shop.lastModifiedDate, 'yyyy-MM-ddTHH:mm:ss');
+                    .subscribe((shopResponse: HttpResponse<IShop>) => {
+                        const shop: IShop = shopResponse.body;
+                        // shop.createdDate = this.datePipe
+                        //     .transform(shop.createdDate, 'yyyy-MM-ddTHH:mm:ss');
+                        // shop.lastModifiedDate = this.datePipe
+                        //     .transform(shop.lastModifiedDate, 'yyyy-MM-ddTHH:mm:ss');
                         this.ngbModalRef = this.shopModalRef(component, shop);
                         resolve(this.ngbModalRef);
                     });
@@ -48,7 +48,7 @@ export class ShopPopupService {
         });
     }
 
-    shopModalRef(component: Component, shop: Shop): NgbModalRef {
+    shopModalRef(component: Component, shop: IShop): NgbModalRef {
         const modalRef = this.modalService.open(component, { size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.shop = shop;
         modalRef.result.then((result) => {

@@ -1,28 +1,73 @@
 package com.wongs.service.mapper;
 
-import com.wongs.domain.*;
-import com.wongs.service.dto.OrderShopDTO;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
 
-import org.mapstruct.*;
+import org.springframework.stereotype.Service;
+
+import com.wongs.domain.OrderShop;
+import com.wongs.service.dto.OrderShopDTO;
 
 /**
  * Mapper for the entity OrderShop and its DTO OrderShopDTO.
  */
-@Mapper(componentModel = "spring", uses = {ShippingMapper.class, ShopMapper.class, MyOrderMapper.class})
-public interface OrderShopMapper extends EntityMapper<OrderShopDTO, OrderShop> {
+@Service
+public class OrderShopMapper {
 
-    @Mapping(source = "shipping.id", target = "shippingId")
-    @Mapping(source = "shop.id", target = "shopId")
-    @Mapping(source = "order.id", target = "orderId")
-    OrderShopDTO toDto(OrderShop orderShop);
+	public OrderShopDTO toDto(OrderShop orderShop) {
+		if (orderShop == null) return null;
+		return new OrderShopDTO(orderShop);
+	}
 
-    @Mapping(source = "shippingId", target = "shipping")
-    @Mapping(source = "shopId", target = "shop")
-    @Mapping(target = "items", ignore = true)
-    @Mapping(source = "orderId", target = "order")
-    OrderShop toEntity(OrderShopDTO orderShopDTO);
+    public Set<OrderShopDTO> toDto(Set<OrderShop> orderShops) {
+        return orderShops.stream()
+            .filter(Objects::nonNull)
+            .map(this::toDto)
+            .collect(Collectors.toSet());
+    }
+    
+    public List<OrderShopDTO> toDto(List<OrderShop> orderShops) {
+        return orderShops.stream()
+            .filter(Objects::nonNull)
+            .map(this::toDto)
+            .collect(Collectors.toList());
+    }
 
-    default OrderShop fromId(Long id) {
+    public OrderShop toEntity(OrderShopDTO orderShopDTO) {
+        if (orderShopDTO == null) {
+            return null;
+        } else {
+        	OrderShop orderShop = new OrderShop();
+        	orderShop.setId(orderShopDTO.getId());
+        	orderShop.setTotal(orderShopDTO.getTotal());
+        	orderShop.setCurrency(orderShopDTO.getCurrency());
+        	orderShop.setRemark(orderShopDTO.getRemark());
+        	
+        	orderShop.setShipping(orderShopDTO.getShipping());
+        	orderShop.setShop(orderShopDTO.getShop());
+//        	orderShop.setItems(orderShopDTO.getItems());
+        	orderShop.setOrder(orderShopDTO.getOrder());
+            return orderShop;
+        }
+    }
+
+    public Set<OrderShop> toEntity(Set<OrderShopDTO> orderShopDTOs) {
+        return orderShopDTOs.stream()
+            .filter(Objects::nonNull)
+            .map(this::toEntity)
+            .collect(Collectors.toSet());	
+    }
+    
+    public List<OrderShop> toEntity(List<OrderShopDTO> orderShopDTOs) {
+        return orderShopDTOs.stream()
+            .filter(Objects::nonNull)
+            .map(this::toEntity)
+            .collect(Collectors.toList());	
+    }
+
+    public OrderShop fromId(Long id) {
         if (id == null) {
             return null;
         }

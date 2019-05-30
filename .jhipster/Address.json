@@ -1,19 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "country",
-            "otherEntityName": "country",
-            "otherEntityField": "id"
-        },
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "state",
-            "otherEntityName": "state",
-            "otherEntityField": "id"
-        }
-    ],
+    "name": "Address",
     "fields": [
         {
             "fieldName": "line1",
@@ -40,10 +26,29 @@
             "fieldType": "String"
         }
     ],
-    "changelogDate": "20180221114428",
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "country",
+            "otherEntityRelationshipName": "address",
+            "relationshipName": "country",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "state",
+            "otherEntityRelationshipName": "address",
+            "relationshipName": "state",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190527084327",
     "entityTableName": "address",
     "dto": "mapstruct",
     "pagination": "pager",
     "service": "serviceClass",
-    "jpaMetamodelFiltering": false
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

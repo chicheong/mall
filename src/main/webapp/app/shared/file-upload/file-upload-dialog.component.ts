@@ -2,11 +2,11 @@ import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, HostListener
 import { ActivatedRoute } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService, JhiAlert } from 'ng-jhipster';
 
-import { Url } from '../../entities/url';
+import { IUrl, Url } from 'app/shared/model/url.model';
 import { FileUploadResult } from './file-upload-result.model';
 
 @Component({
@@ -23,7 +23,7 @@ export class FileUploadDialogComponent implements OnInit {
     broadcastName: string;
     // @Output() uploadStatus = new EventEmitter();
 
-    url: Url;
+    url: IUrl;
 
     constructor(
         public activeModal: NgbActiveModal,
@@ -53,7 +53,7 @@ export class FileUploadDialogComponent implements OnInit {
           this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: result.urls});
           this.activeModal.dismiss('OK');
         } else {
-          result.errors.forEach((error) => {
+          result.errors.forEach(error => {
               this.jhiAlertService.error(error.msg, error.params, null);
           });
         }

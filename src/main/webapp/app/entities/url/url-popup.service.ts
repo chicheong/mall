@@ -3,8 +3,9 @@ import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { HttpResponse } from '@angular/common/http';
 import { DatePipe } from '@angular/common';
-import { Url } from './url.model';
+import { IUrl, Url } from 'app/shared/model/url.model';
 import { UrlService } from './url.service';
+import * as moment from 'moment';
 
 @Injectable()
 export class UrlPopupService {
@@ -33,12 +34,10 @@ export class UrlPopupService {
                     resolve(this.ngbModalRef);
                 } else {
                     this.urlService.find(id)
-                        .subscribe((urlResponse: HttpResponse<Url>) => {
-                            const url: Url = urlResponse.body;
-                            url.createdDate = this.datePipe
-                                .transform(url.createdDate, 'yyyy-MM-ddTHH:mm:ss');
-                            url.lastModifiedDate = this.datePipe
-                                .transform(url.lastModifiedDate, 'yyyy-MM-ddTHH:mm:ss');
+                        .subscribe((urlResponse: HttpResponse<IUrl>) => {
+                            const url: IUrl = urlResponse.body;
+                            url.createdDate = url.createdDate != null ? moment(url.createdDate) : null;
+                            url.lastModifiedDate = url.lastModifiedDate != null ? moment(url.lastModifiedDate) : null;
                             this.ngbModalRef = this.urlModalRef(component, url);
                             resolve(this.ngbModalRef);
                         });
@@ -53,13 +52,13 @@ export class UrlPopupService {
         });
     }
 
-    urlModalRef(component: Component, url: Url): NgbModalRef {
+    urlModalRef(component: Component, url: IUrl): NgbModalRef {
         const modalRef = this.modalService.open(component, { size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.url = url;
-        modalRef.result.then((result) => {
+        modalRef.result.then(result => {
             this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true, queryParamsHandling: 'merge' });
             this.ngbModalRef = null;
-        }, (reason) => {
+        }, reason => {
             this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true, queryParamsHandling: 'merge' });
             this.ngbModalRef = null;
         });

@@ -1,13 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "payment",
-            "otherEntityName": "payment",
-            "otherEntityField": "id"
-        }
-    ],
+    "name": "PaymentStatusHistory",
     "fields": [
         {
             "fieldName": "effectiveDate",
@@ -19,10 +11,22 @@
             "fieldValues": "PENDING,PAID,CANCELLED"
         }
     ],
-    "changelogDate": "20180621083508",
+    "relationships": [
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "payment",
+            "otherEntityRelationshipName": "statusHistory",
+            "relationshipName": "payment",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190527101542",
     "entityTableName": "payment_status_history",
     "dto": "no",
     "pagination": "infinite-scroll",
     "service": "no",
-    "jpaMetamodelFiltering": false
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

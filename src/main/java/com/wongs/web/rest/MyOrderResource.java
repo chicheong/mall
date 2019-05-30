@@ -1,27 +1,44 @@
 package com.wongs.web.rest;
-import com.wongs.service.MyOrderService;
-import com.wongs.web.rest.errors.BadRequestAlertException;
-import com.wongs.web.rest.util.HeaderUtil;
-import com.wongs.web.rest.util.PaginationUtil;
-import com.wongs.service.dto.MyOrderDTO;
-import io.github.jhipster.web.util.ResponseUtil;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.stripe.model.Charge;
+import com.wongs.domain.OrderItem;
+import com.wongs.domain.enumeration.PaymentStatus;
+import com.wongs.domain.enumeration.PaymentType;
+import com.wongs.security.SecurityUtils;
+import com.wongs.service.MyAccountService;
+import com.wongs.service.MyOrderService;
+import com.wongs.service.PaymentService;
+import com.wongs.service.ShippingService;
+import com.wongs.service.StripeClient;
+import com.wongs.service.UserInfoService;
+import com.wongs.service.UserService;
+import com.wongs.service.dto.MyAccountDTO;
+import com.wongs.service.dto.MyOrderDTO;
+import com.wongs.web.rest.errors.BadRequestAlertException;
+import com.wongs.web.rest.util.HeaderUtil;
+import com.wongs.web.rest.util.PaginationUtil;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import io.github.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing MyOrder.
@@ -35,9 +52,25 @@ public class MyOrderResource {
     private static final String ENTITY_NAME = "myOrder";
 
     private final MyOrderService myOrderService;
+    private final UserInfoService userInfoService;
+    private final MyAccountService myAccountService;
+    private final ShippingService shippingService;
+    private final PaymentService paymentService;
+    
+    private final UserService userService;
+    
+    private final StripeClient stripeClient;
 
-    public MyOrderResource(MyOrderService myOrderService) {
-        this.myOrderService = myOrderService;
+    public MyOrderResource(MyOrderService myOrderService, UserInfoService userInfoService, MyAccountService myAccountService, 
+    						UserService userService, ShippingService shippingService, PaymentService paymentService,
+    						StripeClient stripeClient) {
+    	this.myOrderService = myOrderService;
+    	this.userInfoService = userInfoService;
+    	this.myAccountService = myAccountService;
+        this.userService = userService;
+        this.shippingService = shippingService;
+        this.paymentService = paymentService;
+        this.stripeClient = stripeClient;
     }
 
     /**
@@ -76,7 +109,7 @@ public class MyOrderResource {
         }
         MyOrderDTO result = myOrderService.save(myOrderDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, myOrderDTO.getId().toString()))
+        		//.headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, myOrderDTO.getId().toString())) // suppress the update myOrder message in Cart Payment
             .body(result);
     }
 
@@ -136,4 +169,68 @@ public class MyOrderResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
+    /**
+     * POST  /my-cart : Creates or Updates an existing cart.
+     *
+     * @param productItem the ProductItem to add to cart
+     * @return the ResponseEntity with status 200 (OK) and with body the updated myOrderDTO,
+     * or with status 400 (Bad Request) if the myOrderDTO is not valid,
+     * or with status 500 (Internal Server Error) if the myOrderDTO couldn't be updated
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @PostMapping("/my-cart")
+    public ResponseEntity<MyOrderDTO> addToCart(@RequestBody OrderItem orderItem) throws URISyntaxException {
+        log.debug("REST request to update OrderItem : {}", orderItem);
+        
+        Optional<MyAccountDTO> myAccount = myAccountService.findOne(userInfoService.findOneWithAccountsByUserLogin(SecurityUtils.getCurrentUserLogin().get()).getAccountId());
+        MyOrderDTO myOrderDTO  = myOrderService.addToCart(myAccount.orElse(null), orderItem);     
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, myOrderDTO.getId().toString()))
+            .body(myOrderDTO);
+    }
+    
+    /**
+     * PUT  /my-orders/charge : Charges an existing myOrder.
+     *
+     * @param myOrderDTO the myOrderDTO to charge and update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated myOrderDTO,
+     * or with status 400 (Bad Request) if the myOrderDTO is not valid,
+     * or with status 500 (Internal Server Error) if the myOrderDTO couldn't be charged and updated
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @PutMapping("/my-orders/charge")
+    public ResponseEntity<MyOrderDTO> charge(@RequestBody MyOrderDTO myOrderDTO) throws URISyntaxException {
+        log.debug("REST request to charge MyOrder : {}", myOrderDTO);
+        if (myOrderDTO.getId() == null) {
+        	throw new BadRequestAlertException("No ID for the order to be charged", ENTITY_NAME, "chargeerror");
+        }
+        PaymentType paymentType = myOrderDTO.getPayment().getType();
+        if (paymentType.equals(PaymentType.CREDIT_CARD)) {
+            try {
+    			Charge charge = stripeClient.chargeCard(myOrderDTO, SecurityUtils.getCurrentUserLogin().get());
+    			if (charge.getPaid()) {
+    	        	myOrderDTO.getPayment().setAmount(myOrderDTO.getTotal());
+    	        	myOrderDTO.getPayment().setCurrency(myOrderDTO.getCurrency());
+    	        	myOrderDTO.getPayment().setStatus(PaymentStatus.PAID);
+    			} else {
+    				throw new BadRequestAlertException("The card cannot be paid", ENTITY_NAME, "chargeerror");
+    			}
+    		} catch (Exception e) {
+    			throw new BadRequestAlertException(e.getMessage(), ENTITY_NAME, "chargeerror");
+    		}
+        } else if (paymentType.equals(PaymentType.PAYPAL)) {
+        	myOrderDTO.getPayment().setAmount(myOrderDTO.getTotal());
+        	myOrderDTO.getPayment().setCurrency(myOrderDTO.getCurrency());
+        	myOrderDTO.getPayment().setStatus(PaymentStatus.PAID);
+        } else if (paymentType.equals(PaymentType.PAYME)) {
+        	myOrderDTO.getPayment().setAmount(myOrderDTO.getTotal());
+        	myOrderDTO.getPayment().setCurrency(myOrderDTO.getCurrency());
+        	myOrderDTO.getPayment().setStatus(PaymentStatus.PENDING);
+        }
+        MyOrderDTO result = myOrderDTO; // myOrderService.save(myOrderDTO);
+        // Issue confirmation email
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, myOrderDTO.getId().toString()))
+            .body(result);
+    }
 }

@@ -96,13 +96,13 @@ public class PaymentCardResource {
      */
     @GetMapping("/payment-cards")
     public ResponseEntity<List<PaymentCard>> getAllPaymentCards(Pageable pageable, @RequestParam(required = false) String filter) {
-        if ("payment-is-null".equals(filter)) {
+    	/**if ("payment-is-null".equals(filter)) {
             log.debug("REST request to get all PaymentCards where payment is null");
             return new ResponseEntity<>(StreamSupport
                 .stream(paymentCardRepository.findAll().spliterator(), false)
                 .filter(paymentCard -> paymentCard.getPayment() == null)
                 .collect(Collectors.toList()), HttpStatus.OK);
-        }
+        }*/
         log.debug("REST request to get a page of PaymentCards");
         Page<PaymentCard> page = paymentCardRepository.findAll(pageable);
         HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/payment-cards");

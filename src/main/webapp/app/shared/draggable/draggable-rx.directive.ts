@@ -1,7 +1,5 @@
 import { Directive, EventEmitter, HostBinding, HostListener, OnInit, Output } from '@angular/core';
-import { fromEvent } from 'rxjs/observable/fromEvent';
-import { merge } from 'rxjs/observable/merge';
-import { Subject } from 'rxjs/Subject';
+import { fromEvent, merge, Subject } from 'rxjs';
 import { repeat, switchMap, take, takeUntil, mapTo } from 'rxjs/operators';
 
 @Directive({
@@ -60,7 +58,7 @@ export class DraggableRxDirective implements OnInit {
     merge(
       this.dragStart.pipe(mapTo(true)),
       this.dragEnd.pipe(mapTo(false))
-    ).subscribe((dragging) => {
+    ).subscribe(dragging => {
       this.dragging = dragging;
     });
   }

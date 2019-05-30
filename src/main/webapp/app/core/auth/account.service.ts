@@ -86,6 +86,7 @@ export class AccountService {
                     this.authenticated = false;
                 }
                 this.authenticationState.next(this.userIdentity);
+                console.error('this.account.get().toPromise()');
                 return this.userIdentity;
             })
             .catch(err => {

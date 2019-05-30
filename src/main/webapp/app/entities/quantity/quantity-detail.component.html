@@ -19,8 +19,8 @@
                 </dd>
                 <dt><span jhiTranslate="mallApp.quantity.item">Item</span></dt>
                 <dd>
-                    <div *ngIf="quantity.itemId">
-                        <a [routerLink]="['/product-item', quantity.itemId, 'view']">{{quantity.itemId}}</a>
+                    <div *ngIf="quantity.item">
+                        <a [routerLink]="['/product-item', quantity.item?.id, 'view']">{{quantity.item?.id}}</a>
                     </div>
                 </dd>
             </dl>

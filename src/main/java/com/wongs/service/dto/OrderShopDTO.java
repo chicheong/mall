@@ -1,7 +1,16 @@
 package com.wongs.service.dto;
+
+
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
+
+import com.wongs.domain.MyOrder;
+import com.wongs.domain.OrderShop;
+import com.wongs.domain.Shipping;
+import com.wongs.domain.Shop;
 import com.wongs.domain.enumeration.CurrencyType;
 
 /**
@@ -17,70 +26,95 @@ public class OrderShopDTO implements Serializable {
 
     private String remark;
 
+    private Shipping shipping;
 
-    private Long shippingId;
+    private Shop shop;
 
-    private Long shopId;
-
-    private Long orderId;
+    private MyOrder order;
+    
+    private Set<OrderItemDTO> items = new HashSet<>();
+    
+    public OrderShopDTO() {
+        // Empty constructor needed for Jackson.
+	}
+    
+	public OrderShopDTO(OrderShop orderShop) {
+		super();
+		this.id = orderShop.getId();
+		this.total = orderShop.getTotal();
+		this.currency = orderShop.getCurrency();
+		this.remark = orderShop.getRemark();
+		
+		this.shipping = orderShop.getShipping();
+		this.shop = orderShop.getShop();
+//		this.items = orderShop.getItems();
+	}
 
     public Long getId() {
-        return id;
-    }
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public BigDecimal getTotal() {
-        return total;
-    }
+	public BigDecimal getTotal() {
+		return total;
+	}
 
-    public void setTotal(BigDecimal total) {
-        this.total = total;
-    }
+	public void setTotal(BigDecimal total) {
+		this.total = total;
+	}
 
-    public CurrencyType getCurrency() {
-        return currency;
-    }
+	public CurrencyType getCurrency() {
+		return currency;
+	}
 
-    public void setCurrency(CurrencyType currency) {
-        this.currency = currency;
-    }
+	public void setCurrency(CurrencyType currency) {
+		this.currency = currency;
+	}
 
-    public String getRemark() {
-        return remark;
-    }
+	public String getRemark() {
+		return remark;
+	}
 
-    public void setRemark(String remark) {
-        this.remark = remark;
-    }
+	public void setRemark(String remark) {
+		this.remark = remark;
+	}
 
-    public Long getShippingId() {
-        return shippingId;
-    }
+	public Shipping getShipping() {
+		return shipping;
+	}
 
-    public void setShippingId(Long shippingId) {
-        this.shippingId = shippingId;
-    }
+	public void setShipping(Shipping shipping) {
+		this.shipping = shipping;
+	}
 
-    public Long getShopId() {
-        return shopId;
-    }
+	public Shop getShop() {
+		return shop;
+	}
 
-    public void setShopId(Long shopId) {
-        this.shopId = shopId;
-    }
+	public void setShop(Shop shop) {
+		this.shop = shop;
+	}
 
-    public Long getOrderId() {
-        return orderId;
-    }
+	public MyOrder getOrder() {
+		return order;
+	}
 
-    public void setOrderId(Long myOrderId) {
-        this.orderId = myOrderId;
-    }
+	public void setOrder(MyOrder order) {
+		this.order = order;
+	}
 
-    @Override
+	public Set<OrderItemDTO> getItems() {
+		return items;
+	}
+
+	public void setItems(Set<OrderItemDTO> items) {
+		this.items = items;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -90,7 +124,7 @@ public class OrderShopDTO implements Serializable {
         }
 
         OrderShopDTO orderShopDTO = (OrderShopDTO) o;
-        if (orderShopDTO.getId() == null || getId() == null) {
+        if(orderShopDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), orderShopDTO.getId());
@@ -108,9 +142,6 @@ public class OrderShopDTO implements Serializable {
             ", total=" + getTotal() +
             ", currency='" + getCurrency() + "'" +
             ", remark='" + getRemark() + "'" +
-            ", shipping=" + getShippingId() +
-            ", shop=" + getShopId() +
-            ", order=" + getOrderId() +
             "}";
     }
 }

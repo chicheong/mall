@@ -2,15 +2,17 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
-import { Product } from './product.model';
+import { IProduct } from 'app/shared/model/product.model';
 import { ProductPopupService } from './product-popup.service';
 import { ProductService } from './product.service';
-import { Shop, ShopService } from '../shop';
-import { Category, CategoryService } from '../category';
+import { IShop } from 'app/shared/model/shop.model';
+import { ShopService } from 'app/entities/shop';
+import { ICategory } from 'app/shared/model/category.model';
+import { CategoryService } from 'app/entities/category';
 
 @Component({
     selector: 'jhi-product-dialog',
@@ -18,12 +20,12 @@ import { Category, CategoryService } from '../category';
 })
 export class ProductDialogComponent implements OnInit {
 
-    product: Product;
+    product: IProduct;
     isSaving: boolean;
 
-    shops: Shop[];
+    shops: IShop[];
 
-    categories: Category[];
+    categories: ICategory[];
 
     constructor(
         public activeModal: NgbActiveModal,
@@ -38,9 +40,9 @@ export class ProductDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.shopService.query()
-            .subscribe((res: HttpResponse<Shop[]>) => { this.shops = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
+            .subscribe((res: HttpResponse<IShop[]>) => { this.shops = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
         this.categoryService.query()
-            .subscribe((res: HttpResponse<Category[]>) => { this.categories = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
+            .subscribe((res: HttpResponse<ICategory[]>) => { this.categories = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -58,12 +60,12 @@ export class ProductDialogComponent implements OnInit {
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<HttpResponse<Product>>) {
-        result.subscribe((res: HttpResponse<Product>) =>
+    private subscribeToSaveResponse(result: Observable<HttpResponse<IProduct>>) {
+        result.subscribe((res: HttpResponse<IProduct>) =>
             this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
-    private onSaveSuccess(result: Product) {
+    private onSaveSuccess(result: IProduct) {
         this.eventManager.broadcast({ name: 'productListModification', content: 'OK'});
         this.isSaving = false;
         this.activeModal.dismiss(result);
@@ -77,11 +79,11 @@ export class ProductDialogComponent implements OnInit {
         this.jhiAlertService.error(error.message, null, null);
     }
 
-    trackShopById(index: number, item: Shop) {
+    trackShopById(index: number, item: IShop) {
         return item.id;
     }
 
-    trackCategoryById(index: number, item: Category) {
+    trackCategoryById(index: number, item: ICategory) {
         return item.id;
     }
 
@@ -111,7 +113,7 @@ export class ProductPopupComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
+        this.routeSub = this.route.params.subscribe(params => {
             if ( params['id'] ) {
                 this.productPopupService
                     .open(ProductDialogComponent as Component, params['id']);

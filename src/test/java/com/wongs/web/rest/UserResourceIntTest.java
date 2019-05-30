@@ -8,6 +8,8 @@ import com.wongs.repository.search.UserSearchRepository;
 import com.wongs.security.AuthoritiesConstants;
 import com.wongs.service.MailService;
 import com.wongs.service.UserService;
+import com.wongs.service.MyAccountService;
+import com.wongs.service.UserInfoService;
 import com.wongs.service.dto.UserDTO;
 import com.wongs.service.mapper.UserMapper;
 import com.wongs.web.rest.errors.ExceptionTranslator;
@@ -85,6 +87,12 @@ public class UserResourceIntTest {
 
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private UserInfoService userInfoService;
+
+    @Autowired
+    private MyAccountService myAccountService;
 
     @Autowired
     private UserMapper userMapper;
@@ -112,7 +120,7 @@ public class UserResourceIntTest {
     public void setup() {
         cacheManager.getCache(UserRepository.USERS_BY_LOGIN_CACHE).clear();
         cacheManager.getCache(UserRepository.USERS_BY_EMAIL_CACHE).clear();
-        UserResource userResource = new UserResource(userService, userRepository, mailService, mockUserSearchRepository);
+        UserResource userResource = new UserResource(userRepository, userService, userInfoService, myAccountService, mailService, mockUserSearchRepository);
 
         this.restUserMockMvc = MockMvcBuilders.standaloneSetup(userResource)
             .setCustomArgumentResolvers(pageableArgumentResolver)

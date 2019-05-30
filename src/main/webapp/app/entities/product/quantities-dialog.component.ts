@@ -2,16 +2,17 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
 import { ProductItemsDialogType } from './product-items-dialog.component';
 
-import { Quantity } from '../quantity';
-import { ProductItem, ProductItemService } from '../product-item';
+import { IQuantity, Quantity } from 'app/shared/model/quantity.model';
+import { IProductItem } from 'app/shared/model/product-item.model';
+import { ProductItemService } from 'app/entities/product-item';
 
-import { UuidService } from '../../shared';
+import { UuidService } from 'app/shared';
 
 @Component({
     selector: 'jhi-quantity-dialog',
@@ -19,9 +20,9 @@ import { UuidService } from '../../shared';
 })
 export class QuantitiesDialogComponent implements OnInit {
 
-    productItem: ProductItem;
-    productitems: ProductItem[];
-    quantities: Quantity[];
+    productItem: IProductItem;
+    productitems: IProductItem[];
+    quantities: IQuantity[];
     broadcastName: string;
 
     constructor(
@@ -38,8 +39,8 @@ export class QuantitiesDialogComponent implements OnInit {
         if (this.productItem.dirtyQuantities) {
             // edited before
             this.quantities = [];
-            this.productItem.quantities.forEach((quantity) => {
-                const nQuantity: Quantity = Object.assign(new Quantity(), quantity);
+            this.productItem.quantities.forEach(quantity => {
+                const nQuantity: IQuantity = Object.assign(new Quantity(), quantity);
                 this.quantities.push(nQuantity);
             });
         } else {
@@ -55,7 +56,7 @@ export class QuantitiesDialogComponent implements OnInit {
     }
 
     loadItem(itemId) {
-        this.productItemService.find(itemId).subscribe((productItemResponse: HttpResponse<ProductItem>) => {
+        this.productItemService.find(itemId).subscribe((productItemResponse: HttpResponse<IProductItem>) => {
             this.productItem = productItemResponse.body;
             if (this.productItem.quantities.length > 0) {
                 this.quantities = this.productItem.quantities;
@@ -67,13 +68,13 @@ export class QuantitiesDialogComponent implements OnInit {
     }
 
     initQuantity() {
-        const quantity: Quantity = Object.assign(new Quantity());
+        const quantity: IQuantity = Object.assign(new Quantity());
         quantity.tempId = this.uuidService.get();
         this.quantities = [quantity];
     }
 
     add() {
-        const quantity: Quantity = Object.assign(new Quantity());
+        const quantity: IQuantity = Object.assign(new Quantity());
         quantity.tempId = this.uuidService.get();
         this.quantities.push(quantity);
     }

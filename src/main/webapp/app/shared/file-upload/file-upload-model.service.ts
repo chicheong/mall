@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { FileUploadDialogComponent } from './file-upload-dialog.component';
-import { Url } from '../../entities/url';
+import { IUrl } from 'app/shared/model/url.model';
 
 @Injectable()
 export class FileUploadModelService {
@@ -12,7 +12,7 @@ export class FileUploadModelService {
         private modalService: NgbModal,
     ) {}
 
-    open(url?: Url, maxSize?: number, maxFiles?: number, fileExt?: string, broadcastName?: string): NgbModalRef {
+    open(url?: IUrl, maxSize?: number, maxFiles?: number, fileExt?: string, broadcastName?: string): NgbModalRef {
         if (this.isOpen) {
             return;
         }
@@ -31,9 +31,9 @@ export class FileUploadModelService {
         if (broadcastName) {
             modalRef.componentInstance.broadcastName = broadcastName;
         }
-        modalRef.result.then((result) => {
+        modalRef.result.then(result => {
             this.isOpen = false;
-        }, (reason) => {
+        }, reason => {
             this.isOpen = false;
         });
         return modalRef;

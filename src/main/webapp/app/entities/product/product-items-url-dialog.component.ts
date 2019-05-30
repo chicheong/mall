@@ -1,21 +1,20 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable, Subscription } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { Subscription } from 'rxjs/Rx';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
-import { ProductItem } from '../product-item';
-import { ProductStyle } from '../product-style';
-import { Price } from '../price';
-import { Quantity } from '../quantity';
-import { Product } from './product.model';
-import { Url } from './../url';
+import { IProductItem, ProductItem } from 'app/shared/model/product-item.model';
+import { IProductStyle } from 'app/shared/model/product-style.model';
+import { IPrice } from 'app/shared/model/price.model';
+import { IQuantity } from 'app/shared/model/quantity.model';
+import { IProduct } from 'app/shared/model/product.model';
+import { IUrl, Url } from 'app/shared/model/url.model';
 
 import { GetItemFromColorSizePipe } from './get-item-from-color-size.pipe';
 
-import { FileUploadResult } from '../../shared/file-upload/file-upload-result.model';
+import { FileUploadResult } from 'app/shared/file-upload/file-upload-result.model';
 
 @Component({
     selector: 'jhi-product-item-url-dialog',
@@ -23,10 +22,10 @@ import { FileUploadResult } from '../../shared/file-upload/file-upload-result.mo
 })
 export class ProductItemsUrlDialogComponent implements OnInit {
 
-    product: Product;
-    productItems: ProductItem[] = [];
-    colors: ProductStyle[];
-    sizes: ProductStyle[];
+    product: IProduct;
+    productItems: IProductItem[] = [];
+    colors: IProductStyle[];
+    sizes: IProductStyle[];
     private eventSubscriber: Subscription;
 
     fileExt = 'JPG, GIF, PNG';
@@ -42,8 +41,8 @@ export class ProductItemsUrlDialogComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.product.items.forEach((item) => {
-            const productItem: ProductItem = Object.assign(new ProductItem(), item);
+        this.product.items.forEach(item => {
+            const productItem: IProductItem = Object.assign(new ProductItem(), item);
             if (!(productItem.url)) {
                 const url = new Url();
                 url.entityType = ProductItem.name;
@@ -70,11 +69,11 @@ export class ProductItemsUrlDialogComponent implements OnInit {
     getResult(result: FileUploadResult) {
         if (result.errors === undefined || result.errors.length === 0) {
             const url = result.urls[0];
-            const index = this.productItems.findIndex((item) => item.id ? item.id === url.entityId : item.tempId === url.entityId);
+            const index = this.productItems.findIndex(item => item.id ? item.id === url.entityId : item.tempId === url.entityId);
             this.productItems[index].url = url;
             this.productItems[index].dirtyUrl = true;
         } else {
-            result.errors.forEach((error) => {
+            result.errors.forEach(error => {
                 this.jhiAlertService.error(error.msg, error.params, null);
             });
         }

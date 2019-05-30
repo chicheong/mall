@@ -23,8 +23,8 @@
                 </dd>
                 <dt><span jhiTranslate="mallApp.shipping.type">Type</span></dt>
                 <dd>
-                    <div *ngIf="shipping.typeId">
-                        <a [routerLink]="['/shipping-type', shipping.typeId, 'view']">{{shipping.typeId}}</a>
+                    <div *ngIf="shipping.type">
+                        <a [routerLink]="['/shipping-type', shipping.type?.id, 'view']">{{shipping.type?.id}}</a>
                     </div>
                 </dd>
             </dl>

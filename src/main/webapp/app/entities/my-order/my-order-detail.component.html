@@ -35,14 +35,14 @@
                 </dd>
                 <dt><span jhiTranslate="mallApp.myOrder.shippingAddress">Shipping Address</span></dt>
                 <dd>
-                    <div *ngIf="myOrder.shippingAddressId">
-                        <a [routerLink]="['/address', myOrder.shippingAddressId, 'view']">{{myOrder.shippingAddressId}}</a>
+                    <div *ngIf="myOrder.shippingAddress">
+                        <a [routerLink]="['/address', myOrder.shippingAddress?.id, 'view']">{{myOrder.shippingAddress?.id}}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="mallApp.myOrder.billingAddress">Billing Address</span></dt>
                 <dd>
-                    <div *ngIf="myOrder.billingAddressId">
-                        <a [routerLink]="['/address', myOrder.billingAddressId, 'view']">{{myOrder.billingAddressId}}</a>
+                    <div *ngIf="myOrder.billingAddress">
+                        <a [routerLink]="['/address', myOrder.billingAddress?.id, 'view']">{{myOrder.billingAddress?.id}}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="mallApp.myOrder.account">Account</span></dt>

@@ -7,7 +7,8 @@ import { take, map } from 'rxjs/operators';
 import * as moment from 'moment';
 import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
 import { ProductItemHistoryService } from 'app/entities/product-item-history/product-item-history.service';
-import { IProductItemHistory, ProductItemHistory, CurrencyType } from 'app/shared/model/product-item-history.model';
+import { IProductItemHistory, ProductItemHistory } from 'app/shared/model/product-item-history.model';
+import { CurrencyType } from 'app/shared/model/price.model';
 
 describe('Service Tests', () => {
     describe('ProductItemHistory Service', () => {

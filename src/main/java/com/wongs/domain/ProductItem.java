@@ -49,11 +49,11 @@ public class ProductItem implements Serializable {
     private BigDecimal price;
 
     @OneToOne(mappedBy = "productItem")
-    @JsonIgnore
+    @JsonIgnore //@JoinColumn(unique = false)
     private ProductStyle color;
 
     @OneToOne(mappedBy = "productItem")
-    @JsonIgnore
+    @JsonIgnore //@JoinColumn(unique = false)
     private ProductStyle size;
 
     @OneToMany(mappedBy = "item")

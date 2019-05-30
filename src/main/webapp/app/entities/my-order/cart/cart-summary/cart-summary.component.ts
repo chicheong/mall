@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 
-import { MyOrder } from './../../my-order.model';
-import { MyOrderService } from './../../my-order.service';
+import { IMyOrder } from 'app/shared/model/my-order.model';
+import { MyOrderService } from 'app/entities/my-order';
 
 @Component({
     selector: 'jhi-checkout-summary',
@@ -11,7 +11,7 @@ import { MyOrderService } from './../../my-order.service';
 })
 export class CartSummaryComponent implements OnInit, OnDestroy {
 
-    @Input() myOrder: MyOrder;
+    @Input() myOrder: IMyOrder;
     @Input() shipping: number;
     @Input() itemTotal: number;
 

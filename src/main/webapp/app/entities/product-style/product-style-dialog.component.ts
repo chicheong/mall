@@ -2,14 +2,15 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
-import { Observable } from 'rxjs/Observable';
+import { Observable } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
-import { ProductStyle } from './product-style.model';
+import { IProductStyle } from 'app/shared/model/product-style.model';
+import { IProduct } from 'app/shared/model/product.model';
 import { ProductStylePopupService } from './product-style-popup.service';
 import { ProductStyleService } from './product-style.service';
-import { Product, ProductService, ProductDetailComponentType } from '../product';
+import { ProductService, ProductDetailComponentType } from 'app/entities/product';
 
 @Component({
     selector: 'jhi-product-style-dialog',
@@ -17,11 +18,11 @@ import { Product, ProductService, ProductDetailComponentType } from '../product'
 })
 export class ProductStyleDialogComponent implements OnInit {
 
-    productStyle: ProductStyle;
+    productStyle: IProductStyle;
     isSaving: boolean;
     broadcastName: string;
 
-    products: Product[];
+    products: IProduct[];
 
     constructor(
         public activeModal: NgbActiveModal,
@@ -35,7 +36,7 @@ export class ProductStyleDialogComponent implements OnInit {
     ngOnInit() {
         this.isSaving = false;
         this.productService.query()
-            .subscribe((res: HttpResponse<Product[]>) => { this.products = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
+            .subscribe((res: HttpResponse<IProduct[]>) => { this.products = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
     }
 
     clear() {
@@ -67,12 +68,12 @@ export class ProductStyleDialogComponent implements OnInit {
         }
     }
 
-    private subscribeToSaveResponse(result: Observable<HttpResponse<ProductStyle>>) {
-        result.subscribe((res: HttpResponse<ProductStyle>) =>
+    private subscribeToSaveResponse(result: Observable<HttpResponse<IProductStyle>>) {
+        result.subscribe((res: HttpResponse<IProductStyle>) =>
             this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
-    private onSaveSuccess(result: ProductStyle) {
+    private onSaveSuccess(result: IProductStyle) {
         this.eventManager.broadcast({ name: 'productStyleListModification', content: 'OK'});
         this.isSaving = false;
         this.activeModal.dismiss(result);
@@ -86,7 +87,7 @@ export class ProductStyleDialogComponent implements OnInit {
         this.jhiAlertService.error(error.message, null, null);
     }
 
-    trackProductById(index: number, item: Product) {
+    trackProductById(index: number, item: IProduct) {
         return item.id;
     }
 }
@@ -105,7 +106,7 @@ export class ProductStylePopupComponent implements OnInit, OnDestroy {
     ) {}
 
     ngOnInit() {
-        this.routeSub = this.route.params.subscribe((params) => {
+        this.routeSub = this.route.params.subscribe(params => {
             if ( params['id'] ) {
                 this.productStylePopupService
                     .open(ProductStyleDialogComponent as Component, params['id']);

@@ -1,28 +1,40 @@
 package com.wongs.web.rest;
-import com.wongs.service.ShopService;
-import com.wongs.web.rest.errors.BadRequestAlertException;
-import com.wongs.web.rest.util.HeaderUtil;
-import com.wongs.web.rest.util.PaginationUtil;
-import com.wongs.service.dto.ShopDTO;
-import io.github.jhipster.web.util.ResponseUtil;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+
+import javax.validation.Valid;
+
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.wongs.domain.Product;
+import com.wongs.permission.PermissionUtils;
+import com.wongs.service.ProductService;
+import com.wongs.service.ShopService;
+import com.wongs.service.UrlService;
+import com.wongs.service.dto.ShopDTO;
+import com.wongs.service.mapper.UrlMapper;
+import com.wongs.web.rest.errors.BadRequestAlertException;
+import com.wongs.web.rest.util.HeaderUtil;
+import com.wongs.web.rest.util.PaginationUtil;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import io.github.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing Shop.
@@ -36,9 +48,16 @@ public class ShopResource {
     private static final String ENTITY_NAME = "shop";
 
     private final ShopService shopService;
+    private final ProductService productService;
+    private final UrlService urlService;
+    private final UrlMapper urlMapper;
 
-    public ShopResource(ShopService shopService) {
+    public ShopResource(ShopService shopService, ProductService productService, UrlService urlService,
+    		UrlMapper urlMapper) {
         this.shopService = shopService;
+        this.productService = productService;
+        this.urlService = urlService;
+        this.urlMapper = urlMapper;
     }
 
     /**
@@ -75,6 +94,10 @@ public class ShopResource {
         if (shopDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
+        // Check user permission
+        if (!(PermissionUtils.isUpdatable(shopService.getPermission(shopDTO.getId()))))
+        	throw new BadRequestAlertException("You do not have permssion to update a shop", ENTITY_NAME, "permission");
+        
         ShopDTO result = shopService.save(shopDTO);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, shopDTO.getId().toString()))
@@ -96,17 +119,40 @@ public class ShopResource {
     }
 
     /**
+     * GET  /shops/:code : get the "code" shop.
+     *
+     * @param code the code of the shopDTO to retrieve
+     * @return the ResponseEntity with status 200 (OK) and with body the shopDTO, or with status 404 (Not Found)
+     */
+    @GetMapping("/shops/{code}")
+    public ResponseEntity<ShopDTO> getShop(@PathVariable String code) {
+        log.debug("REST request to get Shop : {}", code);
+        ShopDTO shopDTO;
+        if (StringUtils.isNumeric(code))
+        	shopDTO = shopService.findOne(Long.valueOf(code)).orElse(null);
+        else
+        	shopDTO = shopService.findByCode(code);
+        if (shopDTO != null) {
+        	shopDTO.setProducts(productService.findByShopId(shopDTO.getId()));
+        	shopDTO.getProducts().forEach((product) -> {
+        		product.setUrls(urlMapper.toDto(urlService.findByEntityTypeAndEntityId(Product.class.getSimpleName(), product.getId())));
+        	});
+        }
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(shopDTO));
+    }
+    
+    /**
      * GET  /shops/:id : get the "id" shop.
      *
      * @param id the id of the shopDTO to retrieve
      * @return the ResponseEntity with status 200 (OK) and with body the shopDTO, or with status 404 (Not Found)
      */
-    @GetMapping("/shops/{id}")
-    public ResponseEntity<ShopDTO> getShop(@PathVariable Long id) {
-        log.debug("REST request to get Shop : {}", id);
-        Optional<ShopDTO> shopDTO = shopService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(shopDTO);
-    }
+//    @GetMapping("/shops/{id}")
+//    public ResponseEntity<ShopDTO> getShop(@PathVariable Long id) {
+//        log.debug("REST request to get Shop : {}", id);
+//        Optional<ShopDTO> shopDTO = shopService.findOne(id);
+//        return ResponseUtil.wrapOrNotFound(shopDTO);
+//    }
 
     /**
      * DELETE  /shops/:id : delete the "id" shop.
@@ -117,6 +163,10 @@ public class ShopResource {
     @DeleteMapping("/shops/{id}")
     public ResponseEntity<Void> deleteShop(@PathVariable Long id) {
         log.debug("REST request to delete Shop : {}", id);
+        // Check user permission
+        if (!(PermissionUtils.isDeletable(shopService.getPermission(id))))
+        	throw new BadRequestAlertException("You do not have permssion to delete a shop", ENTITY_NAME, "permission");
+        
         shopService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }

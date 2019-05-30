@@ -56,8 +56,8 @@
                 <td>{{delegation.lastModifiedBy}}</td>
                 <td>{{delegation.lastModifiedDate | date:'medium'}}</td>
                 <td>
-                    <div *ngIf="delegation.accountId">
-                        <a [routerLink]="['../my-account', delegation.accountId , 'view' ]" >{{delegation.accountId}}</a>
+                    <div *ngIf="delegation.account">
+                        <a [routerLink]="['../my-account', delegation.account?.id , 'view' ]" >{{delegation.account?.id}}</a>
                     </div>
                 </td>
                 <td class="text-right">

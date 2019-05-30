@@ -2,8 +2,8 @@ import { Injectable, Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { DatePipe } from '@angular/common';
-import { Price } from '../price';
-import { ProductItem } from '../product-item';
+import { IPrice } from 'app/shared/model/price.model';
+import { IProductItem, ProductItem } from 'app/shared/model/product-item.model';
 
 @Injectable()
 export class PricesPopupService {
@@ -18,7 +18,7 @@ export class PricesPopupService {
         this.ngbModalRef = null;
     }
 
-    open(component: Component, item?: ProductItem, broadcastName?: string): Promise<NgbModalRef> {
+    open(component: Component, item?: IProductItem, broadcastName?: string): Promise<NgbModalRef> {
         return new Promise<NgbModalRef>((resolve, reject) => {
             const isOpen = this.ngbModalRef !== null;
             if (isOpen) {
@@ -40,14 +40,14 @@ export class PricesPopupService {
         });
     }
 
-    priceModalRef(component: Component, item: ProductItem, broadcastName: string): NgbModalRef {
+    priceModalRef(component: Component, item: IProductItem, broadcastName: string): NgbModalRef {
         const modalRef = this.modalService.open(component, { size: 'lg', backdrop: 'static'});
         modalRef.componentInstance.productItem = item;
         modalRef.componentInstance.broadcastName = broadcastName;
-        modalRef.result.then((result) => {
+        modalRef.result.then(result => {
             this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true, queryParamsHandling: 'merge' });
             this.ngbModalRef = null;
-        }, (reason) => {
+        }, reason => {
             this.router.navigate([{ outlets: { popup: null }}], { replaceUrl: true, queryParamsHandling: 'merge' });
             this.ngbModalRef = null;
         });

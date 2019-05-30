@@ -1,6 +1,11 @@
 package com.wongs.service.dto;
+
+
 import java.io.Serializable;
 import java.util.Objects;
+
+import com.wongs.domain.Product;
+import com.wongs.domain.ProductStyle;
 import com.wongs.domain.enumeration.ProductStyleType;
 
 /**
@@ -9,6 +14,8 @@ import com.wongs.domain.enumeration.ProductStyleType;
 public class ProductStyleDTO implements Serializable {
 
     private Long id;
+    
+    private String tempId;
 
     private String name;
 
@@ -18,10 +25,25 @@ public class ProductStyleDTO implements Serializable {
 
     private ProductStyleType type;
 
+    private Product product;
+    
+    private UrlDTO url;
+    private boolean dirtyUrl = false;
 
-    private Long productId;
+    public ProductStyleDTO() {
+        // Empty constructor needed for Jackson.
+	}
+    
+	public ProductStyleDTO(ProductStyle productStyle) {
+		this.id = productStyle.getId();
+		this.name = productStyle.getName();
+		this.code = productStyle.getCode();
+		this.isDefault = productStyle.isIsDefault();
+		this.type = productStyle.getType();
+		this.product = productStyle.getProduct();
+	}
 
-    public Long getId() {
+	public Long getId() {
         return id;
     }
 
@@ -29,7 +51,15 @@ public class ProductStyleDTO implements Serializable {
         this.id = id;
     }
 
-    public String getName() {
+    public String getTempId() {
+		return tempId;
+	}
+
+	public void setTempId(String tempId) {
+		this.tempId = tempId;
+	}
+
+	public String getName() {
         return name;
     }
 
@@ -45,15 +75,15 @@ public class ProductStyleDTO implements Serializable {
         this.code = code;
     }
 
-    public Boolean isIsDefault() {
-        return isDefault;
-    }
+    public Boolean getIsDefault() {
+		return isDefault;
+	}
 
-    public void setIsDefault(Boolean isDefault) {
-        this.isDefault = isDefault;
-    }
+	public void setIsDefault(Boolean isDefault) {
+		this.isDefault = isDefault;
+	}
 
-    public ProductStyleType getType() {
+	public ProductStyleType getType() {
         return type;
     }
 
@@ -61,15 +91,31 @@ public class ProductStyleDTO implements Serializable {
         this.type = type;
     }
 
-    public Long getProductId() {
-        return productId;
-    }
+    public Product getProduct() {
+		return product;
+	}
 
-    public void setProductId(Long productId) {
-        this.productId = productId;
-    }
+	public void setProduct(Product product) {
+		this.product = product;
+	}
 
-    @Override
+	public UrlDTO getUrl() {
+		return url;
+	}
+
+	public void setUrl(UrlDTO url) {
+		this.url = url;
+	}
+
+	public boolean isDirtyUrl() {
+		return dirtyUrl;
+	}
+
+	public void setDirtyUrl(boolean dirtyUrl) {
+		this.dirtyUrl = dirtyUrl;
+	}
+
+	@Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -79,10 +125,13 @@ public class ProductStyleDTO implements Serializable {
         }
 
         ProductStyleDTO productStyleDTO = (ProductStyleDTO) o;
-        if (productStyleDTO.getId() == null || getId() == null) {
+        if(productStyleDTO.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(getId(), productStyleDTO.getId());
+        return Objects.equals(getId(), productStyleDTO.getId()) &&
+        		Objects.equals(getName(), productStyleDTO.getName()) &&
+        		Objects.equals(getCode(), productStyleDTO.getCode()) &&
+        		Objects.equals(getIsDefault(), productStyleDTO.getIsDefault());
     }
 
     @Override
@@ -96,9 +145,8 @@ public class ProductStyleDTO implements Serializable {
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", code='" + getCode() + "'" +
-            ", isDefault='" + isIsDefault() + "'" +
+            ", isDefault='" + getIsDefault() + "'" +
             ", type='" + getType() + "'" +
-            ", product=" + getProductId() +
             "}";
     }
 }

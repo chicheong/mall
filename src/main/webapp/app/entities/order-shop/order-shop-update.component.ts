@@ -49,11 +49,11 @@ export class OrderShopUpdateComponent implements OnInit {
             )
             .subscribe(
                 (res: IShipping[]) => {
-                    if (!this.orderShop.shippingId) {
+                    if (!this.orderShop.shipping) {
                         this.shippings = res;
                     } else {
                         this.shippingService
-                            .find(this.orderShop.shippingId)
+                            .find(this.orderShop.shipping.id)
                             .pipe(
                                 filter((subResMayBeOk: HttpResponse<IShipping>) => subResMayBeOk.ok),
                                 map((subResponse: HttpResponse<IShipping>) => subResponse.body)
@@ -74,11 +74,11 @@ export class OrderShopUpdateComponent implements OnInit {
             )
             .subscribe(
                 (res: IShop[]) => {
-                    if (!this.orderShop.shopId) {
+                    if (!this.orderShop.shop) {
                         this.shops = res;
                     } else {
                         this.shopService
-                            .find(this.orderShop.shopId)
+                            .find(this.orderShop.shop.id)
                             .pipe(
                                 filter((subResMayBeOk: HttpResponse<IShop>) => subResMayBeOk.ok),
                                 map((subResponse: HttpResponse<IShop>) => subResponse.body)

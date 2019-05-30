@@ -65,7 +65,8 @@
                 "database": "資料庫",
                 "jhipster-needle-menu-add-admin-element": "JHipster will add additional menu entries here (do not translate!)"
             },
-            "language": "語言"
+            "language": "語言",
+            "cart": "購物車"
         },
         "form": {
             "username": "帳號",
@@ -133,7 +134,12 @@
             "edit": "編輯",
             "open": "開啟",
             "save": "儲存",
-            "view": "檢視"
+			"saveRefresh": "儲存及刷新",
+            "view": "檢視",
+			"confirm": "確定",
+			"upload": "上載",
+			"ok": "OK",
+			"continue": "下一步"
         },
         "detail": {
             "field": "欄位",
@@ -166,5 +172,14 @@
         "idexists": "新實體不能包含 ID",
         "idnull": "Invalid ID"
     },
-    "footer": "這裡是您的頁尾"
+    "footer": {
+    	"aboutUs": "關於我們",
+    	"press": "媒體",
+    	"privacyPolicy": "私隱政策",
+    	"faq": "常見問題",
+    	"contactUs": "聯絡我們",
+    	"joinUs": "加入我們",
+    	"legal": "合法",
+    	"terms": "條款"
+    }
 }

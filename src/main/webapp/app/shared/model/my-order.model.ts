@@ -1,15 +1,8 @@
 import { IOrderShop } from 'app/shared/model/order-shop.model';
 import { IOrderStatusHistory } from 'app/shared/model/order-status-history.model';
-
-export const enum CurrencyType {
-    HKD = 'HKD',
-    CNY = 'CNY',
-    USD = 'USD',
-    EUR = 'EUR',
-    JPY = 'JPY',
-    KRW = 'KRW',
-    TWD = 'TWD'
-}
+import { IAddress } from 'app/shared/model/address.model';
+import { IPayment } from 'app/shared/model/payment.model';
+import { CurrencyType } from './price.model';
 
 export const enum OrderStatus {
     PENDING = 'PENDING',
@@ -27,8 +20,9 @@ export interface IMyOrder {
     email?: string;
     remark?: string;
     status?: OrderStatus;
-    shippingAddressId?: number;
-    billingAddressId?: number;
+    shippingAddress?: IAddress;
+    billingAddress?: IAddress;
+    payment?: IPayment;
     shops?: IOrderShop[];
     statusHistories?: IOrderStatusHistory[];
     accountId?: number;
@@ -44,10 +38,24 @@ export class MyOrder implements IMyOrder {
         public email?: string,
         public remark?: string,
         public status?: OrderStatus,
-        public shippingAddressId?: number,
-        public billingAddressId?: number,
+        public shippingAddress?: IAddress,
+        public billingAddress?: IAddress,
+        public payment?: IPayment,
         public shops?: IOrderShop[],
         public statusHistories?: IOrderStatusHistory[],
         public accountId?: number
     ) {}
+}
+
+export class PaypalOrderItem {
+    constructor(
+        public name?: string,
+        public description?: string,
+        public quantity?: number,
+        public price?: number,
+        public tax?: number,
+        public sku?: string,
+        public currency?: CurrencyType,
+    ) {
+    }
 }

@@ -42,7 +42,7 @@ public class PaymentCard implements Serializable {
     private String cvc;
 
     @OneToOne(mappedBy = "paymentCard")
-    @JsonIgnore
+    @JsonIgnore //@JoinColumn(unique = false)
     private Payment payment;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

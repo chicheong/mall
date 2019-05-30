@@ -36,8 +36,8 @@
             <th jhiSortBy="line4"><span jhiTranslate="mallApp.address.line4">Line 4</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="city"><span jhiTranslate="mallApp.address.city">City</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="postalCode"><span jhiTranslate="mallApp.address.postalCode">Postal Code</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="countryId"><span jhiTranslate="mallApp.address.country">Country</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="stateId"><span jhiTranslate="mallApp.address.state">State</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="country.id"><span jhiTranslate="mallApp.address.country">Country</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="state.id"><span jhiTranslate="mallApp.address.state">State</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -51,13 +51,13 @@
                 <td>{{address.city}}</td>
                 <td>{{address.postalCode}}</td>
                 <td>
-                    <div *ngIf="address.countryId">
-                        <a [routerLink]="['../country', address.countryId , 'view' ]" >{{address.countryId}}</a>
+                    <div *ngIf="address.country">
+                        <a [routerLink]="['/country', address.country?.id , 'view' ]" >{{address.country?.id}}</a>
                     </div>
                 </td>
                 <td>
-                    <div *ngIf="address.stateId">
-                        <a [routerLink]="['../state', address.stateId , 'view' ]" >{{address.stateId}}</a>
+                    <div *ngIf="address.state">
+                        <a [routerLink]="['/state', address.state?.id , 'view' ]" >{{address.state?.id}}</a>
                     </div>
                 </td>
                 <td class="text-right">

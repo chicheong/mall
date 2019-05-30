@@ -34,6 +34,7 @@ describe('Service Tests', () => {
                 'AAAAAAA',
                 'AAAAAAA',
                 ProductStatus.ACTIVE,
+                '',
                 'AAAAAAA',
                 currentDate,
                 'AAAAAAA',

@@ -1,31 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "one-to-one",
-            "relationshipName": "user",
-            "otherEntityName": "user",
-            "otherEntityField": "login",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "userInfo"
-        },
-        {
-            "relationshipType": "one-to-one",
-            "relationshipName": "defaultAccount",
-            "otherEntityName": "myAccount",
-            "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "userInfo"
-        },
-        {
-            "relationshipType": "many-to-many",
-            "otherEntityRelationshipName": "userInfo",
-            "relationshipName": "account",
-            "otherEntityName": "myAccount",
-            "otherEntityField": "id",
-            "ownerSide": true
-        }
-    ],
+    "name": "UserInfo",
     "fields": [
         {
             "fieldName": "accountId",
@@ -36,10 +10,39 @@
             "fieldType": "Long"
         }
     ],
-    "changelogDate": "20180221114423",
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "user",
+            "otherEntityRelationshipName": "userInfo",
+            "relationshipName": "user",
+            "otherEntityField": "login",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "myAccount",
+            "otherEntityRelationshipName": "userInfo",
+            "relationshipName": "defaultAccount",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "many-to-many",
+            "otherEntityName": "myAccount",
+            "otherEntityRelationshipName": "userInfo",
+            "relationshipName": "account",
+            "otherEntityField": "id",
+            "ownerSide": true
+        }
+    ],
+    "changelogDate": "20190527101510",
     "entityTableName": "user_info",
     "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceClass",
-    "jpaMetamodelFiltering": false
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

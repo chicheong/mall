@@ -32,9 +32,9 @@
             <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="balance"><span jhiTranslate="mallApp.myAccount.balance">Balance</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="type"><span jhiTranslate="mallApp.myAccount.type">Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="companyCode"><span jhiTranslate="mallApp.myAccount.company">Company</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="departmentCode"><span jhiTranslate="mallApp.myAccount.department">Department</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="officeCode"><span jhiTranslate="mallApp.myAccount.office">Office</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="company.code"><span jhiTranslate="mallApp.myAccount.company">Company</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="department.code"><span jhiTranslate="mallApp.myAccount.department">Department</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="office.code"><span jhiTranslate="mallApp.myAccount.office">Office</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -44,18 +44,18 @@
                 <td>{{myAccount.balance}}</td>
                 <td jhiTranslate="{{'mallApp.AccountType.' + myAccount.type}}">{{myAccount.type}}</td>
                 <td>
-                    <div *ngIf="myAccount.companyId">
-                        <a [routerLink]="['../company', myAccount.companyId , 'view' ]" >{{myAccount.companyCode}}</a>
+                    <div *ngIf="myAccount.company">
+                        <a [routerLink]="['../company', myAccount.company?.id , 'view' ]" >{{myAccount.company?.code}}</a>
                     </div>
                 </td>
                 <td>
-                    <div *ngIf="myAccount.departmentId">
-                        <a [routerLink]="['../department', myAccount.departmentId , 'view' ]" >{{myAccount.departmentCode}}</a>
+                    <div *ngIf="myAccount.department">
+                        <a [routerLink]="['../department', myAccount.department?.id , 'view' ]" >{{myAccount.department?.code}}</a>
                     </div>
                 </td>
                 <td>
-                    <div *ngIf="myAccount.officeId">
-                        <a [routerLink]="['../office', myAccount.officeId , 'view' ]" >{{myAccount.officeCode}}</a>
+                    <div *ngIf="myAccount.office">
+                        <a [routerLink]="['../office', myAccount.office?.id , 'view' ]" >{{myAccount.office?.code}}</a>
                     </div>
                 </td>
                 <td class="text-right">

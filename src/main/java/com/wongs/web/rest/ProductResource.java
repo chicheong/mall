@@ -1,27 +1,37 @@
 package com.wongs.web.rest;
-import com.wongs.service.ProductService;
-import com.wongs.web.rest.errors.BadRequestAlertException;
-import com.wongs.web.rest.util.HeaderUtil;
-import com.wongs.web.rest.util.PaginationUtil;
-import com.wongs.service.dto.ProductDTO;
-import io.github.jhipster.web.util.ResponseUtil;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.List;
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import com.wongs.permission.PermissionUtils;
+import com.wongs.security.SecurityUtils;
+import com.wongs.service.ProductService;
+import com.wongs.service.dto.ProductDTO;
+import com.wongs.web.rest.errors.BadRequestAlertException;
+import com.wongs.web.rest.util.HeaderUtil;
+import com.wongs.web.rest.util.PaginationUtil;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.StreamSupport;
-
-import static org.elasticsearch.index.query.QueryBuilders.*;
+import io.github.jhipster.web.util.ResponseUtil;
 
 /**
  * REST controller for managing Product.
@@ -53,7 +63,23 @@ public class ProductResource {
         if (productDTO.getId() != null) {
             throw new BadRequestAlertException("A new product cannot already have an ID", ENTITY_NAME, "idexists");
         }
+        // Check user permission
+        if (!(PermissionUtils.isCreatable(productService.getPermission(productDTO))))
+        	throw new BadRequestAlertException("You do not have permssion to create a product", ENTITY_NAME, "permission");
+        
+        Instant now = Instant.now();
+        productDTO.setCreatedBy(SecurityUtils.getCurrentUserLogin().get());
+        productDTO.setCreatedDate(ZonedDateTime.ofInstant(now, ZoneId.systemDefault()));
+        productDTO.setLastModifiedBy(SecurityUtils.getCurrentUserLogin().get());
+        productDTO.setLastModifiedDate(ZonedDateTime.ofInstant(now, ZoneId.systemDefault()));
+
         ProductDTO result = productService.save(productDTO);
+        // Get product with List after service committed
+        result = productService.findOneWithLists(result.getId());
+        log.error(ResponseEntity.created(new URI("/api/products/" + result.getId()))
+	        .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+	        .body(result).toString());
+        
         return ResponseEntity.created(new URI("/api/products/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
             .body(result);
@@ -74,7 +100,17 @@ public class ProductResource {
         if (productDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
+        
+        // Check user permission
+        if (!(PermissionUtils.isUpdatable(productService.getPermission(productDTO))))
+        	throw new BadRequestAlertException("You do not have permssion to update a product", ENTITY_NAME, "permission");
+        
+        productDTO.setLastModifiedBy(SecurityUtils.getCurrentUserLogin().get());
+        productDTO.setLastModifiedDate(ZonedDateTime.ofInstant(Instant.now(), ZoneId.systemDefault()));
+        
         ProductDTO result = productService.save(productDTO);
+        // Get product with List after service committed
+        result = productService.findOneWithLists(result.getId());
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, productDTO.getId().toString()))
             .body(result);
@@ -116,6 +152,11 @@ public class ProductResource {
     @DeleteMapping("/products/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id) {
         log.debug("REST request to delete Product : {}", id);
+        
+        // Check user permission
+        if (!(PermissionUtils.isDeletable(productService.getPermission(id))))
+        	throw new BadRequestAlertException("You do not have permssion to delete a product", ENTITY_NAME, "permission");
+        
         productService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
     }

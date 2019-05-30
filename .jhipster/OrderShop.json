@@ -1,35 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [
-        {
-            "relationshipType": "one-to-one",
-            "relationshipName": "shipping",
-            "otherEntityName": "shipping",
-            "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "orderShop"
-        },
-        {
-            "relationshipType": "one-to-one",
-            "relationshipName": "shop",
-            "otherEntityName": "shop",
-            "otherEntityField": "id",
-            "ownerSide": true,
-            "otherEntityRelationshipName": "orderShop"
-        },
-        {
-            "relationshipType": "one-to-many",
-            "relationshipName": "item",
-            "otherEntityName": "orderItem",
-            "otherEntityRelationshipName": "shop"
-        },
-        {
-            "relationshipType": "many-to-one",
-            "relationshipName": "order",
-            "otherEntityName": "myOrder",
-            "otherEntityField": "id"
-        }
-    ],
+    "name": "OrderShop",
     "fields": [
         {
             "fieldName": "total",
@@ -45,10 +15,44 @@
             "fieldType": "String"
         }
     ],
-    "changelogDate": "20190508141133",
+    "relationships": [
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "shipping",
+            "otherEntityRelationshipName": "orderShop",
+            "relationshipName": "shipping",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "one-to-one",
+            "otherEntityName": "shop",
+            "otherEntityRelationshipName": "orderShop",
+            "relationshipName": "shop",
+            "otherEntityField": "id",
+            "ownerSide": true
+        },
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "orderItem",
+            "otherEntityRelationshipName": "shop",
+            "relationshipName": "item"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "myOrder",
+            "otherEntityRelationshipName": "shop",
+            "relationshipName": "order",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20190527101532",
     "entityTableName": "order_shop",
     "dto": "mapstruct",
     "pagination": "pagination",
-    "service": "no",
-    "jpaMetamodelFiltering": false
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

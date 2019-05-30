@@ -1,6 +1,5 @@
 {
-    "fluentMethods": true,
-    "relationships": [],
+    "name": "ProductHistory",
     "fields": [
         {
             "fieldName": "productId",
@@ -47,10 +46,14 @@
             "fieldType": "ZonedDateTime"
         }
     ],
-    "changelogDate": "20180221114437",
+    "relationships": [],
+    "changelogDate": "20190527101525",
     "entityTableName": "product_history",
     "dto": "no",
     "pagination": "infinite-scroll",
     "service": "no",
-    "jpaMetamodelFiltering": false
+    "jpaMetamodelFiltering": false,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
 }

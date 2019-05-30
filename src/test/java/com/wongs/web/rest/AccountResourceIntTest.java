@@ -8,6 +8,8 @@ import com.wongs.repository.AuthorityRepository;
 import com.wongs.repository.UserRepository;
 import com.wongs.security.AuthoritiesConstants;
 import com.wongs.service.MailService;
+import com.wongs.service.MyAccountService;
+import com.wongs.service.UserInfoService;
 import com.wongs.service.UserService;
 import com.wongs.service.dto.PasswordChangeDTO;
 import com.wongs.service.dto.UserDTO;
@@ -59,6 +61,12 @@ public class AccountResourceIntTest {
 
     @Autowired
     private UserService userService;
+    
+    @Autowired
+    private UserInfoService userInfoService;
+    
+    @Autowired
+    private MyAccountService myAccountService;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -71,6 +79,12 @@ public class AccountResourceIntTest {
 
     @Mock
     private UserService mockUserService;
+    
+    @Mock
+    private UserInfoService mockUserInfoService;
+    
+    @Mock
+    private MyAccountService mockMyAccountService;
 
     @Mock
     private MailService mockMailService;
@@ -84,10 +98,10 @@ public class AccountResourceIntTest {
         MockitoAnnotations.initMocks(this);
         doNothing().when(mockMailService).sendActivationEmail(any());
         AccountResource accountResource =
-            new AccountResource(userRepository, userService, mockMailService);
+            new AccountResource(userRepository, userService, userInfoService, myAccountService, mockMailService);
 
         AccountResource accountUserMockResource =
-            new AccountResource(userRepository, mockUserService, mockMailService);
+            new AccountResource(userRepository, mockUserService, mockUserInfoService, mockMyAccountService, mockMailService);
         this.restMvc = MockMvcBuilders.standaloneSetup(accountResource)
             .setMessageConverters(httpMessageConverters)
             .setControllerAdvice(exceptionTranslator)
