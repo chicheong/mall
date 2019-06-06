@@ -36,13 +36,13 @@
             <li ngbDropdown class="nav-item dropdown pointer" *ngSwitchCase="true">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="languagesnavBarDropdown" *ngIf="myAccount && myAccount.shops && myAccount.shops.length > 0">
                     <span>
-						<fa-icon icon="cubes"></fa-icon>
+						<fa-icon icon="store"></fa-icon>
                         <span jhiTranslate="global.menu.entities.shop">Shop</span>
                     </span>
                 </a>
                 <ul class="dropdown-menu" ngbDropdownMenu *ngIf="myAccount && myAccount.shops && myAccount.shops.length > 1">
                     <li *ngFor="let shop of myAccount.shops">
-                        <a class="dropdown-item"  [routerLink]="'shop/' + shop.code" routerLinkActive="active" [jhiActiveMenu]="shop" href="javascript:void(0);" (click)="collapseNavbar();">{{shop.name}}</a>
+                        <a class="dropdown-item"  [routerLink]="['/shop', shop.code, 'view' ]" routerLinkActive="active" [jhiActiveMenu]="shop" href="javascript:void(0);" (click)="collapseNavbar();">{{shop.name}}</a>
                     </li>
                 </ul>
             </li>			

@@ -40,8 +40,8 @@ public class OrderItem implements Serializable {
     @Column(name = "currency")
     private CurrencyType currency;
 
-    @OneToOne(mappedBy = "orderItem")
-    @JsonIgnore //@JoinColumn(unique = false)
+    @OneToOne
+    @JoinColumn(unique = false) //@JsonIgnore
     private ProductItem productItem;
 
     @ManyToOne

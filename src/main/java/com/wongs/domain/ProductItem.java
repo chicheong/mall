@@ -48,12 +48,12 @@ public class ProductItem implements Serializable {
     @Column(name = "price", precision = 10, scale = 2)
     private BigDecimal price;
 
-    @OneToOne(mappedBy = "productItem")
-    @JsonIgnore //@JoinColumn(unique = false)
+    @OneToOne
+    @JoinColumn(unique = false) //@JsonIgnore
     private ProductStyle color;
 
-    @OneToOne(mappedBy = "productItem")
-    @JsonIgnore //@JoinColumn(unique = false)
+    @OneToOne
+    @JoinColumn(unique = false) //@JsonIgnore
     private ProductStyle size;
 
     @OneToMany(mappedBy = "item")

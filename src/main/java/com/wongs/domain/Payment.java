@@ -53,8 +53,8 @@ public class Payment implements Serializable {
     @Column(name = "status")
     private PaymentStatus status;
 
-    @OneToOne(mappedBy = "payment")
-    @JsonIgnore //@JoinColumn(unique = false)
+    @OneToOne
+    @JoinColumn(unique = false) //@JsonIgnore
     private MyOrder order;
 
     @OneToMany(mappedBy = "payment")

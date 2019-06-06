@@ -22,7 +22,7 @@ import { ProductDetailOtherDialogComponent } from './product-detail-other-dialog
 import { ProductItemsUrlDialogComponent } from './product-items-url-dialog.component';
 
 import { IMyOrder } from 'app/shared/model/my-order.model';
-import { MyOrderService,  } from 'app/entities/my-order';
+import { MyOrderService  } from 'app/entities/my-order';
 import { IUrl, Url } from 'app/shared/model/url.model';
 import { UrlPopupService } from 'app/entities/url/url-popup.service';
 import { UrlDeleteDialogComponent } from 'app/entities/url/url-delete-dialog.component';

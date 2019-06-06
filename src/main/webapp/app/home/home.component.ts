@@ -5,7 +5,7 @@ import { JhiEventManager } from 'ng-jhipster';
 
 import { LoginModalService, AccountService, Account } from 'app/core';
 
-import { ProductService } from 'app/entities/product';
+import { ProductService } from 'app/entities/product/product.service';
 import { IProduct } from 'app/shared/model/product.model';
 
 @Component({

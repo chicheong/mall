@@ -9,7 +9,7 @@
                     
                     <button class="btn btn-primary float-right jh-create-entity create-product" type="submit" [routerLink]="['../../shop/' + shop.id + '/product']" [ngbTooltip]="addTooltip" placement="bottom">
                     
-                        <span class="fa fa-plus"></span>
+                        <fa-icon [icon]="'plus'"></fa-icon>
                         <ng-template #addTooltip>
                             <span jhiTranslate="mallApp.product.home.createLabel">Create new Product</span>
                         </ng-template>
@@ -18,10 +18,10 @@
                         <div class="input-group w-100 mr-1">
                             <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'mallApp.product.home.search' | translate }}">
                             <button class="input-group-addon btn btn-info" (click)="search(currentSearch)">
-                                <span class="fa fa-search"></span>
+                                <fa-icon [icon]="'search'"></fa-icon>
                             </button>
                             <button class="input-group-addon btn btn-danger" (click)="clear()" *ngIf="currentSearch">
-                                <span class="fa fa-trash-o"></span>
+                                <fa-icon [icon]="'trash'"></fa-icon>
                             </button>
                         </div>
                     </form>        	
