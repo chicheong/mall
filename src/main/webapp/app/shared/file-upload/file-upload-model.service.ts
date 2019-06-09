@@ -4,7 +4,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { FileUploadDialogComponent } from './file-upload-dialog.component';
 import { IUrl } from 'app/shared/model/url.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class FileUploadModelService {
     private isOpen = false;
 

@@ -7,7 +7,7 @@ export const enum PermissionsConstants {
     DELETE = 'D',
     ALL = 'CRUD',
 }
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class PermissionService  {
     constructor() { }
 

@@ -5,7 +5,7 @@ import { DatePipe } from '@angular/common';
 import { IQuantity } from 'app/shared/model/quantity.model';
 import { IProductItem, ProductItem } from 'app/shared/model/product-item.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class QuantitiesPopupService {
     private ngbModalRef: NgbModalRef;
 

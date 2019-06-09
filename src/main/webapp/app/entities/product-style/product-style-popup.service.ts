@@ -5,7 +5,7 @@ import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 import { IProductStyle, ProductStyle } from 'app/shared/model/product-style.model';
 import { ProductStyleService } from './product-style.service';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ProductStylePopupService {
     private ngbModalRef: NgbModalRef;
 

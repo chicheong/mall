@@ -7,7 +7,7 @@ import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
 import { IProduct, Product } from 'app/shared/model/product.model';
 import { ProductService } from './product.service';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ProductPopupService {
     private ngbModalRef: NgbModalRef;
 

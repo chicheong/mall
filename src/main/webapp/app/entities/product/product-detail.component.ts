@@ -22,7 +22,7 @@ import { ProductDetailOtherDialogComponent } from './product-detail-other-dialog
 import { ProductItemsUrlDialogComponent } from './product-items-url-dialog.component';
 
 import { IMyOrder } from 'app/shared/model/my-order.model';
-import { MyOrderService  } from 'app/entities/my-order';
+import { MyOrderService } from 'app/entities/my-order/my-order.service';
 import { IUrl, Url } from 'app/shared/model/url.model';
 import { UrlPopupService } from 'app/entities/url/url-popup.service';
 import { UrlDeleteDialogComponent } from 'app/entities/url/url-delete-dialog.component';
@@ -86,18 +86,15 @@ export class ProductDetailComponent implements OnInit {
         private uuidService: UuidService
     ) {}
 
-    /**ngOnInit() {
-        this.activatedRoute.data.subscribe(({ product }) => {
-            this.product = product;
-        });
-    }*/
-
     ngOnInit() {
         console.error('ngOnInit');
         this.isSaving = false;
         this.isEditing = false;
         this.isSorted = false;
         this.isEditable = false;
+        this.activatedRoute.data.subscribe(({ product }) => {
+            this.product = product;
+        });
         this.subscription = this.route.params.subscribe(params => {
             if ((params['id'])) {
                 if ((params['id']) === 'new') {

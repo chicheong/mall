@@ -8,7 +8,7 @@ import { ProductItemsDialogType } from './product-items-dialog.component';
 import { IProductItem } from 'app/shared/model/product-item.model';
 import { IProductStyle, ProductStyleType } from 'app/shared/model/product-style.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class ProductDetailPopupService {
     private ngbModalRef: NgbModalRef;
 

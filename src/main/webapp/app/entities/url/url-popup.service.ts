@@ -7,7 +7,7 @@ import { IUrl, Url } from 'app/shared/model/url.model';
 import { UrlService } from './url.service';
 import * as moment from 'moment';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class UrlPopupService {
     private ngbModalRef: NgbModalRef;
 

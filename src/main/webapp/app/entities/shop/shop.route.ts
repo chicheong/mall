@@ -80,7 +80,7 @@ export const shopRoute: Routes = [
         },
         canActivate: [UserRouteAccessService]
     }, {
-        path: ':id/product',
+        path: ':shopId/product',
         component: ProductDetailComponent,
         data: {
             authorities: ['ROLE_USER'],
