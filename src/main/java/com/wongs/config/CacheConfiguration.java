@@ -58,7 +58,7 @@ public class CacheConfiguration {
             cm.createCache(com.wongs.domain.Office.class.getName() + ".departments", jcacheConfiguration);
             cm.createCache(com.wongs.domain.Address.class.getName(), jcacheConfiguration);
             cm.createCache(com.wongs.domain.Country.class.getName(), jcacheConfiguration);
-            cm.createCache(com.wongs.domain.State.class.getName(), jcacheConfiguration);
+            cm.createCache(com.wongs.domain.MyState.class.getName(), jcacheConfiguration);
             cm.createCache(com.wongs.domain.Delegation.class.getName(), jcacheConfiguration);
             cm.createCache(com.wongs.domain.Category.class.getName(), jcacheConfiguration);
             cm.createCache(com.wongs.domain.Category.class.getName() + ".products", jcacheConfiguration);

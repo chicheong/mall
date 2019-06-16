@@ -41,6 +41,7 @@
                 "orderShop": "Order Shop",
                 "orderItem": "Order Item",
                 "shipping": "Shipping",
+                "myState": "My State",
                 "jhipster-needle-menu-add-entry": "JHipster will add additional entities here (do not translate!)"
             },
             "account": {
@@ -136,10 +137,10 @@
             "save": "Save",
             "saveRefresh": "Save & Refresh",
             "view": "View",
-			"confirm": "Confirm",
-			"upload": "Upload",
-			"ok": "OK",
-			"continue": "Continue"
+            "confirm": "Confirm",
+            "upload": "Upload",
+            "ok": "OK",
+            "continue": "Continue"
         },
         "detail": {
             "field": "Field",
@@ -174,13 +175,13 @@
         "idnull": "Invalid ID"
     },
     "footer": {
-    	"aboutUs": "About Us",
-    	"press": "Press",
-    	"privacyPolicy": "Privacy Policy",
-    	"faq": "FAQ",
-    	"contactUs": "Contact Us",
-    	"joinUs": "Join Us",
-    	"legal": "Legal",
-    	"terms": "Terms"
+        "aboutUs": "About Us",
+        "press": "Press",
+        "privacyPolicy": "Privacy Policy",
+        "faq": "FAQ",
+        "contactUs": "Contact Us",
+        "joinUs": "Join Us",
+        "legal": "Legal",
+        "terms": "Terms"
     }
 }

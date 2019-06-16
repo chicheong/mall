@@ -37,7 +37,7 @@
             <th jhiSortBy="city"><span jhiTranslate="mallApp.address.city">City</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="postalCode"><span jhiTranslate="mallApp.address.postalCode">Postal Code</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="country.id"><span jhiTranslate="mallApp.address.country">Country</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="state.id"><span jhiTranslate="mallApp.address.state">State</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="myState.id"><span jhiTranslate="mallApp.address.myState">State</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
             </thead>
@@ -56,8 +56,8 @@
                     </div>
                 </td>
                 <td>
-                    <div *ngIf="address.state">
-                        <a [routerLink]="['/state', address.state?.id , 'view' ]" >{{address.state?.id}}</a>
+                    <div *ngIf="address.myState">
+                        <a [routerLink]="['/myState', address.myState?.id , 'view' ]" >{{address.myState?.id}}</a>
                     </div>
                 </td>
                 <td class="text-right">

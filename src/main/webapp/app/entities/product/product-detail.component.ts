@@ -16,9 +16,9 @@ import { IProductStyle, ProductStyle, ProductStyleType } from 'app/shared/model/
 import { ProductStylePopupService } from 'app/entities/product-style/product-style-popup.service';
 import { ProductStyleDialogComponent } from 'app/entities/product-style/product-style-dialog.component';
 
-import { ProductDetailPopupService } from './product-detail-popup.service';
+import { ProductDetailPopupService } from 'app/entities/product/product-detail-popup.service';
 import { ProductItemsDialogComponent, ProductItemsDialogType } from './product-items-dialog.component';
-import { ProductDetailOtherDialogComponent } from './product-detail-other-dialog.component';
+import { ProductDetailOtherDialogComponent } from 'app/entities/product/product-detail-other-dialog.component';
 import { ProductItemsUrlDialogComponent } from './product-items-url-dialog.component';
 
 import { IMyOrder } from 'app/shared/model/my-order.model';

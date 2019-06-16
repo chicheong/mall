@@ -1,5 +1,5 @@
 import { ICountry } from 'app/shared/model/country.model';
-import { IState } from 'app/shared/model/state.model';
+import { IMyState } from 'app/shared/model/my-state.model';
 
 export interface IAddress {
     id?: number;
@@ -10,7 +10,7 @@ export interface IAddress {
     city?: string;
     postalCode?: string;
     country?: ICountry;
-    state?: IState;
+    myState?: IMyState;
 }
 
 export class Address implements IAddress {
@@ -23,6 +23,6 @@ export class Address implements IAddress {
         public city?: string,
         public postalCode?: string,
         public country?: ICountry,
-        public state?: IState
+        public myState?: IMyState
     ) {}
 }

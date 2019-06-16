@@ -39,13 +39,13 @@ entity Country {
 	code String required maxlength(2),
 	label String maxlength(3),
 	num String maxlength(3),
-	name String maxlength(100) 
+	name String maxlength(100)
 }
 
-entity State {
+entity MyState {
 	code String required maxlength(2),
 	label String maxlength(3),
-	name String maxlength(100) 
+	name String maxlength(100)
 }
 
 entity Shop {
@@ -340,8 +340,8 @@ relationship ManyToOne {
 	Company{parent} to Company,
 	Department{parent} to Department,
 	Address{country} to Country,
-	Address{state} to State,
-	State{country} to Country,
+	Address{myState} to MyState,
+	MyState{country} to Country,
 	Category{parent} to Category,
 	Product{shop} to Shop,
 	Card{account} to MyAccount,
@@ -358,7 +358,7 @@ relationship ManyToMany {
 	Category{product} to Product{category}
 }
 
-paginate UserInfo, MyAccount, Company, Department, Office, Country, State, Shop, ShippingPriceRule, Category, Product, ProductItem, MyOrder, OrderShop, OrderItem, Price, Quantity, Url, Card, Shipping, ShippingType, Payment, PaymentCard with pagination
+paginate UserInfo, MyAccount, Company, Department, Office, Country, MyState, Shop, ShippingPriceRule, Category, Product, ProductItem, MyOrder, OrderShop, OrderItem, Price, Quantity, Url, Card, Shipping, ShippingType, Payment, PaymentCard with pagination
 paginate Address with pager
 paginate Delegation, OrderStatusHistory, ProductHistory, ProductItemHistory, ShippingStatusHistory, PaymentStatusHistory with infinite-scroll
 service UserInfo, MyAccount, Product, MyOrder, Shop, ProductItem, ProductStyle, Price, Quantity, Url, Shipping, Payment, Address, Delegation with serviceClass

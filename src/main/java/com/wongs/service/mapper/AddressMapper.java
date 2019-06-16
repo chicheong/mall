@@ -48,7 +48,7 @@ public class AddressMapper {
         	address.setCity(addressDTO.getCity());
         	address.setPostalCode(addressDTO.getPostalCode());
         	address.setCountry(addressDTO.getCountry());
-        	address.setState(addressDTO.getState());
+        	address.setMyState(addressDTO.getMyState());
         	
             return address;
         }

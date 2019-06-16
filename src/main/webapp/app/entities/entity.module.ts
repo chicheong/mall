@@ -33,8 +33,8 @@ import { RouterModule } from '@angular/router';
                 loadChildren: './country/country.module#MallCountryModule'
             },
             {
-                path: 'state',
-                loadChildren: './state/state.module#MallStateModule'
+                path: 'my-state',
+                loadChildren: './my-state/my-state.module#MallMyStateModule'
             },
             {
                 path: 'delegation',

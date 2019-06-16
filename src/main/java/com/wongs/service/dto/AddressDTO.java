@@ -4,9 +4,10 @@ package com.wongs.service.dto;
 import java.io.Serializable;
 import java.util.Objects;
 
+import com.google.common.util.concurrent.Service.State;
 import com.wongs.domain.Address;
 import com.wongs.domain.Country;
-import com.wongs.domain.State;
+import com.wongs.domain.MyState;
 
 /**
  * A DTO for the Address entity.
@@ -29,7 +30,7 @@ public class AddressDTO implements Serializable {
 
     private Country country;
 
-    private State state;
+    private MyState myState;
 
     public AddressDTO() {
         // Empty constructor needed for Jackson.
@@ -44,7 +45,7 @@ public class AddressDTO implements Serializable {
     	this.city = address.getCity();
     	this.postalCode = address.getPostalCode();
     	this.country = address.getCountry();
-    	this.state = address.getState();
+    	this.myState = address.getMyState();
     }
     
     public Long getId() {
@@ -111,12 +112,12 @@ public class AddressDTO implements Serializable {
         this.country = country;
     }
 
-    public State getState() {
-        return state;
+    public MyState getMyState() {
+        return myState;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setMyState(MyState myState) {
+        this.myState = myState;
     }
 
     @Override
@@ -140,7 +141,7 @@ public class AddressDTO implements Serializable {
         		Objects.equals(getCity(), addressDTO.getCity()) &&
         		Objects.equals(getPostalCode(), addressDTO.getPostalCode()) &&
         		Objects.equals(getCountry(), addressDTO.getCountry()) &&
-        		Objects.equals(getState(), addressDTO.getState());
+        		Objects.equals(getMyState(), addressDTO.getMyState());
     }
 
     @Override

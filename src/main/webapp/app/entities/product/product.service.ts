@@ -12,8 +12,8 @@ import { IProduct } from 'app/shared/model/product.model';
 import { IPrice } from 'app/shared/model/price.model';
 import { IQuantity } from 'app/shared/model/quantity.model';
 
-import { PriceService } from 'app/entities/price';
-import { QuantityService } from 'app/entities/quantity';
+import { PriceService } from 'app/entities/price/price.service';
+import { QuantityService } from 'app/entities/quantity/quantity.service';
 
 type EntityResponseType = HttpResponse<IProduct>;
 type EntityArrayResponseType = HttpResponse<IProduct[]>;

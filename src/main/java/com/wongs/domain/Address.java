@@ -50,7 +50,7 @@ public class Address implements Serializable {
 
     @ManyToOne
     @JsonIgnoreProperties("addresses")
-    private State state;
+    private MyState myState;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
@@ -152,17 +152,17 @@ public class Address implements Serializable {
         this.country = country;
     }
 
-    public State getState() {
-        return state;
+    public MyState getMyState() {
+        return myState;
     }
 
-    public Address state(State state) {
-        this.state = state;
+    public Address state(MyState myState) {
+        this.myState = myState;
         return this;
     }
 
-    public void setState(State state) {
-        this.state = state;
+    public void setMyState(MyState myState) {
+        this.myState = myState;
     }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 

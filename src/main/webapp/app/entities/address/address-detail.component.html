@@ -37,8 +37,8 @@
                 </dd>
                 <dt><span jhiTranslate="mallApp.address.state">State</span></dt>
                 <dd>
-                    <div *ngIf="address.state">
-                        <a [routerLink]="['/state', address.state?.id, 'view']">{{address.state?.id}}</a>
+                    <div *ngIf="address.myState">
+                        <a [routerLink]="['/myState', address.myState?.id, 'view']">{{address.myState?.id}}</a>
                     </div>
                 </dd>
             </dl>
