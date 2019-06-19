@@ -22,7 +22,7 @@ import { FileUploadResult } from 'app/shared/file-upload/file-upload-result.mode
 })
 export class ProductItemsUrlDialogComponent implements OnInit {
 
-    product: IProduct;
+    object: IProduct;
     productItems: IProductItem[] = [];
     colors: IProductStyle[];
     sizes: IProductStyle[];
@@ -32,6 +32,7 @@ export class ProductItemsUrlDialogComponent implements OnInit {
     maxFiles = 1;
     maxSize = 5; // 5MB
     broadcastName: string;
+    type: string; // Not in use
 
     constructor(
         public activeModal: NgbActiveModal,
@@ -41,7 +42,7 @@ export class ProductItemsUrlDialogComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.product.items.forEach(item => {
+        this.object.items.forEach(item => {
             const productItem: IProductItem = Object.assign(new ProductItem(), item);
             if (!(productItem.url)) {
                 const url = new Url();
@@ -52,8 +53,8 @@ export class ProductItemsUrlDialogComponent implements OnInit {
             }
             this.productItems.push(productItem);
         });
-        this.colors = this.product.colors;
-        this.sizes = this.product.sizes;
+        this.colors = this.object.colors;
+        this.sizes = this.object.sizes;
     }
 
     clear() {
@@ -61,8 +62,8 @@ export class ProductItemsUrlDialogComponent implements OnInit {
     }
 
     confirm() {
-        this.product.items = this.productItems;
-        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.product});
+        this.object.items = this.productItems;
+        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.object});
         this.activeModal.dismiss('OK');
     }
 

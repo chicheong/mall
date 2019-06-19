@@ -14,11 +14,11 @@
                                  referencedColumnNames="id"
                                  referencedTableName="country"/>
 
-        <addForeignKeyConstraint baseColumnNames="state_id"
+        <addForeignKeyConstraint baseColumnNames="my_state_id"
                                  baseTableName="address"
-                                 constraintName="fk_address_state_id"
+                                 constraintName="fk_address_my_state_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="state"/>
+                                 referencedTableName="myState"/>
 
     </changeSet>
 </databaseChangeLog>

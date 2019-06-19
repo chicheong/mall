@@ -50,7 +50,7 @@
                 <constraints nullable="true" />
             </column>
 
-            <column name="state_id" type="bigint">
+            <column name="my_state_id" type="bigint">
                 <constraints nullable="true" />
             </column>
 

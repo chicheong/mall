@@ -1,4 +1,4 @@
-<form name="editForm" role="form" novalidate (ngSubmit)="confirm()" #editForm="ngForm" *ngIf="product">
+<form name="editForm" role="form" novalidate (ngSubmit)="confirm()" #editForm="ngForm" *ngIf="object">
 
     <div class="modal-header">
 		<h4 class="modal-title" jhiTranslate="mallApp.product.detail.other.title">Other Information</h4>
@@ -14,37 +14,37 @@
 				<hr style='border-color: #5E5E5E;border-style: solid none;border-width: 2px 0;' />
 				<span>Stuffs below are for reference only, will not be shown on your product page</span><br/>
 				<span jhiTranslate="mallApp.product.detail.title">Product</span>&nbsp;&nbsp;&nbsp;&nbsp;
-				ID: {{product.id}}&nbsp;&nbsp;&nbsp;&nbsp;
-				<span jhiTranslate="mallApp.product.description">Description</span>: <span>{{product.description}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-				<span jhiTranslate="mallApp.product.content">Content</span>: <span>{{product.content}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
-				<span jhiTranslate="mallApp.product.status">Status</span>: <span jhiTranslate="{{'mallApp.ProductStatus.' + product.status}}">{{product.status}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+				ID: {{object.id}}&nbsp;&nbsp;&nbsp;&nbsp;
+				<span jhiTranslate="mallApp.product.description">Description</span>: <span>{{object.description}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span jhiTranslate="mallApp.product.content">Content</span>: <span>{{object.content}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
+				<span jhiTranslate="mallApp.product.status">Status</span>: <span jhiTranslate="{{'mallApp.ProductStatus.' + object.status}}">{{object.status}}</span>&nbsp;&nbsp;&nbsp;&nbsp;
 				<!-- <span jhiTranslate="mallApp.product.userInfo">User Info</span>: 
-				<div *ngIf="product.userInfo">
-					<a [routerLink]="['/user-info', product.userInfo?.id]">{{product.userInfo?.id}}</a>
+				<div *ngIf="object.userInfo">
+					<a [routerLink]="['/user-info', product.userInfo?.id]">{{object.userInfo?.id}}</a>
 				</div> -->
 	
 	
 				<dl class="row-md jh-entity-details">
 			        <dt><span jhiTranslate="mallApp.product.name">Name</span></dt>
 			        <dd>
-			            <input type="text" class="form-control" name="name" id="field_brand" [(ngModel)]="product.name"  />
+			            <input type="text" class="form-control" name="name" id="field_brand" [(ngModel)]="object.name"  />
 			        </dd>
 			        <dt><span jhiTranslate="mallApp.product.code">Code</span></dt>
 			        <dd>
-			            <input type="text" class="form-control" name="code" id="field_brand" [(ngModel)]="product.code"  />
+			            <input type="text" class="form-control" name="code" id="field_brand" [(ngModel)]="object.code"  />
 			        </dd>
 			        <dt><span jhiTranslate="mallApp.product.brand">Brand</span></dt>
 			        <dd>
-			            <!-- <span>{{product.brand}}</span> -->
-			            <input type="text" class="form-control" name="brand" id="field_brand" [(ngModel)]="product.brand"  />
+			            <!-- <span>{{object.brand}}</span> -->
+			            <input type="text" class="form-control" name="brand" id="field_brand" [(ngModel)]="object.brand"  />
 			        </dd>
 			        <dt><span jhiTranslate="mallApp.product.remark">Remark</span></dt>
 			        <dd>
-			            <input type="text" class="form-control" name="remark" id="field_brand" [(ngModel)]="product.remark"  />
+			            <input type="text" class="form-control" name="remark" id="field_brand" [(ngModel)]="object.remark"  />
 			        </dd>
 			        <dt><span jhiTranslate="mallApp.product.status">Status</span></dt>
 			        <dd>
-			            <select class="form-control" name="status" [(ngModel)]="product.status" id="field_status" >
+			            <select class="form-control" name="status" [(ngModel)]="object.status" id="field_status" >
 			                <option value="ACTIVE" jhiTranslate="mallApp.ProductStatus.ACTIVE">ACTIVE</option>
 			                <option value="RESTRICTED" jhiTranslate="mallApp.ProductStatus.RESTRICTED">RESTRICTED</option>
 			                <option value="INACTIVE" jhiTranslate="mallApp.ProductStatus.INACTIVE">INACTIVE</option>
@@ -52,39 +52,36 @@
 			        </dd>
 					<!-- <dt><span jhiTranslate="mallApp.product.createdBy">Created By</span></dt>
 			        <dd>
-			        	<input type="text" class="form-control" name="createdBy" id="field_createdBy" [(ngModel)]="product.createdBy" />
+			        	<input type="text" class="form-control" name="createdBy" id="field_createdBy" [(ngModel)]="object.createdBy" />
 			        </dd>
 			        <dt><span jhiTranslate="mallApp.product.createdDate">Created Date</span></dt>
 			        <dd>
-	                	<input id="field_createdDate" type="datetime-local" class="form-control" name="createdDate" [(ngModel)]="product.createdDate" />
+	                	<input id="field_createdDate" type="datetime-local" class="form-control" name="createdDate" [(ngModel)]="object.createdDate" />
 			        </dd>
 			        <dt><span jhiTranslate="mallApp.product.lastModifiedBy">Last Modified By</span></dt>
 			        <dd>
-			        	<input type="text" class="form-control" name="lastModifiedBy" id="field_lastModifiedBy" [(ngModel)]="product.lastModifiedBy" />
+			        	<input type="text" class="form-control" name="lastModifiedBy" id="field_lastModifiedBy" [(ngModel)]="object.lastModifiedBy" />
 			        </dd>
 			        <dt><span jhiTranslate="mallApp.product.lastModifiedDate">Last Modified Date</span></dt>
 			        <dd>
-			            <input id="field_lastModifiedDate" type="datetime-local" class="form-control" name="lastModifiedDate" [(ngModel)]="product.lastModifiedDate" />
+			            <input id="field_lastModifiedDate" type="datetime-local" class="form-control" name="lastModifiedDate" [(ngModel)]="object.lastModifiedDate" />
 			        </dd>
 			        <dt><span jhiTranslate="mallApp.product.userInfo">User Info</span></dt>
 			        <dd>
-			            <div *ngIf="product.userInfo">
-			                <a [routerLink]="['/user-info', product.userInfo?.id]">{{product.userInfo?.id}}</a>
+			            <div *ngIf="object.userInfo">
+			                <a [routerLink]="['/user-info', object.userInfo?.id]">{{object.userInfo?.id}}</a>
 			            </div>
 			        </dd>-->
 			        <dt><span jhiTranslate="mallApp.product.shop">Shop</span></dt>
 			        <dd>
-			            <div *ngIf="product.shopId">
-			                <a [routerLink]="['/shop', product.shopId]">{{product.shopId}}</a>
-			            </div>
 			        </dd>
 			    </dl>
 			    <hr style='border-color: #5E5E5E;border-style: solid none;border-width: 2px 0;' />
 			    <dl class="row-md jh-entity-details">
-			        <dd><span jhiTranslate="mallApp.product.createdBy">Created By</span>:&nbsp;<span>{{product.createdBy}}</span></dd>
-			        <dd><span jhiTranslate="mallApp.product.createdDate">Created Date</span>:&nbsp;<span>{{product.createdDate | date:'medium'}}</span></dd>
-			        <dd><span jhiTranslate="mallApp.product.lastModifiedBy">Last Modified By</span>:&nbsp;<span>{{product.lastModifiedBy}}</span></dd>
-			        <dd><span jhiTranslate="mallApp.product.lastModifiedDate">Last Modified Date</span>:&nbsp;<span>{{product.lastModifiedDate | date:'medium'}}</span></dd>
+			        <dd><span jhiTranslate="mallApp.product.createdBy">Created By</span>:&nbsp;<span>{{object.createdBy}}</span></dd>
+			        <dd><span jhiTranslate="mallApp.product.createdDate">Created Date</span>:&nbsp;<span>{{object.createdDate | date:'medium'}}</span></dd>
+			        <dd><span jhiTranslate="mallApp.product.lastModifiedBy">Last Modified By</span>:&nbsp;<span>{{object.lastModifiedBy}}</span></dd>
+			        <dd><span jhiTranslate="mallApp.product.lastModifiedDate">Last Modified Date</span>:&nbsp;<span>{{object.lastModifiedDate | date:'medium'}}</span></dd>
 			    </dl>
 			</div>
 		</div>

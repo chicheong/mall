@@ -38,11 +38,11 @@ export const enum ProductItemsBroadcastName {
 })
 export class ProductItemsDialogComponent implements OnInit {
 
-    product: IProduct;
+    object: IProduct;
     productItems: IProductItem[] = [];
     colors: IProductStyle[];
     sizes: IProductStyle[];
-    type: ProductItemsDialogType = ProductItemsDialogType.CODE;
+    type: string;
     private eventSubscriber: Subscription;
     broadcastName: string;
 
@@ -57,12 +57,12 @@ export class ProductItemsDialogComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.product.items.forEach(item => {
+        this.object.items.forEach(item => {
             const productItem: IProductItem = Object.assign(new ProductItem(), item);
             this.productItems.push(productItem);
         });
-        this.colors = this.product.colors;
-        this.sizes = this.product.sizes;
+        this.colors = this.object.colors;
+        this.sizes = this.object.sizes;
 
         this.registerChangeInPrices();
         this.registerChangeInQuantities();
@@ -175,8 +175,8 @@ export class ProductItemsDialogComponent implements OnInit {
     }
 
     confirm() {
-        this.product.items = this.productItems;
-        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.product});
+        this.object.items = this.productItems;
+        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.object});
         this.activeModal.dismiss('OK');
     }
 

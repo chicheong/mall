@@ -7,7 +7,7 @@ import { JhiEventManager, JhiAlertService  } from 'ng-jhipster';
 
 import { IProduct, Product } from 'app/shared/model/product.model';
 import { ProductService } from './product.service';
-import { UuidService, FileUploadModelService, PermissionService } from 'app/shared';
+import { UuidService, FileUploadModelService, PermissionService, PopupService, ProductDetailOtherDialogComponent, ProductItemsDialogComponent, ProductItemsDialogType, ProductItemsUrlDialogComponent } from 'app/shared';
 import { LoginModalService } from 'app/core';
 import { AccountService } from 'app/core';
 
@@ -16,10 +16,11 @@ import { IProductStyle, ProductStyle, ProductStyleType } from 'app/shared/model/
 import { ProductStylePopupService } from 'app/entities/product-style/product-style-popup.service';
 import { ProductStyleDialogComponent } from 'app/entities/product-style/product-style-dialog.component';
 
-import { ProductDetailPopupService } from 'app/entities/product/product-detail-popup.service';
-import { ProductItemsDialogComponent, ProductItemsDialogType } from './product-items-dialog.component';
-import { ProductDetailOtherDialogComponent } from 'app/entities/product/product-detail-other-dialog.component';
-import { ProductItemsUrlDialogComponent } from './product-items-url-dialog.component';
+// import { ProductDetailPopupService, PopupProductComponentType } from 'app/shared/popup/product/product-detail-popup.service';
+// import { PopupService } from 'app/shared/popup/popup.service';
+// import {  } from 'app/shared/popup/product/product-items-dialog.component';
+// import {  } from 'app/shared/popup/product/product-items-url-dialog.component';
+// import { ProductDetailOtherDialogComponent } from 'app/shared/popup/product/product-detail-other-dialog.component';
 
 import { IMyOrder } from 'app/shared/model/my-order.model';
 import { MyOrderService } from 'app/entities/my-order/my-order.service';
@@ -39,7 +40,7 @@ export const enum ProductDetailComponentType {
 }
 export const enum ProductDetailBroadcastName {
     PRODUCT_LIST = 'productListModification',
-    PRODUCT_TTEM = 'productItemsModification',
+    PRODUCT_ITEM = 'productItemsModification',
     PRODUCT_STYLE = 'productStyleModification',
     PRODUCT_FILE = 'productFileModification',
     DELETE_URL = 'deleteUrlModification',
@@ -73,7 +74,8 @@ export class ProductDetailComponent implements OnInit {
         private eventManager: JhiEventManager,
         private productService: ProductService,
         private productStylePopupService: ProductStylePopupService,
-        private productDetailPopupService: ProductDetailPopupService,
+        // private productDetailPopupService: ProductDetailPopupService,
+        private popupService: PopupService,
         private fileUploadModelService: FileUploadModelService,
         private urlPopupService: UrlPopupService,
         private route: ActivatedRoute,
@@ -210,7 +212,7 @@ export class ProductDetailComponent implements OnInit {
 
     registerChangeInProductItems() {
         this.eventSubscriber = this.eventManager.subscribe(
-            ProductDetailBroadcastName.PRODUCT_TTEM,
+            ProductDetailBroadcastName.PRODUCT_ITEM,
             response => this.updateItems(response.obj)
         );
     }
@@ -523,17 +525,19 @@ export class ProductDetailComponent implements OnInit {
 
     editItems(type: ProductItemsDialogType) {
         const copyObj: Product = Object.assign(new Product(), this.product);
-        this.productDetailPopupService.open(ProductItemsDialogComponent as Component, copyObj, ProductDetailBroadcastName.PRODUCT_TTEM, type);
+        console.error('editItems, type: ' + type );
+        // this.productDetailPopupService.open(PopupProductComponentType.PRODUCT_ITEMS, copyObj, ProductDetailBroadcastName.PRODUCT_ITEM, type);
+        this.popupService.open(ProductItemsDialogComponent as Component, copyObj, ProductDetailBroadcastName.PRODUCT_ITEM, type);
     }
 
     editItemsUrl() {
         const copyObj: IProduct = Object.assign(new Product(), this.product);
-        this.productDetailPopupService.open(ProductItemsUrlDialogComponent as Component, copyObj, ProductDetailBroadcastName.PRODUCT_ITEMS_URL, null);
+        this.popupService.open(ProductItemsUrlDialogComponent as Component, copyObj, ProductDetailBroadcastName.PRODUCT_ITEMS_URL, null);
     }
 
     editOther() {
         const copyObj: IProduct = Object.assign(new Product(), this.product);
-        this.productDetailPopupService.open(ProductDetailOtherDialogComponent as Component, copyObj, ProductDetailBroadcastName.PRODUCT_DETAIL_OTHER, null);
+        this.popupService.open(ProductDetailOtherDialogComponent as Component, copyObj, ProductDetailBroadcastName.PRODUCT_DETAIL_OTHER, null);
     }
 
     changeStyle(productStyle: IProductStyle) {

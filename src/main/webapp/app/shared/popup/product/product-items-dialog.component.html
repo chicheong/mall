@@ -30,13 +30,13 @@
         					<span *ngSwitchCase="'PRICE'">
 	        					<input type="number" size="1" name="productItem[{{item.id?item.id:item.tempId}}]" [(ngModel)]="item.price" />
 		        				<button type="button" class="btn btn-default" (click)="editPrices(item)">
-						            <span class="fa fa-clock-o"></span>
+						            <fa-icon [icon]="'clock'"></fa-icon>
 						        </button>
         					</span>       
         					<span *ngSwitchCase="'QUANTITY'">
 	        					<input type="number" size="1" name="productItem[{{item.id?item.id:item.tempId}}]" [(ngModel)]="item.quantity" />
 		        				<button type="button" class="btn btn-default" (click)="editQuantities(item)">
-						            <span class="fa fa-clock-o"></span>
+						            <fa-icon [icon]="'clock'"></fa-icon>
 						        </button>
         					</span>
 

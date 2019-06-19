@@ -1,0 +1,36 @@
+import { Injectable, Component } from '@angular/core';
+import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+
+import { IProduct } from 'app/shared/model/product.model';
+// import { ProductItemsDialogType } from './product-items-dialog.component';
+
+import { IProductItem } from 'app/shared/model/product-item.model';
+import { IProductStyle, ProductStyleType } from 'app/shared/model/product-style.model';
+import { ProductItemsDialogComponent } from './product-items-dialog.component';
+import { ProductDetailOtherDialogComponent } from './product-detail-other-dialog.component';
+
+import { PopupService } from '../popup.service';
+
+export const enum PopupProductComponentType {
+    PRODUCT_ITEMS = 'productItems',
+    PRODUCT_ITEMS_URL = 'productItemsUrl',
+    PRODUCT_DETAIL_OTHER = 'productDetailOther'
+}
+@Injectable({ providedIn: 'root' })
+export class ProductDetailPopupService {
+    private ngbModalRef: NgbModalRef;
+
+    constructor(
+        private popupService: PopupService
+    ) {
+        this.ngbModalRef = null;
+    }
+
+    open(componentType: string, obj?: Object, broadcastName?: string, type?: string): Promise<NgbModalRef> {
+        if (componentType === PopupProductComponentType.PRODUCT_ITEMS) {
+            return this.popupService.open(ProductDetailOtherDialogComponent as Component, obj, broadcastName, type);
+        }
+        return null;
+    }
+
+}
