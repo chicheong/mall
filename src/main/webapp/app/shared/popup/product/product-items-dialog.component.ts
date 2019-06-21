@@ -11,9 +11,8 @@ import { IPrice, Price } from 'app/shared/model/price.model';
 import { IQuantity, Quantity } from 'app/shared/model/quantity.model';
 import { IProduct } from 'app/shared/model/product.model';
 
-import { PricesPopupService } from './prices-popup.service';
+import { PopupService } from 'app/shared';
 import { PricesDialogComponent } from './prices-dialog.component';
-import { QuantitiesPopupService } from './quantities-popup.service';
 import { QuantitiesDialogComponent } from './quantities-dialog.component';
 
 import { GetItemFromColorSizePipe } from './get-item-from-color-size.pipe';
@@ -38,18 +37,19 @@ export const enum ProductItemsBroadcastName {
 })
 export class ProductItemsDialogComponent implements OnInit {
 
+    private eventSubscriber: Subscription;
+
     object: IProduct;
     productItems: IProductItem[] = [];
     colors: IProductStyle[];
     sizes: IProductStyle[];
-    type: string;
-    private eventSubscriber: Subscription;
+
     broadcastName: string;
+    type: string;
 
     constructor(
         public activeModal: NgbActiveModal,
-        private pricesPopupService: PricesPopupService,
-        private quantitiesPopupService: QuantitiesPopupService,
+        private popupService: PopupService,
         private jhiAlertService: JhiAlertService,
         private eventManager: JhiEventManager,
         private uuidService: UuidService
@@ -182,12 +182,12 @@ export class ProductItemsDialogComponent implements OnInit {
 
     editPrices(item: IProductItem) {
         console.error('item: ' + item);
-        this.pricesPopupService.open(PricesDialogComponent as Component, item);
+        this.popupService.open(PricesDialogComponent as Component, item, ProductItemsBroadcastName.PRICES);
     }
 
     editQuantities(item: IProductItem) {
         console.error('item: ' + item);
-        this.quantitiesPopupService.open(QuantitiesDialogComponent as Component, item);
+        this.popupService.open(QuantitiesDialogComponent as Component, item, ProductItemsBroadcastName.QUANTITIES);
     }
 
     trackProductStyleById(index: number, item: IProductStyle) {

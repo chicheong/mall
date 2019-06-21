@@ -22,11 +22,12 @@ import { FileUploadResult } from 'app/shared/file-upload/file-upload-result.mode
 })
 export class ProductItemsUrlDialogComponent implements OnInit {
 
+    private eventSubscriber: Subscription;
+
     object: IProduct;
     productItems: IProductItem[] = [];
     colors: IProductStyle[];
     sizes: IProductStyle[];
-    private eventSubscriber: Subscription;
 
     fileExt = 'JPG, GIF, PNG';
     maxFiles = 1;

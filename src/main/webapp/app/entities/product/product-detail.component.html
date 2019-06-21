@@ -1,5 +1,5 @@
 <div class="row justify-content-center">
-    <div class="col-10" *ngIf="product" [ngSwitch]="isEditing">
+    <div class="col-12" *ngIf="product" [ngSwitch]="isEditing">
 		<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
             <jhi-alert-error></jhi-alert-error>
 			<div class="row"> <!-- *jhiHasAnyAuthority="'ROLE_USER'" -->

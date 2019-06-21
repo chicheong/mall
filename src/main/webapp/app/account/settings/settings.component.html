@@ -13,7 +13,7 @@
 				<form name="form" role="form" (ngSubmit)="save()" #settingsForm="ngForm" *ngIf="settingsAccount" novalidate>
 				
 					<div class="row">
-						<button *ngIf="isEditingBasic" [disabled]="isSavingBasic" class="btn btn-default" (click)="cancelBasic()">
+						<button *ngIf="isEditingBasic" [disabled]="isSavingBasic" class="btn btn-secondary" (click)="cancelBasic()">
 							<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
 						</button>			
 						<button *ngIf="isEditingBasic" [disabled]="isSavingBasic || settingsForm.form.invalid" class="btn btn-primary" (click)="saveBasic()">

@@ -20,10 +20,11 @@ import { UuidService } from 'app/shared';
 })
 export class PricesDialogComponent implements OnInit {
 
-    productItem: IProductItem;
+    object: IProductItem;
     productitems: IProductItem[];
     prices: IPrice[];
     broadcastName: string;
+    type: string; // Not in use
 
     constructor(
         public activeModal: NgbActiveModal,
@@ -35,19 +36,19 @@ export class PricesDialogComponent implements OnInit {
     }
 
     ngOnInit() {
-        console.error('productItem.prices: ' + this.productItem.prices);
-        if (this.productItem.dirtyPrices) {
+        console.error('productItem.prices: ' + this.object.prices);
+        if (this.object.dirtyPrices) {
             // edited before
             this.prices = [];
-            this.productItem.prices.forEach(price => {
+            this.object.prices.forEach(price => {
                 const nPrice: IPrice = Object.assign(new Price(), price);
                 this.prices.push(nPrice);
             });
         } else {
-            if (this.productItem.id) {
+            if (this.object.id) {
                 // load prices from server
-                console.error('this.productItem.id: ' + this.productItem.id);
-                this.loadItem(this.productItem.id);
+                console.error('this.productItem.id: ' + this.object.id);
+                this.loadItem(this.object.id);
             } else {
                 // default a price
                 this.initPrice();
@@ -57,9 +58,9 @@ export class PricesDialogComponent implements OnInit {
 
     loadItem(itemId) {
         this.productItemService.find(itemId).subscribe((productItemResponse: HttpResponse<IProductItem>) => {
-            this.productItem = productItemResponse.body;
-            if (this.productItem.prices.length > 0) {
-                this.prices = this.productItem.prices;
+            this.object = productItemResponse.body;
+            if (this.object.prices.length > 0) {
+                this.prices = this.object.prices;
             } else {
                 // default a price
                 this.initPrice();
@@ -93,14 +94,14 @@ export class PricesDialogComponent implements OnInit {
     }
 
     confirm() {
-        this.productItem.prices = this.prices;
-        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.productItem, type: ProductItemsDialogType.SINGLE});
+        this.object.prices = this.prices;
+        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.object, type: ProductItemsDialogType.SINGLE});
         this.activeModal.dismiss('OK');
     }
 
     addAndCopyToAll() {
-        this.productItem.prices = this.prices;
-        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.productItem, type: ProductItemsDialogType.ALL});
+        this.object.prices = this.prices;
+        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.object, type: ProductItemsDialogType.ALL});
         this.activeModal.dismiss('OK');
     }
 }

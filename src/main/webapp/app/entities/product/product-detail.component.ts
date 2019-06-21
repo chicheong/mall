@@ -55,10 +55,11 @@ export const enum ProductDetailBroadcastName {
     ]
 })
 export class ProductDetailComponent implements OnInit {
-    product: IProduct;
-    isSaving: boolean;
     private subscription: Subscription;
     private eventSubscriber: Subscription;
+
+    product: IProduct;
+    isSaving: boolean;
     isEditing: boolean;
     isSorted: boolean;
     selectedColor: IProductStyle = {};

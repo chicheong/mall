@@ -20,10 +20,11 @@ import { UuidService } from 'app/shared';
 })
 export class QuantitiesDialogComponent implements OnInit {
 
-    productItem: IProductItem;
+    object: IProductItem;
     productitems: IProductItem[];
     quantities: IQuantity[];
     broadcastName: string;
+    type: string; // Not in use
 
     constructor(
         public activeModal: NgbActiveModal,
@@ -35,19 +36,19 @@ export class QuantitiesDialogComponent implements OnInit {
     }
 
     ngOnInit() {
-        console.error('productItem.quantities: ' + this.productItem.quantities);
-        if (this.productItem.dirtyQuantities) {
+        console.error('productItem.quantities: ' + this.object.quantities);
+        if (this.object.dirtyQuantities) {
             // edited before
             this.quantities = [];
-            this.productItem.quantities.forEach(quantity => {
+            this.object.quantities.forEach(quantity => {
                 const nQuantity: IQuantity = Object.assign(new Quantity(), quantity);
                 this.quantities.push(nQuantity);
             });
         } else {
-            if (this.productItem.id) {
+            if (this.object.id) {
                 // load quantities from server
-                console.error('this.productItem.id: ' + this.productItem.id);
-                this.loadItem(this.productItem.id);
+                console.error('this.productItem.id: ' + this.object.id);
+                this.loadItem(this.object.id);
             } else {
                 // default a Quantity
                 this.initQuantity();
@@ -57,9 +58,9 @@ export class QuantitiesDialogComponent implements OnInit {
 
     loadItem(itemId) {
         this.productItemService.find(itemId).subscribe((productItemResponse: HttpResponse<IProductItem>) => {
-            this.productItem = productItemResponse.body;
-            if (this.productItem.quantities.length > 0) {
-                this.quantities = this.productItem.quantities;
+            this.object = productItemResponse.body;
+            if (this.object.quantities.length > 0) {
+                this.quantities = this.object.quantities;
             } else {
                 // default a price
                 this.initQuantity();
@@ -93,14 +94,14 @@ export class QuantitiesDialogComponent implements OnInit {
     }
 
     confirm() {
-        this.productItem.quantities = this.quantities;
-        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.productItem, type: ProductItemsDialogType.SINGLE});
+        this.object.quantities = this.quantities;
+        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.object, type: ProductItemsDialogType.SINGLE});
         this.activeModal.dismiss('OK');
     }
 
     addAndCopyToAll() {
-        this.productItem.quantities = this.quantities;
-        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.productItem, type: ProductItemsDialogType.ALL});
+        this.object.quantities = this.quantities;
+        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.object, type: ProductItemsDialogType.ALL});
         this.activeModal.dismiss('OK');
     }
 }

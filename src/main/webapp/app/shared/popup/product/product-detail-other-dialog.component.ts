@@ -11,13 +11,6 @@ import { IPrice } from 'app/shared/model/price.model';
 import { IQuantity } from 'app/shared/model/quantity.model';
 import { IProduct } from 'app/shared/model/product.model';
 
-// import { PricesPopupService } from './prices-popup.service';
-// import { PricesDialogComponent } from './prices-dialog.component';
-// import { QuantitiesPopupService } from './quantities-popup.service';
-// import { QuantitiesDialogComponent } from './quantities-dialog.component';
-
-// import { GetItemFromColorSizePipe } from './get-item-from-color-size.pipe';
-
 import { UuidService } from 'app/shared';
 
 @Component({
@@ -26,8 +19,9 @@ import { UuidService } from 'app/shared';
 })
 export class ProductDetailOtherDialogComponent implements OnInit {
 
-    object: IProduct;
     private eventSubscriber: Subscription;
+
+    object: IProduct;
     broadcastName: string;
     type: string; // Not in use
 
