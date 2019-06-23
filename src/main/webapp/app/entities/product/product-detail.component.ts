@@ -7,14 +7,12 @@ import { JhiEventManager, JhiAlertService  } from 'ng-jhipster';
 
 import { IProduct, Product } from 'app/shared/model/product.model';
 import { ProductService } from './product.service';
-import { UuidService, FileUploadModelService, PermissionService, PopupService, ProductDetailOtherDialogComponent, ProductItemsDialogComponent, ProductItemsDialogType, ProductItemsUrlDialogComponent } from 'app/shared';
+import { UuidService, FileUploadModelService, PermissionService, PopupService, ProductDetailOtherDialogComponent, ProductItemsDialogComponent, ProductItemsDialogType, ProductItemsUrlDialogComponent, ProductStyleDialogComponent } from 'app/shared';
 import { LoginModalService } from 'app/core';
 import { AccountService } from 'app/core';
 
 import { IProductItem, ProductItem } from 'app/shared/model/product-item.model';
 import { IProductStyle, ProductStyle, ProductStyleType } from 'app/shared/model/product-style.model';
-import { ProductStylePopupService } from 'app/entities/product-style/product-style-popup.service';
-import { ProductStyleDialogComponent } from 'app/entities/product-style/product-style-dialog.component';
 
 // import { ProductDetailPopupService, PopupProductComponentType } from 'app/shared/popup/product/product-detail-popup.service';
 // import { PopupService } from 'app/shared/popup/popup.service';
@@ -74,7 +72,6 @@ export class ProductDetailComponent implements OnInit {
         protected activatedRoute: ActivatedRoute,
         private eventManager: JhiEventManager,
         private productService: ProductService,
-        private productStylePopupService: ProductStylePopupService,
         // private productDetailPopupService: ProductDetailPopupService,
         private popupService: PopupService,
         private fileUploadModelService: FileUploadModelService,
@@ -521,7 +518,7 @@ export class ProductDetailComponent implements OnInit {
 
     editStyle(obj: IProductStyle) {
         const copyObj: ProductStyle = Object.assign(new ProductStyle(), obj);
-        this.productStylePopupService.open(ProductStyleDialogComponent as Component, copyObj, ProductDetailBroadcastName.PRODUCT_STYLE);
+        this.popupService.open(ProductStyleDialogComponent as Component, copyObj, ProductDetailBroadcastName.PRODUCT_STYLE);
     }
 
     editItems(type: ProductItemsDialogType) {

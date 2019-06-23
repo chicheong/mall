@@ -20,6 +20,7 @@ export * from './popup/popup.service';
 export * from './popup/product/product-detail-other-dialog.component';
 export * from './popup/product/product-items-dialog.component';
 export * from './popup/product/product-items-url-dialog.component';
+export * from './popup/product/product-style-dialog.component';
 export * from './popup/product/prices-dialog.component';
 export * from './popup/product/quantities-dialog.component';
 export * from './popup/product/get-item-from-color-size.pipe';

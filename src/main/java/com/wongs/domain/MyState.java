@@ -16,7 +16,7 @@ import java.util.Objects;
  * A MyState.
  */
 @Entity
-@Table(name = "myState")
+@Table(name = "my_state")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 @Document(indexName = "mystate")
 public class MyState implements Serializable {

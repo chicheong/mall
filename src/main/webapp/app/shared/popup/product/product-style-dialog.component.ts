@@ -8,8 +8,7 @@ import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
 import { IProductStyle } from 'app/shared/model/product-style.model';
 import { IProduct } from 'app/shared/model/product.model';
-import { ProductStylePopupService } from './product-style-popup.service';
-import { ProductStyleService } from './product-style.service';
+import { ProductStyleService } from 'app/entities/product-style/product-style.service';
 import { ProductService, ProductDetailComponentType } from 'app/entities/product';
 
 @Component({
@@ -18,9 +17,10 @@ import { ProductService, ProductDetailComponentType } from 'app/entities/product
 })
 export class ProductStyleDialogComponent implements OnInit {
 
-    productStyle: IProductStyle;
+    object: IProductStyle;
     isSaving: boolean;
     broadcastName: string;
+    type: string; // Not in use
 
     products: IProduct[];
 
@@ -45,26 +45,26 @@ export class ProductStyleDialogComponent implements OnInit {
 
     confirm() {
         this.isSaving = true;
-        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.productStyle, type: ProductDetailComponentType.CONFIRM});
+        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.object, type: ProductDetailComponentType.CONFIRM});
         this.isSaving = false;
-        this.activeModal.dismiss(this.productStyle);
+        this.activeModal.dismiss(this.object);
     }
 
     delete() {
         this.isSaving = true;
-        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.productStyle, type: ProductDetailComponentType.DELETE});
+        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.object, type: ProductDetailComponentType.DELETE});
         this.isSaving = false;
-        this.activeModal.dismiss(this.productStyle);
+        this.activeModal.dismiss(this.object);
     }
 
     save() {
         this.isSaving = true;
-        if (this.productStyle.id !== undefined) {
+        if (this.object.id !== undefined) {
             this.subscribeToSaveResponse(
-                this.productStyleService.update(this.productStyle));
+                this.productStyleService.update(this.object));
         } else {
             this.subscribeToSaveResponse(
-                this.productStyleService.create(this.productStyle));
+                this.productStyleService.create(this.object));
         }
     }
 
@@ -89,35 +89,5 @@ export class ProductStyleDialogComponent implements OnInit {
 
     trackProductById(index: number, item: IProduct) {
         return item.id;
-    }
-}
-
-@Component({
-    selector: 'jhi-product-style-popup',
-    template: ''
-})
-export class ProductStylePopupComponent implements OnInit, OnDestroy {
-
-    routeSub: any;
-
-    constructor(
-        private route: ActivatedRoute,
-        private productStylePopupService: ProductStylePopupService
-    ) {}
-
-    ngOnInit() {
-        this.routeSub = this.route.params.subscribe(params => {
-            if ( params['id'] ) {
-                this.productStylePopupService
-                    .open(ProductStyleDialogComponent as Component, params['id']);
-            } else {
-                this.productStylePopupService
-                    .open(ProductStyleDialogComponent as Component);
-            }
-        });
-    }
-
-    ngOnDestroy() {
-        this.routeSub.unsubscribe();
     }
 }

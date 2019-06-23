@@ -18,7 +18,7 @@
                                  baseTableName="address"
                                  constraintName="fk_address_my_state_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="myState"/>
+                                 referencedTableName="my_state"/>
 
     </changeSet>
 </databaseChangeLog>

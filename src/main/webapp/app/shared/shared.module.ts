@@ -8,6 +8,7 @@ import { FileUploadComponent } from './file-upload/file-upload.component';
 import { ProductDetailOtherDialogComponent } from './popup/product/product-detail-other-dialog.component';
 import { ProductItemsDialogComponent } from './popup/product/product-items-dialog.component';
 import { ProductItemsUrlDialogComponent } from './popup/product/product-items-url-dialog.component';
+import { ProductStyleDialogComponent } from './popup/product/product-style-dialog.component';
 import { PricesDialogComponent } from './popup/product/prices-dialog.component';
 import { QuantitiesDialogComponent } from './popup/product/quantities-dialog.component';
 import { GetItemFromColorSizePipe } from './popup/product/get-item-from-color-size.pipe';
@@ -21,6 +22,7 @@ import { GetItemFromColorSizePipe } from './popup/product/get-item-from-color-si
         ProductDetailOtherDialogComponent,
         ProductItemsDialogComponent,
         ProductItemsUrlDialogComponent,
+        ProductStyleDialogComponent,
         PricesDialogComponent,
         QuantitiesDialogComponent,
         GetItemFromColorSizePipe
@@ -33,6 +35,7 @@ import { GetItemFromColorSizePipe } from './popup/product/get-item-from-color-si
         ProductDetailOtherDialogComponent,
         ProductItemsDialogComponent,
         ProductItemsUrlDialogComponent,
+        ProductStyleDialogComponent,
         PricesDialogComponent,
         QuantitiesDialogComponent
     ],

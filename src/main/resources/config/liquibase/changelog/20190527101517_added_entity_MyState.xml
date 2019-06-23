@@ -18,7 +18,7 @@
         Added the entity MyState.
     -->
     <changeSet id="20190527101517-1" author="jhipster">
-        <createTable tableName="myState">
+        <createTable tableName="my_state">
             <column name="id" type="bigint" autoIncrement="${autoIncrement}">
                 <constraints primaryKey="true" nullable="false"/>
             </column>

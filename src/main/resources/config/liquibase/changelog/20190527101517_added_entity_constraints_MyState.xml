@@ -9,7 +9,7 @@
     <changeSet id="20190527101517-2" author="jhipster">
         
         <addForeignKeyConstraint baseColumnNames="country_id"
-                                 baseTableName="myState"
+                                 baseTableName="my_state"
                                  constraintName="fk_my_state_country_id"
                                  referencedColumnNames="id"
                                  referencedTableName="country"/>

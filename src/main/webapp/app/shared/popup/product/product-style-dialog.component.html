@@ -7,29 +7,29 @@
     </div>
     <div class="modal-body">
         <jhi-alert-error></jhi-alert-error>
-        <div class="form-group" [hidden]="!productStyle.id">
+        <div class="form-group" [hidden]="!object.id">
             <label for="id" jhiTranslate="global.field.id">ID</label>
             <input type="text" class="form-control" id="id" name="id"
-                   [(ngModel)]="productStyle.id" readonly />
+                   [(ngModel)]="object.id" readonly />
         </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.productStyle.name" for="field_name">Name</label>
             <input type="text" class="form-control" name="name" id="field_name"
-                [(ngModel)]="productStyle.name" />
+                [(ngModel)]="object.name" />
         </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.productStyle.code" for="field_code">Code</label>
             <input type="text" class="form-control" name="code" id="field_code"
-                [(ngModel)]="productStyle.code" />
+                [(ngModel)]="object.code" />
         </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.productStyle.isDefault" for="field_isDefault">Is Default</label>
             <input type="checkbox" class="form-control" name="isDefault" id="field_isDefault"
-                [(ngModel)]="productStyle.isDefault" />
+                [(ngModel)]="object.isDefault" />
         </div>
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.productStyle.type" for="field_type">Type</label>
-            <select class="form-control" name="type" [(ngModel)]="productStyle.type" id="field_type" >
+            <select class="form-control" name="type" [(ngModel)]="object.type" id="field_type" >
                 <option value="COLOR">{{'mallApp.ProductStyleType.COLOR' | translate}}</option>
                 <option value="SIZE">{{'mallApp.ProductStyleType.SIZE' | translate}}</option>
             </select>
@@ -37,14 +37,14 @@
 
         <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.productStyle.product" for="field_product">Product</label>
-            <select class="form-control" id="field_product" name="product" [(ngModel)]="productStyle.product" >
+            <select class="form-control" id="field_product" name="product" [(ngModel)]="object.product" >
                 <option [ngValue]="null"></option>
-                <option [ngValue]="productOption.id === productStyle.product?.id ? productStyle.product : productOption" *ngFor="let productOption of products; trackBy: trackProductById">{{productOption.id}}</option>
+                <option [ngValue]="productOption.id === object.product?.id ? object.product : productOption" *ngFor="let productOption of products; trackBy: trackProductById">{{productOption.id}}</option>
             </select>
         </div>
     </div>
     <div class="modal-footer">   
-	    <button *ngIf="productStyle.id || productStyle.tempId" type="button" [disabled]="editForm.form.invalid || isSaving" class="btn btn-danger" (click)="delete()">
+	    <button *ngIf="object.id || object.tempId" type="button" [disabled]="editForm.form.invalid || isSaving" class="btn btn-danger" (click)="delete()">
 	         <span class="fa fa-remove"></span>&nbsp;<span jhiTranslate="entity.action.delete">Delete</span>
 	    </button>    
         <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
