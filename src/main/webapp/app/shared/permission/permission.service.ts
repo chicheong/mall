@@ -12,28 +12,28 @@ export class PermissionService  {
     constructor() { }
 
     isCreatable(permissionCode: string): boolean {
-        if (permissionCode.includes(PermissionsConstants.CREATE)) {
+        if (permissionCode && permissionCode.includes(PermissionsConstants.CREATE)) {
             return true;
         }
         return false;
     }
 
     isReadable(permissionCode: string): boolean {
-        if (permissionCode.includes(PermissionsConstants.READ)) {
+        if (permissionCode && permissionCode.includes(PermissionsConstants.READ)) {
             return true;
         }
         return false;
     }
 
     isUpdatable(permissionCode: string): boolean {
-        if (permissionCode.includes(PermissionsConstants.UPDATE)) {
+        if (permissionCode && permissionCode.includes(PermissionsConstants.UPDATE)) {
             return true;
         }
         return false;
     }
 
     isDeletable(permissionCode: string): boolean {
-        if (permissionCode.includes(PermissionsConstants.DELETE)) {
+        if (permissionCode && permissionCode.includes(PermissionsConstants.DELETE)) {
             return true;
         }
         return false;

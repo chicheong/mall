@@ -12,7 +12,6 @@ import { ShopDetailComponent } from './shop-detail.component';
 import { ShopUpdateComponent } from './shop-update.component';
 import { ShopDeletePopupComponent } from './shop-delete-dialog.component';
 import { IShop } from 'app/shared/model/shop.model';
-import { ProductDetailComponent } from 'app/entities/product/product-detail.component';
 
 @Injectable({ providedIn: 'root' })
 export class ShopResolve implements Resolve<IShop> {
@@ -77,14 +76,6 @@ export const shopRoute: Routes = [
         data: {
             authorities: ['ROLE_USER'],
             pageTitle: 'mallApp.shop.home.title'
-        },
-        canActivate: [UserRouteAccessService]
-    }, {
-        path: ':shopId/product',
-        component: ProductDetailComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.product.home.title'
         },
         canActivate: [UserRouteAccessService]
     }

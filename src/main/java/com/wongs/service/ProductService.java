@@ -43,7 +43,7 @@ import com.wongs.service.mapper.ProductStyleMapper;
 import com.wongs.service.mapper.QuantityMapper;
 import com.wongs.service.mapper.UrlMapper;
 import com.wongs.service.util.FileUtil;
-import com.wongs.service.util.FileUtil.FILETYPE;
+import com.wongs.service.util.FileUtil.TYPE;
 
 /**
  * Service Implementation for managing Product.
@@ -200,7 +200,7 @@ public class ProductService {
         		UrlDTO urlDTO = productItemDTO.getUrl();
             	try {
     	        	urlDTO.setEntityId(nProductItem.getId());
-    	        	urlDTO.setPath(FileUtil.saveAndGetFilePath(FILETYPE.IMAGE, urlDTO.getFileName(), urlDTO.getPath()));
+    	        	urlDTO.setPath(FileUtil.saveAndGetFilePath(TYPE.IMAGE, urlDTO.getFileName(), urlDTO.getPath()));
     	        	if (urlDTO.getId() == null) {
     		        	urlDTO.setCreatedBy(product.getCreatedBy());
     		        	urlDTO.setCreatedDate(product.getCreatedDate());
@@ -239,7 +239,7 @@ public class ProductService {
         	if (urlDTO.getId() == null) {
             	try {
     	        	urlDTO.setEntityId(product.getId());
-    	        	urlDTO.setPath(FileUtil.saveAndGetFilePath(FILETYPE.IMAGE, urlDTO.getFileName(), urlDTO.getPath()));
+    	        	urlDTO.setPath(FileUtil.saveAndGetFilePath(TYPE.IMAGE, urlDTO.getFileName(), urlDTO.getPath()));
     	        	urlDTO.setCreatedBy(product.getCreatedBy());
     	        	urlDTO.setCreatedDate(product.getCreatedDate());
     	        	urlDTO.setLastModifiedBy(product.getLastModifiedBy());

@@ -16,14 +16,14 @@ import com.google.common.io.Files;
 public final class FileUtil {
 
     private static final int DEF_COUNT = 20;
-    public static enum FILETYPE {
+    public static enum TYPE {
     	IMAGE("img");
 
     	private String abbreviation;
     	public String getAbbreviation() {
     		return this.abbreviation;
     	}
-    	FILETYPE(String abbreviation) {
+    	TYPE(String abbreviation) {
     		this.abbreviation = abbreviation;
     	}
     }
@@ -40,7 +40,7 @@ public final class FileUtil {
      * @return
      * @throws IOException
      */
-    public static String saveAndGetFilePath(FILETYPE fileType, String fileName, String base64String) throws IOException {
+    public static String saveAndGetFilePath(TYPE fileType, String fileName, String base64String) throws IOException {
     	Decoder decoder = Base64.getDecoder();
     	byte[] image = decoder.decode(base64String.substring(base64String.indexOf("base64,") + 7));
     	Path targetPath = Paths.get(String.format("C:\\xampp\\htdocs\\%s\\%s", fileType.getAbbreviation(), fileName));

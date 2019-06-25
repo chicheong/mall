@@ -37,7 +37,7 @@ import com.wongs.service.mapper.MyAccountMapper;
 import com.wongs.service.mapper.ShopMapper;
 import com.wongs.service.mapper.UserInfoMapper;
 import com.wongs.service.util.FileUtil;
-import com.wongs.service.util.FileUtil.FILETYPE;
+import com.wongs.service.util.FileUtil.TYPE;
 import com.wongs.service.util.RandomUtil;
 import com.wongs.web.rest.errors.EmailAlreadyUsedException;
 import com.wongs.web.rest.errors.InvalidPasswordException;
@@ -268,7 +268,7 @@ public class UserService {
                 user.setLangKey(langKey);
                 if (StringUtils.isNotBlank(imageUrl)){
                 	try {
-                		user.setImageUrl(FileUtil.saveAndGetFilePath(FILETYPE.IMAGE, user.getEmail(), imageUrl));
+                		user.setImageUrl(FileUtil.saveAndGetFilePath(TYPE.IMAGE, user.getEmail(), imageUrl));
         			} catch (IOException e) {
         				log.error(e.toString());
         			}

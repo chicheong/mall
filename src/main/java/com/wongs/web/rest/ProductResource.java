@@ -139,8 +139,8 @@ public class ProductResource {
     @GetMapping("/products/{id}")
     public ResponseEntity<ProductDTO> getProduct(@PathVariable Long id) {
         log.debug("REST request to get Product : {}", id);
-        Optional<ProductDTO> productDTO = productService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(productDTO);
+        ProductDTO productDTO = productService.findOneWithLists(id);
+        return ResponseUtil.wrapOrNotFound(Optional.of(productDTO));
     }
 
     /**

@@ -78,6 +78,14 @@ export const productRoute: Routes = [
             pageTitle: 'mallApp.product.home.title'
         },
         canActivate: [UserRouteAccessService]
+    }, {
+        path: ':shopId/shop',
+        component: ProductDetailComponent,
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.product.home.title'
+        },
+        canActivate: [UserRouteAccessService]
     }
 ];
 

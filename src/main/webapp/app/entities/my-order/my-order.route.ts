@@ -86,6 +86,90 @@ export const myOrderRoute: Routes = [
             pageTitle: 'mallApp.myOrder.home.title'
         },
         canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/pending',
+        component: CartPendingComponent,
+        resolve: {
+            myOrder: MyOrderResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.myOrder.cart.pending.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/review',
+        component: CartReviewComponent,
+        resolve: {
+            myOrder: MyOrderResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.myOrder.cart.review.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/shipping',
+        component: CartShippingComponent,
+        resolve: {
+            myOrder: MyOrderResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.myOrder.cart.shipping.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/method',
+        component: CartMethodComponent,
+        resolve: {
+            myOrder: MyOrderResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.myOrder.cart.method.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/billing',
+        component: CartBillingComponent,
+        resolve: {
+            myOrder: MyOrderResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.myOrder.cart.billing.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/payment',
+        component: CartPaymentComponent,
+        resolve: {
+            myOrder: MyOrderResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.myOrder.cart.payment.title'
+        },
+        canActivate: [UserRouteAccessService]
+    },
+    {
+        path: ':id/confirmation',
+        component: CartConfirmationComponent,
+        resolve: {
+            myOrder: MyOrderResolve
+        },
+        data: {
+            authorities: ['ROLE_USER'],
+            pageTitle: 'mallApp.myOrder.cart.confirmation.title'
+        },
+        canActivate: [UserRouteAccessService]
     }
 ];
 

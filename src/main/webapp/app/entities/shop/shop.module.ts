@@ -4,7 +4,6 @@ import { JhiLanguageService } from 'ng-jhipster';
 import { JhiLanguageHelper } from 'app/core';
 
 import { MallSharedModule } from 'app/shared';
-import { ProductDetailComponent } from 'app/entities/product/product-detail.component';
 import {
     ShopComponent,
     ShopDetailComponent,
@@ -19,8 +18,8 @@ const ENTITY_STATES = [...shopRoute, ...shopPopupRoute];
 
 @NgModule({
     imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
-    declarations: [ShopComponent, ShopDetailComponent, ShopUpdateComponent, ShopDeleteDialogComponent, ShopDeletePopupComponent, ProductDetailComponent],
-    entryComponents: [ShopComponent, ShopUpdateComponent, ShopDeleteDialogComponent, ShopDeletePopupComponent, ProductDetailComponent],
+    declarations: [ShopComponent, ShopDetailComponent, ShopUpdateComponent, ShopDeleteDialogComponent, ShopDeletePopupComponent],
+    entryComponents: [ShopComponent, ShopUpdateComponent, ShopDeleteDialogComponent, ShopDeletePopupComponent],
     providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })

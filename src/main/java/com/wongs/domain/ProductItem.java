@@ -59,9 +59,11 @@ public class ProductItem implements Serializable {
     @OneToMany(mappedBy = "item")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Price> prices = new HashSet<>();
+    
     @OneToMany(mappedBy = "item")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Quantity> quantities = new HashSet<>();
+    
     @ManyToOne
     @JsonIgnoreProperties("items")
     private Product product;
