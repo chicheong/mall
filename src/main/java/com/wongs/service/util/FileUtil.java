@@ -27,6 +27,21 @@ public final class FileUtil {
     		this.abbreviation = abbreviation;
     	}
     }
+    
+    public static enum CATEGORY {
+    	PRODUCT("product"),
+    	PRODUCT_ITEM("productItem"),
+    	USER("user"),
+    	PROFILE("profile");
+
+    	private String abbreviation;
+    	public String getAbbreviation() {
+    		return this.abbreviation;
+    	}
+    	CATEGORY(String abbreviation) {
+    		this.abbreviation = abbreviation;
+    	}
+    }
 
     private FileUtil() {
     }
