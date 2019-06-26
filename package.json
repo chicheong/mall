@@ -19,6 +19,7 @@
         "@fortawesome/angular-fontawesome": "0.3.0",
         "@fortawesome/fontawesome-svg-core": "1.2.14",
         "@fortawesome/free-solid-svg-icons": "5.7.1",
+        "@kolkov/angular-editor": "^0.14.6",
         "@ng-bootstrap/ng-bootstrap": "4.0.2",
         "@ngx-translate/core": "11.0.1",
         "@ngx-translate/http-loader": "4.0.0",
