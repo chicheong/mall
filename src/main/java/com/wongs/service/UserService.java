@@ -29,6 +29,8 @@ import com.wongs.repository.UserRepository;
 import com.wongs.repository.search.UserSearchRepository;
 import com.wongs.security.AuthoritiesConstants;
 import com.wongs.security.SecurityUtils;
+import com.wongs.service.FileService.CATEGORY;
+import com.wongs.service.FileService.TYPE;
 import com.wongs.service.dto.MyAccountDTO;
 import com.wongs.service.dto.ShopDTO;
 import com.wongs.service.dto.UserDTO;
@@ -36,8 +38,6 @@ import com.wongs.service.dto.UserInfoDTO;
 import com.wongs.service.mapper.MyAccountMapper;
 import com.wongs.service.mapper.ShopMapper;
 import com.wongs.service.mapper.UserInfoMapper;
-import com.wongs.service.util.FileUtil;
-import com.wongs.service.util.FileUtil.TYPE;
 import com.wongs.service.util.RandomUtil;
 import com.wongs.web.rest.errors.EmailAlreadyUsedException;
 import com.wongs.web.rest.errors.InvalidPasswordException;
@@ -69,10 +69,13 @@ public class UserService {
     private final UserInfoMapper userInfoMapper;
     private final MyAccountMapper myAccountMapper;
     private final ShopMapper shopMapper;
+    
+    private final FileService fileService;
 
     public UserService(UserRepository userRepository, PasswordEncoder passwordEncoder, UserSearchRepository userSearchRepository, AuthorityRepository authorityRepository, CacheManager cacheManager,
     		UserInfoService userInfoService, MyAccountService myAccountService, ShopService shopService,
-    		UserInfoMapper userInfoMapper, MyAccountMapper myAccountMapper, ShopMapper shopMapper) {
+    		UserInfoMapper userInfoMapper, MyAccountMapper myAccountMapper, ShopMapper shopMapper,
+    		FileService fileService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.userSearchRepository = userSearchRepository;
@@ -84,6 +87,7 @@ public class UserService {
         this.userInfoMapper = userInfoMapper;
         this.myAccountMapper = myAccountMapper;
         this.shopMapper = shopMapper;
+        this.fileService = fileService;
     }
     
     public Optional<User> activateRegistration(String key) {
@@ -268,7 +272,7 @@ public class UserService {
                 user.setLangKey(langKey);
                 if (StringUtils.isNotBlank(imageUrl)){
                 	try {
-                		user.setImageUrl(FileUtil.saveAndGetFilePath(TYPE.IMAGE, user.getEmail(), imageUrl));
+                		user.setImageUrl(fileService.saveAndGetFilePath(TYPE.IMAGE, CATEGORY.USER_PROFILE, user.getId(), user.getEmail(), imageUrl));
         			} catch (IOException e) {
         				log.error(e.toString());
         			}

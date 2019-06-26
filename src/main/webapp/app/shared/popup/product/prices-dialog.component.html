@@ -27,10 +27,10 @@
     </div>
     <div class="modal-footer">
         <button type="button" [disabled]="editForm.form.invalid" class="btn btn-warning" (click)="addAndCopyToAll();">
-            <span class="fa fa-copy"></span>&nbsp;<span jhiTranslate="mallApp.price.button.addAndCopyToALL">Add and Copy to All</span>
+            <fa-icon [icon]="'copy'"></fa-icon>&nbsp;<span jhiTranslate="mallApp.price.button.addAndCopyToALL">Add and Copy to All</span>
         </button>&nbsp;&nbsp;
         <button type="submit" [disabled]="editForm.form.invalid" class="btn btn-primary">
-            <span class="fa fa-check-square"></span>&nbsp;<span jhiTranslate="entity.action.confirm">Confirm</span>
+            <fa-icon [icon]="'check-square'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.confirm">Confirm</span>
         </button>
     </div>
 </form>

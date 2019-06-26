@@ -32,6 +32,8 @@ import com.wongs.repository.search.ProductItemSearchRepository;
 import com.wongs.repository.search.ProductSearchRepository;
 import com.wongs.repository.search.ProductStyleSearchRepository;
 import com.wongs.repository.search.QuantitySearchRepository;
+import com.wongs.service.FileService.CATEGORY;
+import com.wongs.service.FileService.TYPE;
 import com.wongs.service.dto.ProductDTO;
 import com.wongs.service.dto.ProductItemDTO;
 import com.wongs.service.dto.ProductStyleDTO;
@@ -42,8 +44,6 @@ import com.wongs.service.mapper.ProductMapper;
 import com.wongs.service.mapper.ProductStyleMapper;
 import com.wongs.service.mapper.QuantityMapper;
 import com.wongs.service.mapper.UrlMapper;
-import com.wongs.service.util.FileUtil;
-import com.wongs.service.util.FileUtil.TYPE;
 
 /**
  * Service Implementation for managing Product.
@@ -77,6 +77,8 @@ public class ProductService {
     
     private final ShopService shopService;
     private final UrlService urlService;
+    
+    private final FileService fileService;
 
     public ProductService(ProductMapper productMapper, ProductStyleMapper productStyleMapper, ProductItemMapper productItemMapper,
     		PriceMapper priceMapper, QuantityMapper quantityMapper, UrlMapper urlMapper,
@@ -86,7 +88,8 @@ public class ProductService {
 			ProductStyleRepository productStyleRepository, ProductStyleSearchRepository productStyleSearchRepository, 
 			PriceRepository priceRepository, PriceSearchRepository priceSearchRepository, 
 			QuantityRepository quantityRepository, QuantitySearchRepository quantitySearchRepository,
-			ShopService shopService, UrlService urlService) {
+			ShopService shopService, UrlService urlService,
+			FileService fileService) {
     	this.productMapper = productMapper;
     	this.productStyleMapper = productStyleMapper;
     	this.productItemMapper = productItemMapper;
@@ -105,6 +108,7 @@ public class ProductService {
         this.quantityRepository = quantityRepository;
         this.quantitySearchRepository = quantitySearchRepository;
         this.urlService = urlService;
+        this.fileService = fileService;
     }
 
     /**
@@ -200,7 +204,7 @@ public class ProductService {
         		UrlDTO urlDTO = productItemDTO.getUrl();
             	try {
     	        	urlDTO.setEntityId(nProductItem.getId());
-    	        	urlDTO.setPath(FileUtil.saveAndGetFilePath(TYPE.IMAGE, urlDTO.getFileName(), urlDTO.getPath()));
+    	        	urlDTO.setPath(fileService.saveAndGetFilePath(TYPE.IMAGE, CATEGORY.PRODUCT_ITEM, product.getId(), nProductItem.getId(), urlDTO.getFileName(), urlDTO.getPath()));
     	        	if (urlDTO.getId() == null) {
     		        	urlDTO.setCreatedBy(product.getCreatedBy());
     		        	urlDTO.setCreatedDate(product.getCreatedDate());
@@ -239,7 +243,7 @@ public class ProductService {
         	if (urlDTO.getId() == null) {
             	try {
     	        	urlDTO.setEntityId(product.getId());
-    	        	urlDTO.setPath(FileUtil.saveAndGetFilePath(TYPE.IMAGE, urlDTO.getFileName(), urlDTO.getPath()));
+    	        	urlDTO.setPath(fileService.saveAndGetFilePath(TYPE.IMAGE, CATEGORY.PRODUCT, product.getId(), urlDTO.getFileName(), urlDTO.getPath()));
     	        	urlDTO.setCreatedBy(product.getCreatedBy());
     	        	urlDTO.setCreatedDate(product.getCreatedDate());
     	        	urlDTO.setLastModifiedBy(product.getLastModifiedBy());

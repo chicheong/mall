@@ -23,11 +23,13 @@
                 [(ngModel)]="object.code" />
         </div>
         <div class="form-group">
-            <label class="form-control-label" jhiTranslate="mallApp.productStyle.isDefault" for="field_isDefault">Is Default</label>
-            <input type="checkbox" class="form-control" name="isDefault" id="field_isDefault"
-                [(ngModel)]="object.isDefault" />
+        	<label class="form-control-label" for="field_isDefault">
+	            <input type="checkbox" name="isDefault" id="field_isDefault"
+	                [(ngModel)]="object.isDefault" />        	
+	            <span jhiTranslate="mallApp.productStyle.isDefault" for="field_isDefault">Is Default</span>
+	        </label>
         </div>
-        <div class="form-group">
+        <!-- <div class="form-group">
             <label class="form-control-label" jhiTranslate="mallApp.productStyle.type" for="field_type">Type</label>
             <select class="form-control" name="type" [(ngModel)]="object.type" id="field_type" >
                 <option value="COLOR">{{'mallApp.ProductStyleType.COLOR' | translate}}</option>
@@ -41,14 +43,14 @@
                 <option [ngValue]="null"></option>
                 <option [ngValue]="productOption.id === object.product?.id ? object.product : productOption" *ngFor="let productOption of products; trackBy: trackProductById">{{productOption.id}}</option>
             </select>
-        </div>
+        </div> -->
     </div>
     <div class="modal-footer">   
 	    <button *ngIf="object.id || object.tempId" type="button" [disabled]="editForm.form.invalid || isSaving" class="btn btn-danger" (click)="delete()">
-	         <span class="fa fa-remove"></span>&nbsp;<span jhiTranslate="entity.action.delete">Delete</span>
+	         <fa-icon [icon]="'remove'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.delete">Delete</span>
 	    </button>    
         <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
-            <span class="fa fa-check-square"></span>&nbsp;<span jhiTranslate="entity.action.confirm">Confirm</span>
+             <fa-icon [icon]="'check-square'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.confirm">Confirm</span>
         </button>
     </div>
 </form>

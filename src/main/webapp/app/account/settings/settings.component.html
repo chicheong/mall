@@ -14,13 +14,13 @@
 				
 					<div class="row">
 						<button *ngIf="isEditingBasic" [disabled]="isSavingBasic" class="btn btn-secondary" (click)="cancelBasic()">
-							<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+							<fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
 						</button>			
 						<button *ngIf="isEditingBasic" [disabled]="isSavingBasic || settingsForm.form.invalid" class="btn btn-primary" (click)="saveBasic()">
-							<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="settings.form.save">Save</span>
+							<fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="settings.form.save">Save</span>
 						</button>
 						<button *ngIf="!isEditingBasic" [disabled]="isSavingBasic" class="btn btn-primary" (click)="editBasic()">
-							<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+							<fa-icon [icon]="'edit'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
 						</button>
 					</div>
 					<div class="row">
@@ -102,7 +102,7 @@
 							</div>
 							<div class="text-center">
 								<button *ngIf="isEditingBasic" type="button" [disabled]="isSavingBasic" class="btn btn-primary" (click)="uploadUserImage()">
-									<span class="fa fa-upload"></span>&nbsp;<span jhiTranslate="entity.action.upload"> Upload</span>
+									<fa-icon [icon]="'file-upload'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.upload"> Upload</span>
 								</button>
 							</div>
 						</div>
@@ -112,13 +112,13 @@
 			<div *ngIf="settingsAccount" class="row">
 				<div>
 					<button [disabled]="isSavingBasic" class="btn btn-primary" (click)="uploadFile()">
-						<span class="fa fa-upload"></span>&nbsp;<span jhiTranslate="entity.action.upload"> Upload</span>
+						<fa-icon [icon]="'file-upload'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.upload"> Upload</span>
 					</button>
 				</div>
 				&nbsp;&nbsp;
 				<div>
 					<button [disabled]="isSavingBasic" class="btn btn-danger" (click)="createMyShop()">
-						<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="settings.form.createmyshop">Create My Shop</span>
+						<fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="settings.form.createmyshop">Create My Shop</span>
 					</button>
 				</div>
 			</div>

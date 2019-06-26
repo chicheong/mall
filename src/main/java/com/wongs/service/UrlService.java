@@ -2,6 +2,7 @@ package com.wongs.service;
 
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.Set;
 
@@ -31,11 +32,15 @@ public class UrlService {
     
     private final UrlRepository urlRepository;
     private final UrlSearchRepository urlSearchRepository;
+    
+    private final FileService fileService;
 
-    public UrlService(UrlMapper urlMapper, UrlRepository urlRepository, UrlSearchRepository urlSearchRepository) {
+    public UrlService(UrlMapper urlMapper, UrlRepository urlRepository, UrlSearchRepository urlSearchRepository,
+    					FileService fileService) {
         this.urlMapper = urlMapper;
     	this.urlRepository = urlRepository;
         this.urlSearchRepository = urlSearchRepository;
+        this.fileService = fileService;
     }
 
     /**
@@ -110,9 +115,18 @@ public class UrlService {
      * Delete the url by id.
      *
      * @param id the id of the entity
+     * @throws IOException 
      */
     public void delete(Long id) {
         log.debug("Request to delete Url : {}", id);
+        Optional<Url> url = this.urlRepository.findById(id);
+        if (url.isPresent()) {
+			try {
+				this.fileService.markDelete(url.get().getPath());
+			} catch (IOException e) {
+				log.error(e.getMessage());
+			}
+        }
         urlRepository.deleteById(id);
         urlSearchRepository.deleteById(id);
     }

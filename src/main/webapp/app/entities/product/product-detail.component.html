@@ -50,7 +50,7 @@
 				<div class="col-md-3">
 					<div>
 						<button *ngSwitchCase="true" type="button" [disabled]="isSaving" class="btn btn-primary" (click)="uploadProductUrl()">
-							<span class="fa fa-upload"></span>&nbsp;<span jhiTranslate="entity.action.upload"> Upload</span>
+							<fa-icon [icon]="'file-upload'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.upload"> Upload</span>
 						</button>
 					</div>
 					<div>main photo</div>
@@ -65,16 +65,16 @@
 				<div class="col-md-6">
 					<div>
 						<button type="button" [disabled]="isSaving" class="btn btn-info" (click)="previousState()">
-							<span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+							<fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
 						</button>
 						<button *ngSwitchCase="true" type="button" [disabled]="isSaving || !product.id" class="btn btn-secondary" (click)="cancel()">
-							<span class="fa fa-ban"></span>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+							<fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
 						</button>
 						<button *ngSwitchCase="true" type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
-							<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+							<fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
 						</button>	        
 						<button *ngSwitchCase="false" [hidden]="!isEditable" type="submit" [disabled]="isSaving" class="btn btn-primary" (click)="edit()">
-							<span class="fa fa-save"></span>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+							<fa-icon [icon]="'edit'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
 						</button>
 					</div>
 					<div>
