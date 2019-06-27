@@ -14,12 +14,6 @@ import { AccountService } from 'app/core';
 import { IProductItem, ProductItem } from 'app/shared/model/product-item.model';
 import { IProductStyle, ProductStyle, ProductStyleType } from 'app/shared/model/product-style.model';
 
-// import { ProductDetailPopupService, PopupProductComponentType } from 'app/shared/popup/product/product-detail-popup.service';
-// import { PopupService } from 'app/shared/popup/popup.service';
-// import {  } from 'app/shared/popup/product/product-items-dialog.component';
-// import {  } from 'app/shared/popup/product/product-items-url-dialog.component';
-// import { ProductDetailOtherDialogComponent } from 'app/shared/popup/product/product-detail-other-dialog.component';
-
 import { IMyOrder } from 'app/shared/model/my-order.model';
 import { MyOrderService } from 'app/entities/my-order/my-order.service';
 import { IUrl, Url } from 'app/shared/model/url.model';
@@ -31,6 +25,8 @@ import { CurrencyType } from 'app/shared/model/price.model';
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
 
 import { SortEvent } from 'app/shared/draggable/sortable-list.directive';
+
+import { AngularEditorConfig } from '@kolkov/angular-editor';
 
 export const enum ProductDetailComponentType {
     CONFIRM = 'CONFIRM',
@@ -67,6 +63,30 @@ export class ProductDetailComponent implements OnInit {
     isEditable: boolean;
 
     modalRef: NgbModalRef;
+
+    config: AngularEditorConfig = {
+        editable: true,
+        spellcheck: true,
+        height: '30rem',
+        minHeight: '5rem',
+        placeholder: 'Enter text here...',
+        translate: 'no',
+        customClasses: [
+          {
+            name: 'quote',
+            class: 'quote',
+          },
+          {
+            name: 'redText',
+            class: 'redText'
+          },
+          {
+            name: 'titleText',
+            class: 'titleText',
+            tag: 'h1',
+          },
+       ]
+    };
 
     constructor(
         protected activatedRoute: ActivatedRoute,

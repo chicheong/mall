@@ -84,15 +84,15 @@
 							</div>			  	
 							<div *ngSwitchCase="true">
 								<span >Product Name</span>
-								<span ><textarea class="form-control" name="name" id="field_name" [(ngModel)]="product.name" rows="5" cols="50"></textarea></span>
+								<span ><textarea class="form-control" name="name" id="field_name" [(ngModel)]="product.name" rows="2" cols="50"></textarea></span>
 							</div>
 							<!-- <div>
 								<span *ngIf="product.brand || isEditing==true">by </span><span *ngSwitchCase="false">{{product.brand}}</span>
 								<span *ngSwitchCase="true"><input type="text" class="form-control" name="brand" id="field_brand" [(ngModel)]="product.brand"  /></span>
-							</div> -->
+							</div>
 							<div>
 								<span>123 customer reviews</span>
-							</div>
+							</div> -->
 							<div class="border" *ngIf="selectedItem.id">
 								<div >
 									Price: <span>{{selectedItem?selectedItem.currency : 'Fuck you'}} {{selectedItem?selectedItem.price : 'asshole'}}</span>
@@ -141,18 +141,18 @@
 								<div>Item</div>
 								<div *ngIf="product.items" class="m-1">
 									<button [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="editItems('CODE')">
-										<span>CODE</span>
+										<fa-icon [icon]="'barcode'"></fa-icon>&nbsp;<span>CODE</span>
 									</button>
 									<button [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="editItemsUrl()">
-										<span>PHOTO</span>
+										<fa-icon [icon]="'images'"></fa-icon>&nbsp;<span>PHOTO</span>
 									</button>		        
 								</div>
 								<div *ngIf="product.items" class="m-1">
 									<button [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="editItems('PRICE')">
-										<span>PRICE</span>
+										<fa-icon [icon]="'dollar-sign'"></fa-icon>&nbsp;<span>PRICE</span>
 									</button>
 									<button [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="editItems('QUANTITY')">
-										<span>QUANTITY</span>
+										<fa-icon [icon]="'plus'"></fa-icon>&nbsp;<span>QUANTITY</span>
 									</button>			        
 								</div>
 							</div>
@@ -168,7 +168,7 @@
 							</div>
 							<div class="m-1"> 
 								<button *ngSwitchCase="true" [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="editOther()">
-									<span>Other Information</span>
+									<fa-icon [icon]="'info'"></fa-icon>&nbsp;<span>Other Information</span>
 								</button>
 							</div>
 							
@@ -198,15 +198,24 @@
 					<div>other</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="row" *ngSwitchCase="true">
 				<div class="col-md-2">
 				</div>
-				<div class="col-md-10">
-					<angular-editor [placeholder]="'Enter text here...'" [(ngModel)]="product.content"></angular-editor>
+				<div class="col-md-8">
+					<angular-editor [config]="config" name="content" id="field_content" [(ngModel)]="product.content"></angular-editor>
 				</div>
 				<div class="col-md-2">
 				</div>
 			</div>
+			<div class="row" *ngSwitchCase="false">
+				<div class="col-md-2">
+				</div>
+				<div class="col-md-8">
+					{{product.content}}
+				</div>
+				<div class="col-md-2">
+				</div>
+			</div>			
 		</form>
 	</div>
 </div>

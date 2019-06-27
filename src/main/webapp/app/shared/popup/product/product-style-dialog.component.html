@@ -47,7 +47,7 @@
     </div>
     <div class="modal-footer">   
 	    <button *ngIf="object.id || object.tempId" type="button" [disabled]="editForm.form.invalid || isSaving" class="btn btn-danger" (click)="delete()">
-	         <fa-icon [icon]="'remove'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.delete">Delete</span>
+	         <fa-icon [icon]="'times'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.delete">Delete</span>
 	    </button>    
         <button type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
              <fa-icon [icon]="'check-square'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.confirm">Confirm</span>

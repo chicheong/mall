@@ -44,7 +44,11 @@ import {
     faShoppingCart,
     faFileUpload,
     faEdit,
-    faCheckSquare
+    faCheckSquare,
+    faInfo,
+    faBarcode,
+    faImages,
+    faDollarSign
 } from '@fortawesome/free-solid-svg-icons';
 
 // Adds the SVG icon to the library so you can use it in your page
@@ -87,5 +91,9 @@ library.add(faShoppingCart);
 library.add(faFileUpload);
 library.add(faEdit);
 library.add(faCheckSquare);
+library.add(faInfo);
+library.add(faBarcode);
+library.add(faImages);
+library.add(faDollarSign);
 
 // jhipster-needle-add-element-to-vendor - JHipster will add new menu items here

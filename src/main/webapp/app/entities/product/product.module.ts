@@ -14,10 +14,14 @@ import {
     productPopupRoute
 } from './';
 
+// For angular-editor
+import { HttpClientModule } from '@angular/common/http';
+import { AngularEditorModule } from '@kolkov/angular-editor';
+
 const ENTITY_STATES = [...productRoute, ...productPopupRoute];
 
 @NgModule({
-    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
+    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES), HttpClientModule, AngularEditorModule],
     declarations: [
         ProductComponent,
         ProductDetailComponent,
