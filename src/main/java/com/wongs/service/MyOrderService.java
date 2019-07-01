@@ -143,7 +143,7 @@ public class MyOrderService {
         	return this.createPendingOrder(myAccount, orderItem.getCurrency());	
         });
         Shop shop = shopService.findByProductItem(orderItem.getProductItem());
-        myOrder.getShops().stream().filter(orderShop -> shop.getId().equals(orderShop.getId())).findFirst().map(orderShop -> {
+        myOrder.getShops().stream().filter(orderShop -> shop.getId().equals(orderShop.getShop().getId())).findFirst().map(orderShop -> {
         	orderShop.getItems().stream().filter(item -> orderItem.getProductItem().equals(item.getProductItem())).findFirst().map(item -> {
             	item.setQuantity(item.getQuantity() + orderItem.getQuantity());
             	orderItemRepository.save(item);

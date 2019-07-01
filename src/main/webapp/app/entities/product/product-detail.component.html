@@ -47,7 +47,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="col-md-3">
+				<div class="col-md-4">
 					<div>
 						<button *ngSwitchCase="true" type="button" [disabled]="isSaving" class="btn btn-primary" (click)="uploadProductUrl()">
 							<fa-icon [icon]="'file-upload'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.upload"> Upload</span>
@@ -62,7 +62,7 @@
 						</span>
 					</div>    
 				</div>
-				<div class="col-md-6">
+				<div class="col-md-5">
 					<div>
 						<button type="button" [disabled]="isSaving" class="btn btn-info" (click)="previousState()">
 							<fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
@@ -93,11 +93,11 @@
 							<div>
 								<span>123 customer reviews</span>
 							</div> -->
-							<div class="border" *ngIf="selectedItem.id">
+							<div class="border p-2" *ngSwitchCase="false">
 								<div >
-									Price: <span>{{selectedItem?selectedItem.currency : 'Fuck you'}} {{selectedItem?selectedItem.price : 'asshole'}}</span>
+									Price: <span>{{selectedCurrency}} {{selectedItem? (selectedItem.price? selectedItem.price : priceRange) : ''}}</span>
 								</div>
-								<div>
+								<div *ngIf="selectedItem.id">
 									You Save: $5.90 (28%)
 								</div>
 							</div>
@@ -161,7 +161,8 @@
 									<span>Add to Cart</span>
 								</button>
 							</div>
-							<div>Product Description</div>
+							<hr style='border-color: #5E5E5E;border-style: solid none;border-width: 1px 0;' />
+							<div *ngSwitchCase="true">Product Description</div>
 							<div>
 								<span *ngSwitchCase="false">{{product.description}}</span>
 								<span *ngSwitchCase="true"><textarea class="form-control" name="description" id="field_description" [(ngModel)]="product.description" rows="5" cols="50"></textarea></span>

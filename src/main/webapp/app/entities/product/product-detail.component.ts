@@ -60,6 +60,8 @@ export class ProductDetailComponent implements OnInit {
     selectedSize: IProductStyle = {};
     selectedItem: IProductItem = {};
     selectedUrl: IUrl;
+    selectedCurrency: string;
+    priceRange: string;
     isEditable: boolean;
 
     modalRef: NgbModalRef;
@@ -138,6 +140,7 @@ export class ProductDetailComponent implements OnInit {
             } else {
                 // Not consider ATM
             }
+            this.initCurrencyAndPrice();
         });
         this.registerChangeInProducts();
         this.registerChangeInProductStyle();
@@ -150,6 +153,7 @@ export class ProductDetailComponent implements OnInit {
     }
 
     initObjects() {
+        console.error('this.selectedCurrency: ' + this.selectedCurrency);
         this.product.urls = [];
         const color: IProductStyle = Object.assign(new ProductStyle());
         color.tempId = this.uuidService.get();
@@ -197,6 +201,25 @@ export class ProductDetailComponent implements OnInit {
         item3.quantity = 1;
         item3.currency = CurrencyType.HKD;
         this.product.items = [item, item1, item2, item3];
+    }
+
+    initCurrencyAndPrice() {
+        // TODO: Currency from User Info or Product Items
+        this.selectedCurrency = CurrencyType.HKD + '$';
+
+        const len = this.product.items.length;
+        let min = Infinity, max = -Infinity;
+        this.product.items.forEach(item => {
+            if (item && item.price) {
+                if (item.price < min) {
+                    min = item.price;
+                }
+                if (item.price > max) {
+                    max = item.price;
+                }
+            }
+        });
+        this.priceRange = min + ' - ' + max;
     }
 
     load(id) {
