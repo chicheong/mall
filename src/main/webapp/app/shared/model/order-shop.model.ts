@@ -24,6 +24,11 @@ export class OrderShop implements IOrderShop {
         public shipping?: IShipping,
         public shop?: IShop,
         public items?: IOrderItem[],
-        public order?: IMyOrder
-    ) {}
+        public order?: IMyOrder,
+        public isChecked?: boolean,
+        public indeterminate?: boolean
+    ) {
+        this.isChecked = false;
+        this.indeterminate = false;
+    }
 }

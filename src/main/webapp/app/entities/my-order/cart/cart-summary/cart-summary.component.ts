@@ -19,7 +19,6 @@ export class CartSummaryComponent implements OnInit, OnDestroy {
         private myOrderService: MyOrderService
     ) {
     }
-
     ngOnInit() {
         if (this.itemTotal === undefined || !this.itemTotal) {
 //            if (this.myOrder && this.myOrder.items) {

@@ -3,6 +3,7 @@ import { NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
 
 import { NgbDateMomentAdapter } from './util/datepicker-adapter';
 import { MallSharedLibsModule, MallSharedCommonModule, JhiLoginModalComponent, HasAnyAuthorityDirective } from './';
+import { JhMaterialModule } from 'app/shared/jh-material.module';
 import { FileUploadDialogComponent } from './file-upload/file-upload-dialog.component';
 import { FileUploadComponent } from './file-upload/file-upload.component';
 import { ProductDetailOtherDialogComponent } from './popup/product/product-detail-other-dialog.component';
@@ -14,7 +15,7 @@ import { QuantitiesDialogComponent } from './popup/product/quantities-dialog.com
 import { GetItemFromColorSizePipe } from './popup/product/get-item-from-color-size.pipe';
 
 @NgModule({
-    imports: [MallSharedLibsModule, MallSharedCommonModule],
+    imports: [MallSharedLibsModule, MallSharedCommonModule, JhMaterialModule],
     declarations: [
         JhiLoginModalComponent, HasAnyAuthorityDirective,
         FileUploadDialogComponent,
@@ -39,7 +40,7 @@ import { GetItemFromColorSizePipe } from './popup/product/get-item-from-color-si
         PricesDialogComponent,
         QuantitiesDialogComponent
     ],
-    exports: [MallSharedCommonModule, JhiLoginModalComponent, HasAnyAuthorityDirective],
+    exports: [MallSharedCommonModule, JhiLoginModalComponent, HasAnyAuthorityDirective, JhMaterialModule],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class MallSharedModule {

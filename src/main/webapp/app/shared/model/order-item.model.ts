@@ -18,6 +18,9 @@ export class OrderItem implements IOrderItem {
         public price?: number,
         public currency?: CurrencyType,
         public productItem?: IProductItem,
-        public shop?: IOrderShop
-    ) {}
+        public shop?: IOrderShop,
+        public isChecked?: boolean
+    ) {
+        this.isChecked = false;
+    }
 }
