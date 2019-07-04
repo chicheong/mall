@@ -152,7 +152,14 @@ export class CartPendingComponent implements OnInit, OnDestroy {
 
     itemChanged(shop, item, event) {
         item.isChecked = event.checked;
-
+        /**
+        shop.isChecked = shop.items.every(function(item: any) {
+            return item.isChecked === true;
+        });
+        shop.indeterminate = shop.items.some(function(item: any) {
+            return item.isChecked === true;
+        });
+        */
         const totalSelected = shop.items.filter(i => i.isChecked).length;
         if (totalSelected === 0) {
             shop.isChecked = false;

@@ -29,10 +29,15 @@
                     </span>
                 </a>
             </li> -->
+            <!-- <input matInput placeholder="Search" aria-label="Search" >
+  			<fa-icon icon="search"></fa-icon> 
+			<mat-form-field>
+    			<input matInput placeholder="Input">
+  			</mat-form-field> -->
 			<span class="btn-group">
 				<input type="text" class="form-control" placeholder="What you want to find out today?" id="query" name="query" value="" size="50">
 				<button type="button" class="btn btn-light"><fa-icon icon="search"></fa-icon></button>
-			</span> 
+			</span>
             <li ngbDropdown class="nav-item dropdown pointer" *ngSwitchCase="true">
                 <a class="nav-link dropdown-toggle" ngbDropdownToggle href="javascript:void(0);" id="languagesnavBarDropdown" *ngIf="myAccount && myAccount.shops && myAccount.shops.length > 0">
                     <span>
@@ -392,7 +397,7 @@
 	                <a class="nav-link" [routerLink]="['/my-order/'+ myAccount.myOrder.id + '/review']" (click)="collapseNavbar()">
 	                    <span>
 	                    	<fa-icon icon="shopping-cart" fixedWidth="true"></fa-icon>
-	                        <span jhiTranslate="global.menu.cart">Cart</span>&nbsp;({{noOfItems}})
+	                    	<span matBadge="{{noOfItems}}" matBadgeOverlap="false"><span jhiTranslate="global.menu.cart">Cart</span></span>
 	                    </span>
 	                </a>
 	            </span>

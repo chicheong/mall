@@ -5,7 +5,8 @@ import {
     MatCheckboxModule, MatChipsModule, MatDatepickerModule, MatDialogModule, MatExpansionModule,
     MatFormFieldModule, MatGridListModule, MatIconModule,
     MatInputModule, MatListModule, MatMenuModule, MatNativeDateModule, MatProgressBarModule,
-    MatProgressSpinnerModule, MatRadioModule, MatSelectModule, MatSnackBarModule, MatTabsModule, MatTooltipModule
+    MatProgressSpinnerModule, MatRadioModule, MatSelectModule, MatSnackBarModule, MatTabsModule, MatTooltipModule,
+    MatBadgeModule
 } from '@angular/material';
 
 @NgModule({
@@ -31,7 +32,8 @@ import {
         MatAutocompleteModule,
         MatRadioModule,
         MatListModule,
-        MatIconModule],
+        MatIconModule,
+        MatBadgeModule],
     exports: [MatButtonModule,
         MatCheckboxModule,
         MatFormFieldModule,
@@ -54,7 +56,8 @@ import {
         MatAutocompleteModule,
         MatRadioModule,
         MatListModule,
-        MatIconModule],
+        MatIconModule,
+        MatBadgeModule],
 })
 export class JhMaterialModule {
 }
