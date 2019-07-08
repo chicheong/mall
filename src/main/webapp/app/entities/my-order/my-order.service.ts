@@ -304,12 +304,18 @@ export class MyOrderService {
         }
     }
 
-    calculateTotalProductPrice(myOrder: IMyOrder): number {
+    calculateTotalProductPrice(myOrder: IMyOrder, checkedOnly: boolean): number {
         let total = 0;
         if (myOrder.shops) {
             myOrder.shops.forEach(shop => {
                shop.items.forEach(item => {
-                   total += (item.quantity * item.price);
+                   if (checkedOnly) {
+                       if (item.isChecked) {
+                           total += (item.quantity * item.price);
+                       }
+                   } else {
+                       total += (item.quantity * item.price);
+                   }
                });
             });
         }
@@ -329,7 +335,7 @@ export class MyOrderService {
     }
 
     calculateTotalPrice(myOrder: IMyOrder): number {
-        return this.calculateTotalProductPrice(myOrder) + this.calculateTotalShippingPrice(myOrder);
+        return this.calculateTotalProductPrice(myOrder, false) + this.calculateTotalShippingPrice(myOrder);
     }
 
     calculateTotalQuantity(myOrder: IMyOrder): number {

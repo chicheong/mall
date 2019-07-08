@@ -9,6 +9,7 @@ export interface IOrderItem {
     currency?: CurrencyType;
     productItem?: IProductItem;
     shop?: IOrderShop;
+    isChecked?: boolean;
 }
 
 export class OrderItem implements IOrderItem {

@@ -89,7 +89,7 @@ export class CartPendingComponent implements OnInit, OnDestroy {
     }
 
     sumAll(): number {
-        return this.myOrderService.calculateTotalProductPrice(this.myOrder);
+        return this.myOrderService.calculateTotalProductPrice(this.myOrder, true);
     }
 
     updateMyOrder() {
@@ -112,6 +112,7 @@ export class CartPendingComponent implements OnInit, OnDestroy {
         this.eventManager.broadcast({ name: 'myOrderModification', content: 'OK', obj: result});
         this.isSaving = false;
         if (goNext) {
+            this.router.navigate(['/my-order/' + this.myOrder.id + '/review']);
         }
     }
 
@@ -133,15 +134,15 @@ export class CartPendingComponent implements OnInit, OnDestroy {
 
     canGoNext() {
         if (this.myOrder && this.myOrder.shops) {
-            const total = this.myOrderService.calculateTotalQuantity(this.myOrder);
-            if (total > 0) {
-                // console.error('canGoNext: true');
+            const totalQuantity = this.myOrderService.calculateTotalQuantity(this.myOrder);
+            const totalPrice = this.myOrderService.calculateTotalProductPrice(this.myOrder, true);
+            console.log('totalQuantity: ' + totalQuantity + ', totalPrice: ' + totalPrice);
+            if (totalQuantity > 0 && totalPrice > 0) {
                 return true;
             } else {
                 return false;
             }
         } else {
-            // console.error('canGoNext: false');
             return false;
         }
     }

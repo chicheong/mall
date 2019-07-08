@@ -30,7 +30,7 @@ export class CartReviewComponent extends CartComponent implements OnInit, OnDest
     }
 
     sumAll(): number {
-        return this.myOrderService.calculateTotalProductPrice(this.myOrder);
+        return this.myOrderService.calculateTotalProductPrice(this.myOrder, false);
     }
 
     updateMyOrder() {

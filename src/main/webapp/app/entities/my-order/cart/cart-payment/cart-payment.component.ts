@@ -56,7 +56,7 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
                                total: this.myOrder.total,
                                currency: this.myOrder.currency,
                                details: {
-                                   subtotal: this.myOrderService.calculateTotalProductPrice(this.myOrder),
+                                   subtotal: this.myOrderService.calculateTotalProductPrice(this.myOrder, false),
                                    tax: '0', // 0.07
                                    shipping: this.myOrderService.calculateTotalShippingPrice(this.myOrder),
                                    handling_fee: '0',

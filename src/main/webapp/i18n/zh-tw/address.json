@@ -2,19 +2,19 @@
     "mallApp": {
         "address": {
             "home": {
-                "title": "Addresses",
-                "createLabel": "建立一筆新的 Address",
-                "createOrEditLabel": "建立或編輯 Address",
-                "search": "搜尋 Address"
+                "title": "地址",
+                "createLabel": "建立一筆新的地址",
+                "createOrEditLabel": "建立或編輯地址",
+                "search": "搜尋地址"
             },
-            "created": "新的 Address 建立成功，識別碼為 {{ param }}",
-            "updated": "識別碼為 {{ param }} 的 Address 更新成功",
-            "deleted": "識別碼為 {{ param }} 的 Address 刪除成功",
+            "created": "新的地址建立成功，識別碼為 {{ param }}",
+            "updated": "識別碼為 {{ param }} 的地址更新成功",
+            "deleted": "識別碼為 {{ param }} 的地址刪除成功",
             "delete": {
-                "question": "您確定要刪除 Address {{ id }} 嗎?"
+                "question": "您確定要刪除地址 {{ id }} 嗎?"
             },
             "detail": {
-                "title": "Address"
+                "title": "地址"
             },
             "line1": "Line 1",
             "line2": "Line 2",

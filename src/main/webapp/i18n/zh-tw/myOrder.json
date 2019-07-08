@@ -2,10 +2,10 @@
     "mallApp": {
         "myOrder": {
             "home": {
-                "title": "My Orders",
-                "createLabel": "建立一筆新的 My Order",
-                "createOrEditLabel": "建立或編輯 My Order",
-                "search": "搜尋 My Order"
+                "title": "訂單",
+                "createLabel": "建立一筆新的訂單",
+                "createOrEditLabel": "建立或編輯訂單",
+                "search": "搜尋訂單"
             },		
             "checkout": {
                 "title": "結賬"
@@ -45,6 +45,37 @@
 						"rate_limit":  "同一時段太多查詢。如果情況不斷出現，請與我們聯絡。"
 					}
             	},
+				"pending": {
+					"title": "購物車",
+					"grid": {
+            			"title": {
+            				"item": {
+            					"full": "項目",
+            					"abbr": "項目"
+            				},
+            				"unitPrice": {
+            				    "full": "單價",
+            					"abbr": "單價"
+            				},
+            				"quantity": {
+            				    "full": "數量",
+            					"abbr": "數量"            				
+            				},
+            				"subtotal": {
+            				    "full": "金額",
+            					"abbr": "金額"            				
+            				},
+            				"action": {
+            				    "full": "操作",
+            					"abbr": "操作"
+            				}
+            			}
+					},
+					"currentTotal": "現時總數",
+					"button": {
+						"checkout": "結算"
+	            	}
+            	},
             	"review": {
 					"title": "購物車",
 					"currentTotal": "現時總數"
@@ -62,14 +93,14 @@
 	            	}
             	}
             },
-            "created": "新的 My Order 建立成功，識別碼為 {{ param }}",
-            "updated": "識別碼為 {{ param }} 的 My Order 更新成功",
-            "deleted": "識別碼為 {{ param }} 的 My Order 刪除成功",
+            "created": "新的訂單建立成功，識別碼為 {{ param }}",
+            "updated": "識別碼為 {{ param }} 的訂單更新成功",
+            "deleted": "識別碼為 {{ param }} 的訂單刪除成功",
             "delete": {
-                "question": "您確定要刪除 My Order {{ id }} 嗎?"
+                "question": "您確定要刪除訂單 {{ id }} 嗎?"
             },
             "detail": {
-                "title": "My Order"
+                "title": "訂單"
             },
             "receiver": "Receiver",
             "total": "Total",

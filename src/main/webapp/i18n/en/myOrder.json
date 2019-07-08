@@ -45,6 +45,37 @@
 						"rate_limit":  "An error occurred due to requests hitting the API too quickly. Please let us know if you're consistently running into this error."
 	            	}            	
             	},
+            	"pending": {
+            		"title": "Shopping Cart",
+            		"grid": {
+            			"title": {
+            				"item": {
+            					"full": "Item",
+            					"abbr": "Item"
+            				},
+            				"unitPrice": {
+            				    "full": "Unit Price",
+            					"abbr": "Unit P."
+            				},
+            				"quantity": {
+            				    "full": "Quantity",
+            					"abbr": "Qty"            				
+            				},
+            				"subtotal": {
+            				    "full": "Subtotal",
+            					"abbr": "S. Total"            				
+            				},
+            				"action": {
+            				    "full": "Action",
+            					"abbr": "Action"
+            				}
+            			}
+            		},
+            		"currentTotal": "Current Total",
+            		"button": {
+						"checkout": "Checkout"
+	            	}
+            	},            	
             	"review": {
             		"title": "Shopping Cart",
             		"currentTotal": "Current Total"
