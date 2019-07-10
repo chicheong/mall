@@ -67,10 +67,14 @@ public class MyOrder implements Serializable {
 
     @OneToMany(mappedBy = "order")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JsonIgnore
     private Set<OrderShop> shops = new HashSet<>();
+    
     @OneToMany(mappedBy = "order")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+    @JsonIgnore
     private Set<OrderStatusHistory> statusHistories = new HashSet<>();
+    
     @ManyToOne
     @JsonIgnoreProperties("myOrders")
     private MyAccount account;

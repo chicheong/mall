@@ -287,7 +287,9 @@ public class ProductService {
     public Page<ProductDTO> findAll(Pageable pageable) {
         log.debug("Request to get all Products");
         return productRepository.findAll(pageable)
-            .map(productMapper::toDto);
+            .map((product) -> {
+            	return findOneWithLists(product.getId());
+            });
     }
 
 

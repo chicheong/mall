@@ -98,15 +98,24 @@ public class MyOrderService {
     public MyOrderDTO save(MyOrderDTO myOrderDTO) {
         log.debug("Request to save MyOrder : {}", myOrderDTO);
         MyOrder myOrder = myOrderMapper.toEntity(myOrderDTO);
-//      myOrder.setShops(myOrderDTO.getShops());
-      myOrder.setStatusHistories(myOrderDTO.getStatusHistories());
-      MyOrder result = myOrderRepository.save(myOrder);
-//      MyOrderDTO result = myOrderMapper.toDto(myOrder);
-      myOrderSearchRepository.save(myOrder);
-//      myOrderDTO.getShops().forEach((shop) -> {
-//      	orderShopRepository.save(shop);
-//      	orderShopSearchRepository.save(shop);
-//      });
+        myOrder.setShops(orderShopMapper.toEntity(myOrderDTO.getShops()));
+        myOrder.setStatusHistories(myOrderDTO.getStatusHistories());
+        MyOrder result = myOrderRepository.save(myOrder);
+//        MyOrderDTO result = myOrderMapper.toDto(myOrder);
+        myOrderSearchRepository.save(myOrder);
+        myOrderDTO.getShops().forEach((shop) -> {
+        	OrderShop orderShop = orderShopMapper.toEntity(shop);
+        	orderShop.setOrder(result);
+        	orderShop = orderShopRepository.save(orderShop);
+        	orderShopSearchRepository.save(orderShop);
+        	shop.getItems().forEach((item) -> {
+        		OrderItem orderItem = orderItemMapper.toEntity(item);
+//        		orderItem.setShop(orderShop);
+        		orderItemRepository.save(orderItem);
+        		orderItemSearchRepository.save(orderItem);
+        	});
+        });
+        
 //      Optional.ofNullable(myOrderDTO.getShipping()).ifPresent(shippingDTO -> {
 //      	Optional.ofNullable(shippingDTO.getShippingAddress()).ifPresent(address -> {
 //      		if (address.getId() == null) {
@@ -123,8 +132,8 @@ public class MyOrderService {
 //      	shippingService.save(shippingDTO);
 //      });
       Optional.ofNullable(myOrderDTO.getPayment()).ifPresent(paymentDTO -> {
-      	paymentDTO.setOrder(result);
-      	paymentService.save(paymentDTO);
+    	  paymentDTO.setOrder(result);
+    	  paymentService.save(paymentDTO);
       });
 //      return this.findOne(myOrder.getId());
       return myOrderMapper.toDto(myOrder);

@@ -108,12 +108,13 @@ export class CartPendingComponent implements OnInit, OnDestroy {
     }
 
     private onSaveSuccess(result: IMyOrder, goNext: boolean) {
-        this.myOrder = result;
+        // this.myOrder = result;
         this.eventManager.broadcast({ name: 'myOrderModification', content: 'OK', obj: result});
         this.isSaving = false;
         if (goNext) {
-            this.router.navigate(['/my-order/' + this.myOrder.id + '/review']);
+            // this.router.navigate(['/my-order/' + this.myOrder.id + '/review']);
         }
+        this.router.navigate(['/my-order', this.myOrder.id, 'pending']);
     }
 
     private onSaveError() {

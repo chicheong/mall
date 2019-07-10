@@ -5,12 +5,34 @@
 
 <div *ngIf="products">
 	<div class="row">
-		<div class="card col-lg-3 col-md-4 col-sm-6 col-xs-12 thumb" *ngFor="let product of products ;trackBy: trackId">
+		<mat-card class="example-card col-lg-3 col-md-4 col-sm-6 col-xs-12" *ngFor="let product of products ;trackBy: trackId">
+		  <mat-card-header>
+		    <div mat-card-avatar class="example-header-image"></div>
+		    <mat-card-title>{{product.name}}</mat-card-title>
+		    <mat-card-subtitle></mat-card-subtitle>
+		  </mat-card-header>
+			
+		  <a target="_self" [routerLink]="['product', product.id, 'view']">
+			<img mat-card-image [src]="product.urls[0]?.path" [alt]="product.urls[0]?.path">
+		  </a>
+		  <mat-card-content>
+		    <p>
+{{product.description}}
+		    </p>
+		  </mat-card-content>
+		  <mat-card-actions>
+		    <button mat-button>LIKE</button>
+		    <button mat-button>SHARE</button>
+		  </mat-card-actions>
+		</mat-card>
+	
+	
+		<!-- <div class="card col-lg-3 col-md-4 col-sm-6 col-xs-12 thumb" *ngFor="let product of products ;trackBy: trackId">
             <a class="thumbnail" target="_self" [routerLink]="['product', product.id, 'view']">
                 <img class="img-fluid" [src]="product.urls[0]?.path" alt="" />
                 <div style="overflow: hidden; height:80px"><h3>{{product.name}}</h3></div>
             </a>
-       	</div>
+       	</div> -->
 	</div>
 </div>
 
