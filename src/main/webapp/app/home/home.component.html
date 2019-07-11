@@ -5,19 +5,18 @@
 
 <div *ngIf="products">
 	<div class="row">
-		<mat-card class="example-card col-lg-3 col-md-4 col-sm-6 col-xs-12" *ngFor="let product of products ;trackBy: trackId">
-		  <mat-card-header>
-		    <div mat-card-avatar class="example-header-image"></div>
-		    <mat-card-title>{{product.name}}</mat-card-title>
-		    <mat-card-subtitle></mat-card-subtitle>
-		  </mat-card-header>
-			
+		<mat-card class="example-card col-lg-3 col-md-4 col-sm-6 col-xs-12" *ngFor="let product of products ;trackBy: trackId">			
 		  <a target="_self" [routerLink]="['product', product.id, 'view']">
 			<img mat-card-image [src]="product.urls[0]?.path" [alt]="product.urls[0]?.path">
 		  </a>
+		  <mat-card-header>
+		    <!-- <div mat-card-avatar class="example-header-image"></div> -->
+		    <mat-card-subtitle></mat-card-subtitle>
+		  </mat-card-header>		  
 		  <mat-card-content>
+		  	<mat-card-title style="max-height: 80px;margin: 0px;padding: 0px">{{product.name}}</mat-card-title>
 		    <p>
-{{product.description}}
+				{{product.description}}
 		    </p>
 		  </mat-card-content>
 		  <mat-card-actions>
