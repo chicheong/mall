@@ -4,7 +4,7 @@
             <jhi-alert-error></jhi-alert-error>
 			<div class="row"> <!-- *jhiHasAnyAuthority="'ROLE_USER'" -->
 				<div class="col-md-1">
-					<div>photo listing</div>
+					<!-- <div>photo listing</div> -->
 					<div jhiSortableList (sort)="sort($event)" *ngSwitchCase="true">
 						<div *ngFor="let url of product.urls | orderBy: 'sequence'" class="img-wrap">	  			
 							<img [src]="url.path"
@@ -53,7 +53,7 @@
 							<fa-icon [icon]="'file-upload'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.upload"> Upload</span>
 						</button>
 					</div>
-					<div>main photo</div>
+					<!-- <div>main photo</div> -->
 					<div>
 						<span class="hipster img-fluid img-rounded" *ngIf="selectedUrl && selectedUrl.path">
 							<img [src]="selectedUrl.path"
@@ -97,9 +97,9 @@
 								<div >
 									Price: <span>{{selectedCurrency}} {{selectedItem? (selectedItem.price? selectedItem.price : priceRange) : ''}}</span>
 								</div>
-								<div *ngIf="selectedItem.id">
+								<!-- <div *ngIf="selectedItem.id">
 									You Save: $5.90 (28%)
-								</div>
+								</div> -->
 							</div>
 							<div *ngSwitchCase="true">
 								<div *ngIf="product.colors">
@@ -195,7 +195,7 @@
 					</div>
 				</div>
 				<div class="col-md-2">
-					<div>other</div>
+					<!-- <div>other</div>-->
 					<div>other</div>
 				</div>
 			</div>

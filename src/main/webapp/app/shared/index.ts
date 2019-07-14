@@ -15,6 +15,7 @@ export * from './file-upload/file-upload.component';
 export * from './file-upload/file-upload-dialog.component';
 export * from './file-upload/file-upload-model.service';
 export * from './formatting/format-number.pipe';
+export * from './formatting/string-ellipsis.pipe';
 export * from './popup/popup.service';
 // export * from './popup/product/product-detail-popup.service';
 export * from './popup/product/product-detail-other-dialog.component';
