@@ -56,7 +56,7 @@ public class Product implements Serializable {
     private String description;
 
     @Lob
-    @Column(name = "content")
+    @Column(name = "content", length = 20971520)
     private String content;
 
     @Column(name = "remark")
