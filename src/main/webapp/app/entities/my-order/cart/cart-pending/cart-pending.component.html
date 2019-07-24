@@ -134,7 +134,7 @@
 				</div>
 			</div>
 		</div>		
-		<hr>
+		<!-- <hr>
 		<div class="row">
 			<div class="col-md-6">
 				<form class="card p-2">
@@ -152,9 +152,28 @@
 					Total</span>&nbsp;&nbsp;({{myOrder.currency}}):
 				<h3 style="display: inline;" class="font-weight-bold">{{sumAll() | currency}}&nbsp;&nbsp;&nbsp;</h3>
 			</div>
+		</div> -->
+		<hr>
+		<div class="row">
+			<div class="col-md-3 bg-primary text-white p-3">
+			</div>
+			<div class="col-md-3 bg-primary text-white p-3">
+				Item Chosen&nbsp;<h2 style="display:inline;">{{itemTotal}}</h2>
+			</div>	
+			<div class="col-md-3 bg-primary text-white p-3">
+				Total (Not include SHIPPING)&nbsp;<h3 style="display:inline;">{{sumAll() | currency}}</h3>
+			</div>
+			<!-- <div class="col-md-3 bg-success text-white p-3 text-right">
+				Total(Not include SHIPPING)&nbsp;<h2 style="display:inline;">{{sum() | currency}}</h2>&nbsp;&nbsp;&nbsp;
+			</div> -->
+			<div class="col-md-3 bg-primary text-white p-3 text-right">
+				<button type="button"
+					[disabled]="editForm.form.invalid || isSaving || !canGoNext()"
+					class="btn btn-success" (click)="save(true)">
+					<fa-icon icon="credit-card"></fa-icon>&nbsp;<span
+						jhiTranslate="mallApp.myOrder.cart.pending.button.checkout">Checkout</span>
+				</button>
+			</div>
 		</div>
 	</form>
-	<hr>
-	<jhi-checkout-summary [myOrder]=myOrder [itemTotal]=sumAll()>
-	</jhi-checkout-summary>
 </div>
