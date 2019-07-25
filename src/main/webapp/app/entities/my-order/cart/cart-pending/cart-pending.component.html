@@ -20,13 +20,13 @@
 						jhiTranslate="entity.action.back">Back</span>
 				</button>
 				<button type="button" [disabled]="editForm.form.invalid || isSaving"
-					class="btn btn-primary" (click)="save(false)">
+					class="btn btn-primary" (click)="save()">
 					<fa-icon icon="save"></fa-icon>&nbsp;<span
 						jhiTranslate="entity.action.saveRefresh">Save & Refresh</span>
 				</button>
 				<button type="button"
 					[disabled]="editForm.form.invalid || isSaving || !canGoNext()"
-					class="btn btn-success" (click)="save(true)">
+					class="btn btn-success" (click)="checkout()">
 					<fa-icon icon="credit-card"></fa-icon>&nbsp;<span
 						jhiTranslate="mallApp.myOrder.cart.pending.button.checkout">Checkout</span>
 				</button>
@@ -155,21 +155,17 @@
 		</div> -->
 		<hr>
 		<div class="row">
-			<div class="col-md-3 bg-primary text-white p-3">
+			<div class="col-md-4 bg-primary text-white p-1">
 			</div>
-			<div class="col-md-3 bg-primary text-white p-3">
-				Item Chosen&nbsp;<h2 style="display:inline;">{{itemTotal}}</h2>
+			<div class="col-md-6 bg-primary text-white p-1 text-right">
+				<small jhiTranslate="mallApp.myOrder.cart.pending.itemChosen" [translateValues]="{num: itemTotal()}">Item Chosen</small>
+				&nbsp;&nbsp;&nbsp;
+				<small jhiTranslate="mallApp.myOrder.cart.pending.totalNoShipping">Total (Not include SHIPPING)</small>&nbsp;<h5 style="display:inline;">{{sumAll() | currency}}</h5>
 			</div>	
-			<div class="col-md-3 bg-primary text-white p-3">
-				Total (Not include SHIPPING)&nbsp;<h3 style="display:inline;">{{sumAll() | currency}}</h3>
-			</div>
-			<!-- <div class="col-md-3 bg-success text-white p-3 text-right">
-				Total(Not include SHIPPING)&nbsp;<h2 style="display:inline;">{{sum() | currency}}</h2>&nbsp;&nbsp;&nbsp;
-			</div> -->
-			<div class="col-md-3 bg-primary text-white p-3 text-right">
+			<div class="col-md-2 bg-primary text-white p-1 text-right">
 				<button type="button"
 					[disabled]="editForm.form.invalid || isSaving || !canGoNext()"
-					class="btn btn-success" (click)="save(true)">
+					class="btn btn-success" (click)="checkout()">
 					<fa-icon icon="credit-card"></fa-icon>&nbsp;<span
 						jhiTranslate="mallApp.myOrder.cart.pending.button.checkout">Checkout</span>
 				</button>

@@ -72,6 +72,8 @@
             			}
 					},
 					"currentTotal": "現時總數",
+					"totalNoShipping": "合計 (不含運費)",
+					"itemChosen": "巳選商品{{ num }}款",
 					"button": {
 						"checkout": "結算"
 	            	}

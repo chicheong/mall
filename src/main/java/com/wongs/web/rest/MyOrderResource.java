@@ -233,4 +233,24 @@ public class MyOrderResource {
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, myOrderDTO.getId().toString()))
             .body(result);
     }
+    
+    /**
+     * PUT  /my-orders/checkout : Checkout from an existing or a new myOrder.
+     *
+     * @param myOrderDTO the myOrderDTO to charge and update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated myOrderDTO,
+     * or with status 400 (Bad Request) if the myOrderDTO is not valid,
+     * or with status 500 (Internal Server Error) if the myOrderDTO couldn't be charged and updated
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @PutMapping("/my-orders/checkout")
+    public ResponseEntity<MyOrderDTO> checkout(@RequestBody MyOrderDTO myOrderDTO) throws URISyntaxException {
+        log.debug("REST request to checkout MyOrder : {}", myOrderDTO);
+
+        MyOrderDTO result = myOrderDTO; // myOrderService.save(myOrderDTO);
+        // Issue confirmation email
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, myOrderDTO.getId().toString()))
+            .body(result);
+    }
 }

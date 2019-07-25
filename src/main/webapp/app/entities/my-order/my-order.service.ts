@@ -9,6 +9,7 @@ import { IMyOrder, PaypalOrderItem } from 'app/shared/model/my-order.model';
 
 import { IProductItem } from 'app/shared/model/product-item.model';
 import { IOrderItem } from 'app/shared/model/order-item.model';
+import { IOrderShop } from 'app/shared/model/order-shop.model';
 
 import { CartControl } from './cart/cart-control/cart-control';
 import { CartControlType } from './cart/cart-control/cart-control-type';
@@ -47,6 +48,26 @@ export class MyOrderService {
 
     charge(myOrder: IMyOrder): Observable<EntityResponseType> {
         return this.http.put<IMyOrder>(`${this.resourceUrl}/charge`, myOrder, { observe: 'response' });
+    }
+
+    checkout(myOrder: IMyOrder): Observable<EntityResponseType> {
+        myOrder.shops.forEach(shop => {
+            shop.items.forEach(item => {
+                if (!item.isChecked) {
+                    const index = shop.items.indexOf(item, 0);
+                    if (index > -1) {
+                        shop.items.splice(index, 1);
+                    }
+                }
+            });
+            if (shop.items.length === 0) {
+                const index = myOrder.shops.indexOf(shop, 0);
+                if (index > -1) {
+                    myOrder.shops.splice(index, 1);
+                }
+            }
+        });
+        return this.http.put<IMyOrder>(`${this.resourceUrl}/checkout`, myOrder, { observe: 'response' });
     }
 
     find(id: number): Observable<EntityResponseType> {
@@ -338,14 +359,37 @@ export class MyOrderService {
         return this.calculateTotalProductPrice(myOrder, false) + this.calculateTotalShippingPrice(myOrder);
     }
 
-    calculateTotalQuantity(myOrder: IMyOrder): number {
+    calculateTotalQuantity(myOrder: IMyOrder, checkedOnly: boolean): number {
         let total = 0;
         if (myOrder.shops) {
             myOrder.shops.forEach(shop => {
                console.error('shop.items: ' + shop.items);
                if (shop.items) {
                    shop.items.forEach(item => {
-                       total += item.quantity;
+                       if (checkedOnly) {
+                           if (item.isChecked) {
+                               total += item.quantity;
+                           }
+                       } else {
+                           total += item.quantity;
+                       }
+                   });
+               }
+            });
+        }
+        return total;
+    }
+
+    calculateTotalChosenItem(myOrder: IMyOrder): number {
+        let total = 0;
+        if (myOrder.shops) {
+            myOrder.shops.forEach(shop => {
+               console.error('shop.items: ' + shop.items);
+               if (shop.items) {
+                   shop.items.forEach(item => {
+                       if (item.isChecked) {
+                           total += 1;
+                       }
                    });
                }
             });

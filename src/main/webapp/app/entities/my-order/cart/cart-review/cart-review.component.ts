@@ -69,7 +69,7 @@ export class CartReviewComponent extends CartComponent implements OnInit, OnDest
 
     canGoNext() {
         if (this.myOrder && this.myOrder.shops) {
-            const total = this.myOrderService.calculateTotalQuantity(this.myOrder);
+            const total = this.myOrderService.calculateTotalQuantity(this.myOrder, false);
             if (total > 0) {
                 // console.error('canGoNext: true');
                 return true;

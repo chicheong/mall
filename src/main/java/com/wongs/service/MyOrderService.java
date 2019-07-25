@@ -210,6 +210,13 @@ public class MyOrderService {
 //        }
         return this.findOne(myOrder.getId()).orElse(null);
     }
+    
+    private MyOrder checkout(MyOrderDTO myOrderDTO) {
+    	// Replace existing MyOrder or create a new one
+    	
+    	
+    	return null;
+    }
 
     private MyOrder createPendingOrder(MyAccount myAccount, CurrencyType currency) {
     	MyOrder myOrder = new MyOrder();

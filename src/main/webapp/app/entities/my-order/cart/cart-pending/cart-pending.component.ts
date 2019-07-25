@@ -92,28 +92,38 @@ export class CartPendingComponent implements OnInit, OnDestroy {
         return this.myOrderService.calculateTotalProductPrice(this.myOrder, true);
     }
 
+    itemTotal(): number {
+        return this.myOrderService.calculateTotalChosenItem(this.myOrder);
+    }
+
     updateMyOrder() {
     }
 
-    save(goNext: boolean) {
+    checkout() {
+        this.isSaving = true;
+        // Only for checked items
+        this.myOrder.total = this.myOrderService.calculateTotalPrice(this.myOrder);
+        this.subscribeToSaveResponse(
+                this.myOrderService.checkout(this.myOrder));
+        // this.router.navigate(['/my-order', this.myOrder.id, 'review']);
+    }
+
+    save() {
         this.isSaving = true;
         this.myOrder.total = this.myOrderService.calculateTotalPrice(this.myOrder);
         this.subscribeToSaveResponse(
-                this.myOrderService.update(this.myOrder), goNext);
+                this.myOrderService.update(this.myOrder));
     }
 
-    private subscribeToSaveResponse(result: Observable<HttpResponse<IMyOrder>>, goNext: boolean) {
+    private subscribeToSaveResponse(result: Observable<HttpResponse<IMyOrder>>) {
         result.subscribe((res: HttpResponse<IMyOrder>) =>
-            this.onSaveSuccess(res.body, goNext), (res: HttpErrorResponse) => this.onSaveError());
+            this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
     }
 
-    private onSaveSuccess(result: IMyOrder, goNext: boolean) {
+    private onSaveSuccess(result: IMyOrder) {
         // this.myOrder = result;
         this.eventManager.broadcast({ name: 'myOrderModification', content: 'OK', obj: result});
         this.isSaving = false;
-        if (goNext) {
-            this.router.navigate(['/my-order', this.myOrder.id, 'review']);
-        }
     }
 
     private onSaveError() {
@@ -134,7 +144,7 @@ export class CartPendingComponent implements OnInit, OnDestroy {
 
     canGoNext() {
         if (this.myOrder && this.myOrder.shops) {
-            const totalQuantity = this.myOrderService.calculateTotalQuantity(this.myOrder);
+            const totalQuantity = this.myOrderService.calculateTotalQuantity(this.myOrder, true);
             const totalPrice = this.myOrderService.calculateTotalProductPrice(this.myOrder, true);
             console.log('totalQuantity: ' + totalQuantity + ', totalPrice: ' + totalPrice);
             if (totalQuantity > 0 && totalPrice > 0) {
