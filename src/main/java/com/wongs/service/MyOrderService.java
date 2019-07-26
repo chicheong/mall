@@ -3,6 +3,7 @@ package com.wongs.service;
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
 
 import java.math.BigDecimal;
+import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
@@ -149,18 +150,22 @@ public class MyOrderService {
         log.debug("Request to add OrderItem : {} ", orderItem);
         MyAccount myAccount = myAccountMapper.toEntity(myAccountDTO);
         MyOrder myOrder = this.findEntityByAccountAndStatus(myAccount, OrderStatus.PENDING).orElseGet(() -> {
-        	return this.createPendingOrder(myAccount, orderItem.getCurrency());	
+        	return this.createOrderWithCurrencyAndOrderStatus(myAccount, orderItem.getCurrency(), OrderStatus.PENDING);	
         });
         Shop shop = shopService.findByProductItem(orderItem.getProductItem());
         myOrder.getShops().stream().filter(orderShop -> shop.getId().equals(orderShop.getShop().getId())).findFirst().map(orderShop -> {
         	orderShop.getItems().stream().filter(item -> orderItem.getProductItem().equals(item.getProductItem())).findFirst().map(item -> {
             	item.setQuantity(item.getQuantity() + orderItem.getQuantity());
             	orderItemRepository.save(item);
+            	orderShop.setTotal(this.calculateTotalPrice(orderShop));
+            	orderShopRepository.save(orderShop);
+            	orderShopSearchRepository.save(orderShop);
             	return item; 
         	}).orElseGet(() -> {
             	orderItem.setShop(orderShop);
             	orderItemRepository.save(orderItem);
             	orderShop.getItems().add(orderItem);
+            	orderShop.setTotal(this.calculateTotalPrice(orderItem));
             	orderShopRepository.save(orderShop);
             	orderShopSearchRepository.save(orderShop);
             	return orderItem;
@@ -211,18 +216,51 @@ public class MyOrderService {
         return this.findOne(myOrder.getId()).orElse(null);
     }
     
-    private MyOrder checkout(MyOrderDTO myOrderDTO) {
-    	// Replace existing MyOrder or create a new one
-    	
-    	
-    	return null;
+    /**
+     * Add or replace a MyOrder with OrderStatus Checkout.
+     *
+     * @param myOrderDTO the entity to save
+     * @return the persisted entity
+     */
+    public void checkout(MyAccountDTO myAccountDTO, MyOrderDTO myOrderDTO) {
+    	log.debug("Request to add or replace MyOrder : {} ", myOrderDTO);
+        MyAccount myAccount = myAccountMapper.toEntity(myAccountDTO);
+        MyOrder myOrder = this.findEntityByAccountAndStatus(myAccount, OrderStatus.CHECKOUT).orElseGet(() -> {
+        	return this.createOrderWithCurrencyAndOrderStatus(myAccount, myOrderDTO.getCurrency(), OrderStatus.CHECKOUT);	
+        });
+        myOrder.getShops().forEach((shop) -> {
+        	shop.getItems().forEach((item) -> {
+        		orderItemRepository.delete(item);
+        	});
+        	orderShopRepository.delete(shop);
+        });
+        myOrder.setTotal(myOrderDTO.getTotal());
+        myOrder.setCurrency(myOrderDTO.getCurrency());
+        myOrder.setShops(new HashSet<>());
+        MyOrder result = myOrderRepository.save(myOrder);
+        myOrderSearchRepository.save(myOrder);
+        for (OrderShopDTO shop : myOrderDTO.getShops()) {
+        	OrderShop orderShop = orderShopMapper.toEntity(shop);
+        	orderShop.setId(0L);
+        	orderShop.setOrder(result);
+        	orderShop.setTotal(this.calculateTotalPrice(orderShop));
+        	OrderShop nOrderShop = orderShopRepository.save(orderShop);
+        	orderShopSearchRepository.save(orderShop);
+        	shop.getItems().forEach((item) -> {
+        		OrderItem orderItem = orderItemMapper.toEntity(item);
+        		orderItem.setId(0L);
+        		orderItem.setShop(nOrderShop);
+        		orderItemRepository.save(orderItem);
+        		orderItemSearchRepository.save(orderItem);
+        	});
+        }
     }
 
-    private MyOrder createPendingOrder(MyAccount myAccount, CurrencyType currency) {
+    private MyOrder createOrderWithCurrencyAndOrderStatus(MyAccount myAccount, CurrencyType currency, OrderStatus orderStatus) {
     	MyOrder myOrder = new MyOrder();
     	myOrder.setAccount(myAccount);
     	myOrder.setCurrency(currency);
-    	myOrder.setStatus(OrderStatus.PENDING);
+    	myOrder.setStatus(orderStatus);
         myOrder = myOrderRepository.save(myOrder);
         myOrderSearchRepository.save(myOrder);
         
@@ -261,6 +299,11 @@ public class MyOrderService {
 //        myOrderMapper::toDto
     }
 
+    @Transactional(readOnly = true)
+    public MyOrderDTO findByAccountAndStatus(MyAccountDTO account, OrderStatus status) {
+    	return this.findByAccountAndStatus(myAccountMapper.toEntity(account), status);
+    }
+    
     /**
      * Get one myOrder by MyAccount and OrderStatus.
      *
@@ -297,6 +340,14 @@ public class MyOrderService {
     
     public BigDecimal calculateTotalPrice(OrderItem orderItem) {
     	return orderItem.getPrice().multiply(new BigDecimal(orderItem.getQuantity()));
+    }
+    
+    public BigDecimal calculateTotalPrice(OrderShop orderShop) {
+    	BigDecimal total = new BigDecimal(0);
+    	for (OrderItem item : orderShop.getItems()) {
+    		total = total.add(calculateTotalPrice(item));
+    	}
+    	return total;
     }
     
     /**

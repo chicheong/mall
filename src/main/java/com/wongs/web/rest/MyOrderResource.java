@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.stripe.model.Charge;
 import com.wongs.domain.OrderItem;
+import com.wongs.domain.enumeration.OrderStatus;
 import com.wongs.domain.enumeration.PaymentStatus;
 import com.wongs.domain.enumeration.PaymentType;
 import com.wongs.security.SecurityUtils;
@@ -246,9 +247,11 @@ public class MyOrderResource {
     @PutMapping("/my-orders/checkout")
     public ResponseEntity<MyOrderDTO> checkout(@RequestBody MyOrderDTO myOrderDTO) throws URISyntaxException {
         log.debug("REST request to checkout MyOrder : {}", myOrderDTO);
-
-        MyOrderDTO result = myOrderDTO; // myOrderService.save(myOrderDTO);
-        // Issue confirmation email
+        Optional<MyAccountDTO> myAccount = myAccountService.findOne(userInfoService.findOneWithAccountsByUserLogin(SecurityUtils.getCurrentUserLogin().get()).getAccountId());
+        
+        myAccount.orElseThrow(() -> new BadRequestAlertException("Please login first", "MyAccount", "notLogin"));
+        myOrderService.checkout(myAccount.get(), myOrderDTO);
+        MyOrderDTO result = myOrderService.findByAccountAndStatus(myAccount.get(), OrderStatus.CHECKOUT);
         return ResponseEntity.ok()
             .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, myOrderDTO.getId().toString()))
             .body(result);

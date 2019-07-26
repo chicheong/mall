@@ -394,7 +394,7 @@
             </li>
             <li class="nav-item" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" *ngSwitchCase="true">
 	            <span *ngIf="myAccount && myAccount.myOrder && noOfItems > 0">
-	                <a class="nav-link" [routerLink]="['/my-order/'+ myAccount.myOrder.id + '/review']" (click)="collapseNavbar()">
+	                <a class="nav-link" [routerLink]="['/my-order', myAccount.myOrder.id, 'pending']" (click)="collapseNavbar()">
 	                    <span>
 	                    	<fa-icon icon="shopping-cart" fixedWidth="true"></fa-icon>
 	                    	<span matBadge="{{noOfItems}}" matBadgeOverlap="false"><span jhiTranslate="global.menu.cart">Cart</span></span>

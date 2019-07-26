@@ -103,9 +103,8 @@ export class CartPendingComponent implements OnInit, OnDestroy {
         this.isSaving = true;
         // Only for checked items
         this.myOrder.total = this.myOrderService.calculateTotalPrice(this.myOrder);
-        this.subscribeToSaveResponse(
+        this.subscribeToCheckoutResponse(
                 this.myOrderService.checkout(this.myOrder));
-        // this.router.navigate(['/my-order', this.myOrder.id, 'review']);
     }
 
     save() {
@@ -124,6 +123,16 @@ export class CartPendingComponent implements OnInit, OnDestroy {
         // this.myOrder = result;
         this.eventManager.broadcast({ name: 'myOrderModification', content: 'OK', obj: result});
         this.isSaving = false;
+    }
+
+    private subscribeToCheckoutResponse(result: Observable<HttpResponse<IMyOrder>>) {
+        result.subscribe((res: HttpResponse<IMyOrder>) =>
+            this.onCheckoutSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
+    }
+
+    private onCheckoutSuccess(result: IMyOrder) {
+        this.isSaving = false;
+        this.router.navigate(['/my-order', result.id, 'review']);
     }
 
     private onSaveError() {

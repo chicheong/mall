@@ -217,7 +217,7 @@ entity OrderShop {
 }
 
 enum OrderStatus {
-    PENDING, COMFIRMED, COMPLETED, CANCELLED
+    PENDING, CHECKOUT, COMFIRMED, COMPLETED, CANCELLED
 }
 
 entity OrderItem {

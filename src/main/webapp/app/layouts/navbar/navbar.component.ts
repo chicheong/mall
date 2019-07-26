@@ -63,7 +63,7 @@ export class NavbarComponent implements OnInit {
         this.registerMyOrderUpdated();
         this.registerAuthenticationSuccess();
         // this.registerChangeInAccount();
-        // console.error('check navbar Authenticated?');
+        // console.log('check navbar Authenticated?');
         this.accountService.identity().then(account => {
             if (account) {
                 this.eventManager.broadcast({
@@ -78,7 +78,7 @@ export class NavbarComponent implements OnInit {
         this.eventManager.subscribe('authenticationSuccess', message => {
             // console.error('navbar registerAuthenticationSuccess');
             this.accountService.identity().then(account => {
-                // console.error('navbar this.principal.identity().then');
+                console.log('navbar this.principal.identity().then');
                 if (account) {
                     if (account.myAccount) {
                         this.myAccount = account.myAccount;
@@ -104,6 +104,7 @@ export class NavbarComponent implements OnInit {
         this.eventSubscriber = this.eventManager.subscribe(
             'myOrderModification',
             response => {
+                console.log('myOrderModification');
                 this.updateMyOrder(response.obj);
                 this.calculateMyOrderTotalItems();
             }
@@ -115,7 +116,7 @@ export class NavbarComponent implements OnInit {
     }
 
     calculateMyOrderTotalItems() {
-        console.error('calculateMyOrderTotalItems()');
+        console.log('calculateMyOrderTotalItems()');
         if (this.myAccount.myOrder && this.myAccount.myOrder.shops) {
             this.noOfItems = this.myOrderService.calculateTotalQuantity(this.myAccount.myOrder, false);
             console.error('this.noOfItems: ' + this.noOfItems);
