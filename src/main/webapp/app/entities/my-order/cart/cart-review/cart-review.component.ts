@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable, Subscription } from 'rxjs';
@@ -13,7 +13,7 @@ import { CartComponent } from 'app/entities/my-order/cart.component';
     selector: 'jhi-review-cart',
     templateUrl: './cart-review.component.html'
 })
-export class CartReviewComponent extends CartComponent implements OnInit, OnDestroy {
+export class CartReviewComponent extends CartComponent implements OnInit {
 
     isSaving: boolean;
 
@@ -22,7 +22,7 @@ export class CartReviewComponent extends CartComponent implements OnInit, OnDest
         protected myOrderService: MyOrderService,
         protected route: ActivatedRoute,
         protected router: Router
-    ) { super(eventManager, myOrderService, route, router); }
+    ) { super(myOrderService, route, router); }
 
     ngOnInit() {
         super.ngOnInit();
@@ -59,12 +59,6 @@ export class CartReviewComponent extends CartComponent implements OnInit, OnDest
 
     private onSaveError() {
         this.isSaving = false;
-    }
-
-    ngOnDestroy() {
-        super.ngOnDestroy();
-        this.subscription.unsubscribe();
-        this.eventManager.destroy(this.eventSubscriber);
     }
 
     canGoNext() {

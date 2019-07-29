@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable, Subscription } from 'rxjs';
@@ -18,7 +18,7 @@ declare let paypal: any;
     selector: 'jhi-payment',
     templateUrl: './cart-payment.component.html'
 })
-export class CartPaymentComponent extends CartComponent implements OnInit, OnDestroy {
+export class CartPaymentComponent extends CartComponent implements OnInit {
 
     isSaving: boolean;
     selectedMethod: string;
@@ -133,7 +133,7 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
         protected myOrderService: MyOrderService,
         protected route: ActivatedRoute,
         protected router: Router
-    ) { super(eventManager, myOrderService, route, router); }
+    ) { super(myOrderService, route, router); }
 
     ngOnInit() {
         super.ngOnInit();
@@ -273,12 +273,6 @@ export class CartPaymentComponent extends CartComponent implements OnInit, OnDes
 
     private onSaveError() {
         this.isSaving = false;
-    }
-
-    ngOnDestroy() {
-        super.ngOnDestroy();
-        this.subscription.unsubscribe();
-        this.eventManager.destroy(this.eventSubscriber);
     }
 
     canGoNext() {

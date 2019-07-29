@@ -1,8 +1,7 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable, Subscription } from 'rxjs';
-import { JhiEventManager } from 'ng-jhipster';
 
 import { IMyOrder } from 'app/shared/model/my-order.model';
 import { MyOrderService } from './my-order.service';
@@ -20,31 +19,28 @@ import { CartControl } from './cart/cart-control/cart-control';
     selector: 'jhi-cart',
     templateUrl: './cart.component.html'
 })
-export class CartComponent implements OnInit, OnDestroy {
+export class CartComponent implements OnInit {
 
     myOrder: IMyOrder;
     cartControl: CartControl;
     path: String;
-    subscription: Subscription;
-    eventSubscriber: Subscription;
 
     constructor(
-        protected eventManager: JhiEventManager,
         protected myOrderService: MyOrderService,
-        protected route: ActivatedRoute,
+        protected activatedRoute: ActivatedRoute,
         protected router: Router
     ) {
     }
 
     ngOnInit() {
-        const urlSegment = this.route.snapshot.url.pop();
-        this.route.snapshot.url.push(urlSegment);
+        const urlSegment = this.activatedRoute.snapshot.url.pop();
+        this.activatedRoute.snapshot.url.push(urlSegment);
         this.path = urlSegment.path;
 
-        this.subscription = this.route.params.subscribe(params => {
-            this.load(params['id']);
+        this.activatedRoute.data.subscribe(({ myOrder }) => {
+            this.myOrder = myOrder;
+            this.cartControl = this.myOrderService.getCartControl(this.myOrder, this.path);
         });
-        this.registerChangeInMyOrders();
     }
 
     load(id) {
@@ -94,25 +90,11 @@ export class CartComponent implements OnInit, OnDestroy {
                     payment.status = PaymentStatus.PENDING;
                     this.myOrder.payment = payment;
                 }
-                this.cartControl = this.myOrderService.getCartControl(this.myOrder, this.path);
+                // this.cartControl = this.myOrderService.getCartControl(this.myOrder, this.path);
             });
     }
 
     previousState() {
-        // this.save(false);
-        // console.error('calling previousState()');
         this.myOrderService.doCartBackAction(this.myOrder, this.path);
-    }
-
-    ngOnDestroy() {
-        this.subscription.unsubscribe();
-        this.eventManager.destroy(this.eventSubscriber);
-    }
-
-    registerChangeInMyOrders() {
-        this.eventSubscriber = this.eventManager.subscribe(
-            'myOrderListModification',
-            response => this.load(this.myOrder.id)
-        );
     }
 }

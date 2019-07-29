@@ -79,7 +79,34 @@
 	            	}
             	},            	
             	"review": {
-            		"title": "Shopping Cart",
+            		"title": "Order Confirmation",
+            		"grid": {
+            			"title": {
+            				"item": {
+            					"full": "Item",
+            					"abbr": "Item"
+            				},
+            				"unitPrice": {
+            				    "full": "Unit Price",
+            					"abbr": "Unit P."
+            				},
+            				"quantity": {
+            				    "full": "Quantity",
+            					"abbr": "Qty"            				
+            				},
+            				"promotion": {
+            				    "full": "Promotion",
+            					"abbr": "Promo."
+            				},
+            				"subtotal": {
+            				    "full": "Subtotal",
+            					"abbr": "S. Total"
+            				}
+            			},
+            			"detail": {
+            				"remarks": "Remarks to Seller"
+            			}
+            		},
             		"currentTotal": "Current Total"
             	},
             	"method": {

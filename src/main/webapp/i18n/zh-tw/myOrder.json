@@ -79,7 +79,34 @@
 	            	}
             	},
             	"review": {
-					"title": "購物車",
+					"title": "確認訂單",
+					"grid": {
+            			"title": {
+							"item": {
+            					"full": "項目",
+            					"abbr": "項目"
+            				},
+            				"unitPrice": {
+            				    "full": "單價",
+            					"abbr": "單價"
+            				},
+            				"quantity": {
+            				    "full": "數量",
+            					"abbr": "數量"            				
+            				},
+							"promotion": {
+            				    "full": "推廣優惠",
+            					"abbr": "推廣優惠"
+            				},
+            				"subtotal": {
+            				    "full": "金額",
+            					"abbr": "金額"
+            				}
+            			},
+            			"detail": {
+            				"remarks": "給賣家留言"
+            			}
+            		},
 					"currentTotal": "現時總數"
             	},
             	"method": {
