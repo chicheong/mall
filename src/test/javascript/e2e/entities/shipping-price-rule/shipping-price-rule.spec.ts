@@ -44,14 +44,15 @@ describe('ShippingPriceRule e2e test', () => {
 
         await shippingPriceRuleComponentsPage.clickOnCreateButton();
         await promise.all([
-            shippingPriceRuleUpdatePage.setTypeInput('type'),
+            shippingPriceRuleUpdatePage.typeSelectLastOption(),
             shippingPriceRuleUpdatePage.setValueInput('5'),
             shippingPriceRuleUpdatePage.setPriceInput('5'),
+            shippingPriceRuleUpdatePage.setSequenceInput('5'),
             shippingPriceRuleUpdatePage.shopSelectLastOption()
         ]);
-        expect(await shippingPriceRuleUpdatePage.getTypeInput()).to.eq('type');
         expect(await shippingPriceRuleUpdatePage.getValueInput()).to.eq('5');
         expect(await shippingPriceRuleUpdatePage.getPriceInput()).to.eq('5');
+        expect(await shippingPriceRuleUpdatePage.getSequenceInput()).to.eq('5');
         await shippingPriceRuleUpdatePage.save();
         expect(await shippingPriceRuleUpdatePage.getSaveButton().isPresent()).to.be.false;
 

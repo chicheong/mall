@@ -1,9 +1,10 @@
 {
     "name": "ShippingPriceRule",
     "fields": [
-        {
+		{
             "fieldName": "type",
-            "fieldType": "String"
+            "fieldType": "ShippingPriceRuleType",
+            "fieldValues": "FIXED_PER_ORDER, TOTAL_PERCENTAGE, PRICE_LARGER_THAN, PRICE_LARGER_THAN_OR_EQUAL, PRICE_SMALLER_THAN, PRICE_SMALLER_THAN_OR_EQUAL, QUANTITY_LARGER_THAN, QUANTITY_LARGER_THAN_OR_EQUAL, QUANTITY_SMALLER_THAN, QUANTITY_SMALLER_THAN_OR_EQUAL"
         },
         {
             "fieldName": "value",
@@ -12,6 +13,10 @@
         {
             "fieldName": "price",
             "fieldType": "BigDecimal"
+        },
+		{
+            "fieldName": "sequence",
+            "fieldType": "Integer"
         }
     ],
     "relationships": [

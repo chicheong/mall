@@ -38,6 +38,7 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
+import com.wongs.domain.enumeration.ShippingPriceRuleType;
 /**
  * Test class for the ShippingPriceRuleResource REST controller.
  *
@@ -47,14 +48,17 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest(classes = MallApp.class)
 public class ShippingPriceRuleResourceIntTest {
 
-    private static final String DEFAULT_TYPE = "AAAAAAAAAA";
-    private static final String UPDATED_TYPE = "BBBBBBBBBB";
+    private static final ShippingPriceRuleType DEFAULT_TYPE = ShippingPriceRuleType.FIXED_PER_ORDER;
+    private static final ShippingPriceRuleType UPDATED_TYPE = ShippingPriceRuleType.TOTAL_PERCENTAGE;
 
     private static final BigDecimal DEFAULT_VALUE = new BigDecimal(1);
     private static final BigDecimal UPDATED_VALUE = new BigDecimal(2);
 
     private static final BigDecimal DEFAULT_PRICE = new BigDecimal(1);
     private static final BigDecimal UPDATED_PRICE = new BigDecimal(2);
+
+    private static final Integer DEFAULT_SEQUENCE = 1;
+    private static final Integer UPDATED_SEQUENCE = 2;
 
     @Autowired
     private ShippingPriceRuleRepository shippingPriceRuleRepository;
@@ -108,7 +112,8 @@ public class ShippingPriceRuleResourceIntTest {
         ShippingPriceRule shippingPriceRule = new ShippingPriceRule()
             .type(DEFAULT_TYPE)
             .value(DEFAULT_VALUE)
-            .price(DEFAULT_PRICE);
+            .price(DEFAULT_PRICE)
+            .sequence(DEFAULT_SEQUENCE);
         return shippingPriceRule;
     }
 
@@ -135,6 +140,7 @@ public class ShippingPriceRuleResourceIntTest {
         assertThat(testShippingPriceRule.getType()).isEqualTo(DEFAULT_TYPE);
         assertThat(testShippingPriceRule.getValue()).isEqualTo(DEFAULT_VALUE);
         assertThat(testShippingPriceRule.getPrice()).isEqualTo(DEFAULT_PRICE);
+        assertThat(testShippingPriceRule.getSequence()).isEqualTo(DEFAULT_SEQUENCE);
 
         // Validate the ShippingPriceRule in Elasticsearch
         verify(mockShippingPriceRuleSearchRepository, times(1)).save(testShippingPriceRule);
@@ -175,7 +181,8 @@ public class ShippingPriceRuleResourceIntTest {
             .andExpect(jsonPath("$.[*].id").value(hasItem(shippingPriceRule.getId().intValue())))
             .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
             .andExpect(jsonPath("$.[*].value").value(hasItem(DEFAULT_VALUE.intValue())))
-            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())));
+            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
+            .andExpect(jsonPath("$.[*].sequence").value(hasItem(DEFAULT_SEQUENCE)));
     }
     
     @Test
@@ -191,7 +198,8 @@ public class ShippingPriceRuleResourceIntTest {
             .andExpect(jsonPath("$.id").value(shippingPriceRule.getId().intValue()))
             .andExpect(jsonPath("$.type").value(DEFAULT_TYPE.toString()))
             .andExpect(jsonPath("$.value").value(DEFAULT_VALUE.intValue()))
-            .andExpect(jsonPath("$.price").value(DEFAULT_PRICE.intValue()));
+            .andExpect(jsonPath("$.price").value(DEFAULT_PRICE.intValue()))
+            .andExpect(jsonPath("$.sequence").value(DEFAULT_SEQUENCE));
     }
 
     @Test
@@ -217,7 +225,8 @@ public class ShippingPriceRuleResourceIntTest {
         updatedShippingPriceRule
             .type(UPDATED_TYPE)
             .value(UPDATED_VALUE)
-            .price(UPDATED_PRICE);
+            .price(UPDATED_PRICE)
+            .sequence(UPDATED_SEQUENCE);
 
         restShippingPriceRuleMockMvc.perform(put("/api/shipping-price-rules")
             .contentType(TestUtil.APPLICATION_JSON_UTF8)
@@ -231,6 +240,7 @@ public class ShippingPriceRuleResourceIntTest {
         assertThat(testShippingPriceRule.getType()).isEqualTo(UPDATED_TYPE);
         assertThat(testShippingPriceRule.getValue()).isEqualTo(UPDATED_VALUE);
         assertThat(testShippingPriceRule.getPrice()).isEqualTo(UPDATED_PRICE);
+        assertThat(testShippingPriceRule.getSequence()).isEqualTo(UPDATED_SEQUENCE);
 
         // Validate the ShippingPriceRule in Elasticsearch
         verify(mockShippingPriceRuleSearchRepository, times(1)).save(testShippingPriceRule);
@@ -290,9 +300,10 @@ public class ShippingPriceRuleResourceIntTest {
             .andExpect(status().isOk())
             .andExpect(content().contentType(MediaType.APPLICATION_JSON_UTF8_VALUE))
             .andExpect(jsonPath("$.[*].id").value(hasItem(shippingPriceRule.getId().intValue())))
-            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE)))
+            .andExpect(jsonPath("$.[*].type").value(hasItem(DEFAULT_TYPE.toString())))
             .andExpect(jsonPath("$.[*].value").value(hasItem(DEFAULT_VALUE.intValue())))
-            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())));
+            .andExpect(jsonPath("$.[*].price").value(hasItem(DEFAULT_PRICE.intValue())))
+            .andExpect(jsonPath("$.[*].sequence").value(hasItem(DEFAULT_SEQUENCE)));
     }
 
     @Test

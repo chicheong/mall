@@ -7,7 +7,7 @@
             <dl class="row-md jh-entity-details">
                 <dt><span jhiTranslate="mallApp.shippingPriceRule.type">Type</span></dt>
                 <dd>
-                    <span>{{shippingPriceRule.type}}</span>
+                    <span jhiTranslate="{{'mallApp.ShippingPriceRuleType.' + shippingPriceRule.type}}">{{shippingPriceRule.type}}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.shippingPriceRule.value">Value</span></dt>
                 <dd>
@@ -16,6 +16,10 @@
                 <dt><span jhiTranslate="mallApp.shippingPriceRule.price">Price</span></dt>
                 <dd>
                     <span>{{shippingPriceRule.price}}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.shippingPriceRule.sequence">Sequence</span></dt>
+                <dd>
+                    <span>{{shippingPriceRule.sequence}}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.shippingPriceRule.shop">Shop</span></dt>
                 <dd>

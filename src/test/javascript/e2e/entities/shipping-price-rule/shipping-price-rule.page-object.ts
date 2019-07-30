@@ -26,21 +26,29 @@ export class ShippingPriceRuleUpdatePage {
     pageTitle = element(by.id('jhi-shipping-price-rule-heading'));
     saveButton = element(by.id('save-entity'));
     cancelButton = element(by.id('cancel-save'));
-    typeInput = element(by.id('field_type'));
+    typeSelect = element(by.id('field_type'));
     valueInput = element(by.id('field_value'));
     priceInput = element(by.id('field_price'));
+    sequenceInput = element(by.id('field_sequence'));
     shopSelect = element(by.id('field_shop'));
 
     async getPageTitle() {
         return this.pageTitle.getAttribute('jhiTranslate');
     }
 
-    async setTypeInput(type) {
-        await this.typeInput.sendKeys(type);
+    async setTypeSelect(type) {
+        await this.typeSelect.sendKeys(type);
     }
 
-    async getTypeInput() {
-        return this.typeInput.getAttribute('value');
+    async getTypeSelect() {
+        return this.typeSelect.element(by.css('option:checked')).getText();
+    }
+
+    async typeSelectLastOption() {
+        await this.typeSelect
+            .all(by.tagName('option'))
+            .last()
+            .click();
     }
 
     async setValueInput(value) {
@@ -57,6 +65,14 @@ export class ShippingPriceRuleUpdatePage {
 
     async getPriceInput() {
         return this.priceInput.getAttribute('value');
+    }
+
+    async setSequenceInput(sequence) {
+        await this.sequenceInput.sendKeys(sequence);
+    }
+
+    async getSequenceInput() {
+        return this.sequenceInput.getAttribute('value');
     }
 
     async shopSelectLastOption() {

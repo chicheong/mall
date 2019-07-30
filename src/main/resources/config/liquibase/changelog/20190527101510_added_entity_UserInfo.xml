@@ -37,6 +37,12 @@
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here, do not remove-->
         </createTable>
         
+        <loadData encoding="UTF-8"
+		  file="config/liquibase/user_info.csv"
+		  separator=";"
+		  tableName="user_info">
+        </loadData>
+        
         <createTable tableName="user_info_account">
             <column name="account_id" type="bigint">
                 <constraints nullable="false"/>
@@ -47,6 +53,12 @@
         </createTable>
 
         <addPrimaryKey columnNames="user_info_id, account_id" tableName="user_info_account"/>
+        
+        <loadData encoding="UTF-8"
+		  file="config/liquibase/user_info_account.csv"
+		  separator=";"
+		  tableName="user_info_account">
+        </loadData>
         
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->

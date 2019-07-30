@@ -12,6 +12,8 @@ import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
+import com.wongs.domain.enumeration.ShippingPriceRuleType;
+
 /**
  * A ShippingPriceRule.
  */
@@ -27,14 +29,18 @@ public class ShippingPriceRule implements Serializable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "jhi_type")
-    private String type;
+    private ShippingPriceRuleType type;
 
     @Column(name = "jhi_value", precision = 10, scale = 2)
     private BigDecimal value;
 
     @Column(name = "price", precision = 10, scale = 2)
     private BigDecimal price;
+
+    @Column(name = "jhi_sequence")
+    private Integer sequence;
 
     @ManyToOne
     @JsonIgnoreProperties("shippingPriceRules")
@@ -49,16 +55,16 @@ public class ShippingPriceRule implements Serializable {
         this.id = id;
     }
 
-    public String getType() {
+    public ShippingPriceRuleType getType() {
         return type;
     }
 
-    public ShippingPriceRule type(String type) {
+    public ShippingPriceRule type(ShippingPriceRuleType type) {
         this.type = type;
         return this;
     }
 
-    public void setType(String type) {
+    public void setType(ShippingPriceRuleType type) {
         this.type = type;
     }
 
@@ -86,6 +92,19 @@ public class ShippingPriceRule implements Serializable {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public Integer getSequence() {
+        return sequence;
+    }
+
+    public ShippingPriceRule sequence(Integer sequence) {
+        this.sequence = sequence;
+        return this;
+    }
+
+    public void setSequence(Integer sequence) {
+        this.sequence = sequence;
     }
 
     public Shop getShop() {
@@ -129,6 +148,7 @@ public class ShippingPriceRule implements Serializable {
             ", type='" + getType() + "'" +
             ", value=" + getValue() +
             ", price=" + getPrice() +
+            ", sequence=" + getSequence() +
             "}";
     }
 }

@@ -19,6 +19,7 @@
             "type": "Type",
             "value": "Value",
             "price": "Price",
+            "sequence": "Sequence",
             "shop": "Shop"
         }
     }

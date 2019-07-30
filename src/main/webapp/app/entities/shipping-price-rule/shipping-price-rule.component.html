@@ -33,6 +33,7 @@
             <th jhiSortBy="type"><span jhiTranslate="mallApp.shippingPriceRule.type">Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="value"><span jhiTranslate="mallApp.shippingPriceRule.value">Value</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="price"><span jhiTranslate="mallApp.shippingPriceRule.price">Price</span> <fa-icon [icon]="'sort'"></fa-icon></th>
+            <th jhiSortBy="sequence"><span jhiTranslate="mallApp.shippingPriceRule.sequence">Sequence</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th jhiSortBy="shop.id"><span jhiTranslate="mallApp.shippingPriceRule.shop">Shop</span> <fa-icon [icon]="'sort'"></fa-icon></th>
             <th></th>
             </tr>
@@ -40,9 +41,10 @@
             <tbody>
             <tr *ngFor="let shippingPriceRule of shippingPriceRules ;trackBy: trackId">
                 <td><a [routerLink]="['/shipping-price-rule', shippingPriceRule.id, 'view' ]">{{shippingPriceRule.id}}</a></td>
-                <td>{{shippingPriceRule.type}}</td>
+                <td jhiTranslate="{{'mallApp.ShippingPriceRuleType.' + shippingPriceRule.type}}">{{shippingPriceRule.type}}</td>
                 <td>{{shippingPriceRule.value}}</td>
                 <td>{{shippingPriceRule.price}}</td>
+                <td>{{shippingPriceRule.sequence}}</td>
                 <td>
                     <div *ngIf="shippingPriceRule.shop">
                         <a [routerLink]="['../shop', shippingPriceRule.shop?.id, 'view' ]" >{{shippingPriceRule.shop?.id}}</a>

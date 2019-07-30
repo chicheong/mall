@@ -1,38 +1,44 @@
 {
-    "generator-jhipster": {
-        "promptValues": {
-            "packageName": "com.wongs",
-            "nativeLanguage": "en"
-        },
-        "jhipsterVersion": "5.8.2",
-        "applicationType": "monolith",
-        "baseName": "mall",
-        "packageName": "com.wongs",
-        "packageFolder": "com/wongs",
-        "serverPort": "8080",
-        "authenticationType": "jwt",
-        "cacheProvider": "ehcache",
-        "enableHibernateCache": true,
-        "websocket": false,
-        "databaseType": "sql",
-        "devDatabaseType": "h2Disk",
-        "prodDatabaseType": "mysql",
-        "searchEngine": "elasticsearch",
-        "messageBroker": false,
-        "serviceDiscoveryType": false,
-        "buildTool": "maven",
-        "enableSwaggerCodegen": false,
-        "jwtSecretKey": "YzM4ZTRlZGVkY2JjMmY3ZDhlMzI4YzAxNTlkZTZlNmY0ZDEyYTlkNWQ0Y2I4ZDc4MTE3ZDEwYzUxZjNlOGUwNjE4NjJjZDJlNTcxYzRjMTA0OTYyZjcwYjU0NTc3MWI4ZjViNmQzMmI3OGNmOGVmZTJlMGI3ODhmMGMzYjIwZTU=",
-        "clientFramework": "angularX",
-        "useSass": true,
-        "clientPackageManager": "npm",
-        "testFrameworks": ["gatling", "protractor"],
-        "jhiPrefix": "jhi",
-        "entitySuffix": "",
-        "dtoSuffix": "DTO",
-        "otherModules": [],
-        "enableTranslation": true,
-        "nativeLanguage": "en",
-        "languages": ["en", "zh-tw"]
-    }
+  "generator-jhipster": {
+    "promptValues": {
+      "packageName": "com.wongs",
+      "nativeLanguage": "en"
+    },
+    "jhipsterVersion": "5.8.2",
+    "applicationType": "monolith",
+    "baseName": "mall",
+    "packageName": "com.wongs",
+    "packageFolder": "com/wongs",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "cacheProvider": "ehcache",
+    "enableHibernateCache": true,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "h2Disk",
+    "prodDatabaseType": "mysql",
+    "searchEngine": "elasticsearch",
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
+    "buildTool": "maven",
+    "enableSwaggerCodegen": false,
+    "jwtSecretKey": "YzM4ZTRlZGVkY2JjMmY3ZDhlMzI4YzAxNTlkZTZlNmY0ZDEyYTlkNWQ0Y2I4ZDc4MTE3ZDEwYzUxZjNlOGUwNjE4NjJjZDJlNTcxYzRjMTA0OTYyZjcwYjU0NTc3MWI4ZjViNmQzMmI3OGNmOGVmZTJlMGI3ODhmMGMzYjIwZTU=",
+    "clientFramework": "angularX",
+    "useSass": true,
+    "clientPackageManager": "npm",
+    "testFrameworks": [
+      "gatling",
+      "protractor"
+    ],
+    "jhiPrefix": "jhi",
+    "entitySuffix": "",
+    "dtoSuffix": "DTO",
+    "otherModules": [],
+    "enableTranslation": true,
+    "nativeLanguage": "en",
+    "languages": [
+      "en",
+      "zh-tw"
+    ]
+  }
 }

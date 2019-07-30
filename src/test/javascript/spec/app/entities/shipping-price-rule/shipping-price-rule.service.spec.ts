@@ -5,7 +5,7 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { of } from 'rxjs';
 import { take, map } from 'rxjs/operators';
 import { ShippingPriceRuleService } from 'app/entities/shipping-price-rule/shipping-price-rule.service';
-import { IShippingPriceRule, ShippingPriceRule } from 'app/shared/model/shipping-price-rule.model';
+import { IShippingPriceRule, ShippingPriceRule, ShippingPriceRuleType } from 'app/shared/model/shipping-price-rule.model';
 
 describe('Service Tests', () => {
     describe('ShippingPriceRule Service', () => {
@@ -21,7 +21,7 @@ describe('Service Tests', () => {
             service = injector.get(ShippingPriceRuleService);
             httpMock = injector.get(HttpTestingController);
 
-            elemDefault = new ShippingPriceRule(0, 'AAAAAAA', 0, 0);
+            elemDefault = new ShippingPriceRule(0, ShippingPriceRuleType.FIXED_PER_ORDER, 0, 0, 0);
         });
 
         describe('Service methods', async () => {
@@ -57,7 +57,8 @@ describe('Service Tests', () => {
                     {
                         type: 'BBBBBB',
                         value: 1,
-                        price: 1
+                        price: 1,
+                        sequence: 1
                     },
                     elemDefault
                 );
@@ -76,7 +77,8 @@ describe('Service Tests', () => {
                     {
                         type: 'BBBBBB',
                         value: 1,
-                        price: 1
+                        price: 1,
+                        sequence: 1
                     },
                     elemDefault
                 );

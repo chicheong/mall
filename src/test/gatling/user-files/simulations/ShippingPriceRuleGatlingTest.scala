@@ -72,9 +72,10 @@ class ShippingPriceRuleGatlingTest extends Simulation {
             .headers(headers_http_authenticated)
             .body(StringBody("""{
                 "id":null
-                , "type":"SAMPLE_TEXT"
+                , "type":"FIXED_PER_ORDER"
                 , "value":"0"
                 , "price":"0"
+                , "sequence":"0"
                 }""")).asJSON
             .check(status.is(201))
             .check(headerRegex("Location", "(.*)").saveAs("new_shippingPriceRule_url"))).exitHereIfFailed
