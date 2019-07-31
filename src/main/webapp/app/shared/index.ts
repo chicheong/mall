@@ -9,7 +9,7 @@ export * from './login/login.component';
 export * from './util/request-util';
 export * from './permission/permission.service';
 export * from './random/uuid.service';
-export * from './draggable/draggable.module';
+// export * from './draggable/draggable.module';
 export * from './file-upload/file-upload-result.model';
 export * from './file-upload/file-upload.component';
 export * from './file-upload/file-upload-dialog.component';

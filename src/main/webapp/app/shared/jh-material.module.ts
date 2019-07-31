@@ -8,6 +8,7 @@ import {
     MatProgressSpinnerModule, MatRadioModule, MatSelectModule, MatSnackBarModule, MatTabsModule, MatTooltipModule,
     MatBadgeModule
 } from '@angular/material';
+import {DragDropModule} from '@angular/cdk/drag-drop';
 
 @NgModule({
     imports: [MatButtonModule,
@@ -33,7 +34,8 @@ import {
         MatRadioModule,
         MatListModule,
         MatIconModule,
-        MatBadgeModule],
+        MatBadgeModule,
+        DragDropModule],
     exports: [MatButtonModule,
         MatCheckboxModule,
         MatFormFieldModule,
@@ -57,7 +59,8 @@ import {
         MatRadioModule,
         MatListModule,
         MatIconModule,
-        MatBadgeModule],
+        MatBadgeModule,
+        DragDropModule],
 })
 export class JhMaterialModule {
 }
