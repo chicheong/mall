@@ -17,13 +17,13 @@
 			<div class="col-md-9">
 				<button type="button" [disabled]="isSaving" class="btn btn-info"
 					(click)="previousState()">
-					<span class="fa fa-arrow-left"></span>&nbsp;<span
+					<fa-icon icon="arrow-left"></fa-icon>&nbsp;<span
 						jhiTranslate="entity.action.back">Back</span>
 				</button>
 				<button type="button"
 					[disabled]="editForm.form.invalid || isSaving || !canGoNext()" [hidden]="!showContinue"
 					class="btn btn-primary" (click)="save()">
-					<span class="fa fa-chevron-circle-right"></span>&nbsp;<span
+					<fa-icon icon="chevron-circle-right"></fa-icon>&nbsp;<span
 						jhiTranslate="mallApp.myOrder.cart.payment.button.checkout">Continue to Checkout</span>
 				</button>
 			</div>

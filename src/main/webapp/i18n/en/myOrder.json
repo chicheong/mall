@@ -105,7 +105,8 @@
             			},
             			"detail": {
             				"remarks": "Remarks to Seller",
-            				"shippingMethod": "Shipping Method"
+            				"shippingMethod": "Shipping Method",
+            				"shopTotalIncludeShipping": "Shop Total (Include SHIPPING)"
             			}
             		},
             		"currentTotal": "Current Total"

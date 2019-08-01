@@ -11,10 +11,10 @@
 		<div class="col-md-3"><h2><span jhiTranslate="mallApp.myOrder.cart.method.title">Shipping Method</span></h2></div>
 		<div class="col-md-9">
 		    <button type="button" [disabled]="isSaving" class="btn btn-info" (click)="previousState()">
-		        <span class="fa fa-arrow-left"></span>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+		        <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
 		    </button>
 	        <button type="button" [disabled]="editForm.form.invalid || isSaving || !canGoNext()" class="btn btn-success" (click)="save()">
-	            <span class="fa fa-chevron-circle-right"></span>&nbsp;<span jhiTranslate="entity.action.continue">Continue</span>
+	            <fa-icon icon="chevron-circle-right"></fa-icon>&nbsp;<span jhiTranslate="entity.action.continue">Continue</span>
 	        </button>
 		</div>
     </div>    

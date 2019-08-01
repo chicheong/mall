@@ -343,6 +343,16 @@ export class MyOrderService {
         return total;
     }
 
+    calculateShopProductPrice(orderShop: IOrderShop): number {
+        let total = 0;
+        if (orderShop && orderShop.items) {
+            orderShop.items.forEach(item => {
+                total += (item.quantity * item.price);
+           });
+        }
+        return total;
+    }
+
     calculateTotalShippingPrice(myOrder: IMyOrder): number {
         let total = 0;
         if (myOrder.shops) {

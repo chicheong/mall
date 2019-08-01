@@ -6,6 +6,7 @@ import { JhiEventManager } from 'ng-jhipster';
 
 import { IMyOrder } from 'app/shared/model/my-order.model';
 import { MyOrderService } from 'app/entities/my-order';
+import { IOrderShop } from 'app/shared/model/order-shop.model';
 
 import { CartComponent } from 'app/entities/my-order/cart.component';
 
@@ -31,6 +32,10 @@ export class CartReviewComponent extends CartComponent implements OnInit {
 
     sumAll(): number {
         return this.myOrderService.calculateTotalProductPrice(this.myOrder, false);
+    }
+
+    sumShop(orderShop: IOrderShop): number {
+        return this.myOrderService.calculateShopProductPrice(orderShop);
     }
 
     updateMyOrder() {

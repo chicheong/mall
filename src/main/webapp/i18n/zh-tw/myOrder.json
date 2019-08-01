@@ -105,7 +105,8 @@
             			},
             			"detail": {
             				"remarks": "給賣家留言",
-            				"shippingMethod": "運送方式"
+            				"shippingMethod": "運送方式",
+							"shopTotalIncludeShipping": "店鋪合計(含運費)"
             			}
             		},
 					"currentTotal": "現時總數"

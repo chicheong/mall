@@ -17,13 +17,13 @@
 			<div class="col-md-9">
 				<button type="button" [disabled]="isSaving" class="btn btn-info"
 					(click)="previousState()">
-					<span class="fa fa-arrow-left"></span>&nbsp;<span
+					<fa-icon icon="arrow-left"></fa-icon>&nbsp;<span
 						jhiTranslate="entity.action.back">Back</span>
 				</button>
 				<button type="button"
 					[disabled]="editForm.form.invalid || isSaving || !canGoNext()"
 					class="btn btn-success" (click)="save(true)">
-					<span class="fa fa-chevron-circle-right"></span>&nbsp;<span
+					<fa-icon icon="chevron-circle-right"></fa-icon>&nbsp;<span
 						jhiTranslate="entity.action.continue">Continue</span>
 				</button>
 			</div>
@@ -91,6 +91,12 @@
 					<div class="col">
 					    <label jhiTranslate="mallApp.myOrder.cart.review.grid.detail.shippingMethod" for="field_shippingMethod">Shipping Method</label>
 	                    <input type="text" name="shippingMethod" id="field_shippingMethod" [(ngModel)]="shop.remark" />
+					</div>
+				</div>
+				<div class="row">
+					<div class="text-right border w-100 px-3">
+						<span jhiTranslate="mallApp.myOrder.cart.review.grid.detail.shopTotalIncludeShipping">Total (Not include SHIPPING)</span>&nbsp;
+						<span style="display:inline;">{{sumShop(shop) | currency}}</span>
 					</div>
 				</div>
 			</div>
