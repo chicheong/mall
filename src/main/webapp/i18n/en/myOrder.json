@@ -104,7 +104,8 @@
             				}
             			},
             			"detail": {
-            				"remarks": "Remarks to Seller"
+            				"remarks": "Remarks to Seller",
+            				"shippingMethod": "Shipping Method"
             			}
             		},
             		"currentTotal": "Current Total"

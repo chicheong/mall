@@ -74,7 +74,11 @@
         </createTable>
         <dropDefaultValue tableName="product" columnName="created_date" columnDataType="datetime"/>
         <dropDefaultValue tableName="product" columnName="last_modified_date" columnDataType="datetime"/>
-        
+        <loadData encoding="UTF-8"
+		  file="config/liquibase/product.csv"
+		  separator=";"
+		  tableName="product">
+        </loadData>
     </changeSet>
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here, do not remove-->
 </databaseChangeLog>

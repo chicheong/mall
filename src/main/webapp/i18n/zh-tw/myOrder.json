@@ -104,7 +104,8 @@
             				}
             			},
             			"detail": {
-            				"remarks": "給賣家留言"
+            				"remarks": "給賣家留言",
+            				"shippingMethod": "運送方式"
             			}
             		},
 					"currentTotal": "現時總數"
