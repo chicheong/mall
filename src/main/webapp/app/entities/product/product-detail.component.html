@@ -82,7 +82,7 @@
 						<button *ngSwitchCase="true" type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
 							<fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
 						</button>	        
-						<button *ngSwitchCase="false" [hidden]="!isEditable" type="submit" [disabled]="isSaving" class="btn btn-primary" (click)="edit()">
+						<button *ngSwitchCase="false" [hidden]="!isEditable" type="button" [disabled]="isSaving" class="btn btn-primary" (click)="edit()">
 							<fa-icon [icon]="'edit'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
 						</button>
 					</div>

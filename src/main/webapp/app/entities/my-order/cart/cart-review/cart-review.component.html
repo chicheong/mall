@@ -60,24 +60,23 @@
 									style="width: 120px">
 							</span>
 						</div>
-						<div class="col-md-2">
-							<div class="row">{{item.productItem.product.name}}</div>
+						<div class="col-md-2 border">
+							<div class="">{{item.productItem.product.name}}</div>
 						</div>
-						<div class="col-md-2">
-							<div class="row">{{item.productItem.color.name + ' ' + item.productItem.size.name}}</div>
+						<div class="col-md-2 border">
+							<div class="">{{item.productItem.color.name + ' ' + item.productItem.size.name}}</div>
 						</div>						
-						<div class="col-md-1">
-							<span class="hipster font-weight-bold">&nbsp;&nbsp;{{item.price}}</span>
+						<div class="col-md-1 border text-right">
+							<span class="">{{item.price | currency}}</span>
 						</div>
-						<div class="col-md-1">
-							<span class="hipster font-weight-bold">{{item.quantity}}</span>
+						<div class="col-md-1 border text-right">
+							<span class="">{{item.quantity}}</span>
 						</div>
-						<div class="col-md-2 text-right">
-							<span class="hipster font-weight-bold">&nbsp;</span>
+						<div class="col-md-2 border text-right">
+							<span class="">&nbsp;</span>
 						</div>	
-						<div class="col-md-1 text-right">
-							<span class="hipster font-weight-bold">{{item.price
-								* item.quantity}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+						<div class="col-md-1 border text-right px-3">
+							<span class="">{{item.price * item.quantity | currency}}</span>
 						</div>		
 					</div>   
 				</div>
@@ -96,7 +95,7 @@
 				<div class="row">
 					<div class="text-right border w-100 px-3">
 						<span jhiTranslate="mallApp.myOrder.cart.review.grid.detail.shopTotalIncludeShipping">Total (Not include SHIPPING)</span>&nbsp;
-						<span style="display:inline;">{{sumShop(shop) | currency}}</span>
+						<span class="font-weight-bold" style="display:inline;">{{sumShop(shop) | currency}}</span>
 					</div>
 				</div>
 			</div>
@@ -127,13 +126,16 @@
 									&nbsp;
 								</div>
 								<div class="col">
-									<span class="hipster font-weight-bold">{{item.quantity}}</span>
+									<span class="font-weight-bold">{{item.quantity}}</span>
 								</div>
 							</div>
 						</div>
 					</div>   
 				</div>
 			</div>
+		</div>
+		<!-- Order Total -->
+		<div class="row">
 		</div>
 	</form>
 	<hr>
