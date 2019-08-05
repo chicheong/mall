@@ -5,7 +5,7 @@
 			<div class="row"> <!-- *jhiHasAnyAuthority="'ROLE_USER'" -->
 				<div class="col-md-1">
 					<!-- <div>photo listing</div> -->
-					<div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+					<div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)" *ngSwitchCase="true">
 						<div class="example-box" *ngFor="let url of product.urls | orderBy: 'sequence'" cdkDrag>
 							<img [src]="url.path"
 								class="img-thumbnail"
@@ -14,39 +14,6 @@
 								style="width: 100px">
 						</div>
 					</div>
-					<!-- <div jhiSortableList (sort)="sort($event)" *ngSwitchCase="true">
-						<div *ngFor="let url of product.urls | orderBy: 'sequence'" class="img-wrap">	  			
-							<img [src]="url.path"
-								class="img-thumbnail"
-								(click)="selectUrl(url)"
-								alt=""
-								style="width: 100px">
-							<button type="button" [disabled]="isSaving" class="fa fa-remove close" (click)="popupDeleteUrl(url)">
-							</button>
-							<div class="box movable" jhiSortable>
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								<div class="box" *jhiDraggableHelper >
-								&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-								</div>
-							</div>
-						</div>
-					</div> -->	
-					<!-- <div class="col-md-1" jhiSortableList (sort)="sort($event)" *ngSwitchCase="false">
-						<div *ngFor="let url of product.urls | orderBy: 'sequence'" class="box img-wrap" 
-							[ngStyle]="{'background': '#fff url(' + url.path + ') no-repeat 0 0', 'background-size': 'contain'}"
-							(click)="selectUrl(url)" jhiSortable>
-							<img [src]="url.path"
-								class="img-thumbnail"
-								alt="">
-							<button *ngSwitchCase="false" type="button" [disabled]="isSaving" class="fa fa-remove close" (click)="popupDeleteUrl(url)">
-							</button>
-							<div class="box" *jhiDraggableHelper>
-								<img [src]="url.path"
-									class="img-thumbnail"
-									alt="">
-							</div>
-						</div>
-					</div> -->
 					<div *ngSwitchCase="false">
 						<div *ngFor="let url of product.urls | orderBy: 'sequence'" class="img-wrap">
 							<img [src]="url.path"

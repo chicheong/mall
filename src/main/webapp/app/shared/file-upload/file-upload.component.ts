@@ -96,6 +96,7 @@ export class FileUploadComponent implements OnInit {
                 url.entityId = this.url.entityId;
                 url.fileName = file.name;
                 url.sequence = this.url.sequence ? (this.url.sequence + i) : 1 + i;
+                console.log('url.sequence: ' + url.sequence);
                 url.path = (<FileReader>thisEvent.target).result as string;
                 urls.push(url);
                 counter++;

@@ -31,7 +31,7 @@ export class CartReviewComponent extends CartComponent implements OnInit {
     }
 
     sumAll(): number {
-        return this.myOrderService.calculateTotalProductPrice(this.myOrder, false);
+        return this.myOrderService.calculateTotalPrice(this.myOrder);
     }
 
     sumShop(orderShop: IOrderShop): number {

@@ -4,7 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Subscription, Observable } from 'rxjs';
 import { JhiEventManager, JhiAlertService  } from 'ng-jhipster';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
 
 import { IProduct, Product } from 'app/shared/model/product.model';
 import { ProductService } from './product.service';
@@ -24,8 +24,6 @@ import { UrlDeleteDialogComponent } from 'app/entities/url/url-delete-dialog.com
 import { CurrencyType } from 'app/shared/model/price.model';
 
 import { NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-
-import { SortEvent } from 'app/shared/draggable/sortable-list.directive';
 
 import { AngularEditorConfig } from '@kolkov/angular-editor';
 
@@ -502,7 +500,7 @@ export class ProductDetailComponent implements OnInit {
                 console.error('url.sequence: ' + url.sequence + ',url.fileName: ' + url.fileName);
             });
             for (let i = 0; i < this.product.urls.length; i++) {
-                this.product.urls[i].sequence = i + 1;
+                // this.product.urls[i].sequence = i + 1;
                 console.error('url.sequence: ' + this.product.urls[i].sequence + ',url.fileName: ' + this.product.urls[i].fileName);
             }
         }
@@ -729,18 +727,24 @@ export class ProductDetailComponent implements OnInit {
         }
     }
 
-    sort(event: SortEvent) {
-        const url: IUrl = this.product.urls[event.currentIndex];
-        this.product.urls.splice(event.currentIndex, 1);
-        this.product.urls.splice(event.newIndex, 0, url);
-        this.isSorted = true;
-    }
-
     drop(event: CdkDragDrop<string[]>) {
-        // moveItemInArray(this.movies, event.previousIndex, event.currentIndex);
-        const url: IUrl = this.product.urls[event.currentIndex];
-        this.product.urls.splice(event.currentIndex, 1);
-        this.product.urls.splice(event.previousIndex, 0, url);
+//        moveItemInArray(this.movies, event.previousIndex, event.currentIndex);
+        // Correct sequence
+        const from = event.previousIndex;
+        const to = event.currentIndex;
+        if (from === to) {
+            return;
+        }
+        const delta = to < from ? -1 : 1;
+        for (let i = from; i !== to; i += delta) {
+            this.product.urls[i].sequence = this.product.urls[i + delta].sequence;
+        }
+        this.product.urls[from].sequence = to;
+        // Correct position
+        const url: IUrl = this.product.urls[from];
+        this.product.urls.splice(event.previousIndex, 1);
+        this.product.urls.splice(event.currentIndex, 0, url);
+        // Mark sequence changed
         this.isSorted = true;
     }
 }

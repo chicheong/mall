@@ -43,42 +43,76 @@
 			<div class="col-md-2 text-center"><span jhiTranslate="mallApp.myOrder.cart.review.grid.title.promotion.abbr">Promo.</span></div>
 			<div class="col-md-1 text-center"><span jhiTranslate="mallApp.myOrder.cart.review.grid.title.subtotal.abbr">S. Total</span></div>
 		</div>
-		<!-- <div class="row d-sm-none">		
-		</div> -->
 		<hr>
 		<!-- Content -->
-		<div *ngFor="let shop of myOrder.shops" class="row d-none d-md-flex">
-			<div class="w-100 px-3 py-2">
-				{{shop.shop.name}}
-				<div class="border px-4">
-					<div *ngFor="let item of shop.items" class="row">
-						<div class="col-md-3">
-							<span class="img-wrap float-center">
-								<img src="http://localhost/image/2019/07/01/product/1/Cute-Ball-Go-icon.png"
-									class="img-thumbnail"
-									alt=""
-									style="width: 120px">
-							</span>
-						</div>
-						<div class="col-md-2 border">
-							<div class="">{{item.productItem.product.name}}</div>
-						</div>
-						<div class="col-md-2 border">
-							<div class="">{{item.productItem.color.name + ' ' + item.productItem.size.name}}</div>
-						</div>						
-						<div class="col-md-1 border text-right">
-							<span class="">{{item.price | currency}}</span>
-						</div>
-						<div class="col-md-1 border text-right">
-							<span class="">{{item.quantity}}</span>
-						</div>
-						<div class="col-md-2 border text-right">
-							<span class="">&nbsp;</span>
-						</div>	
-						<div class="col-md-1 border text-right px-3">
-							<span class="">{{item.price * item.quantity | currency}}</span>
-						</div>		
-					</div>   
+		<div *ngFor="let shop of myOrder.shops">
+			<div class="row d-none d-md-flex">
+				<div class="w-100 px-3 py-2">
+					{{shop.shop.name}}
+					<div class="border px-4">
+						<div *ngFor="let item of shop.items" class="row">
+							<div class="col-md-3">
+								<span class="img-wrap float-center">
+									<img src="http://localhost/image/2019/07/01/product/1/Cute-Ball-Go-icon.png"
+										class="img-thumbnail"
+										alt=""
+										style="width: 120px">
+								</span>
+							</div>
+							<div class="col-md-2">
+								<div class="">{{item.productItem.product.name}}</div>
+							</div>
+							<div class="col-md-2">
+								<div class="">{{item.productItem.color.name + ' ' + item.productItem.size.name}}</div>
+							</div>						
+							<div class="col-md-1 text-right">
+								<span class="">{{item.price | currency}}</span>
+							</div>
+							<div class="col-md-1 text-right">
+								<span class="">{{item.quantity}}</span>
+							</div>
+							<div class="col-md-2 text-right">
+								<span class="">&nbsp;</span>
+							</div>	
+							<div class="col-md-1 text-right">
+								<span class="">{{item.price * item.quantity | currency}}</span>
+							</div>		
+						</div>   
+					</div>
+				</div>
+			</div>
+			<div class="row d-md-none">
+				<div class="w-100 px-3 py-2">
+					{{shop.shop.name}}
+					<div class="border px-4">
+						<div *ngFor="let item of shop.items" class="row">
+							<div class="col-sm-4">
+								<span class="img-wrap float-center">
+									<img src="http://localhost/image/2019/07/01/product/1/Cute-Ball-Go-icon.png"
+										class="img-thumbnail"
+										alt=""
+										style="width: 100px">
+								</span>
+							</div>
+							<div class="col-sm-8">
+								<div class="row">
+									<div class="col">{{item.productItem.product.name}}</div>
+									<div class="col">{{item.productItem.color.name + ' ' + item.productItem.size.name}}&nbsp;&nbsp;</div>
+								</div>
+								<div class="row">
+									<div class="col">
+										{{item.price}}
+									</div>
+									<div class="col">
+										&nbsp;
+									</div>
+									<div class="col">
+										<span class="font-weight-bold">{{item.quantity}}</span>
+									</div>
+								</div>
+							</div>
+						</div>   
+					</div>
 				</div>
 			</div>
 			<div class="w-100 px-3 py-2">
@@ -100,45 +134,11 @@
 				</div>
 			</div>
 		</div>
-		<div *ngFor="let shop of myOrder.shops" class="row d-md-none">
-			<div class="w-100 px-3 py-2">
-				{{shop.shop.name}}
-				<div class="border px-4">
-					<div *ngFor="let item of shop.items" class="row">
-						<div class="col-sm-4">
-							<span class="img-wrap float-center">
-								<img src="http://localhost/image/2019/07/01/product/1/Cute-Ball-Go-icon.png"
-									class="img-thumbnail"
-									alt=""
-									style="width: 100px">
-							</span>
-						</div>
-						<div class="col-sm-8">
-							<div class="row">
-								<div class="col">{{item.productItem.product.name}}</div>
-								<div class="col">{{item.productItem.color.name + ' ' + item.productItem.size.name}}&nbsp;&nbsp;</div>
-							</div>
-							<div class="row">
-								<div class="col">
-									{{item.price}}
-								</div>
-								<div class="col">
-									&nbsp;
-								</div>
-								<div class="col">
-									<span class="font-weight-bold">{{item.quantity}}</span>
-								</div>
-							</div>
-						</div>
-					</div>   
-				</div>
-			</div>
-		</div>
 		<!-- Order Total -->
 		<div class="row">
 		</div>
 	</form>
 	<hr>
-	<jhi-checkout-summary [myOrder]=myOrder [itemTotal]=sumAll()>
+	<jhi-checkout-summary [myOrder]=myOrder [total]=sumAll()>
 	</jhi-checkout-summary>
 </div>

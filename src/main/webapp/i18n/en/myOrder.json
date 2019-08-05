@@ -21,6 +21,7 @@
 	            	}
             	},
             	"summary": {
+            		"actualPayment": "Actual Payment"
             	},
             	"billing": {
             		"title": "Billing Info"

@@ -21,6 +21,7 @@
 	            	}
             	},
             	"summary": {
+					"actualPayment": "實際付款"
             	},
             	"billing": {
 					"title": "計費資料"
