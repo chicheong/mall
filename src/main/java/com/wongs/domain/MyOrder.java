@@ -281,7 +281,39 @@ public class MyOrder implements Serializable {
         if (myOrder.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(getId(), myOrder.getId());
+        boolean match = false;
+		for (OrderShop shop : getShops()) {
+			match = false;
+			for (OrderShop oShop : myOrder.getShops()) {
+				if (oShop.equals(shop)) {
+					match = true;
+					break;
+				}
+			}
+			if (!match)
+				return false;
+		}
+		for (OrderShop shop : myOrder.getShops()) {
+			match = false;
+			for (OrderShop oShop : getShops()) {
+				if (oShop.equals(shop)) {
+					match = true;
+					break;
+				}
+			}
+			if (!match)
+				return false;
+		}
+        return Objects.equals(getId(), myOrder.getId()) && 
+        		Objects.equals(getReceiver(),myOrder.getReceiver()) &&
+        		(getTotal().compareTo(myOrder.getTotal()) == 0) &&
+        		Objects.equals(getCurrency(), myOrder.getCurrency()) &&
+        		Objects.equals(getContactNum(), myOrder.getContactNum()) &&
+        		Objects.equals(getEmail(), myOrder.getEmail()) &&
+        		Objects.equals(getRemark(), myOrder.getRemark()) &&
+        		Objects.equals(getStatus(), myOrder.getStatus()) &&
+        		(getShippingAddress() == null && myOrder.getShippingAddress() == null?true:Objects.equals(getShippingAddress().getId(), myOrder.getShippingAddress().getId())) &&
+        		(getBillingAddress() == null && myOrder.getBillingAddress() == null?true:Objects.equals(getBillingAddress().getId(), myOrder.getBillingAddress().getId()));
     }
 
     @Override

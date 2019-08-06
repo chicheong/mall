@@ -46,6 +46,10 @@ export class MyOrderService {
         return this.http.put<IMyOrder>(this.resourceUrl, myOrder, { observe: 'response' });
     }
 
+    updateCheckout(myOrder: IMyOrder): Observable<EntityResponseType> {
+        return this.http.put<IMyOrder>(`${this.resourceUrl}/updateCheckout`, myOrder, { observe: 'response' });
+    }
+
     charge(myOrder: IMyOrder): Observable<EntityResponseType> {
         return this.http.put<IMyOrder>(`${this.resourceUrl}/charge`, myOrder, { observe: 'response' });
     }

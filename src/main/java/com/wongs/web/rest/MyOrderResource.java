@@ -236,6 +236,30 @@ public class MyOrderResource {
     }
     
     /**
+     * PUT  /my-orders/updateCheckout : update an existing myOrder with status CHECKOUT.
+     *
+     * @param myOrderDTO the myOrderDTO to update
+     * @return the ResponseEntity with status 200 (OK) and with body the updated myOrderDTO,
+     * or with status 400 (Bad Request) if the myOrderDTO is not valid,
+     * or with status 500 (Internal Server Error) if the myOrderDTO couldn't be updated
+     * @throws URISyntaxException if the Location URI syntax is incorrect
+     */
+    @PutMapping("/my-orders/updateCheckout")
+    public ResponseEntity<MyOrderDTO> updateCheckout(@RequestBody MyOrderDTO myOrderDTO) throws URISyntaxException {
+        log.debug("REST request to updateCheckout MyOrder : {}", myOrderDTO);
+        if (myOrderDTO.getId() == null) {
+        	throw new BadRequestAlertException("No ID for the order to be updated", ENTITY_NAME, "updateerror");
+        }
+        Optional<MyAccountDTO> myAccount = myAccountService.findOne(userInfoService.findOneWithAccountsByUserLogin(SecurityUtils.getCurrentUserLogin().get()).getAccountId());
+        // To check if order with status CHECKOUT is the same as database
+        myOrderService.checkOrderUpdated(myAccount.get(), myOrderDTO);
+        MyOrderDTO result = myOrderService.save(myOrderDTO);
+        return ResponseEntity.ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, myOrderDTO.getId().toString()))
+            .body(result);
+    }
+    
+    /**
      * PUT  /my-orders/checkout : Checkout from an existing or a new myOrder.
      *
      * @param myOrderDTO the myOrderDTO to charge and update

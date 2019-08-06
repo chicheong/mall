@@ -135,7 +135,11 @@ public class OrderItem implements Serializable {
         if (orderItem.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(getId(), orderItem.getId());
+        return Objects.equals(getId(), orderItem.getId()) &&
+        		Objects.equals(getQuantity(), orderItem.getQuantity()) &&
+        		(getPrice().compareTo(orderItem.getPrice()) == 0) &&
+        		Objects.equals(getCurrency(), orderItem.getCurrency()) && 
+        		(getProductItem() == null && orderItem.getProductItem() == null)?true:Objects.equals(getProductItem().getId(), orderItem.getProductItem().getId());
     }
 
     @Override

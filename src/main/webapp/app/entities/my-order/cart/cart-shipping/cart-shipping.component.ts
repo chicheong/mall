@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
-import { Observable, Subscription } from 'rxjs';
-import { JhiEventManager } from 'ng-jhipster';
+import { Observable } from 'rxjs';
 
 import { IMyOrder } from 'app/shared/model/my-order.model';
 import { MyOrderService } from 'app/entities/my-order';
@@ -18,7 +17,6 @@ export class CartShippingComponent extends CartComponent implements OnInit {
     isSaving: boolean;
 
     constructor(
-        protected eventManager: JhiEventManager,
         protected myOrderService: MyOrderService,
         protected route: ActivatedRoute,
         protected router: Router
@@ -42,7 +40,6 @@ export class CartShippingComponent extends CartComponent implements OnInit {
 
     private onSaveSuccess(result: IMyOrder) {
         this.myOrder = result;
-        this.eventManager.broadcast({ name: 'myOrderModification', content: 'OK', obj: result});
         this.isSaving = false;
         this.myOrderService.doCartNextAction(this.myOrder, this.path);
     }

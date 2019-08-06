@@ -1,6 +1,7 @@
 package com.wongs.service;
 
 import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+import static org.junit.Assert.assertThat;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -36,6 +37,7 @@ import com.wongs.service.mapper.MyAccountMapper;
 import com.wongs.service.mapper.MyOrderMapper;
 import com.wongs.service.mapper.OrderItemMapper;
 import com.wongs.service.mapper.OrderShopMapper;
+import com.wongs.web.rest.errors.BadRequestAlertException;
 
 /**
  * Service Implementation for managing MyOrder.
@@ -95,8 +97,9 @@ public class MyOrderService {
      *
      * @param myOrderDTO the entity to save
      * @return the persisted entity
+     * @throws Exception 
      */
-    public MyOrderDTO save(MyOrderDTO myOrderDTO) {
+    public MyOrderDTO save(MyOrderDTO myOrderDTO) throws BadRequestAlertException {
         log.debug("Request to save MyOrder : {}", myOrderDTO);
         MyOrder myOrder = myOrderMapper.toEntity(myOrderDTO);
         myOrder.setShops(orderShopMapper.toEntity(myOrderDTO.getShops()));
@@ -214,6 +217,30 @@ public class MyOrderService {
 //        	myOrderSearchRepository.save(myOrder); 
 //        }
         return this.findOne(myOrder.getId()).orElse(null);
+    }
+    
+    /**
+     * Check if a MyOrder with OrderStatus Checkout is changed.
+     *
+     * @param myOrderDTO the entity to check
+     */
+    public void checkOrderUpdated(MyAccountDTO myAccountDTO, MyOrderDTO myOrderDTO) {
+        if (!OrderStatus.CHECKOUT.equals(myOrderDTO.getStatus()))
+        	throw new BadRequestAlertException("Your order has wrong status.", "MyOrder", "wrongstatus");
+        
+        MyAccount myAccount = myAccountMapper.toEntity(myAccountDTO);
+        MyOrder myOrder = this.findEntityByAccountAndStatus(myAccount, OrderStatus.CHECKOUT).get();
+        MyOrder nMyOrder = myOrderMapper.toEntity(myOrderDTO);
+        myOrderDTO.getShops().forEach((shop) -> {
+        	OrderShop orderShop = orderShopMapper.toEntity(shop);
+        	shop.getItems().forEach((item) -> {
+        		orderShop.getItems().add(orderItemMapper.toEntity(item));
+        	});
+        	nMyOrder.getShops().add(orderShop);
+        });
+        if (!myOrder.equals(nMyOrder)) {
+        	throw new BadRequestAlertException("Your order has been changed. Please update it.", "MyOrder", "mallApp.myOrder.cart.pending.itemChosen");
+        }
     }
     
     /**

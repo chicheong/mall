@@ -182,7 +182,34 @@ public class OrderShop implements Serializable {
         if (orderShop.getId() == null || getId() == null) {
             return false;
         }
-        return Objects.equals(getId(), orderShop.getId());
+        boolean match = false;
+        for (OrderItem item : getItems()) {
+        	match = false;
+        	for (OrderItem oItem : orderShop.getItems()) {
+        		if (oItem.equals(item)) {
+        			match = true;
+        			break;
+        		}
+        	}
+        	if (!match)
+        		return false;
+        }
+        for (OrderItem item : orderShop.getItems()) {
+        	match = false;
+        	for (OrderItem oItem : getItems()) {
+        		if (oItem.equals(item)) {
+        			match = true;
+        			break;
+        		}
+        	}
+        	if (!match)
+        		return false;
+        }
+        return Objects.equals(getId(), orderShop.getId()) &&
+        		(getTotal().compareTo(orderShop.getTotal()) == 0) &&
+        		Objects.equals(getCurrency(), orderShop.getCurrency()) &&
+        		Objects.equals(getRemark(), orderShop.getRemark()) &&
+        		(getShipping() == null && orderShop.getShipping() == null?true:Objects.equals(getShipping().getId(), orderShop.getShipping().getId()));
     }
 
     @Override
