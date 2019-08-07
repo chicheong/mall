@@ -310,7 +310,7 @@ public class MyOrder implements Serializable {
         		Objects.equals(getCurrency(), myOrder.getCurrency()) &&
         		Objects.equals(getContactNum(), myOrder.getContactNum()) &&
         		Objects.equals(getEmail(), myOrder.getEmail()) &&
-        		Objects.equals(getRemark(), myOrder.getRemark()) &&
+        		// Objects.equals(getRemark(), myOrder.getRemark()) &&
         		Objects.equals(getStatus(), myOrder.getStatus()) &&
         		(getShippingAddress() == null && myOrder.getShippingAddress() == null?true:Objects.equals(getShippingAddress().getId(), myOrder.getShippingAddress().getId())) &&
         		(getBillingAddress() == null && myOrder.getBillingAddress() == null?true:Objects.equals(getBillingAddress().getId(), myOrder.getBillingAddress().getId()));

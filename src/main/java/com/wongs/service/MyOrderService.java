@@ -157,7 +157,7 @@ public class MyOrderService {
         });
         Shop shop = shopService.findByProductItem(orderItem.getProductItem());
         myOrder.getShops().stream().filter(orderShop -> shop.getId().equals(orderShop.getShop().getId())).findFirst().map(orderShop -> {
-        	orderShop.getItems().stream().filter(item -> orderItem.getProductItem().equals(item.getProductItem())).findFirst().map(item -> {
+        	orderShop.getItems().stream().filter(item -> orderItem.getProductItem().getId().equals(item.getProductItem().getId())).findFirst().map(item -> {
             	item.setQuantity(item.getQuantity() + orderItem.getQuantity());
             	orderItemRepository.save(item);
             	orderShop.setTotal(this.calculateTotalPrice(orderShop));
@@ -166,9 +166,9 @@ public class MyOrderService {
             	return item; 
         	}).orElseGet(() -> {
             	orderItem.setShop(orderShop);
-            	orderItemRepository.save(orderItem);
-            	orderShop.getItems().add(orderItem);
-            	orderShop.setTotal(this.calculateTotalPrice(orderItem));
+            	OrderItem nOrderItem = orderItemRepository.save(orderItem);
+            	orderShop.getItems().add(nOrderItem);
+            	orderShop.setTotal(this.calculateTotalPrice(orderShop));
             	orderShopRepository.save(orderShop);
             	orderShopSearchRepository.save(orderShop);
             	return orderItem;

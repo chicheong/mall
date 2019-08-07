@@ -5,11 +5,11 @@ import { Observable } from 'rxjs';
 
 import { SERVER_API_URL } from 'app/app.constants';
 import { createRequestOption } from 'app/shared';
-import { IMyOrder, PaypalOrderItem } from 'app/shared/model/my-order.model';
+import { MyOrder, IMyOrder, PaypalOrderItem } from 'app/shared/model/my-order.model';
 
 import { IProductItem } from 'app/shared/model/product-item.model';
 import { IOrderItem } from 'app/shared/model/order-item.model';
-import { IOrderShop } from 'app/shared/model/order-shop.model';
+import { OrderShop, IOrderShop } from 'app/shared/model/order-shop.model';
 
 import { CartControl } from './cart/cart-control/cart-control';
 import { CartControlType } from './cart/cart-control/cart-control-type';
@@ -55,23 +55,45 @@ export class MyOrderService {
     }
 
     checkout(myOrder: IMyOrder): Observable<EntityResponseType> {
+        const obj: IMyOrder = Object.assign(new MyOrder(), myOrder);
+        obj.shops = [];
         myOrder.shops.forEach(shop => {
             shop.items.forEach(item => {
-                if (!item.isChecked) {
+                if (item.isChecked) {
+                    const itemIndex = shop.items.indexOf(item, 0);
+                    if (itemIndex > -1) {
+                        let found = false;
+                        for (let i = 0; i < obj.shops.length; i++) {
+                            const nShop = obj.shops[i];
+                            if (nShop.id === shop.id) {
+                                nShop.items.push(item);
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            const orderShop: IOrderShop = Object.assign(new OrderShop(), shop);
+                            orderShop.items = [];
+                            orderShop.items.push(item);
+                            obj.shops.push(orderShop);
+                        }
+                    }
+                }
+                /**if (!item.isChecked) {
                     const index = shop.items.indexOf(item, 0);
                     if (index > -1) {
                         shop.items.splice(index, 1);
                     }
-                }
+                }*/
             });
-            if (shop.items.length === 0) {
+            /** if (shop.items.length === 0) {
                 const index = myOrder.shops.indexOf(shop, 0);
                 if (index > -1) {
                     myOrder.shops.splice(index, 1);
                 }
-            }
+            } */
         });
-        return this.http.put<IMyOrder>(`${this.resourceUrl}/checkout`, myOrder, { observe: 'response' });
+        return this.http.put<IMyOrder>(`${this.resourceUrl}/checkout`, obj, { observe: 'response' });
     }
 
     find(id: number): Observable<EntityResponseType> {
