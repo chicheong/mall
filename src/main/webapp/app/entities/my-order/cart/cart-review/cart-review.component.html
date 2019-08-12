@@ -9,11 +9,7 @@
 			<jhi-alert-error></jhi-alert-error>
 		</div>		
 		<div class="row" *jhiHasAnyAuthority="'ROLE_USER'">
-			<div class="col-md-3">
-				<h2>
-					<span jhiTranslate="mallApp.myOrder.cart.review.title">Order Confirmation</span>
-				</h2>
-			</div>
+			<div class="col-md-3">&nbsp;</div>
 			<div class="col-md-9">
 				<button type="button" [disabled]="isSaving" class="btn btn-info"
 					(click)="previousState()">
@@ -27,6 +23,23 @@
 						jhiTranslate="entity.action.continue">Continue</span>
 				</button>
 			</div>
+		</div>
+		<div class="row px-2">
+			<h4>
+				<span jhiTranslate="mallApp.myOrder.cart.shipping.title">Shipping Info</span>
+			</h4>
+		</div>
+		<div class="row">
+			<div class="col-md-3">Ship to</div>
+			<div class="col-md-6">
+			</div>
+			<div class="col-md-3">&nbsp;</div>
+		</div>
+		<hr>
+		<div class="row px-2">
+			<h4>
+				<span jhiTranslate="mallApp.myOrder.cart.review.title">Order Confirmation</span>
+			</h4>
 		</div>
 		<!-- Title -->
 		<div class="row d-none d-lg-flex">
@@ -47,7 +60,7 @@
 		<!-- Content -->
 		<div *ngFor="let shop of myOrder.shops">
 			<div class="row d-none d-md-flex">
-				<div class="w-100 px-3 py-2">
+				<div class="w-100 px-3 pt-2">
 					{{shop.shop.name}}
 					<div class="border px-4">
 						<div *ngFor="let item of shop.items" class="row">
@@ -82,7 +95,7 @@
 				</div>
 			</div>
 			<div class="row d-md-none">
-				<div class="w-100 px-3 py-2">
+				<div class="w-100 px-3 pt-2">
 					{{shop.shop.name}}
 					<div class="border px-4">
 						<div *ngFor="let item of shop.items" class="row">
@@ -115,13 +128,13 @@
 					</div>
 				</div>
 			</div>
-			<div class="w-100 px-3 py-2">
-				<div class="row">
-					<div class="col">
+			<div class="w-100 px-0 pd-2">
+				<div class="row w-100">
+					<div class="col border">
 					    <label jhiTranslate="mallApp.myOrder.cart.review.grid.detail.remarks" for="field_remarks">Remarks</label>
-	                    <input type="text" name="remarks" id="field_remarks" [(ngModel)]="shop.remark" />
+	                    <input class="w-70 py-0" type="text" name="remarks" id="field_remarks" [(ngModel)]="shop.remark" />
 					</div>
-					<div class="col">
+					<div class="col border">
 					    <label jhiTranslate="mallApp.myOrder.cart.review.grid.detail.shippingMethod" for="field_shippingMethod">Shipping Method</label>
 	                    <input type="text" name="shippingMethod" id="field_shippingMethod" [(ngModel)]="shop.remark" />
 					</div>

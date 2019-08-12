@@ -1,3 +1,2 @@
 id;name;description;price;currency
-1;Standard;Standard Shipping;0;HKD
-2;Express;Express Shipping;10;HKD
+1;ShipBySeller;Ship By Seller;0;HKD
