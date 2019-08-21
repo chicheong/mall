@@ -730,20 +730,25 @@ export class ProductDetailComponent implements OnInit {
     drop(event: CdkDragDrop<string[]>) {
 //        moveItemInArray(this.movies, event.previousIndex, event.currentIndex);
         // Correct sequence
-        const from = event.previousIndex;
-        const to = event.currentIndex;
-        if (from === to) {
-            return;
+        // If drop within container, change position. Otherwise, delete.
+        if (event.isPointerOverContainer) {
+            const from = event.previousIndex;
+            const to = event.currentIndex;
+            if (from === to) {
+                return;
+            }
+            const delta = to < from ? -1 : 1;
+            for (let i = from; i !== to; i += delta) {
+                this.product.urls[i].sequence = this.product.urls[i + delta].sequence;
+            }
+            this.product.urls[from].sequence = to;
+            // Correct position
+            const url: IUrl = this.product.urls[from];
+            this.product.urls.splice(event.previousIndex, 1);
+            this.product.urls.splice(event.currentIndex, 0, url);
+        } else {
+            this.product.urls.splice(event.previousIndex, 1);
         }
-        const delta = to < from ? -1 : 1;
-        for (let i = from; i !== to; i += delta) {
-            this.product.urls[i].sequence = this.product.urls[i + delta].sequence;
-        }
-        this.product.urls[from].sequence = to;
-        // Correct position
-        const url: IUrl = this.product.urls[from];
-        this.product.urls.splice(event.previousIndex, 1);
-        this.product.urls.splice(event.currentIndex, 0, url);
         // Mark sequence changed
         this.isSorted = true;
     }
