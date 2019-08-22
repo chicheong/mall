@@ -2,10 +2,6 @@
     "name": "MyOrder",
     "fields": [
         {
-            "fieldName": "receiver",
-            "fieldType": "String"
-        },
-        {
             "fieldName": "total",
             "fieldType": "BigDecimal"
         },
@@ -13,14 +9,6 @@
             "fieldName": "currency",
             "fieldType": "CurrencyType",
             "fieldValues": "HKD,CNY,USD,EUR,JPY,KRW,TWD"
-        },
-        {
-            "fieldName": "contactNum",
-            "fieldType": "String"
-        },
-        {
-            "fieldName": "email",
-            "fieldType": "String"
         },
         {
             "fieldName": "remark",

@@ -26,6 +26,13 @@ entity Office {
 	status CommonStatus
 }
 
+entity Contact {
+	name String,
+	phoneNum String,
+	email String,
+	remark String
+}
+
 entity Address {
 	line1 String,
 	line2 String,
@@ -206,11 +213,8 @@ entity CurrencyRate {
 }
 
 entity MyOrder {
-	receiver String,
 	total BigDecimal,
 	currency CurrencyType,
-	contactNum String,
-	email String,
 	remark String,
 	status OrderStatus
 }
@@ -318,10 +322,11 @@ relationship OneToOne {
 	OrderItem{productItem} to ProductItem,
 	OrderShop{shipping} to Shipping,
 	OrderShop{shop} to Shop,
-	MyOrder{shippingAddress} to Address,
-	MyOrder{billingAddress} to Address,
+	MyOrder{shipping} to Contact,
+	MyOrder{billing} to Contact,
 	Payment{order} to MyOrder,
-	PaymentCard{payment} to Payment
+	PaymentCard{payment} to Payment,
+	Contact(address) to Address
 }
 
 relationship OneToMany {
@@ -364,7 +369,7 @@ relationship ManyToMany {
 }
 
 paginate UserInfo, MyAccount, Company, Department, Office, Country, MyState, Shop, ShippingPriceRule, Category, Product, ProductItem, MyOrder, OrderShop, OrderItem, Price, Quantity, Url, Card, Shipping, ShippingType, Payment, PaymentCard with pagination
-paginate Address with pager
+paginate Address, Contact with pager
 paginate Delegation, OrderStatusHistory, ProductHistory, ProductItemHistory, ShippingStatusHistory, PaymentStatusHistory with infinite-scroll
-service UserInfo, MyAccount, Product, MyOrder, Shop, ProductItem, ProductStyle, Price, Quantity, Url, Shipping, Payment, Address, Delegation with serviceClass
-dto UserInfo, MyAccount, Product, MyOrder, Shop, ProductItem, ProductStyle, Price, Quantity, Url, Shipping, Payment, Address, Delegation with mapstruct
+service UserInfo, MyAccount, Product, MyOrder, Shop, ProductItem, ProductStyle, Price, Quantity, Url, Shipping, Payment, Address, Contact, Delegation with serviceClass
+dto UserInfo, MyAccount, Product, MyOrder, Shop, ProductItem, ProductStyle, Price, Quantity, Url, Shipping, Payment, Address, Contact, Delegation with mapstruct
