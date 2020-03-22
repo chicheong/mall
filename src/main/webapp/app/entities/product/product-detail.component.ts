@@ -627,6 +627,7 @@ export class ProductDetailComponent implements OnInit {
                     this.product.colors.find(color => color.id === item.color.id).disabled = false;
                 }
             });
+            this.selectedUrl = this.selectedItem.url;
         } else if (this.selectedColor.id) {
             this.selectedItem = {};
             this.product.items.filter(item => item.color.id === this.selectedColor.id).forEach(item => {
@@ -737,11 +738,16 @@ export class ProductDetailComponent implements OnInit {
             if (from === to) {
                 return;
             }
+            console.error('event.previousIndex: ' + event.previousIndex);
+            console.error('event.currentIndex: ' + event.currentIndex);
             const delta = to < from ? -1 : 1;
-            for (let i = from; i !== to; i += delta) {
-                this.product.urls[i].sequence = this.product.urls[i + delta].sequence;
+//            for (let i = from; i !== to; i += delta) {
+//                this.product.urls[i].sequence = this.product.urls[i + delta].sequence;
+//            }
+            for (let i = to; i !== from; i -= delta) {
+                this.product.urls[i].sequence = this.product.urls[i - delta].sequence;
             }
-            this.product.urls[from].sequence = to;
+            this.product.urls[from].sequence = to + 1;
             // Correct position
             const url: IUrl = this.product.urls[from];
             this.product.urls.splice(event.previousIndex, 1);

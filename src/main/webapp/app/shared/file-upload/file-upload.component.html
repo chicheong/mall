@@ -1,15 +1,19 @@
 <div draggable="true" ngClass="{{dragAreaClass}}">
 	<div class="row">
-		<div class="col-md-12 text-center" style="background-image: url('url?.path')"><!-- http://localhost/img/1402152414_unnamed.png -->
+		<div class="col-md-12 text-center">
 			<a href="javascript:void(0)" (click)="file.click()" >
 				Click to browse 
 			</a>
 			Or Drag & Drop to upload your files
 	        <input type="file" 
-	              #file 
-	              [multiple]="(maxFiles > 1)"
-	              (change) = "onFileChange($event)"
-	              style="display:none" />
+				#file 
+	            [multiple]="(maxFiles > 1)"
+	            (change) = "onFileChange($event)"
+	            style="display:none;" 
+	            />
+	        <img *ngIf="displayImage && url?.path" [src]="url.path"
+				class="img-thumbnail"
+				alt="">
 		</div>
 	</div>
 </div>
