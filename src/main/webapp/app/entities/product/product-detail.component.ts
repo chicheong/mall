@@ -627,7 +627,11 @@ export class ProductDetailComponent implements OnInit {
                     this.product.colors.find(color => color.id === item.color.id).disabled = false;
                 }
             });
-            this.selectedUrl = this.selectedItem.url;
+            if (this.selectedItem.url) {
+                this.selectedUrl = this.selectedItem.url;
+            } else {
+                this.resetSelectedUrl();
+            }
         } else if (this.selectedColor.id) {
             this.selectedItem = {};
             this.product.items.filter(item => item.color.id === this.selectedColor.id).forEach(item => {
