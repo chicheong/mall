@@ -62,7 +62,8 @@
 							</div>		
 							<div class="col-md-2 px-1">
 								<span class="img-wrap float-center">
-									<img src="http://localhost/image/2019/07/01/product/1/Cute-Ball-Go-icon.png"
+									<img *ngIf="item.productItem.url" 
+										[src]="item.productItem.url.path"
 										class="img-thumbnail"
 										alt=""
 										style="width: 120px">
@@ -105,7 +106,8 @@
 							</div>
 							<div class="col-sm-3 px-0">
 								<span class="img-wrap float-center">
-									<img src="http://localhost/image/2019/07/01/product/1/Cute-Ball-Go-icon.png"
+									<img *ngIf="item.productItem.url" 
+										[src]="item.productItem.url.path"
 										class="img-thumbnail"
 										alt=""
 										style="width: 100px">
@@ -125,7 +127,7 @@
 									<div class="col px-0">
 										<input
 										type="number" class="form-control p-0"
-										style="height: 1.5em; text-align: right"
+										style="height: 1.5em; width: 4em; text-align: right"
 										name="price{{item.id}}" (change)="updateMyOrder()"
 										[(ngModel)]="item.quantity" />
 									</div>
@@ -148,7 +150,8 @@
 							</div>
 							<div class="col-xs-5 px-1">
 								<span class="img-wrap float-center">
-									<img src="http://localhost/image/2019/07/01/product/1/Cute-Ball-Go-icon.png"
+									<img *ngIf="item.productItem.url" 
+										[src]="item.productItem.url.path"
 										class="img-thumbnail"
 										alt=""
 										style="width: 100px">
@@ -162,19 +165,19 @@
 									<div class="col px-3">{{item.productItem.color.name + ' ' + item.productItem.size.name}}</div>
 								</div>
 								<div class="row">
-									<div class="col pl-3 pr-0">
+									<div class="col pl-3 pr-1">
 										{{item.price | currency}}
 									</div>
-									<div class="col pl-0 pr-0">
+									<div class="col pl-0 pr-1">
 										<input
 										type="number" class="form-control p-0"
-										style="height: 1.5em; text-align: right"
+										style="height: 1.5em; width: 4em; text-align: right"
 										name="price{{item.id}}" (change)="updateMyOrder()"
 										[(ngModel)]="item.quantity" />
 									</div>
 								</div>
 								<div class="row">
-									<div class="col px-0 text-right">
+									<div class="col px-1 text-right">
 										Actions
 									</div>
 								</div>
