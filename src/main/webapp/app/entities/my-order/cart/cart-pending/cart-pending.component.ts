@@ -16,7 +16,9 @@ import { IShippingType } from 'app/shared/model/shipping-type.model';
 
 @Component({
     selector: 'jhi-pending-cart',
-    templateUrl: './cart-pending.component.html'
+    templateUrl: './cart-pending.component.html',
+    styleUrls: [
+    ]
 })
 export class CartPendingComponent implements OnInit, OnDestroy {
 

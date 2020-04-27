@@ -24,6 +24,7 @@ export class FileUploadComponent implements OnInit {
     @Input() maxSize = 5; // 5MB
     @Input() url;
     @Output() result = new EventEmitter();
+    @Input() displayImage = false;
 
     constructor(
     ) { }
@@ -92,6 +93,7 @@ export class FileUploadComponent implements OnInit {
             reader.readAsDataURL(file);
             reader.onload = thisEvent => { // called once readAsDataURL is completed
                 const url = new Url();
+                url.id = this.url.id;
                 url.entityType = this.url.entityType;
                 url.entityId = this.url.entityId;
                 url.fileName = file.name;

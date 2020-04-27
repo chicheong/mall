@@ -45,7 +45,7 @@ public class OrderItemMapper {
         	orderItem.setPrice(orderItemDTO.getPrice());
         	orderItem.setCurrency(orderItemDTO.getCurrency());
         	
-        	orderItem.setProductItem(orderItemDTO.getProductItem());
+//        	orderItem.setProductItem(orderItemDTO.getProductItem());
         	orderItem.setShop(orderItemDTO.getShop());
             return orderItem;
         }
