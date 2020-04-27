@@ -105,7 +105,7 @@ public class FileService {
     }
     
     public void markDelete(String url) throws IOException {
-    	String dir = url.replace(FILE_SERVER_URI, FILE_SERVER_PATH);
+    	String dir = url.replaceAll(FILE_SERVER_URI, FILE_SERVER_PATH);
     	dir = dir.replace(WEB_PATH, File.separator);
     	Path sourcePatth = Paths.get(dir);
     	Path targetaPath = Paths.get(dir + MARK_DELETE_SUFFIX);

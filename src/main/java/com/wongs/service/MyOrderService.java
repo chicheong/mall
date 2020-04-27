@@ -19,6 +19,7 @@ import com.wongs.domain.MyAccount;
 import com.wongs.domain.MyOrder;
 import com.wongs.domain.OrderItem;
 import com.wongs.domain.OrderShop;
+import com.wongs.domain.ProductItem;
 import com.wongs.domain.Shop;
 import com.wongs.domain.enumeration.CurrencyType;
 import com.wongs.domain.enumeration.OrderStatus;
@@ -32,11 +33,15 @@ import com.wongs.service.dto.MyAccountDTO;
 import com.wongs.service.dto.MyOrderDTO;
 import com.wongs.service.dto.OrderItemDTO;
 import com.wongs.service.dto.OrderShopDTO;
+import com.wongs.service.dto.ProductItemDTO;
 import com.wongs.service.mapper.AddressMapper;
 import com.wongs.service.mapper.MyAccountMapper;
 import com.wongs.service.mapper.MyOrderMapper;
 import com.wongs.service.mapper.OrderItemMapper;
 import com.wongs.service.mapper.OrderShopMapper;
+import com.wongs.service.mapper.ProductItemMapper;
+import com.wongs.service.mapper.ProductStyleMapper;
+import com.wongs.service.mapper.UrlMapper;
 import com.wongs.web.rest.errors.BadRequestAlertException;
 
 /**
@@ -53,6 +58,9 @@ public class MyOrderService {
     private final AddressMapper addressMapper;
     private final OrderShopMapper orderShopMapper;
     private final OrderItemMapper orderItemMapper;
+    private final ProductItemMapper productItemMapper;
+    private final ProductStyleMapper productStyleMapper;
+    private final UrlMapper urlMapper;
 
     private final MyOrderRepository myOrderRepository;
     private final MyOrderSearchRepository myOrderSearchRepository;
@@ -67,19 +75,24 @@ public class MyOrderService {
     private final PaymentService paymentService;
     private final AddressService addressService;
     private final ShopService shopService;
+    private final UrlService urlService;
 
     public MyOrderService(MyOrderMapper myOrderMapper, MyAccountMapper myAccountMapper, AddressMapper addressMapper,
-    						OrderShopMapper orderShopMapper, OrderItemMapper orderItemMapper,
+    						OrderShopMapper orderShopMapper, OrderItemMapper orderItemMapper, ProductItemMapper productItemMapper,
+    						ProductStyleMapper productStyleMapper, UrlMapper urlMapper,
     						MyOrderRepository myOrderRepository, MyOrderSearchRepository myOrderSearchRepository,
     						OrderShopRepository orderShopRepository, OrderShopSearchRepository orderShopSearchRepository,
     						OrderItemRepository orderItemRepository, OrderItemSearchRepository orderItemSearchRepository,
     						ShippingService shippingService, PaymentService paymentService, AddressService addressService,
-    						ShopService shopService) {
+    						ShopService shopService, UrlService urlService) {
         this.myOrderMapper = myOrderMapper;
         this.myAccountMapper = myAccountMapper;
         this.addressMapper = addressMapper;
         this.orderShopMapper = orderShopMapper;
         this.orderItemMapper = orderItemMapper;
+        this.productStyleMapper = productStyleMapper;
+        this.productItemMapper = productItemMapper;
+        this.urlMapper = urlMapper;
     	this.myOrderRepository = myOrderRepository;
         this.myOrderSearchRepository = myOrderSearchRepository;
         this.orderShopRepository = orderShopRepository;
@@ -90,6 +103,7 @@ public class MyOrderService {
         this.paymentService = paymentService;
         this.addressService = addressService;
         this.shopService = shopService;
+        this.urlService = urlService;
     }
 
     /**
@@ -354,6 +368,12 @@ public class MyOrderService {
         	OrderShopDTO shopDTO = orderShopMapper.toDto(shop);
         	shop.getItems().forEach((item) -> {
         		OrderItemDTO itemDTO = orderItemMapper.toDto(item);
+        		ProductItemDTO productItemDTO = productItemMapper.toDto(item.getProductItem());
+	        	productItemDTO.setColor(productStyleMapper.toDto(item.getProductItem().getColor()));
+	        	productItemDTO.setSize(productStyleMapper.toDto(item.getProductItem().getSize()));
+        		//TODO: ProductItemUrl -> ProductUrl
+        		productItemDTO.setUrl(urlMapper.toDto(urlService.findOneByEntityTypeAndEntityId(ProductItem.class.getSimpleName(), productItemDTO.getId())));
+        		itemDTO.setProductItem(productItemDTO);
         		shopDTO.getItems().add(itemDTO);
         	});
         	myOrderDTO.getShops().add(shopDTO);

@@ -23,7 +23,7 @@ public class OrderItemDTO implements Serializable {
 
     private CurrencyType currency;
 
-    private ProductItem productItem;
+    private ProductItemDTO productItem;
     
     private OrderShop shop;
 
@@ -38,7 +38,7 @@ public class OrderItemDTO implements Serializable {
 		this.price = orderItem.getPrice();
 		this.currency = orderItem.getCurrency();
 		
-		this.productItem = orderItem.getProductItem();
+//		this.productItem = orderItem.getProductItem();
 		this.shop = orderItem.getShop();
 	}
 
@@ -74,11 +74,11 @@ public class OrderItemDTO implements Serializable {
 		this.currency = currency;
 	}
 
-	public ProductItem getProductItem() {
+	public ProductItemDTO getProductItem() {
 		return productItem;
 	}
 
-	public void setProductItem(ProductItem productItem) {
+	public void setProductItem(ProductItemDTO productItem) {
 		this.productItem = productItem;
 	}
 
