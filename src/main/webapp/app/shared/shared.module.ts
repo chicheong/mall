@@ -13,6 +13,8 @@ import { ProductStyleDialogComponent } from './popup/product/product-style-dialo
 import { PricesDialogComponent } from './popup/product/prices-dialog.component';
 import { QuantitiesDialogComponent } from './popup/product/quantities-dialog.component';
 import { GetItemFromColorSizePipe } from './popup/product/get-item-from-color-size.pipe';
+import { ProductCardComponent } from './layout/product/product-card.component';
+import { SearchBarComponent } from './layout/search/search-bar.component';
 
 @NgModule({
     imports: [MallSharedLibsModule, MallSharedCommonModule, JhMaterialModule],
@@ -26,7 +28,9 @@ import { GetItemFromColorSizePipe } from './popup/product/get-item-from-color-si
         ProductStyleDialogComponent,
         PricesDialogComponent,
         QuantitiesDialogComponent,
-        GetItemFromColorSizePipe
+        GetItemFromColorSizePipe,
+        ProductCardComponent,
+        SearchBarComponent
     ],
     providers: [{ provide: NgbDateAdapter, useClass: NgbDateMomentAdapter }],
     entryComponents: [
@@ -38,9 +42,11 @@ import { GetItemFromColorSizePipe } from './popup/product/get-item-from-color-si
         ProductItemsUrlDialogComponent,
         ProductStyleDialogComponent,
         PricesDialogComponent,
-        QuantitiesDialogComponent
+        QuantitiesDialogComponent,
+        ProductCardComponent,
+        SearchBarComponent
     ],
-    exports: [MallSharedCommonModule, JhiLoginModalComponent, HasAnyAuthorityDirective, JhMaterialModule],
+    exports: [MallSharedCommonModule, JhiLoginModalComponent, HasAnyAuthorityDirective, JhMaterialModule, ProductCardComponent, SearchBarComponent],
     schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 export class MallSharedModule {

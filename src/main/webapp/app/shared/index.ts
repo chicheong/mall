@@ -25,6 +25,8 @@ export * from './popup/product/product-style-dialog.component';
 export * from './popup/product/prices-dialog.component';
 export * from './popup/product/quantities-dialog.component';
 export * from './popup/product/get-item-from-color-size.pipe';
+export * from './layout/product/product-card.component';
+export * from './layout/search/search-bar.component';
 export * from './shared-libs.module';
 export * from './shared-common.module';
 export * from './shared.module';

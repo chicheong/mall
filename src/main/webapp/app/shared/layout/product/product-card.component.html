@@ -1,0 +1,27 @@
+<mat-card class=""><!-- col-lg-3 col-md-4 col-sm-6 col-xs-12 -->
+	<a target="_self" (click)="goto(product.id)">
+		<img mat-card-image [src]="product.urls[0]?.path" [alt]="product.urls[0]?.path" *ngIf="product.urls[0]">
+  
+		<!-- <mat-card-header>
+			<div mat-card-avatar class="example-header-image"></div>
+			<mat-card-subtitle></mat-card-subtitle>
+		</mat-card-header> -->
+		<mat-card-content>
+			<mat-card-title class="text-truncate">{{product.name}}</mat-card-title>
+			<p>
+				{{product.description | ellipsis : 50}}
+			</p>
+		</mat-card-content>
+	</a>
+	<mat-card-actions>
+		<button mat-button>LIKE</button>
+		<button mat-button>SHARE</button>
+	</mat-card-actions>
+
+	<!-- <div class="card col-lg-3 col-md-4 col-sm-6 col-xs-12 thumb" *ngFor="let product of products ;trackBy: trackId">
+		<a class="thumbnail" target="_self" [routerLink]="['product', product.id, 'view']">
+			<img class="img-fluid" [src]="product.urls[0]?.path" alt="" />
+			<div style="overflow: hidden; height:80px"><h3>{{product.name}}</h3></div>
+		</a>
+	</div> -->
+</mat-card>
