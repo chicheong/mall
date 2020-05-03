@@ -76,7 +76,8 @@
             		"totalNoShipping": "Total (Not include SHIPPING)",
             		"itemChosen": "{{ num }} Item Chosen",
             		"button": {
-						"checkout": "Checkout"
+						"checkout": "Checkout",
+						"delete": "Delete"
 	            	}
             	},            	
             	"review": {

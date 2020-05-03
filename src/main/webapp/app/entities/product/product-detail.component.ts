@@ -605,8 +605,8 @@ export class ProductDetailComponent implements OnInit {
                 this.selectedSize = productStyle;
             }
         }
-        console.error('selectedColor: ' + this.selectedColor.name);
-        console.error('selectedSize: ' + this.selectedSize.name);
+//        console.log('selectedColor: ' + this.selectedColor.name);
+//        console.log('selectedSize: ' + this.selectedSize.name);
         this.updateSelectedItem();
     }
 

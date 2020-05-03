@@ -76,7 +76,8 @@
 					"totalNoShipping": "合計 (不含運費)",
 					"itemChosen": "巳選商品{{ num }}款",
 					"button": {
-						"checkout": "結算"
+						"checkout": "結算",
+						"delete": "删除"
 	            	}
             	},
             	"review": {

@@ -43,9 +43,11 @@ export class CartPendingComponent implements OnInit, OnDestroy {
     }
 
     load(id) {
+        console.log('load(id)');
         this.myOrderService.find(id)
             .subscribe((myOrderResponse: HttpResponse<IMyOrder>) => {
                 this.myOrder = myOrderResponse.body;
+                console.log('this.myOrder = myOrderResponse.body;');
             });
     }
 
@@ -66,6 +68,16 @@ export class CartPendingComponent implements OnInit, OnDestroy {
         this.myOrder.total = this.myOrderService.calculateTotalPrice(this.myOrder);
         this.subscribeToCheckoutResponse(
                 this.myOrderService.checkout(this.myOrder));
+    }
+
+    deleteOrderItem(orderItemId) {
+        console.log('orderItemId: ' + orderItemId);
+        this.myOrderService.deleteOrderItem(orderItemId).subscribe(response => {
+            this.myOrder.shops.forEach(orderShop => {
+                orderShop.items = orderShop.items.filter(item => item.id !== orderItemId);
+            });
+            this.eventManager.broadcast({ name: 'myOrderModification', content: 'OK', obj: this.myOrder});
+        });
     }
 
     save() {

@@ -25,6 +25,7 @@ import com.wongs.domain.OrderItem;
 import com.wongs.domain.enumeration.OrderStatus;
 import com.wongs.domain.enumeration.PaymentStatus;
 import com.wongs.domain.enumeration.PaymentType;
+import com.wongs.repository.OrderItemRepository;
 import com.wongs.security.SecurityUtils;
 import com.wongs.service.MyAccountService;
 import com.wongs.service.MyOrderService;
@@ -51,26 +52,29 @@ public class MyOrderResource {
     private final Logger log = LoggerFactory.getLogger(MyOrderResource.class);
 
     private static final String ENTITY_NAME = "myOrder";
+    private static final String ENTITY_ITEM_NAME = "orderItem";
 
     private final MyOrderService myOrderService;
     private final UserInfoService userInfoService;
     private final MyAccountService myAccountService;
     private final ShippingService shippingService;
     private final PaymentService paymentService;
-    
     private final UserService userService;
+    
+    private final OrderItemRepository orderItemRepository;
     
     private final StripeClient stripeClient;
 
     public MyOrderResource(MyOrderService myOrderService, UserInfoService userInfoService, MyAccountService myAccountService, 
     						UserService userService, ShippingService shippingService, PaymentService paymentService,
-    						StripeClient stripeClient) {
+    						OrderItemRepository orderItemRepository, StripeClient stripeClient) {
     	this.myOrderService = myOrderService;
     	this.userInfoService = userInfoService;
     	this.myAccountService = myAccountService;
         this.userService = userService;
         this.shippingService = shippingService;
         this.paymentService = paymentService;
+        this.orderItemRepository = orderItemRepository;
         this.stripeClient = stripeClient;
     }
 
@@ -152,6 +156,22 @@ public class MyOrderResource {
         log.debug("REST request to delete MyOrder : {}", id);
         myOrderService.delete(id);
         return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+    }
+
+    /**
+     * DELETE  /my-orders/orderItem/:orderItemId : delete the "orderItemId" orderItem.
+     *
+     * @param id the id of the myOrderDTO to delete
+     * @return the ResponseEntity with status 200 (OK)
+     */
+    @DeleteMapping("/my-orders/orderItem/{orderItemId}")
+    public ResponseEntity<Void> deleteOrderItem(@PathVariable Long orderItemId) {
+        log.debug("REST request to delete OrderItem : {}", orderItemId);
+        
+        Long myOrderId = orderItemRepository.findById(orderItemId).get().getShop().getOrder().getId();
+        myOrderService.deleteOrderItem(orderItemId);
+//        myOrderService.removeEmptyOrderShop(myOrderId);
+        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_ITEM_NAME, orderItemId.toString())).build();
     }
 
     /**

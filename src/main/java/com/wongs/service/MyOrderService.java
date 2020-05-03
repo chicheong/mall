@@ -5,11 +5,13 @@ import static org.junit.Assert.assertThat;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.cache.CacheManager;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -71,6 +73,8 @@ public class MyOrderService {
     private final OrderItemRepository orderItemRepository;
     private final OrderItemSearchRepository orderItemSearchRepository;
     
+    private final CacheManager cacheManager;
+    
     private final ShippingService shippingService;
     private final PaymentService paymentService;
     private final AddressService addressService;
@@ -83,6 +87,7 @@ public class MyOrderService {
     						MyOrderRepository myOrderRepository, MyOrderSearchRepository myOrderSearchRepository,
     						OrderShopRepository orderShopRepository, OrderShopSearchRepository orderShopSearchRepository,
     						OrderItemRepository orderItemRepository, OrderItemSearchRepository orderItemSearchRepository,
+    						CacheManager cacheManager,
     						ShippingService shippingService, PaymentService paymentService, AddressService addressService,
     						ShopService shopService, UrlService urlService) {
         this.myOrderMapper = myOrderMapper;
@@ -99,6 +104,7 @@ public class MyOrderService {
         this.orderShopSearchRepository = orderShopSearchRepository;
         this.orderItemRepository = orderItemRepository;
         this.orderItemSearchRepository = orderItemSearchRepository;
+        this.cacheManager = cacheManager;
         this.shippingService = shippingService;
         this.paymentService = paymentService;
         this.addressService = addressService;
@@ -420,6 +426,62 @@ public class MyOrderService {
         myOrderRepository.deleteById(id);
         myOrderSearchRepository.deleteById(id);
     }
+    
+    /**
+     * Delete the orderItem by id.
+     *
+     * @param id the id of the entity
+     */
+    public void deleteOrderItem(Long orderItemId) {
+        log.debug("Request to delete OrderItem : {}", orderItemId);
+        
+        MyOrder myOrder = orderItemRepository.findById(orderItemId).get().getShop().getOrder();
+        myOrder.getShops().stream().forEach(orderShop -> {
+//        	orderShop.getItems().stream().filter((orderItem) -> orderItem.getId().equals(orderItemId)).map((orderItem) -> {
+//                orderItemRepository.deleteById(orderItem.getId());
+//                orderItemSearchRepository.deleteById(orderItem.getId());
+//        		return orderItem;
+//        	});
+        	orderShop.getItems().forEach((orderItem) -> {
+        		if (orderItem.getId().equals(orderItemId)) {
+        			orderItemRepository.deleteById(orderItem.getId());
+        			orderItemSearchRepository.deleteById(orderItem.getId());
+        			orderShopRepository.save(orderShop);
+        		}
+        	});
+        });
+        myOrder = myOrderRepository.save(myOrder);
+        myOrderSearchRepository.save(myOrder);
+//        myOrder.getShops().stream().filter((orderShop) -> orderShop.getItems().isEmpty()).map(shop -> {
+//    		orderShopRepository.deleteById(shop.getId());
+//    		orderShopSearchRepository.deleteById(shop.getId());
+//    		return shop;
+//        });
+
+//        Long myOrderId = orderItemRepository.findById(orderItemId).get().getShop().getOrder().getId();
+//        Long orderShopId = orderItemRepository.findById(orderItemId).get().getShop().getId();
+//        orderItemRepository.deleteById(orderItemId);
+//        orderItemSearchRepository.deleteById(orderItemId);
+//        this.clearMyOrderCaches(myOrder.getId());
+//        this.clearOrderShopCaches(orderShopId);
+//        this.clearOrderItemCaches(orderItemId);
+    }
+    
+    /**
+     * Delete the orderItem by id.
+     *
+     * @param id the id of the entity
+     */
+    public void removeEmptyOrderShop(Long myOrderId) {
+        log.debug("Request to remove all empty OrderShop from MyOrder : {}", myOrderId);
+        this.clearMyOrderCaches(myOrderId);
+        MyOrder myOrder = myOrderRepository.findById(myOrderId).get();
+        myOrder.getShops().stream().filter((shop) -> shop.getItems().isEmpty()).map(shop -> {
+    		orderShopRepository.deleteById(shop.getId());
+    		orderShopSearchRepository.deleteById(shop.getId());
+    		return shop;
+        });
+    }
 
     /**
      * Search for the myOrder corresponding to the query.
@@ -433,5 +495,17 @@ public class MyOrderService {
         log.debug("Request to search for a page of MyOrders for query {}", query);
         return myOrderSearchRepository.search(queryStringQuery(query), pageable)
             .map(myOrderMapper::toDto);
+    }
+    
+    private void clearMyOrderCaches(Long id) {
+        Objects.requireNonNull(cacheManager.getCache(com.wongs.domain.MyOrder.class.getName())).evict(id);
+    }
+    
+    private void clearOrderShopCaches(Long orderShopId) {
+        Objects.requireNonNull(cacheManager.getCache(com.wongs.domain.OrderShop.class.getName())).evict(orderShopId);
+    }
+    
+    private void clearOrderItemCaches(Long orderItemId) {
+        Objects.requireNonNull(cacheManager.getCache(com.wongs.domain.OrderItem.class.getName())).evict(orderItemId);
     }
 }
