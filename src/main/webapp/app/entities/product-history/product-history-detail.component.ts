@@ -4,21 +4,19 @@ import { ActivatedRoute } from '@angular/router';
 import { IProductHistory } from 'app/shared/model/product-history.model';
 
 @Component({
-    selector: 'jhi-product-history-detail',
-    templateUrl: './product-history-detail.component.html'
+  selector: 'jhi-product-history-detail',
+  templateUrl: './product-history-detail.component.html'
 })
 export class ProductHistoryDetailComponent implements OnInit {
-    productHistory: IProductHistory;
+  productHistory: IProductHistory | null = null;
 
-    constructor(protected activatedRoute: ActivatedRoute) {}
+  constructor(protected activatedRoute: ActivatedRoute) {}
 
-    ngOnInit() {
-        this.activatedRoute.data.subscribe(({ productHistory }) => {
-            this.productHistory = productHistory;
-        });
-    }
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ productHistory }) => (this.productHistory = productHistory));
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  previousState(): void {
+    window.history.back();
+  }
 }

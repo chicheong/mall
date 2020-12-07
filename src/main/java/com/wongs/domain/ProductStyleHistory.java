@@ -1,15 +1,14 @@
 package com.wongs.domain;
 
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.Objects;
+import java.time.ZonedDateTime;
 
 import com.wongs.domain.enumeration.ProductStyleType;
 
@@ -19,11 +18,11 @@ import com.wongs.domain.enumeration.ProductStyleType;
 @Entity
 @Table(name = "product_style_history")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "productstylehistory")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "productstylehistory")
 public class ProductStyleHistory implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,7 +37,7 @@ public class ProductStyleHistory implements Serializable {
     private Boolean isDefault;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "jhi_type")
+    @Column(name = "type")
     private ProductStyleType type;
 
     @Column(name = "created_by")
@@ -140,19 +139,15 @@ public class ProductStyleHistory implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof ProductStyleHistory)) {
             return false;
         }
-        ProductStyleHistory productStyleHistory = (ProductStyleHistory) o;
-        if (productStyleHistory.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), productStyleHistory.getId());
+        return id != null && id.equals(((ProductStyleHistory) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

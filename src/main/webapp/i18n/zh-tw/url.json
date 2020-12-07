@@ -1,31 +1,32 @@
 {
-    "mallApp": {
-        "url": {
-            "home": {
-                "title": "Urls",
-                "createLabel": "建立一筆新的 Url",
-                "createOrEditLabel": "建立或編輯 Url",
-                "search": "搜尋 Url"
-            },
-            "created": "新的 Url 建立成功，識別碼為 {{ param }}",
-            "updated": "識別碼為 {{ param }} 的 Url 更新成功",
-            "deleted": "識別碼為 {{ param }} 的 Url 刪除成功",
-            "delete": {
-                "question": "您確定要刪除這張嗎?"
-            },
-            "detail": {
-                "title": "Url"
-            },
-            "entityType": "Entity Type",
-            "entityId": "Entity Id",
-            "path": "Path",
-            "fileName": "File Name",
-            "sequence": "Sequence",
-            "description": "Description",
-            "createdBy": "Created By",
-            "createdDate": "Created Date",
-            "lastModifiedBy": "Last Modified By",
-            "lastModifiedDate": "Last Modified Date"
-        }
+  "mallApp": {
+    "url": {
+      "home": {
+        "title": "Urls",
+        "createLabel": "建立一筆新的 Url",
+        "createOrEditLabel": "建立或編輯 Url",
+        "search": "搜尋 Url",
+        "notFound": "No Urls found"
+      },
+      "created": "新的 Url 建立成功，識別碼為 {{ param }}",
+      "updated": "識別碼為 {{ param }} 的 Url 更新成功",
+      "deleted": "識別碼為 {{ param }} 的 Url 刪除成功",
+      "delete": {
+        "question": "您確定要刪除 Url {{ id }} 嗎?"
+      },
+      "detail": {
+        "title": "Url"
+      },
+      "entityType": "Entity Type",
+      "entityId": "Entity Id",
+      "path": "Path",
+      "fileName": "File Name",
+      "sequence": "Sequence",
+      "description": "Description",
+      "createdBy": "Created By",
+      "createdDate": "Created Date",
+      "lastModifiedBy": "Last Modified By",
+      "lastModifiedDate": "Last Modified Date"
     }
+  }
 }

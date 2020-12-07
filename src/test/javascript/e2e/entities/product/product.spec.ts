@@ -1,4 +1,3 @@
-/* tslint:disable no-unused-expression */
 import { browser, ExpectedConditions as ec, protractor, promise } from 'protractor';
 import { NavBarPage, SignInPage } from '../../page-objects/jhi-page-objects';
 
@@ -7,80 +6,93 @@ import { ProductComponentsPage, ProductDeleteDialog, ProductUpdatePage } from '.
 const expect = chai.expect;
 
 describe('Product e2e test', () => {
-    let navBarPage: NavBarPage;
-    let signInPage: SignInPage;
-    let productUpdatePage: ProductUpdatePage;
-    let productComponentsPage: ProductComponentsPage;
-    let productDeleteDialog: ProductDeleteDialog;
+  let navBarPage: NavBarPage;
+  let signInPage: SignInPage;
+  let productComponentsPage: ProductComponentsPage;
+  let productUpdatePage: ProductUpdatePage;
+  let productDeleteDialog: ProductDeleteDialog;
 
-    before(async () => {
-        await browser.get('/');
-        navBarPage = new NavBarPage();
-        signInPage = await navBarPage.getSignInPage();
-        await signInPage.autoSignInUsing('admin', 'admin');
-        await browser.wait(ec.visibilityOf(navBarPage.entityMenu), 5000);
-    });
+  before(async () => {
+    await browser.get('/');
+    navBarPage = new NavBarPage();
+    signInPage = await navBarPage.getSignInPage();
+    await signInPage.autoSignInUsing('admin', 'admin');
+    await browser.wait(ec.visibilityOf(navBarPage.entityMenu), 5000);
+  });
 
-    it('should load Products', async () => {
-        await navBarPage.goToEntity('product');
-        productComponentsPage = new ProductComponentsPage();
-        await browser.wait(ec.visibilityOf(productComponentsPage.title), 5000);
-        expect(await productComponentsPage.getTitle()).to.eq('mallApp.product.home.title');
-    });
+  it('should load Products', async () => {
+    await navBarPage.goToEntity('product');
+    productComponentsPage = new ProductComponentsPage();
+    await browser.wait(ec.visibilityOf(productComponentsPage.title), 5000);
+    expect(await productComponentsPage.getTitle()).to.eq('mallApp.product.home.title');
+    await browser.wait(ec.or(ec.visibilityOf(productComponentsPage.entities), ec.visibilityOf(productComponentsPage.noResult)), 1000);
+  });
 
-    it('should load create Product page', async () => {
-        await productComponentsPage.clickOnCreateButton();
-        productUpdatePage = new ProductUpdatePage();
-        expect(await productUpdatePage.getPageTitle()).to.eq('mallApp.product.home.createOrEditLabel');
-        await productUpdatePage.cancel();
-    });
+  it('should load create Product page', async () => {
+    await productComponentsPage.clickOnCreateButton();
+    productUpdatePage = new ProductUpdatePage();
+    expect(await productUpdatePage.getPageTitle()).to.eq('mallApp.product.home.createOrEditLabel');
+    await productUpdatePage.cancel();
+  });
 
-    it('should create and save Products', async () => {
-        const nbButtonsBeforeCreate = await productComponentsPage.countDeleteButtons();
+  it('should create and save Products', async () => {
+    const nbButtonsBeforeCreate = await productComponentsPage.countDeleteButtons();
 
-        await productComponentsPage.clickOnCreateButton();
-        await promise.all([
-            productUpdatePage.setNameInput('name'),
-            productUpdatePage.setCodeInput('code'),
-            productUpdatePage.setBrandInput('brand'),
-            productUpdatePage.setDescriptionInput('description'),
-            productUpdatePage.setContentInput('content'),
-            productUpdatePage.setRemarkInput('remark'),
-            productUpdatePage.statusSelectLastOption(),
-            productUpdatePage.setCreatedByInput('createdBy'),
-            productUpdatePage.setCreatedDateInput('01/01/2001' + protractor.Key.TAB + '02:30AM'),
-            productUpdatePage.setLastModifiedByInput('lastModifiedBy'),
-            productUpdatePage.setLastModifiedDateInput('01/01/2001' + protractor.Key.TAB + '02:30AM'),
-            productUpdatePage.shopSelectLastOption()
-        ]);
-        expect(await productUpdatePage.getNameInput()).to.eq('name');
-        expect(await productUpdatePage.getCodeInput()).to.eq('code');
-        expect(await productUpdatePage.getBrandInput()).to.eq('brand');
-        expect(await productUpdatePage.getDescriptionInput()).to.eq('description');
-        expect(await productUpdatePage.getContentInput()).to.eq('content');
-        expect(await productUpdatePage.getRemarkInput()).to.eq('remark');
-        expect(await productUpdatePage.getCreatedByInput()).to.eq('createdBy');
-        expect(await productUpdatePage.getCreatedDateInput()).to.contain('2001-01-01T02:30');
-        expect(await productUpdatePage.getLastModifiedByInput()).to.eq('lastModifiedBy');
-        expect(await productUpdatePage.getLastModifiedDateInput()).to.contain('2001-01-01T02:30');
-        await productUpdatePage.save();
-        expect(await productUpdatePage.getSaveButton().isPresent()).to.be.false;
+    await productComponentsPage.clickOnCreateButton();
 
-        expect(await productComponentsPage.countDeleteButtons()).to.eq(nbButtonsBeforeCreate + 1);
-    });
+    await promise.all([
+      productUpdatePage.setNameInput('name'),
+      productUpdatePage.setCodeInput('code'),
+      productUpdatePage.setBrandInput('brand'),
+      productUpdatePage.setDescriptionInput('description'),
+      productUpdatePage.setContentInput('content'),
+      productUpdatePage.setRemarkInput('remark'),
+      productUpdatePage.statusSelectLastOption(),
+      productUpdatePage.setCreatedByInput('createdBy'),
+      productUpdatePage.setCreatedDateInput('01/01/2001' + protractor.Key.TAB + '02:30AM'),
+      productUpdatePage.setLastModifiedByInput('lastModifiedBy'),
+      productUpdatePage.setLastModifiedDateInput('01/01/2001' + protractor.Key.TAB + '02:30AM'),
+      productUpdatePage.shopSelectLastOption()
+    ]);
 
-    it('should delete last Product', async () => {
-        const nbButtonsBeforeDelete = await productComponentsPage.countDeleteButtons();
-        await productComponentsPage.clickOnLastDeleteButton();
+    expect(await productUpdatePage.getNameInput()).to.eq('name', 'Expected Name value to be equals to name');
+    expect(await productUpdatePage.getCodeInput()).to.eq('code', 'Expected Code value to be equals to code');
+    expect(await productUpdatePage.getBrandInput()).to.eq('brand', 'Expected Brand value to be equals to brand');
+    expect(await productUpdatePage.getDescriptionInput()).to.eq('description', 'Expected Description value to be equals to description');
+    expect(await productUpdatePage.getContentInput()).to.eq('content', 'Expected Content value to be equals to content');
+    expect(await productUpdatePage.getRemarkInput()).to.eq('remark', 'Expected Remark value to be equals to remark');
+    expect(await productUpdatePage.getCreatedByInput()).to.eq('createdBy', 'Expected CreatedBy value to be equals to createdBy');
+    expect(await productUpdatePage.getCreatedDateInput()).to.contain(
+      '2001-01-01T02:30',
+      'Expected createdDate value to be equals to 2000-12-31'
+    );
+    expect(await productUpdatePage.getLastModifiedByInput()).to.eq(
+      'lastModifiedBy',
+      'Expected LastModifiedBy value to be equals to lastModifiedBy'
+    );
+    expect(await productUpdatePage.getLastModifiedDateInput()).to.contain(
+      '2001-01-01T02:30',
+      'Expected lastModifiedDate value to be equals to 2000-12-31'
+    );
 
-        productDeleteDialog = new ProductDeleteDialog();
-        expect(await productDeleteDialog.getDialogTitle()).to.eq('mallApp.product.delete.question');
-        await productDeleteDialog.clickOnConfirmButton();
+    await productUpdatePage.save();
+    expect(await productUpdatePage.getSaveButton().isPresent(), 'Expected save button disappear').to.be.false;
 
-        expect(await productComponentsPage.countDeleteButtons()).to.eq(nbButtonsBeforeDelete - 1);
-    });
+    expect(await productComponentsPage.countDeleteButtons()).to.eq(nbButtonsBeforeCreate + 1, 'Expected one more entry in the table');
+  });
 
-    after(async () => {
-        await navBarPage.autoSignOut();
-    });
+  it('should delete last Product', async () => {
+    const nbButtonsBeforeDelete = await productComponentsPage.countDeleteButtons();
+    await productComponentsPage.clickOnLastDeleteButton();
+
+    productDeleteDialog = new ProductDeleteDialog();
+    expect(await productDeleteDialog.getDialogTitle()).to.eq('mallApp.product.delete.question');
+    await productDeleteDialog.clickOnConfirmButton();
+
+    expect(await productComponentsPage.countDeleteButtons()).to.eq(nbButtonsBeforeDelete - 1);
+  });
+
+  after(async () => {
+    await navBarPage.autoSignOut();
+  });
 });

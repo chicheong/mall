@@ -1,43 +1,41 @@
 package com.wongs.web.rest;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.util.List;
-import java.util.Optional;
-
-import javax.validation.Valid;
-
-import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
 
 import com.wongs.domain.Product;
 import com.wongs.permission.PermissionUtils;
 import com.wongs.service.ProductService;
 import com.wongs.service.ShopService;
 import com.wongs.service.UrlService;
+import com.wongs.web.rest.errors.BadRequestAlertException;
 import com.wongs.service.dto.ShopDTO;
 import com.wongs.service.mapper.UrlMapper;
-import com.wongs.web.rest.errors.BadRequestAlertException;
-import com.wongs.web.rest.util.HeaderUtil;
-import com.wongs.web.rest.util.PaginationUtil;
 
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.StreamSupport;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
+
 /**
- * REST controller for managing Shop.
+ * REST controller for managing {@link com.wongs.domain.Shop}.
  */
 @RestController
 @RequestMapping("/api")
@@ -46,6 +44,9 @@ public class ShopResource {
     private final Logger log = LoggerFactory.getLogger(ShopResource.class);
 
     private static final String ENTITY_NAME = "shop";
+
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
 
     private final ShopService shopService;
     private final ProductService productService;
@@ -61,11 +62,11 @@ public class ShopResource {
     }
 
     /**
-     * POST  /shops : Create a new shop.
+     * {@code POST  /shops} : Create a new shop.
      *
-     * @param shopDTO the shopDTO to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new shopDTO, or with status 400 (Bad Request) if the shop has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param shopDTO the shopDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new shopDTO, or with status {@code 400 (Bad Request)} if the shop has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/shops")
     public ResponseEntity<ShopDTO> createShop(@Valid @RequestBody ShopDTO shopDTO) throws URISyntaxException {
@@ -75,18 +76,18 @@ public class ShopResource {
         }
         ShopDTO result = shopService.save(shopDTO);
         return ResponseEntity.created(new URI("/api/shops/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
-     * PUT  /shops : Updates an existing shop.
+     * {@code PUT  /shops} : Updates an existing shop.
      *
-     * @param shopDTO the shopDTO to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated shopDTO,
-     * or with status 400 (Bad Request) if the shopDTO is not valid,
-     * or with status 500 (Internal Server Error) if the shopDTO couldn't be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param shopDTO the shopDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated shopDTO,
+     * or with status {@code 400 (Bad Request)} if the shopDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the shopDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/shops")
     public ResponseEntity<ShopDTO> updateShop(@Valid @RequestBody ShopDTO shopDTO) throws URISyntaxException {
@@ -100,21 +101,21 @@ public class ShopResource {
         
         ShopDTO result = shopService.save(shopDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, shopDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, shopDTO.getId().toString()))
             .body(result);
     }
 
     /**
-     * GET  /shops : get all the shops.
+     * {@code GET  /shops} : get all the shops.
      *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of shops in body
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of shops in body.
      */
     @GetMapping("/shops")
     public ResponseEntity<List<ShopDTO>> getAllShops(Pageable pageable) {
         log.debug("REST request to get a page of Shops");
         Page<ShopDTO> page = shopService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/shops");
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
@@ -140,12 +141,12 @@ public class ShopResource {
         }
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(shopDTO));
     }
-    
+
     /**
-     * GET  /shops/:id : get the "id" shop.
+     * {@code GET  /shops/:id} : get the "id" shop.
      *
-     * @param id the id of the shopDTO to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the shopDTO, or with status 404 (Not Found)
+     * @param id the id of the shopDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the shopDTO, or with status {@code 404 (Not Found)}.
      */
 //    @GetMapping("/shops/{id}")
 //    public ResponseEntity<ShopDTO> getShop(@PathVariable Long id) {
@@ -155,10 +156,10 @@ public class ShopResource {
 //    }
 
     /**
-     * DELETE  /shops/:id : delete the "id" shop.
+     * {@code DELETE  /shops/:id} : delete the "id" shop.
      *
-     * @param id the id of the shopDTO to delete
-     * @return the ResponseEntity with status 200 (OK)
+     * @param id the id of the shopDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/shops/{id}")
     public ResponseEntity<Void> deleteShop(@PathVariable Long id) {
@@ -168,23 +169,22 @@ public class ShopResource {
         	throw new BadRequestAlertException("You do not have permssion to delete a shop", ENTITY_NAME, "permission");
         
         shopService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
     /**
-     * SEARCH  /_search/shops?query=:query : search for the shop corresponding
+     * {@code SEARCH  /_search/shops?query=:query} : search for the shop corresponding
      * to the query.
      *
-     * @param query the query of the shop search
-     * @param pageable the pagination information
-     * @return the result of the search
+     * @param query the query of the shop search.
+     * @param pageable the pagination information.
+     * @return the result of the search.
      */
     @GetMapping("/_search/shops")
     public ResponseEntity<List<ShopDTO>> searchShops(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Shops for query {}", query);
         Page<ShopDTO> page = shopService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/shops");
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
-
 }

@@ -1,136 +1,140 @@
 import { element, by, ElementFinder } from 'protractor';
 
 export class UserInfoComponentsPage {
-    createButton = element(by.id('jh-create-entity'));
-    deleteButtons = element.all(by.css('jhi-user-info div table .btn-danger'));
-    title = element.all(by.css('jhi-user-info div h2#page-heading span')).first();
+  createButton = element(by.id('jh-create-entity'));
+  deleteButtons = element.all(by.css('jhi-user-info div table .btn-danger'));
+  title = element.all(by.css('jhi-user-info div h2#page-heading span')).first();
+  noResult = element(by.id('no-result'));
+  entities = element(by.id('entities'));
 
-    async clickOnCreateButton() {
-        await this.createButton.click();
-    }
+  async clickOnCreateButton(): Promise<void> {
+    await this.createButton.click();
+  }
 
-    async clickOnLastDeleteButton() {
-        await this.deleteButtons.last().click();
-    }
+  async clickOnLastDeleteButton(): Promise<void> {
+    await this.deleteButtons.last().click();
+  }
 
-    async countDeleteButtons() {
-        return this.deleteButtons.count();
-    }
+  async countDeleteButtons(): Promise<number> {
+    return this.deleteButtons.count();
+  }
 
-    async getTitle() {
-        return this.title.getAttribute('jhiTranslate');
-    }
+  async getTitle(): Promise<string> {
+    return this.title.getAttribute('jhiTranslate');
+  }
 }
 
 export class UserInfoUpdatePage {
-    pageTitle = element(by.id('jhi-user-info-heading'));
-    saveButton = element(by.id('save-entity'));
-    cancelButton = element(by.id('cancel-save'));
-    accountIdInput = element(by.id('field_accountId'));
-    shopIdInput = element(by.id('field_shopId'));
-    userSelect = element(by.id('field_user'));
-    defaultAccountSelect = element(by.id('field_defaultAccount'));
-    accountSelect = element(by.id('field_account'));
+  pageTitle = element(by.id('jhi-user-info-heading'));
+  saveButton = element(by.id('save-entity'));
+  cancelButton = element(by.id('cancel-save'));
 
-    async getPageTitle() {
-        return this.pageTitle.getAttribute('jhiTranslate');
-    }
+  accountIdInput = element(by.id('field_accountId'));
+  shopIdInput = element(by.id('field_shopId'));
 
-    async setAccountIdInput(accountId) {
-        await this.accountIdInput.sendKeys(accountId);
-    }
+  userSelect = element(by.id('field_user'));
+  defaultAccountSelect = element(by.id('field_defaultAccount'));
+  accountSelect = element(by.id('field_account'));
 
-    async getAccountIdInput() {
-        return this.accountIdInput.getAttribute('value');
-    }
+  async getPageTitle(): Promise<string> {
+    return this.pageTitle.getAttribute('jhiTranslate');
+  }
 
-    async setShopIdInput(shopId) {
-        await this.shopIdInput.sendKeys(shopId);
-    }
+  async setAccountIdInput(accountId: string): Promise<void> {
+    await this.accountIdInput.sendKeys(accountId);
+  }
 
-    async getShopIdInput() {
-        return this.shopIdInput.getAttribute('value');
-    }
+  async getAccountIdInput(): Promise<string> {
+    return await this.accountIdInput.getAttribute('value');
+  }
 
-    async userSelectLastOption() {
-        await this.userSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async setShopIdInput(shopId: string): Promise<void> {
+    await this.shopIdInput.sendKeys(shopId);
+  }
 
-    async userSelectOption(option) {
-        await this.userSelect.sendKeys(option);
-    }
+  async getShopIdInput(): Promise<string> {
+    return await this.shopIdInput.getAttribute('value');
+  }
 
-    getUserSelect(): ElementFinder {
-        return this.userSelect;
-    }
+  async userSelectLastOption(): Promise<void> {
+    await this.userSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async getUserSelectedOption() {
-        return this.userSelect.element(by.css('option:checked')).getText();
-    }
+  async userSelectOption(option: string): Promise<void> {
+    await this.userSelect.sendKeys(option);
+  }
 
-    async defaultAccountSelectLastOption() {
-        await this.defaultAccountSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  getUserSelect(): ElementFinder {
+    return this.userSelect;
+  }
 
-    async defaultAccountSelectOption(option) {
-        await this.defaultAccountSelect.sendKeys(option);
-    }
+  async getUserSelectedOption(): Promise<string> {
+    return await this.userSelect.element(by.css('option:checked')).getText();
+  }
 
-    getDefaultAccountSelect(): ElementFinder {
-        return this.defaultAccountSelect;
-    }
+  async defaultAccountSelectLastOption(): Promise<void> {
+    await this.defaultAccountSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async getDefaultAccountSelectedOption() {
-        return this.defaultAccountSelect.element(by.css('option:checked')).getText();
-    }
+  async defaultAccountSelectOption(option: string): Promise<void> {
+    await this.defaultAccountSelect.sendKeys(option);
+  }
 
-    async accountSelectLastOption() {
-        await this.accountSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  getDefaultAccountSelect(): ElementFinder {
+    return this.defaultAccountSelect;
+  }
 
-    async accountSelectOption(option) {
-        await this.accountSelect.sendKeys(option);
-    }
+  async getDefaultAccountSelectedOption(): Promise<string> {
+    return await this.defaultAccountSelect.element(by.css('option:checked')).getText();
+  }
 
-    getAccountSelect(): ElementFinder {
-        return this.accountSelect;
-    }
+  async accountSelectLastOption(): Promise<void> {
+    await this.accountSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async getAccountSelectedOption() {
-        return this.accountSelect.element(by.css('option:checked')).getText();
-    }
+  async accountSelectOption(option: string): Promise<void> {
+    await this.accountSelect.sendKeys(option);
+  }
 
-    async save() {
-        await this.saveButton.click();
-    }
+  getAccountSelect(): ElementFinder {
+    return this.accountSelect;
+  }
 
-    async cancel() {
-        await this.cancelButton.click();
-    }
+  async getAccountSelectedOption(): Promise<string> {
+    return await this.accountSelect.element(by.css('option:checked')).getText();
+  }
 
-    getSaveButton(): ElementFinder {
-        return this.saveButton;
-    }
+  async save(): Promise<void> {
+    await this.saveButton.click();
+  }
+
+  async cancel(): Promise<void> {
+    await this.cancelButton.click();
+  }
+
+  getSaveButton(): ElementFinder {
+    return this.saveButton;
+  }
 }
 
 export class UserInfoDeleteDialog {
-    private dialogTitle = element(by.id('jhi-delete-userInfo-heading'));
-    private confirmButton = element(by.id('jhi-confirm-delete-userInfo'));
+  private dialogTitle = element(by.id('jhi-delete-userInfo-heading'));
+  private confirmButton = element(by.id('jhi-confirm-delete-userInfo'));
 
-    async getDialogTitle() {
-        return this.dialogTitle.getAttribute('jhiTranslate');
-    }
+  async getDialogTitle(): Promise<string> {
+    return this.dialogTitle.getAttribute('jhiTranslate');
+  }
 
-    async clickOnConfirmButton() {
-        await this.confirmButton.click();
-    }
+  async clickOnConfirmButton(): Promise<void> {
+    await this.confirmButton.click();
+  }
 }

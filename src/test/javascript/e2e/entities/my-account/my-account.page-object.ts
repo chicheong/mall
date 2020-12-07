@@ -1,163 +1,167 @@
 import { element, by, ElementFinder } from 'protractor';
 
 export class MyAccountComponentsPage {
-    createButton = element(by.id('jh-create-entity'));
-    deleteButtons = element.all(by.css('jhi-my-account div table .btn-danger'));
-    title = element.all(by.css('jhi-my-account div h2#page-heading span')).first();
+  createButton = element(by.id('jh-create-entity'));
+  deleteButtons = element.all(by.css('jhi-my-account div table .btn-danger'));
+  title = element.all(by.css('jhi-my-account div h2#page-heading span')).first();
+  noResult = element(by.id('no-result'));
+  entities = element(by.id('entities'));
 
-    async clickOnCreateButton() {
-        await this.createButton.click();
-    }
+  async clickOnCreateButton(): Promise<void> {
+    await this.createButton.click();
+  }
 
-    async clickOnLastDeleteButton() {
-        await this.deleteButtons.last().click();
-    }
+  async clickOnLastDeleteButton(): Promise<void> {
+    await this.deleteButtons.last().click();
+  }
 
-    async countDeleteButtons() {
-        return this.deleteButtons.count();
-    }
+  async countDeleteButtons(): Promise<number> {
+    return this.deleteButtons.count();
+  }
 
-    async getTitle() {
-        return this.title.getAttribute('jhiTranslate');
-    }
+  async getTitle(): Promise<string> {
+    return this.title.getAttribute('jhiTranslate');
+  }
 }
 
 export class MyAccountUpdatePage {
-    pageTitle = element(by.id('jhi-my-account-heading'));
-    saveButton = element(by.id('save-entity'));
-    cancelButton = element(by.id('cancel-save'));
-    balanceInput = element(by.id('field_balance'));
-    typeSelect = element(by.id('field_type'));
-    companySelect = element(by.id('field_company'));
-    departmentSelect = element(by.id('field_department'));
-    officeSelect = element(by.id('field_office'));
-    shopSelect = element(by.id('field_shop'));
+  pageTitle = element(by.id('jhi-my-account-heading'));
+  saveButton = element(by.id('save-entity'));
+  cancelButton = element(by.id('cancel-save'));
 
-    async getPageTitle() {
-        return this.pageTitle.getAttribute('jhiTranslate');
-    }
+  balanceInput = element(by.id('field_balance'));
+  typeSelect = element(by.id('field_type'));
 
-    async setBalanceInput(balance) {
-        await this.balanceInput.sendKeys(balance);
-    }
+  companySelect = element(by.id('field_company'));
+  departmentSelect = element(by.id('field_department'));
+  officeSelect = element(by.id('field_office'));
+  shopSelect = element(by.id('field_shop'));
 
-    async getBalanceInput() {
-        return this.balanceInput.getAttribute('value');
-    }
+  async getPageTitle(): Promise<string> {
+    return this.pageTitle.getAttribute('jhiTranslate');
+  }
 
-    async setTypeSelect(type) {
-        await this.typeSelect.sendKeys(type);
-    }
+  async setBalanceInput(balance: string): Promise<void> {
+    await this.balanceInput.sendKeys(balance);
+  }
 
-    async getTypeSelect() {
-        return this.typeSelect.element(by.css('option:checked')).getText();
-    }
+  async getBalanceInput(): Promise<string> {
+    return await this.balanceInput.getAttribute('value');
+  }
 
-    async typeSelectLastOption() {
-        await this.typeSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async setTypeSelect(type: string): Promise<void> {
+    await this.typeSelect.sendKeys(type);
+  }
 
-    async companySelectLastOption() {
-        await this.companySelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async getTypeSelect(): Promise<string> {
+    return await this.typeSelect.element(by.css('option:checked')).getText();
+  }
 
-    async companySelectOption(option) {
-        await this.companySelect.sendKeys(option);
-    }
+  async typeSelectLastOption(): Promise<void> {
+    await this.typeSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    getCompanySelect(): ElementFinder {
-        return this.companySelect;
-    }
+  async companySelectLastOption(): Promise<void> {
+    await this.companySelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async getCompanySelectedOption() {
-        return this.companySelect.element(by.css('option:checked')).getText();
-    }
+  async companySelectOption(option: string): Promise<void> {
+    await this.companySelect.sendKeys(option);
+  }
 
-    async departmentSelectLastOption() {
-        await this.departmentSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  getCompanySelect(): ElementFinder {
+    return this.companySelect;
+  }
 
-    async departmentSelectOption(option) {
-        await this.departmentSelect.sendKeys(option);
-    }
+  async getCompanySelectedOption(): Promise<string> {
+    return await this.companySelect.element(by.css('option:checked')).getText();
+  }
 
-    getDepartmentSelect(): ElementFinder {
-        return this.departmentSelect;
-    }
+  async departmentSelectLastOption(): Promise<void> {
+    await this.departmentSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async getDepartmentSelectedOption() {
-        return this.departmentSelect.element(by.css('option:checked')).getText();
-    }
+  async departmentSelectOption(option: string): Promise<void> {
+    await this.departmentSelect.sendKeys(option);
+  }
 
-    async officeSelectLastOption() {
-        await this.officeSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  getDepartmentSelect(): ElementFinder {
+    return this.departmentSelect;
+  }
 
-    async officeSelectOption(option) {
-        await this.officeSelect.sendKeys(option);
-    }
+  async getDepartmentSelectedOption(): Promise<string> {
+    return await this.departmentSelect.element(by.css('option:checked')).getText();
+  }
 
-    getOfficeSelect(): ElementFinder {
-        return this.officeSelect;
-    }
+  async officeSelectLastOption(): Promise<void> {
+    await this.officeSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async getOfficeSelectedOption() {
-        return this.officeSelect.element(by.css('option:checked')).getText();
-    }
+  async officeSelectOption(option: string): Promise<void> {
+    await this.officeSelect.sendKeys(option);
+  }
 
-    async shopSelectLastOption() {
-        await this.shopSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  getOfficeSelect(): ElementFinder {
+    return this.officeSelect;
+  }
 
-    async shopSelectOption(option) {
-        await this.shopSelect.sendKeys(option);
-    }
+  async getOfficeSelectedOption(): Promise<string> {
+    return await this.officeSelect.element(by.css('option:checked')).getText();
+  }
 
-    getShopSelect(): ElementFinder {
-        return this.shopSelect;
-    }
+  async shopSelectLastOption(): Promise<void> {
+    await this.shopSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async getShopSelectedOption() {
-        return this.shopSelect.element(by.css('option:checked')).getText();
-    }
+  async shopSelectOption(option: string): Promise<void> {
+    await this.shopSelect.sendKeys(option);
+  }
 
-    async save() {
-        await this.saveButton.click();
-    }
+  getShopSelect(): ElementFinder {
+    return this.shopSelect;
+  }
 
-    async cancel() {
-        await this.cancelButton.click();
-    }
+  async getShopSelectedOption(): Promise<string> {
+    return await this.shopSelect.element(by.css('option:checked')).getText();
+  }
 
-    getSaveButton(): ElementFinder {
-        return this.saveButton;
-    }
+  async save(): Promise<void> {
+    await this.saveButton.click();
+  }
+
+  async cancel(): Promise<void> {
+    await this.cancelButton.click();
+  }
+
+  getSaveButton(): ElementFinder {
+    return this.saveButton;
+  }
 }
 
 export class MyAccountDeleteDialog {
-    private dialogTitle = element(by.id('jhi-delete-myAccount-heading'));
-    private confirmButton = element(by.id('jhi-confirm-delete-myAccount'));
+  private dialogTitle = element(by.id('jhi-delete-myAccount-heading'));
+  private confirmButton = element(by.id('jhi-confirm-delete-myAccount'));
 
-    async getDialogTitle() {
-        return this.dialogTitle.getAttribute('jhiTranslate');
-    }
+  async getDialogTitle(): Promise<string> {
+    return this.dialogTitle.getAttribute('jhiTranslate');
+  }
 
-    async clickOnConfirmButton() {
-        await this.confirmButton.click();
-    }
+  async clickOnConfirmButton(): Promise<void> {
+    await this.confirmButton.click();
+  }
 }

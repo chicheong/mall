@@ -1,10 +1,10 @@
 {
-    "mallApp": {
-        "CategoryStatus": {
-            "null": "",
-            "ACTIVE": "ACTIVE",
-            "RESTRICTED": "RESTRICTED",
-            "INACTIVE": "INACTIVE"
-        }
+  "mallApp": {
+    "CategoryStatus": {
+      "null": "",
+      "ACTIVE": "ACTIVE",
+      "RESTRICTED": "RESTRICTED",
+      "INACTIVE": "INACTIVE"
     }
+  }
 }

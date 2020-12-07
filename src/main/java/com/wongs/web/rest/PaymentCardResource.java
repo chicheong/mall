@@ -1,32 +1,33 @@
 package com.wongs.web.rest;
-import com.wongs.domain.PaymentCard;
-import com.wongs.repository.PaymentCardRepository;
-import com.wongs.repository.search.PaymentCardSearchRepository;
+
+import com.wongs.service.PaymentCardService;
 import com.wongs.web.rest.errors.BadRequestAlertException;
-import com.wongs.web.rest.util.HeaderUtil;
-import com.wongs.web.rest.util.PaginationUtil;
+import com.wongs.service.dto.PaymentCardDTO;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * REST controller for managing PaymentCard.
+ * REST controller for managing {@link com.wongs.domain.PaymentCard}.
  */
 @RestController
 @RequestMapping("/api")
@@ -36,120 +37,114 @@ public class PaymentCardResource {
 
     private static final String ENTITY_NAME = "paymentCard";
 
-    private final PaymentCardRepository paymentCardRepository;
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
 
-    private final PaymentCardSearchRepository paymentCardSearchRepository;
+    private final PaymentCardService paymentCardService;
 
-    public PaymentCardResource(PaymentCardRepository paymentCardRepository, PaymentCardSearchRepository paymentCardSearchRepository) {
-        this.paymentCardRepository = paymentCardRepository;
-        this.paymentCardSearchRepository = paymentCardSearchRepository;
+    public PaymentCardResource(PaymentCardService paymentCardService) {
+        this.paymentCardService = paymentCardService;
     }
 
     /**
-     * POST  /payment-cards : Create a new paymentCard.
+     * {@code POST  /payment-cards} : Create a new paymentCard.
      *
-     * @param paymentCard the paymentCard to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new paymentCard, or with status 400 (Bad Request) if the paymentCard has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param paymentCardDTO the paymentCardDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new paymentCardDTO, or with status {@code 400 (Bad Request)} if the paymentCard has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/payment-cards")
-    public ResponseEntity<PaymentCard> createPaymentCard(@RequestBody PaymentCard paymentCard) throws URISyntaxException {
-        log.debug("REST request to save PaymentCard : {}", paymentCard);
-        if (paymentCard.getId() != null) {
+    public ResponseEntity<PaymentCardDTO> createPaymentCard(@RequestBody PaymentCardDTO paymentCardDTO) throws URISyntaxException {
+        log.debug("REST request to save PaymentCard : {}", paymentCardDTO);
+        if (paymentCardDTO.getId() != null) {
             throw new BadRequestAlertException("A new paymentCard cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        PaymentCard result = paymentCardRepository.save(paymentCard);
-        paymentCardSearchRepository.save(result);
+        PaymentCardDTO result = paymentCardService.save(paymentCardDTO);
         return ResponseEntity.created(new URI("/api/payment-cards/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
-     * PUT  /payment-cards : Updates an existing paymentCard.
+     * {@code PUT  /payment-cards} : Updates an existing paymentCard.
      *
-     * @param paymentCard the paymentCard to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated paymentCard,
-     * or with status 400 (Bad Request) if the paymentCard is not valid,
-     * or with status 500 (Internal Server Error) if the paymentCard couldn't be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param paymentCardDTO the paymentCardDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated paymentCardDTO,
+     * or with status {@code 400 (Bad Request)} if the paymentCardDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the paymentCardDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/payment-cards")
-    public ResponseEntity<PaymentCard> updatePaymentCard(@RequestBody PaymentCard paymentCard) throws URISyntaxException {
-        log.debug("REST request to update PaymentCard : {}", paymentCard);
-        if (paymentCard.getId() == null) {
+    public ResponseEntity<PaymentCardDTO> updatePaymentCard(@RequestBody PaymentCardDTO paymentCardDTO) throws URISyntaxException {
+        log.debug("REST request to update PaymentCard : {}", paymentCardDTO);
+        if (paymentCardDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        PaymentCard result = paymentCardRepository.save(paymentCard);
-        paymentCardSearchRepository.save(result);
+        PaymentCardDTO result = paymentCardService.save(paymentCardDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, paymentCard.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, paymentCardDTO.getId().toString()))
             .body(result);
     }
 
     /**
-     * GET  /payment-cards : get all the paymentCards.
+     * {@code GET  /payment-cards} : get all the paymentCards.
      *
-     * @param pageable the pagination information
-     * @param filter the filter of the request
-     * @return the ResponseEntity with status 200 (OK) and the list of paymentCards in body
+     * @param pageable the pagination information.
+     * @param filter the filter of the request.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of paymentCards in body.
      */
     @GetMapping("/payment-cards")
-    public ResponseEntity<List<PaymentCard>> getAllPaymentCards(Pageable pageable, @RequestParam(required = false) String filter) {
-    	/**if ("payment-is-null".equals(filter)) {
+    public ResponseEntity<List<PaymentCardDTO>> getAllPaymentCards(Pageable pageable, @RequestParam(required = false) String filter) {
+        if ("payment-is-null".equals(filter)) {
             log.debug("REST request to get all PaymentCards where payment is null");
-            return new ResponseEntity<>(StreamSupport
-                .stream(paymentCardRepository.findAll().spliterator(), false)
-                .filter(paymentCard -> paymentCard.getPayment() == null)
-                .collect(Collectors.toList()), HttpStatus.OK);
-        }*/
+            return new ResponseEntity<>(paymentCardService.findAllWherePaymentIsNull(),
+                    HttpStatus.OK);
+        }
         log.debug("REST request to get a page of PaymentCards");
-        Page<PaymentCard> page = paymentCardRepository.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/payment-cards");
+        Page<PaymentCardDTO> page = paymentCardService.findAll(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
-     * GET  /payment-cards/:id : get the "id" paymentCard.
+     * {@code GET  /payment-cards/:id} : get the "id" paymentCard.
      *
-     * @param id the id of the paymentCard to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the paymentCard, or with status 404 (Not Found)
+     * @param id the id of the paymentCardDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the paymentCardDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/payment-cards/{id}")
-    public ResponseEntity<PaymentCard> getPaymentCard(@PathVariable Long id) {
+    public ResponseEntity<PaymentCardDTO> getPaymentCard(@PathVariable Long id) {
         log.debug("REST request to get PaymentCard : {}", id);
-        Optional<PaymentCard> paymentCard = paymentCardRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(paymentCard);
+        Optional<PaymentCardDTO> paymentCardDTO = paymentCardService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(paymentCardDTO);
     }
 
     /**
-     * DELETE  /payment-cards/:id : delete the "id" paymentCard.
+     * {@code DELETE  /payment-cards/:id} : delete the "id" paymentCard.
      *
-     * @param id the id of the paymentCard to delete
-     * @return the ResponseEntity with status 200 (OK)
+     * @param id the id of the paymentCardDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/payment-cards/{id}")
     public ResponseEntity<Void> deletePaymentCard(@PathVariable Long id) {
         log.debug("REST request to delete PaymentCard : {}", id);
-        paymentCardRepository.deleteById(id);
-        paymentCardSearchRepository.deleteById(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        paymentCardService.delete(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
     /**
-     * SEARCH  /_search/payment-cards?query=:query : search for the paymentCard corresponding
+     * {@code SEARCH  /_search/payment-cards?query=:query} : search for the paymentCard corresponding
      * to the query.
      *
-     * @param query the query of the paymentCard search
-     * @param pageable the pagination information
-     * @return the result of the search
+     * @param query the query of the paymentCard search.
+     * @param pageable the pagination information.
+     * @return the result of the search.
      */
     @GetMapping("/_search/payment-cards")
-    public ResponseEntity<List<PaymentCard>> searchPaymentCards(@RequestParam String query, Pageable pageable) {
+    public ResponseEntity<List<PaymentCardDTO>> searchPaymentCards(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of PaymentCards for query {}", query);
-        Page<PaymentCard> page = paymentCardSearchRepository.search(queryStringQuery(query), pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/payment-cards");
+        Page<PaymentCardDTO> page = paymentCardService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
-
 }

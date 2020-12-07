@@ -4,21 +4,19 @@ import { ActivatedRoute } from '@angular/router';
 import { IQuantity } from 'app/shared/model/quantity.model';
 
 @Component({
-    selector: 'jhi-quantity-detail',
-    templateUrl: './quantity-detail.component.html'
+  selector: 'jhi-quantity-detail',
+  templateUrl: './quantity-detail.component.html'
 })
 export class QuantityDetailComponent implements OnInit {
-    quantity: IQuantity;
+  quantity: IQuantity | null = null;
 
-    constructor(protected activatedRoute: ActivatedRoute) {}
+  constructor(protected activatedRoute: ActivatedRoute) {}
 
-    ngOnInit() {
-        this.activatedRoute.data.subscribe(({ quantity }) => {
-            this.quantity = quantity;
-        });
-    }
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ quantity }) => (this.quantity = quantity));
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  previousState(): void {
+    window.history.back();
+  }
 }

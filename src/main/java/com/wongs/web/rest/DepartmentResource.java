@@ -1,33 +1,34 @@
 package com.wongs.web.rest;
-import com.wongs.domain.Department;
-import com.wongs.repository.DepartmentRepository;
-import com.wongs.repository.search.DepartmentSearchRepository;
+
+import com.wongs.service.DepartmentService;
 import com.wongs.web.rest.errors.BadRequestAlertException;
-import com.wongs.web.rest.util.HeaderUtil;
-import com.wongs.web.rest.util.PaginationUtil;
+import com.wongs.service.dto.DepartmentDTO;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * REST controller for managing Department.
+ * REST controller for managing {@link com.wongs.domain.Department}.
  */
 @RestController
 @RequestMapping("/api")
@@ -37,118 +38,114 @@ public class DepartmentResource {
 
     private static final String ENTITY_NAME = "department";
 
-    private final DepartmentRepository departmentRepository;
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
 
-    private final DepartmentSearchRepository departmentSearchRepository;
+    private final DepartmentService departmentService;
 
-    public DepartmentResource(DepartmentRepository departmentRepository, DepartmentSearchRepository departmentSearchRepository) {
-        this.departmentRepository = departmentRepository;
-        this.departmentSearchRepository = departmentSearchRepository;
+    public DepartmentResource(DepartmentService departmentService) {
+        this.departmentService = departmentService;
     }
 
     /**
-     * POST  /departments : Create a new department.
+     * {@code POST  /departments} : Create a new department.
      *
-     * @param department the department to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new department, or with status 400 (Bad Request) if the department has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param departmentDTO the departmentDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new departmentDTO, or with status {@code 400 (Bad Request)} if the department has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/departments")
-    public ResponseEntity<Department> createDepartment(@Valid @RequestBody Department department) throws URISyntaxException {
-        log.debug("REST request to save Department : {}", department);
-        if (department.getId() != null) {
+    public ResponseEntity<DepartmentDTO> createDepartment(@Valid @RequestBody DepartmentDTO departmentDTO) throws URISyntaxException {
+        log.debug("REST request to save Department : {}", departmentDTO);
+        if (departmentDTO.getId() != null) {
             throw new BadRequestAlertException("A new department cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Department result = departmentRepository.save(department);
-        departmentSearchRepository.save(result);
+        DepartmentDTO result = departmentService.save(departmentDTO);
         return ResponseEntity.created(new URI("/api/departments/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
-     * PUT  /departments : Updates an existing department.
+     * {@code PUT  /departments} : Updates an existing department.
      *
-     * @param department the department to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated department,
-     * or with status 400 (Bad Request) if the department is not valid,
-     * or with status 500 (Internal Server Error) if the department couldn't be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param departmentDTO the departmentDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated departmentDTO,
+     * or with status {@code 400 (Bad Request)} if the departmentDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the departmentDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/departments")
-    public ResponseEntity<Department> updateDepartment(@Valid @RequestBody Department department) throws URISyntaxException {
-        log.debug("REST request to update Department : {}", department);
-        if (department.getId() == null) {
+    public ResponseEntity<DepartmentDTO> updateDepartment(@Valid @RequestBody DepartmentDTO departmentDTO) throws URISyntaxException {
+        log.debug("REST request to update Department : {}", departmentDTO);
+        if (departmentDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Department result = departmentRepository.save(department);
-        departmentSearchRepository.save(result);
+        DepartmentDTO result = departmentService.save(departmentDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, department.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, departmentDTO.getId().toString()))
             .body(result);
     }
 
     /**
-     * GET  /departments : get all the departments.
+     * {@code GET  /departments} : get all the departments.
      *
-     * @param pageable the pagination information
-     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many)
-     * @return the ResponseEntity with status 200 (OK) and the list of departments in body
+     * @param pageable the pagination information.
+     * @param eagerload flag to eager load entities from relationships (This is applicable for many-to-many).
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of departments in body.
      */
     @GetMapping("/departments")
-    public ResponseEntity<List<Department>> getAllDepartments(Pageable pageable, @RequestParam(required = false, defaultValue = "false") boolean eagerload) {
+    public ResponseEntity<List<DepartmentDTO>> getAllDepartments(Pageable pageable, @RequestParam(required = false, defaultValue = "false") boolean eagerload) {
         log.debug("REST request to get a page of Departments");
-        Page<Department> page;
+        Page<DepartmentDTO> page;
         if (eagerload) {
-            page = departmentRepository.findAllWithEagerRelationships(pageable);
+            page = departmentService.findAllWithEagerRelationships(pageable);
         } else {
-            page = departmentRepository.findAll(pageable);
+            page = departmentService.findAll(pageable);
         }
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, String.format("/api/departments?eagerload=%b", eagerload));
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
-     * GET  /departments/:id : get the "id" department.
+     * {@code GET  /departments/:id} : get the "id" department.
      *
-     * @param id the id of the department to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the department, or with status 404 (Not Found)
+     * @param id the id of the departmentDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the departmentDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/departments/{id}")
-    public ResponseEntity<Department> getDepartment(@PathVariable Long id) {
+    public ResponseEntity<DepartmentDTO> getDepartment(@PathVariable Long id) {
         log.debug("REST request to get Department : {}", id);
-        Optional<Department> department = departmentRepository.findOneWithEagerRelationships(id);
-        return ResponseUtil.wrapOrNotFound(department);
+        Optional<DepartmentDTO> departmentDTO = departmentService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(departmentDTO);
     }
 
     /**
-     * DELETE  /departments/:id : delete the "id" department.
+     * {@code DELETE  /departments/:id} : delete the "id" department.
      *
-     * @param id the id of the department to delete
-     * @return the ResponseEntity with status 200 (OK)
+     * @param id the id of the departmentDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/departments/{id}")
     public ResponseEntity<Void> deleteDepartment(@PathVariable Long id) {
         log.debug("REST request to delete Department : {}", id);
-        departmentRepository.deleteById(id);
-        departmentSearchRepository.deleteById(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        departmentService.delete(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
     /**
-     * SEARCH  /_search/departments?query=:query : search for the department corresponding
+     * {@code SEARCH  /_search/departments?query=:query} : search for the department corresponding
      * to the query.
      *
-     * @param query the query of the department search
-     * @param pageable the pagination information
-     * @return the result of the search
+     * @param query the query of the department search.
+     * @param pageable the pagination information.
+     * @return the result of the search.
      */
     @GetMapping("/_search/departments")
-    public ResponseEntity<List<Department>> searchDepartments(@RequestParam String query, Pageable pageable) {
+    public ResponseEntity<List<DepartmentDTO>> searchDepartments(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Departments for query {}", query);
-        Page<Department> page = departmentSearchRepository.search(queryStringQuery(query), pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/departments");
+        Page<DepartmentDTO> page = departmentService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
-
 }

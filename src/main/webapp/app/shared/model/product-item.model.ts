@@ -2,26 +2,26 @@ import { IProductStyle } from 'app/shared/model/product-style.model';
 import { IPrice } from 'app/shared/model/price.model';
 import { IQuantity } from 'app/shared/model/quantity.model';
 import { IProduct } from 'app/shared/model/product.model';
-import { IUrl } from 'app/shared/model/url.model';
-import { CurrencyType } from './price.model';
+import { IMyUrl } from 'app/shared/model/my-url.model';
+import { CurrencyType } from 'app/shared/model/enumerations/currency-type.model';
 
 export interface IProductItem {
-    id?: number;
-    tempId?: any;
-    code?: string;
-    isDefault?: boolean;
-    quantity?: number;
-    currency?: CurrencyType;
-    price?: number;
-    color?: IProductStyle;
-    size?: IProductStyle;
-    prices?: IPrice[];
-    quantities?: IQuantity[];
-    product?: IProduct;
-    url?: IUrl;
-    dirtyPrices?: boolean;
-    dirtyQuantities?: boolean;
-    dirtyUrl?: boolean;
+	id?: number;
+	tempId?: any;
+	code?: string;
+	isDefault?: boolean;
+	quantity?: number;
+	currency?: CurrencyType;
+	price?: number;
+	color?: IProductStyle;
+	size?: IProductStyle;
+	prices?: IPrice[];
+	quantities?: IQuantity[];
+	product?: IProduct;
+	url?: IMyUrl;
+	dirtyPrices?: boolean;
+	dirtyQuantities?: boolean;
+	dirtyUrl?: boolean;
 }
 
 export class ProductItem implements IProductItem {
@@ -38,7 +38,7 @@ export class ProductItem implements IProductItem {
         public prices?: IPrice[],
         public quantities?: IQuantity[],
         public product?: IProduct,
-        public url?: IUrl,
+        public url?: IMyUrl,
         public dirtyPrices?: boolean,
         public dirtyQuantities?: boolean,
         public dirtyUrl?: boolean

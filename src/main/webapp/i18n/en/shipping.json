@@ -1,27 +1,28 @@
 {
-    "mallApp": {
-        "shipping": {
-            "home": {
-                "title": "Shippings",
-                "createLabel": "Create a new Shipping",
-                "createOrEditLabel": "Create or edit a Shipping",
-                "search": "Search for Shipping"
-            },
-            "created": "A new Shipping is created with identifier {{ param }}",
-            "updated": "A Shipping is updated with identifier {{ param }}",
-            "deleted": "A Shipping is deleted with identifier {{ param }}",
-            "delete": {
-                "question": "Are you sure you want to delete Shipping {{ id }}?"
-            },
-            "detail": {
-                "title": "Shipping"
-            },
-            "price": "Price",
-            "currency": "Currency",
-            "date": "Date",
-            "status": "Status",
-            "statusHistory": "Status History",
-            "type": "Type"
-        }
+  "mallApp": {
+    "shipping": {
+      "home": {
+        "title": "Shippings",
+        "createLabel": "Create a new Shipping",
+        "createOrEditLabel": "Create or edit a Shipping",
+        "search": "Search for Shipping",
+        "notFound": "No Shippings found"
+      },
+      "created": "A new Shipping is created with identifier {{ param }}",
+      "updated": "A Shipping is updated with identifier {{ param }}",
+      "deleted": "A Shipping is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Shipping {{ id }}?"
+      },
+      "detail": {
+        "title": "Shipping"
+      },
+      "price": "Price",
+      "currency": "Currency",
+      "date": "Date",
+      "status": "Status",
+      "statusHistory": "Status History",
+      "type": "Type"
     }
+  }
 }

@@ -1,42 +1,51 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="paymentCard">
-            <h2><span jhiTranslate="mallApp.paymentCard.detail.title">Payment Card</span> {{paymentCard.id}}</h2>
+            <h2><span jhiTranslate="mallApp.paymentCard.detail.title">Payment Card</span> {{ paymentCard.id }}</h2>
+
             <hr>
+
             <jhi-alert-error></jhi-alert-error>
+
             <dl class="row-md jh-entity-details">
                 <dt><span jhiTranslate="mallApp.paymentCard.holderName">Holder Name</span></dt>
                 <dd>
-                    <span>{{paymentCard.holderName}}</span>
+                    <span>{{ paymentCard.holderName }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.paymentCard.cardNumber">Card Number</span></dt>
                 <dd>
-                    <span>{{paymentCard.cardNumber}}</span>
+                    <span>{{ paymentCard.cardNumber }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.paymentCard.expirationMonth">Expiration Month</span></dt>
                 <dd>
-                    <span>{{paymentCard.expirationMonth}}</span>
+                    <span>{{ paymentCard.expirationMonth }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.paymentCard.expirationYear">Expiration Year</span></dt>
                 <dd>
-                    <span>{{paymentCard.expirationYear}}</span>
+                    <span>{{ paymentCard.expirationYear }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.paymentCard.cvc">Cvc</span></dt>
                 <dd>
-                    <span>{{paymentCard.cvc}}</span>
+                    <span>{{ paymentCard.cvc }}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.paymentCard.payment">Payment</span></dt>
+                <dd>
+                    <div *ngIf="paymentCard.payment">
+                        <a [routerLink]="['/payment', paymentCard.payment?.id, 'view']">{{ paymentCard.payment?.id }}</a>
+                    </div>
                 </dd>
             </dl>
 
             <button type="submit"
                     (click)="previousState()"
                     class="btn btn-info">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
             </button>
 
             <button type="button"
                     [routerLink]="['/payment-card', paymentCard.id, 'edit']"
                     class="btn btn-primary">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
             </button>
         </div>
     </div>

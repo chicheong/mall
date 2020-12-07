@@ -1,0 +1,66 @@
+<div class="row justify-content-center">
+    <div class="col-8">
+        <div *ngIf="url">
+            <h2><span jhiTranslate="mallApp.url.detail.title">Url</span> {{ url.id }}</h2>
+
+            <hr>
+
+            <jhi-alert-error></jhi-alert-error>
+
+            <dl class="row-md jh-entity-details">
+                <dt><span jhiTranslate="mallApp.url.entityType">Entity Type</span></dt>
+                <dd>
+                    <span>{{ url.entityType }}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.url.entityId">Entity Id</span></dt>
+                <dd>
+                    <span>{{ url.entityId }}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.url.path">Path</span></dt>
+                <dd>
+                    <span>{{ url.path }}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.url.fileName">File Name</span></dt>
+                <dd>
+                    <span>{{ url.fileName }}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.url.sequence">Sequence</span></dt>
+                <dd>
+                    <span>{{ url.sequence }}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.url.description">Description</span></dt>
+                <dd>
+                    <span>{{ url.description }}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.url.createdBy">Created By</span></dt>
+                <dd>
+                    <span>{{ url.createdBy }}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.url.createdDate">Created Date</span></dt>
+                <dd>
+                    <span>{{ url.createdDate }}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.url.lastModifiedBy">Last Modified By</span></dt>
+                <dd>
+                    <span>{{ url.lastModifiedBy }}</span>
+                </dd>
+                <dt><span jhiTranslate="mallApp.url.lastModifiedDate">Last Modified Date</span></dt>
+                <dd>
+                    <span>{{ url.lastModifiedDate }}</span>
+                </dd>
+            </dl>
+
+            <button type="submit"
+                    (click)="previousState()"
+                    class="btn btn-info">
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+            </button>
+
+            <button type="button"
+                    [routerLink]="['/url', url.id, 'edit']"
+                    class="btn btn-primary">
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+            </button>
+        </div>
+    </div>
+</div>

@@ -11,7 +11,7 @@ import com.wongs.domain.UserInfo;
 import com.wongs.service.dto.UserInfoDTO;
 
 /**
- * Mapper for the entity UserInfo and its DTO UserInfoDTO.
+ * Mapper for the entity {@link UserInfo} and its DTO {@link UserInfoDTO}.
  */
 @Service
 public class UserInfoMapper {
@@ -67,8 +67,8 @@ public class UserInfoMapper {
         if (id == null) {
             return null;
         }
-        UserInfo url = new UserInfo();
-        url.setId(id);
-        return url;
+        UserInfo userInfo = new UserInfo();
+        userInfo.setId(id);
+        return userInfo;
     }
 }

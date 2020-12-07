@@ -1,38 +1,41 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="orderShop">
-            <h2><span jhiTranslate="mallApp.orderShop.detail.title">Order Shop</span> {{orderShop.id}}</h2>
+            <h2><span jhiTranslate="mallApp.orderShop.detail.title">Order Shop</span> {{ orderShop.id }}</h2>
+
             <hr>
+
             <jhi-alert-error></jhi-alert-error>
+
             <dl class="row-md jh-entity-details">
                 <dt><span jhiTranslate="mallApp.orderShop.total">Total</span></dt>
                 <dd>
-                    <span>{{orderShop.total}}</span>
+                    <span>{{ orderShop.total }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.orderShop.currency">Currency</span></dt>
                 <dd>
-                    <span jhiTranslate="{{'mallApp.CurrencyType.' + orderShop.currency}}">{{orderShop.currency}}</span>
+                    <span jhiTranslate="{{ 'mallApp.CurrencyType.' + orderShop.currency }}">{{ orderShop.currency }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.orderShop.remark">Remark</span></dt>
                 <dd>
-                    <span>{{orderShop.remark}}</span>
+                    <span>{{ orderShop.remark }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.orderShop.shipping">Shipping</span></dt>
                 <dd>
                     <div *ngIf="orderShop.shipping">
-                        <a [routerLink]="['/shipping', orderShop.shipping?.id, 'view']">{{orderShop.shipping?.id}}</a>
+                        <a [routerLink]="['/shipping', orderShop.shipping?.id, 'view']">{{ orderShop.shipping?.id }}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="mallApp.orderShop.shop">Shop</span></dt>
                 <dd>
                     <div *ngIf="orderShop.shop">
-                        <a [routerLink]="['/shop', orderShop.shop?.id, 'view']">{{orderShop.shop?.id}}</a>
+                        <a [routerLink]="['/shop', orderShop.shop?.id, 'view']">{{ orderShop.shop?.id }}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="mallApp.orderShop.order">Order</span></dt>
                 <dd>
                     <div *ngIf="orderShop.order">
-                        <a [routerLink]="['/my-order', orderShop.order?.id, 'view']">{{orderShop.order?.id}}</a>
+                        <a [routerLink]="['/my-order', orderShop.order?.id, 'view']">{{ orderShop.order?.id }}</a>
                     </div>
                 </dd>
             </dl>
@@ -40,13 +43,13 @@
             <button type="submit"
                     (click)="previousState()"
                     class="btn btn-info">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
             </button>
 
             <button type="button"
                     [routerLink]="['/order-shop', orderShop.id, 'edit']"
                     class="btn btn-primary">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
             </button>
         </div>
     </div>

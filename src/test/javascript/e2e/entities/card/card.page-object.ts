@@ -1,123 +1,127 @@
 import { element, by, ElementFinder } from 'protractor';
 
 export class CardComponentsPage {
-    createButton = element(by.id('jh-create-entity'));
-    deleteButtons = element.all(by.css('jhi-card div table .btn-danger'));
-    title = element.all(by.css('jhi-card div h2#page-heading span')).first();
+  createButton = element(by.id('jh-create-entity'));
+  deleteButtons = element.all(by.css('jhi-card div table .btn-danger'));
+  title = element.all(by.css('jhi-card div h2#page-heading span')).first();
+  noResult = element(by.id('no-result'));
+  entities = element(by.id('entities'));
 
-    async clickOnCreateButton() {
-        await this.createButton.click();
-    }
+  async clickOnCreateButton(): Promise<void> {
+    await this.createButton.click();
+  }
 
-    async clickOnLastDeleteButton() {
-        await this.deleteButtons.last().click();
-    }
+  async clickOnLastDeleteButton(): Promise<void> {
+    await this.deleteButtons.last().click();
+  }
 
-    async countDeleteButtons() {
-        return this.deleteButtons.count();
-    }
+  async countDeleteButtons(): Promise<number> {
+    return this.deleteButtons.count();
+  }
 
-    async getTitle() {
-        return this.title.getAttribute('jhiTranslate');
-    }
+  async getTitle(): Promise<string> {
+    return this.title.getAttribute('jhiTranslate');
+  }
 }
 
 export class CardUpdatePage {
-    pageTitle = element(by.id('jhi-card-heading'));
-    saveButton = element(by.id('save-entity'));
-    cancelButton = element(by.id('cancel-save'));
-    holderNameInput = element(by.id('field_holderName'));
-    cardNumberInput = element(by.id('field_cardNumber'));
-    expirationMonthInput = element(by.id('field_expirationMonth'));
-    expirationYearInput = element(by.id('field_expirationYear'));
-    cvcInput = element(by.id('field_cvc'));
-    accountSelect = element(by.id('field_account'));
+  pageTitle = element(by.id('jhi-card-heading'));
+  saveButton = element(by.id('save-entity'));
+  cancelButton = element(by.id('cancel-save'));
 
-    async getPageTitle() {
-        return this.pageTitle.getAttribute('jhiTranslate');
-    }
+  holderNameInput = element(by.id('field_holderName'));
+  cardNumberInput = element(by.id('field_cardNumber'));
+  expirationMonthInput = element(by.id('field_expirationMonth'));
+  expirationYearInput = element(by.id('field_expirationYear'));
+  cvcInput = element(by.id('field_cvc'));
 
-    async setHolderNameInput(holderName) {
-        await this.holderNameInput.sendKeys(holderName);
-    }
+  accountSelect = element(by.id('field_account'));
 
-    async getHolderNameInput() {
-        return this.holderNameInput.getAttribute('value');
-    }
+  async getPageTitle(): Promise<string> {
+    return this.pageTitle.getAttribute('jhiTranslate');
+  }
 
-    async setCardNumberInput(cardNumber) {
-        await this.cardNumberInput.sendKeys(cardNumber);
-    }
+  async setHolderNameInput(holderName: string): Promise<void> {
+    await this.holderNameInput.sendKeys(holderName);
+  }
 
-    async getCardNumberInput() {
-        return this.cardNumberInput.getAttribute('value');
-    }
+  async getHolderNameInput(): Promise<string> {
+    return await this.holderNameInput.getAttribute('value');
+  }
 
-    async setExpirationMonthInput(expirationMonth) {
-        await this.expirationMonthInput.sendKeys(expirationMonth);
-    }
+  async setCardNumberInput(cardNumber: string): Promise<void> {
+    await this.cardNumberInput.sendKeys(cardNumber);
+  }
 
-    async getExpirationMonthInput() {
-        return this.expirationMonthInput.getAttribute('value');
-    }
+  async getCardNumberInput(): Promise<string> {
+    return await this.cardNumberInput.getAttribute('value');
+  }
 
-    async setExpirationYearInput(expirationYear) {
-        await this.expirationYearInput.sendKeys(expirationYear);
-    }
+  async setExpirationMonthInput(expirationMonth: string): Promise<void> {
+    await this.expirationMonthInput.sendKeys(expirationMonth);
+  }
 
-    async getExpirationYearInput() {
-        return this.expirationYearInput.getAttribute('value');
-    }
+  async getExpirationMonthInput(): Promise<string> {
+    return await this.expirationMonthInput.getAttribute('value');
+  }
 
-    async setCvcInput(cvc) {
-        await this.cvcInput.sendKeys(cvc);
-    }
+  async setExpirationYearInput(expirationYear: string): Promise<void> {
+    await this.expirationYearInput.sendKeys(expirationYear);
+  }
 
-    async getCvcInput() {
-        return this.cvcInput.getAttribute('value');
-    }
+  async getExpirationYearInput(): Promise<string> {
+    return await this.expirationYearInput.getAttribute('value');
+  }
 
-    async accountSelectLastOption() {
-        await this.accountSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async setCvcInput(cvc: string): Promise<void> {
+    await this.cvcInput.sendKeys(cvc);
+  }
 
-    async accountSelectOption(option) {
-        await this.accountSelect.sendKeys(option);
-    }
+  async getCvcInput(): Promise<string> {
+    return await this.cvcInput.getAttribute('value');
+  }
 
-    getAccountSelect(): ElementFinder {
-        return this.accountSelect;
-    }
+  async accountSelectLastOption(): Promise<void> {
+    await this.accountSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async getAccountSelectedOption() {
-        return this.accountSelect.element(by.css('option:checked')).getText();
-    }
+  async accountSelectOption(option: string): Promise<void> {
+    await this.accountSelect.sendKeys(option);
+  }
 
-    async save() {
-        await this.saveButton.click();
-    }
+  getAccountSelect(): ElementFinder {
+    return this.accountSelect;
+  }
 
-    async cancel() {
-        await this.cancelButton.click();
-    }
+  async getAccountSelectedOption(): Promise<string> {
+    return await this.accountSelect.element(by.css('option:checked')).getText();
+  }
 
-    getSaveButton(): ElementFinder {
-        return this.saveButton;
-    }
+  async save(): Promise<void> {
+    await this.saveButton.click();
+  }
+
+  async cancel(): Promise<void> {
+    await this.cancelButton.click();
+  }
+
+  getSaveButton(): ElementFinder {
+    return this.saveButton;
+  }
 }
 
 export class CardDeleteDialog {
-    private dialogTitle = element(by.id('jhi-delete-card-heading'));
-    private confirmButton = element(by.id('jhi-confirm-delete-card'));
+  private dialogTitle = element(by.id('jhi-delete-card-heading'));
+  private confirmButton = element(by.id('jhi-confirm-delete-card'));
 
-    async getDialogTitle() {
-        return this.dialogTitle.getAttribute('jhiTranslate');
-    }
+  async getDialogTitle(): Promise<string> {
+    return this.dialogTitle.getAttribute('jhiTranslate');
+  }
 
-    async clickOnConfirmButton() {
-        await this.confirmButton.click();
-    }
+  async clickOnConfirmButton(): Promise<void> {
+    await this.confirmButton.click();
+  }
 }

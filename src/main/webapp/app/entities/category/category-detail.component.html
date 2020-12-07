@@ -1,48 +1,51 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="category">
-            <h2><span jhiTranslate="mallApp.category.detail.title">Category</span> {{category.id}}</h2>
+            <h2><span jhiTranslate="mallApp.category.detail.title">Category</span> {{ category.id }}</h2>
+
             <hr>
+
             <jhi-alert-error></jhi-alert-error>
+
             <dl class="row-md jh-entity-details">
                 <dt><span jhiTranslate="mallApp.category.name">Name</span></dt>
                 <dd>
-                    <span>{{category.name}}</span>
+                    <span>{{ category.name }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.category.description">Description</span></dt>
                 <dd>
-                    <span>{{category.description}}</span>
+                    <span>{{ category.description }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.category.status">Status</span></dt>
                 <dd>
-                    <span jhiTranslate="{{'mallApp.CategoryStatus.' + category.status}}">{{category.status}}</span>
+                    <span jhiTranslate="{{ 'mallApp.CategoryStatus.' + category.status }}">{{ category.status }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.category.createdBy">Created By</span></dt>
                 <dd>
-                    <span>{{category.createdBy}}</span>
+                    <span>{{ category.createdBy }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.category.createdDate">Created Date</span></dt>
                 <dd>
-                    <span>{{category.createdDate}}</span>
+                    <span>{{ category.createdDate }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.category.lastModifiedBy">Last Modified By</span></dt>
                 <dd>
-                    <span>{{category.lastModifiedBy}}</span>
+                    <span>{{ category.lastModifiedBy }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.category.lastModifiedDate">Last Modified Date</span></dt>
                 <dd>
-                    <span>{{category.lastModifiedDate}}</span>
+                    <span>{{ category.lastModifiedDate }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.category.parent">Parent</span></dt>
                 <dd>
                     <div *ngIf="category.parent">
-                        <a [routerLink]="['/category', category.parent?.id, 'view']">{{category.parent?.id}}</a>
+                        <a [routerLink]="['/category', category.parent?.id, 'view']">{{ category.parent?.id }}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="mallApp.category.product">Product</span></dt>
                 <dd>
                     <span *ngFor="let product of category.products; let last = last">
-                        <a [routerLink]="['/product', product?.id, 'view' ]">{{product.id}}</a>{{last ? '' : ', '}}
+                        <a [routerLink]="['/product', product?.id, 'view']">{{ product.id }}</a>{{ last ? '' : ', ' }}
                     </span>
                 </dd>
             </dl>
@@ -50,13 +53,13 @@
             <button type="submit"
                     (click)="previousState()"
                     class="btn btn-info">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
             </button>
 
             <button type="button"
                     [routerLink]="['/category', category.id, 'edit']"
                     class="btn btn-primary">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
             </button>
         </div>
     </div>

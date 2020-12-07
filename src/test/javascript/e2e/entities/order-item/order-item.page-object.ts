@@ -1,112 +1,116 @@
 import { element, by, ElementFinder } from 'protractor';
 
 export class OrderItemComponentsPage {
-    createButton = element(by.id('jh-create-entity'));
-    deleteButtons = element.all(by.css('jhi-order-item div table .btn-danger'));
-    title = element.all(by.css('jhi-order-item div h2#page-heading span')).first();
+  createButton = element(by.id('jh-create-entity'));
+  deleteButtons = element.all(by.css('jhi-order-item div table .btn-danger'));
+  title = element.all(by.css('jhi-order-item div h2#page-heading span')).first();
+  noResult = element(by.id('no-result'));
+  entities = element(by.id('entities'));
 
-    async clickOnCreateButton() {
-        await this.createButton.click();
-    }
+  async clickOnCreateButton(): Promise<void> {
+    await this.createButton.click();
+  }
 
-    async clickOnLastDeleteButton() {
-        await this.deleteButtons.last().click();
-    }
+  async clickOnLastDeleteButton(): Promise<void> {
+    await this.deleteButtons.last().click();
+  }
 
-    async countDeleteButtons() {
-        return this.deleteButtons.count();
-    }
+  async countDeleteButtons(): Promise<number> {
+    return this.deleteButtons.count();
+  }
 
-    async getTitle() {
-        return this.title.getAttribute('jhiTranslate');
-    }
+  async getTitle(): Promise<string> {
+    return this.title.getAttribute('jhiTranslate');
+  }
 }
 
 export class OrderItemUpdatePage {
-    pageTitle = element(by.id('jhi-order-item-heading'));
-    saveButton = element(by.id('save-entity'));
-    cancelButton = element(by.id('cancel-save'));
-    quantityInput = element(by.id('field_quantity'));
-    priceInput = element(by.id('field_price'));
-    currencySelect = element(by.id('field_currency'));
-    shopSelect = element(by.id('field_shop'));
+  pageTitle = element(by.id('jhi-order-item-heading'));
+  saveButton = element(by.id('save-entity'));
+  cancelButton = element(by.id('cancel-save'));
 
-    async getPageTitle() {
-        return this.pageTitle.getAttribute('jhiTranslate');
-    }
+  quantityInput = element(by.id('field_quantity'));
+  priceInput = element(by.id('field_price'));
+  currencySelect = element(by.id('field_currency'));
 
-    async setQuantityInput(quantity) {
-        await this.quantityInput.sendKeys(quantity);
-    }
+  shopSelect = element(by.id('field_shop'));
 
-    async getQuantityInput() {
-        return this.quantityInput.getAttribute('value');
-    }
+  async getPageTitle(): Promise<string> {
+    return this.pageTitle.getAttribute('jhiTranslate');
+  }
 
-    async setPriceInput(price) {
-        await this.priceInput.sendKeys(price);
-    }
+  async setQuantityInput(quantity: string): Promise<void> {
+    await this.quantityInput.sendKeys(quantity);
+  }
 
-    async getPriceInput() {
-        return this.priceInput.getAttribute('value');
-    }
+  async getQuantityInput(): Promise<string> {
+    return await this.quantityInput.getAttribute('value');
+  }
 
-    async setCurrencySelect(currency) {
-        await this.currencySelect.sendKeys(currency);
-    }
+  async setPriceInput(price: string): Promise<void> {
+    await this.priceInput.sendKeys(price);
+  }
 
-    async getCurrencySelect() {
-        return this.currencySelect.element(by.css('option:checked')).getText();
-    }
+  async getPriceInput(): Promise<string> {
+    return await this.priceInput.getAttribute('value');
+  }
 
-    async currencySelectLastOption() {
-        await this.currencySelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async setCurrencySelect(currency: string): Promise<void> {
+    await this.currencySelect.sendKeys(currency);
+  }
 
-    async shopSelectLastOption() {
-        await this.shopSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async getCurrencySelect(): Promise<string> {
+    return await this.currencySelect.element(by.css('option:checked')).getText();
+  }
 
-    async shopSelectOption(option) {
-        await this.shopSelect.sendKeys(option);
-    }
+  async currencySelectLastOption(): Promise<void> {
+    await this.currencySelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    getShopSelect(): ElementFinder {
-        return this.shopSelect;
-    }
+  async shopSelectLastOption(): Promise<void> {
+    await this.shopSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async getShopSelectedOption() {
-        return this.shopSelect.element(by.css('option:checked')).getText();
-    }
+  async shopSelectOption(option: string): Promise<void> {
+    await this.shopSelect.sendKeys(option);
+  }
 
-    async save() {
-        await this.saveButton.click();
-    }
+  getShopSelect(): ElementFinder {
+    return this.shopSelect;
+  }
 
-    async cancel() {
-        await this.cancelButton.click();
-    }
+  async getShopSelectedOption(): Promise<string> {
+    return await this.shopSelect.element(by.css('option:checked')).getText();
+  }
 
-    getSaveButton(): ElementFinder {
-        return this.saveButton;
-    }
+  async save(): Promise<void> {
+    await this.saveButton.click();
+  }
+
+  async cancel(): Promise<void> {
+    await this.cancelButton.click();
+  }
+
+  getSaveButton(): ElementFinder {
+    return this.saveButton;
+  }
 }
 
 export class OrderItemDeleteDialog {
-    private dialogTitle = element(by.id('jhi-delete-orderItem-heading'));
-    private confirmButton = element(by.id('jhi-confirm-delete-orderItem'));
+  private dialogTitle = element(by.id('jhi-delete-orderItem-heading'));
+  private confirmButton = element(by.id('jhi-confirm-delete-orderItem'));
 
-    async getDialogTitle() {
-        return this.dialogTitle.getAttribute('jhiTranslate');
-    }
+  async getDialogTitle(): Promise<string> {
+    return this.dialogTitle.getAttribute('jhiTranslate');
+  }
 
-    async clickOnConfirmButton() {
-        await this.confirmButton.click();
-    }
+  async clickOnConfirmButton(): Promise<void> {
+    await this.confirmButton.click();
+  }
 }

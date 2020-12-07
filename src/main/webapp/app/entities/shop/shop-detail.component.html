@@ -15,7 +15,7 @@
                         </ng-template>
                     </button>
                     <form name="searchForm" class="form-inline">
-                        <div class="input-group w-100 mr-1">
+                        <!-- <div class="input-group w-100 mr-1">
                             <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'mallApp.product.home.search' | translate }}">
                             <button class="input-group-addon btn btn-info" (click)="search(currentSearch)">
                                 <fa-icon [icon]="'search'"></fa-icon>
@@ -23,7 +23,7 @@
                             <button class="input-group-addon btn btn-danger" (click)="clear()" *ngIf="currentSearch">
                                 <fa-icon [icon]="'trash'"></fa-icon>
                             </button>
-                        </div>
+                        </div> -->
                     </form>        	
                 </div>
             </div>
@@ -32,7 +32,7 @@
             <jhi-alert-error></jhi-alert-error>
 			<div *ngIf="shop.products">
 				<div class="row">
-					<jhi-product-card *ngFor="let product of shop.products ;trackBy: trackId"			
+					<jhi-product-card *ngFor="let product of shop.products ;"			
 						[product]="product" class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
 					</jhi-product-card>
 				</div>

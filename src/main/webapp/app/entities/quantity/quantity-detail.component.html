@@ -1,26 +1,29 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="quantity">
-            <h2><span jhiTranslate="mallApp.quantity.detail.title">Quantity</span> {{quantity.id}}</h2>
+            <h2><span jhiTranslate="mallApp.quantity.detail.title">Quantity</span> {{ quantity.id }}</h2>
+
             <hr>
+
             <jhi-alert-error></jhi-alert-error>
+
             <dl class="row-md jh-entity-details">
                 <dt><span jhiTranslate="mallApp.quantity.from">From</span></dt>
                 <dd>
-                    <span>{{quantity.from}}</span>
+                    <span>{{ quantity.from }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.quantity.to">To</span></dt>
                 <dd>
-                    <span>{{quantity.to}}</span>
+                    <span>{{ quantity.to }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.quantity.quantity">Quantity</span></dt>
                 <dd>
-                    <span>{{quantity.quantity}}</span>
+                    <span>{{ quantity.quantity }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.quantity.item">Item</span></dt>
                 <dd>
                     <div *ngIf="quantity.item">
-                        <a [routerLink]="['/product-item', quantity.item?.id, 'view']">{{quantity.item?.id}}</a>
+                        <a [routerLink]="['/product-item', quantity.item?.id, 'view']">{{ quantity.item?.id }}</a>
                     </div>
                 </dd>
             </dl>
@@ -28,13 +31,13 @@
             <button type="submit"
                     (click)="previousState()"
                     class="btn btn-info">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
             </button>
 
             <button type="button"
                     [routerLink]="['/quantity', quantity.id, 'edit']"
                     class="btn btn-primary">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
             </button>
         </div>
     </div>

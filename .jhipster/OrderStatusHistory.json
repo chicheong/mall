@@ -8,7 +8,7 @@
         {
             "fieldName": "status",
             "fieldType": "OrderStatus",
-            "fieldValues": "PENDING,COMFIRMED,COMPLETED,CANCELLED"
+            "fieldValues": "PENDING,CHECKOUT,COMFIRMED,COMPLETED,CANCELLED"
         }
     ],
     "relationships": [
@@ -20,13 +20,15 @@
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20190527101534",
+    "changelogDate": "20200503073800",
     "entityTableName": "order_status_history",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "infinite-scroll",
-    "service": "no",
+    "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

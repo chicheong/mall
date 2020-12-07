@@ -4,21 +4,19 @@ import { ActivatedRoute } from '@angular/router';
 import { IPayment } from 'app/shared/model/payment.model';
 
 @Component({
-    selector: 'jhi-payment-detail',
-    templateUrl: './payment-detail.component.html'
+  selector: 'jhi-payment-detail',
+  templateUrl: './payment-detail.component.html'
 })
 export class PaymentDetailComponent implements OnInit {
-    payment: IPayment;
+  payment: IPayment | null = null;
 
-    constructor(protected activatedRoute: ActivatedRoute) {}
+  constructor(protected activatedRoute: ActivatedRoute) {}
 
-    ngOnInit() {
-        this.activatedRoute.data.subscribe(({ payment }) => {
-            this.payment = payment;
-        });
-    }
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ payment }) => (this.payment = payment));
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  previousState(): void {
+    window.history.back();
+  }
 }

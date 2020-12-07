@@ -1,18 +1,18 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormArray, FormGroup, AbstractControl } from '@angular/forms';
+import { HttpResponse } from '@angular/common/http';
+import * as moment from 'moment';
 
-import { Observable } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
-
-import { ProductItemsDialogType } from './product-items-dialog.component';
 
 import { IQuantity, Quantity } from 'app/shared/model/quantity.model';
-import { IProductItem } from 'app/shared/model/product-item.model';
-import { ProductItemService } from 'app/entities/product-item';
+import { IProductItem, ProductItem } from 'app/shared/model/product-item.model';
+import { ProductItemService } from 'app/entities/product-item/product-item.service';
 
-import { UuidService } from 'app/shared';
+import { UuidService } from 'app/shared/random/uuid.service';
+import { DATE_TIME_FORMAT } from "app/shared/constants/input.constants";
+import { IModalResult, ModalResult } from "app/shared/model/modal-result.model";
+import { ModalResultType } from "app/shared/model/enumerations/modal-result-type.model";
 
 @Component({
     selector: 'jhi-quantity-dialog',
@@ -20,88 +20,116 @@ import { UuidService } from 'app/shared';
 })
 export class QuantitiesDialogComponent implements OnInit {
 
-    object: IProductItem;
-    productitems: IProductItem[];
-    quantities: IQuantity[];
-    broadcastName: string;
-    type: string; // Not in use
+    object: IProductItem = {};
+
+    editForm = this.fb.group({
+        productItemId: [],
+        productItemTempId: [],
+        quantities: this.fb.array([])
+    });
 
     constructor(
         public activeModal: NgbActiveModal,
-        private jhiAlertService: JhiAlertService,
         private productItemService: ProductItemService,
-        private eventManager: JhiEventManager,
-        private uuidService: UuidService
+        private uuidService: UuidService,
+        private fb: FormBuilder
     ) {
     }
 
-    ngOnInit() {
-        console.error('productItem.quantities: ' + this.object.quantities);
-        if (this.object.dirtyQuantities) {
-            // edited before
-            this.quantities = [];
-            this.object.quantities.forEach(quantity => {
-                const nQuantity: IQuantity = Object.assign(new Quantity(), quantity);
-                this.quantities.push(nQuantity);
-            });
-        } else {
-            if (this.object.id) {
-                // load quantities from server
-                console.error('this.productItem.id: ' + this.object.id);
-                this.loadItem(this.object.id);
+    ngOnInit(): void {
+        if (this.object){
+            if (this.object.quantities && this.object.quantities.length > 0) {
+                this.updateForm(this.object);
             } else {
-                // default a Quantity
-                this.initQuantity();
+                // default a price
+                const quantity: Quantity = new Quantity();
+                quantity.tempId = this.uuidService.get();
+                this.object.quantities!.push(quantity);
+                this.updateForm(this.object);
             }
         }
     }
 
-    loadItem(itemId) {
-        this.productItemService.find(itemId).subscribe((productItemResponse: HttpResponse<IProductItem>) => {
-            this.object = productItemResponse.body;
-            if (this.object.quantities.length > 0) {
-                this.quantities = this.object.quantities;
-            } else {
-                // default a price
-                this.initQuantity();
-            }
+    updateForm(productItem: IProductItem): void {
+        this.editForm = this.fb.group({
+            productItemId: productItem.id,
+            productItemTempId: productItem.tempId,
+            quantities: this.convertToFormQuantities(productItem.quantities)
         });
     }
+    
+    convertToFormQuantities(quantities: IQuantity[] | undefined): FormArray {
+        const formArray: FormArray = this.fb.array([]);
+        if (quantities) {           
+            quantities.forEach((obj: IQuantity) => {
+                formArray.push(this.convertToFormQuantity(obj));
+            });
+        }
+        return formArray;
+    }
+    
+    convertToFormQuantity(obj: IQuantity): FormGroup {
+        return this.fb.group({
+                    id: obj.id,
+                    tempId: obj.tempId,
+                    from: obj.from? obj.from.format(DATE_TIME_FORMAT) : null,
+                    to: obj.to? obj.to.format(DATE_TIME_FORMAT) : null,
+                    quantity: obj.quantity
+                });
+    }
 
-    initQuantity() {
-        const quantity: IQuantity = Object.assign(new Quantity());
+    private createFromForm(): IProductItem {        
+        const productItem: IProductItem = new ProductItem();
+        productItem.id = this.editForm.get(['productItemId'])!.value;
+        productItem.tempId = this.editForm.get(['productItemTempId'])!.value;
+        productItem.quantities = [];
+        
+        this.quantities.controls.forEach((quantityFormGroup: AbstractControl) => {
+            productItem.quantities!.push(this.convertFromFormQuantity(quantityFormGroup));
+        });
+        return productItem;
+    }
+    
+    private convertFromFormQuantity(quantityFormGroup: AbstractControl): IQuantity {
+        const quantity: IQuantity = new Quantity();
+        quantity.id = quantityFormGroup.value.id;
+        quantity.tempId = quantityFormGroup.value.tempId;
+        quantity.from = quantityFormGroup.value.from? moment(quantityFormGroup.value.from, DATE_TIME_FORMAT): undefined,
+        quantity.to = quantityFormGroup.value.to? moment(quantityFormGroup.value.to, DATE_TIME_FORMAT): undefined,
+        quantity.quantity = quantityFormGroup.value.quantity;
+        quantity.item = quantityFormGroup.value.item;
+        return quantity;
+    }
+    
+    get quantities() : FormArray {
+        return this.editForm.get("quantities") as FormArray
+    }
+
+    addFormQuantity(): void {
+        const quantity: Quantity = new Quantity();
         quantity.tempId = this.uuidService.get();
-        this.quantities = [quantity];
+        this.quantities.push(this.convertToFormQuantity(quantity));
     }
 
-    add() {
-        const quantity: IQuantity = Object.assign(new Quantity());
-        quantity.tempId = this.uuidService.get();
-        this.quantities.push(quantity);
+    removeQuantity(i: number): void {
+        this.quantities.removeAt(i);
     }
 
-    remove(i: number) {
-        this.quantities.splice(i, 1);
-    }
-
-    clear() {
+    clear(): void {
         this.activeModal.dismiss('cancel');
     }
 
-    save() {
-        this.eventManager.broadcast({ name: 'quantityListModification', content: 'OK'});
-        this.activeModal.dismiss('OK');
+    confirm(): void {
+        const result: IModalResult = Object.assign(new ModalResult());
+        result.type = ModalResultType.SINGLE;
+        result.obj = this.createFromForm();
+        this.activeModal.close(result);
     }
 
-    confirm() {
-        this.object.quantities = this.quantities;
-        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.object, type: ProductItemsDialogType.SINGLE});
-        this.activeModal.dismiss('OK');
-    }
-
-    addAndCopyToAll() {
-        this.object.quantities = this.quantities;
-        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.object, type: ProductItemsDialogType.ALL});
-        this.activeModal.dismiss('OK');
+    addAndCopyToAll(): void {
+        const result: IModalResult = Object.assign(new ModalResult());
+        result.type = ModalResultType.ALL;
+        result.obj = this.createFromForm();
+        this.activeModal.close(result);
     }
 }

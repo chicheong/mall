@@ -1,0 +1,11 @@
+id;amount;currency;type;remark;status
+1;36635;USD;DEBIT_CARD;Checking Account;PENDING
+2;44370;KRW;PAYPAL;implementation copy;PENDING
+3;95448;HKD;CREDIT_CARD;syndicate;CANCELLED
+4;8762;JPY;PAYPAL;Route;PENDING
+5;46136;EUR;ACCOUNT;Garden;CANCELLED
+6;55468;CNY;CREDIT_CARD;Music Slovenia;PAID
+7;86327;TWD;PAYME;incubate Ameliorated;PAID
+8;2324;CNY;BANK_TRANSFER;target Bedfordshire deposit;PENDING
+9;303;HKD;PAYME;synthesize Malaysian Ringgit;PENDING
+10;97533;JPY;BANK_TRANSFER;pixel;CANCELLED

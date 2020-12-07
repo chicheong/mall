@@ -1,42 +1,45 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="currencyRate">
-            <h2><span jhiTranslate="mallApp.currencyRate.detail.title">Currency Rate</span> {{currencyRate.id}}</h2>
+            <h2><span jhiTranslate="mallApp.currencyRate.detail.title">Currency Rate</span> {{ currencyRate.id }}</h2>
+
             <hr>
+
             <jhi-alert-error></jhi-alert-error>
+
             <dl class="row-md jh-entity-details">
                 <dt><span jhiTranslate="mallApp.currencyRate.from">From</span></dt>
                 <dd>
-                    <span>{{currencyRate.from}}</span>
+                    <span>{{ currencyRate.from }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.currencyRate.to">To</span></dt>
                 <dd>
-                    <span>{{currencyRate.to}}</span>
+                    <span>{{ currencyRate.to }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.currencyRate.rate">Rate</span></dt>
                 <dd>
-                    <span>{{currencyRate.rate}}</span>
+                    <span>{{ currencyRate.rate }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.currencyRate.sourceCurrency">Source Currency</span></dt>
                 <dd>
-                    <span jhiTranslate="{{'mallApp.CurrencyType.' + currencyRate.sourceCurrency}}">{{currencyRate.sourceCurrency}}</span>
+                    <span jhiTranslate="{{ 'mallApp.CurrencyType.' + currencyRate.sourceCurrency }}">{{ currencyRate.sourceCurrency }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.currencyRate.targetCurrency">Target Currency</span></dt>
                 <dd>
-                    <span jhiTranslate="{{'mallApp.CurrencyType.' + currencyRate.targetCurrency}}">{{currencyRate.targetCurrency}}</span>
+                    <span jhiTranslate="{{ 'mallApp.CurrencyType.' + currencyRate.targetCurrency }}">{{ currencyRate.targetCurrency }}</span>
                 </dd>
             </dl>
 
             <button type="submit"
                     (click)="previousState()"
                     class="btn btn-info">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
             </button>
 
             <button type="button"
                     [routerLink]="['/currency-rate', currencyRate.id, 'edit']"
                     class="btn btn-primary">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
             </button>
         </div>
     </div>

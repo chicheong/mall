@@ -1,9 +1,9 @@
 package com.wongs.repository;
 
 import com.wongs.domain.Card;
+
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
-
 
 /**
  * Spring Data  repository for the Card entity.
@@ -11,5 +11,4 @@ import org.springframework.stereotype.Repository;
 @SuppressWarnings("unused")
 @Repository
 public interface CardRepository extends JpaRepository<Card, Long> {
-
 }

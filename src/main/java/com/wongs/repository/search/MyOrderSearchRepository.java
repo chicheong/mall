@@ -4,7 +4,7 @@ import com.wongs.domain.MyOrder;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 /**
- * Spring Data Elasticsearch repository for the MyOrder entity.
+ * Spring Data Elasticsearch repository for the {@link MyOrder} entity.
  */
 public interface MyOrderSearchRepository extends ElasticsearchRepository<MyOrder, Long> {
 }

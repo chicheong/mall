@@ -1,98 +1,88 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
-import { UserRouteAccessService } from 'app/core';
-import { Observable, of } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { Country } from 'app/shared/model/country.model';
+import { Resolve, ActivatedRouteSnapshot, Routes, Router } from '@angular/router';
+import { JhiResolvePagingParams } from 'ng-jhipster';
+import { Observable, of, EMPTY } from 'rxjs';
+import { flatMap } from 'rxjs/operators';
+
+import { Authority } from 'app/shared/constants/authority.constants';
+import { UserRouteAccessService } from 'app/core/auth/user-route-access-service';
+import { ICountry, Country } from 'app/shared/model/country.model';
 import { CountryService } from './country.service';
 import { CountryComponent } from './country.component';
 import { CountryDetailComponent } from './country-detail.component';
 import { CountryUpdateComponent } from './country-update.component';
-import { CountryDeletePopupComponent } from './country-delete-dialog.component';
-import { ICountry } from 'app/shared/model/country.model';
 
 @Injectable({ providedIn: 'root' })
 export class CountryResolve implements Resolve<ICountry> {
-    constructor(private service: CountryService) {}
+  constructor(private service: CountryService, private router: Router) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ICountry> {
-        const id = route.params['id'] ? route.params['id'] : null;
-        if (id) {
-            return this.service.find(id).pipe(
-                filter((response: HttpResponse<Country>) => response.ok),
-                map((country: HttpResponse<Country>) => country.body)
-            );
-        }
-        return of(new Country());
+  resolve(route: ActivatedRouteSnapshot): Observable<ICountry> | Observable<never> {
+    const id = route.params['id'];
+    if (id) {
+      return this.service.find(id).pipe(
+        flatMap((country: HttpResponse<Country>) => {
+          if (country.body) {
+            return of(country.body);
+          } else {
+            this.router.navigate(['404']);
+            return EMPTY;
+          }
+        })
+      );
     }
+    return of(new Country());
+  }
 }
 
 export const countryRoute: Routes = [
-    {
-        path: '',
-        component: CountryComponent,
-        resolve: {
-            pagingParams: JhiResolvePagingParams
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            defaultSort: 'id,asc',
-            pageTitle: 'mallApp.country.home.title'
-        },
-        canActivate: [UserRouteAccessService]
+  {
+    path: '',
+    component: CountryComponent,
+    resolve: {
+      pagingParams: JhiResolvePagingParams
     },
-    {
-        path: ':id/view',
-        component: CountryDetailComponent,
-        resolve: {
-            country: CountryResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.country.home.title'
-        },
-        canActivate: [UserRouteAccessService]
+    data: {
+      authorities: [Authority.USER],
+      defaultSort: 'id,asc',
+      pageTitle: 'mallApp.country.home.title'
     },
-    {
-        path: 'new',
-        component: CountryUpdateComponent,
-        resolve: {
-            country: CountryResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.country.home.title'
-        },
-        canActivate: [UserRouteAccessService]
+    canActivate: [UserRouteAccessService]
+  },
+  {
+    path: ':id/view',
+    component: CountryDetailComponent,
+    resolve: {
+      country: CountryResolve
     },
-    {
-        path: ':id/edit',
-        component: CountryUpdateComponent,
-        resolve: {
-            country: CountryResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.country.home.title'
-        },
-        canActivate: [UserRouteAccessService]
-    }
-];
-
-export const countryPopupRoute: Routes = [
-    {
-        path: ':id/delete',
-        component: CountryDeletePopupComponent,
-        resolve: {
-            country: CountryResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.country.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    }
+    data: {
+      authorities: [Authority.USER],
+      pageTitle: 'mallApp.country.home.title'
+    },
+    canActivate: [UserRouteAccessService]
+  },
+  {
+    path: 'new',
+    component: CountryUpdateComponent,
+    resolve: {
+      country: CountryResolve
+    },
+    data: {
+      authorities: [Authority.USER],
+      pageTitle: 'mallApp.country.home.title'
+    },
+    canActivate: [UserRouteAccessService]
+  },
+  {
+    path: ':id/edit',
+    component: CountryUpdateComponent,
+    resolve: {
+      country: CountryResolve
+    },
+    data: {
+      authorities: [Authority.USER],
+      pageTitle: 'mallApp.country.home.title'
+    },
+    canActivate: [UserRouteAccessService]
+  }
 ];

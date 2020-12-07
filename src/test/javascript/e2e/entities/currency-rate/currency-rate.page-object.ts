@@ -1,117 +1,120 @@
 import { element, by, ElementFinder } from 'protractor';
 
 export class CurrencyRateComponentsPage {
-    createButton = element(by.id('jh-create-entity'));
-    deleteButtons = element.all(by.css('jhi-currency-rate div table .btn-danger'));
-    title = element.all(by.css('jhi-currency-rate div h2#page-heading span')).first();
+  createButton = element(by.id('jh-create-entity'));
+  deleteButtons = element.all(by.css('jhi-currency-rate div table .btn-danger'));
+  title = element.all(by.css('jhi-currency-rate div h2#page-heading span')).first();
+  noResult = element(by.id('no-result'));
+  entities = element(by.id('entities'));
 
-    async clickOnCreateButton() {
-        await this.createButton.click();
-    }
+  async clickOnCreateButton(): Promise<void> {
+    await this.createButton.click();
+  }
 
-    async clickOnLastDeleteButton() {
-        await this.deleteButtons.last().click();
-    }
+  async clickOnLastDeleteButton(): Promise<void> {
+    await this.deleteButtons.last().click();
+  }
 
-    async countDeleteButtons() {
-        return this.deleteButtons.count();
-    }
+  async countDeleteButtons(): Promise<number> {
+    return this.deleteButtons.count();
+  }
 
-    async getTitle() {
-        return this.title.getAttribute('jhiTranslate');
-    }
+  async getTitle(): Promise<string> {
+    return this.title.getAttribute('jhiTranslate');
+  }
 }
 
 export class CurrencyRateUpdatePage {
-    pageTitle = element(by.id('jhi-currency-rate-heading'));
-    saveButton = element(by.id('save-entity'));
-    cancelButton = element(by.id('cancel-save'));
-    fromInput = element(by.id('field_from'));
-    toInput = element(by.id('field_to'));
-    rateInput = element(by.id('field_rate'));
-    sourceCurrencySelect = element(by.id('field_sourceCurrency'));
-    targetCurrencySelect = element(by.id('field_targetCurrency'));
+  pageTitle = element(by.id('jhi-currency-rate-heading'));
+  saveButton = element(by.id('save-entity'));
+  cancelButton = element(by.id('cancel-save'));
 
-    async getPageTitle() {
-        return this.pageTitle.getAttribute('jhiTranslate');
-    }
+  fromInput = element(by.id('field_from'));
+  toInput = element(by.id('field_to'));
+  rateInput = element(by.id('field_rate'));
+  sourceCurrencySelect = element(by.id('field_sourceCurrency'));
+  targetCurrencySelect = element(by.id('field_targetCurrency'));
 
-    async setFromInput(from) {
-        await this.fromInput.sendKeys(from);
-    }
+  async getPageTitle(): Promise<string> {
+    return this.pageTitle.getAttribute('jhiTranslate');
+  }
 
-    async getFromInput() {
-        return this.fromInput.getAttribute('value');
-    }
+  async setFromInput(from: string): Promise<void> {
+    await this.fromInput.sendKeys(from);
+  }
 
-    async setToInput(to) {
-        await this.toInput.sendKeys(to);
-    }
+  async getFromInput(): Promise<string> {
+    return await this.fromInput.getAttribute('value');
+  }
 
-    async getToInput() {
-        return this.toInput.getAttribute('value');
-    }
+  async setToInput(to: string): Promise<void> {
+    await this.toInput.sendKeys(to);
+  }
 
-    async setRateInput(rate) {
-        await this.rateInput.sendKeys(rate);
-    }
+  async getToInput(): Promise<string> {
+    return await this.toInput.getAttribute('value');
+  }
 
-    async getRateInput() {
-        return this.rateInput.getAttribute('value');
-    }
+  async setRateInput(rate: string): Promise<void> {
+    await this.rateInput.sendKeys(rate);
+  }
 
-    async setSourceCurrencySelect(sourceCurrency) {
-        await this.sourceCurrencySelect.sendKeys(sourceCurrency);
-    }
+  async getRateInput(): Promise<string> {
+    return await this.rateInput.getAttribute('value');
+  }
 
-    async getSourceCurrencySelect() {
-        return this.sourceCurrencySelect.element(by.css('option:checked')).getText();
-    }
+  async setSourceCurrencySelect(sourceCurrency: string): Promise<void> {
+    await this.sourceCurrencySelect.sendKeys(sourceCurrency);
+  }
 
-    async sourceCurrencySelectLastOption() {
-        await this.sourceCurrencySelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async getSourceCurrencySelect(): Promise<string> {
+    return await this.sourceCurrencySelect.element(by.css('option:checked')).getText();
+  }
 
-    async setTargetCurrencySelect(targetCurrency) {
-        await this.targetCurrencySelect.sendKeys(targetCurrency);
-    }
+  async sourceCurrencySelectLastOption(): Promise<void> {
+    await this.sourceCurrencySelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async getTargetCurrencySelect() {
-        return this.targetCurrencySelect.element(by.css('option:checked')).getText();
-    }
+  async setTargetCurrencySelect(targetCurrency: string): Promise<void> {
+    await this.targetCurrencySelect.sendKeys(targetCurrency);
+  }
 
-    async targetCurrencySelectLastOption() {
-        await this.targetCurrencySelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async getTargetCurrencySelect(): Promise<string> {
+    return await this.targetCurrencySelect.element(by.css('option:checked')).getText();
+  }
 
-    async save() {
-        await this.saveButton.click();
-    }
+  async targetCurrencySelectLastOption(): Promise<void> {
+    await this.targetCurrencySelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async cancel() {
-        await this.cancelButton.click();
-    }
+  async save(): Promise<void> {
+    await this.saveButton.click();
+  }
 
-    getSaveButton(): ElementFinder {
-        return this.saveButton;
-    }
+  async cancel(): Promise<void> {
+    await this.cancelButton.click();
+  }
+
+  getSaveButton(): ElementFinder {
+    return this.saveButton;
+  }
 }
 
 export class CurrencyRateDeleteDialog {
-    private dialogTitle = element(by.id('jhi-delete-currencyRate-heading'));
-    private confirmButton = element(by.id('jhi-confirm-delete-currencyRate'));
+  private dialogTitle = element(by.id('jhi-delete-currencyRate-heading'));
+  private confirmButton = element(by.id('jhi-confirm-delete-currencyRate'));
 
-    async getDialogTitle() {
-        return this.dialogTitle.getAttribute('jhiTranslate');
-    }
+  async getDialogTitle(): Promise<string> {
+    return this.dialogTitle.getAttribute('jhiTranslate');
+  }
 
-    async clickOnConfirmButton() {
-        await this.confirmButton.click();
-    }
+  async clickOnConfirmButton(): Promise<void> {
+    await this.confirmButton.click();
+  }
 }

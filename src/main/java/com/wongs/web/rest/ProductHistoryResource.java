@@ -1,33 +1,34 @@
 package com.wongs.web.rest;
-import com.wongs.domain.ProductHistory;
-import com.wongs.repository.ProductHistoryRepository;
-import com.wongs.repository.search.ProductHistorySearchRepository;
+
+import com.wongs.service.ProductHistoryService;
 import com.wongs.web.rest.errors.BadRequestAlertException;
-import com.wongs.web.rest.util.HeaderUtil;
-import com.wongs.web.rest.util.PaginationUtil;
+import com.wongs.service.dto.ProductHistoryDTO;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * REST controller for managing ProductHistory.
+ * REST controller for managing {@link com.wongs.domain.ProductHistory}.
  */
 @RestController
 @RequestMapping("/api")
@@ -37,112 +38,108 @@ public class ProductHistoryResource {
 
     private static final String ENTITY_NAME = "productHistory";
 
-    private final ProductHistoryRepository productHistoryRepository;
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
 
-    private final ProductHistorySearchRepository productHistorySearchRepository;
+    private final ProductHistoryService productHistoryService;
 
-    public ProductHistoryResource(ProductHistoryRepository productHistoryRepository, ProductHistorySearchRepository productHistorySearchRepository) {
-        this.productHistoryRepository = productHistoryRepository;
-        this.productHistorySearchRepository = productHistorySearchRepository;
+    public ProductHistoryResource(ProductHistoryService productHistoryService) {
+        this.productHistoryService = productHistoryService;
     }
 
     /**
-     * POST  /product-histories : Create a new productHistory.
+     * {@code POST  /product-histories} : Create a new productHistory.
      *
-     * @param productHistory the productHistory to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new productHistory, or with status 400 (Bad Request) if the productHistory has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param productHistoryDTO the productHistoryDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new productHistoryDTO, or with status {@code 400 (Bad Request)} if the productHistory has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/product-histories")
-    public ResponseEntity<ProductHistory> createProductHistory(@Valid @RequestBody ProductHistory productHistory) throws URISyntaxException {
-        log.debug("REST request to save ProductHistory : {}", productHistory);
-        if (productHistory.getId() != null) {
+    public ResponseEntity<ProductHistoryDTO> createProductHistory(@Valid @RequestBody ProductHistoryDTO productHistoryDTO) throws URISyntaxException {
+        log.debug("REST request to save ProductHistory : {}", productHistoryDTO);
+        if (productHistoryDTO.getId() != null) {
             throw new BadRequestAlertException("A new productHistory cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        ProductHistory result = productHistoryRepository.save(productHistory);
-        productHistorySearchRepository.save(result);
+        ProductHistoryDTO result = productHistoryService.save(productHistoryDTO);
         return ResponseEntity.created(new URI("/api/product-histories/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
-     * PUT  /product-histories : Updates an existing productHistory.
+     * {@code PUT  /product-histories} : Updates an existing productHistory.
      *
-     * @param productHistory the productHistory to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated productHistory,
-     * or with status 400 (Bad Request) if the productHistory is not valid,
-     * or with status 500 (Internal Server Error) if the productHistory couldn't be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param productHistoryDTO the productHistoryDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated productHistoryDTO,
+     * or with status {@code 400 (Bad Request)} if the productHistoryDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the productHistoryDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/product-histories")
-    public ResponseEntity<ProductHistory> updateProductHistory(@Valid @RequestBody ProductHistory productHistory) throws URISyntaxException {
-        log.debug("REST request to update ProductHistory : {}", productHistory);
-        if (productHistory.getId() == null) {
+    public ResponseEntity<ProductHistoryDTO> updateProductHistory(@Valid @RequestBody ProductHistoryDTO productHistoryDTO) throws URISyntaxException {
+        log.debug("REST request to update ProductHistory : {}", productHistoryDTO);
+        if (productHistoryDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        ProductHistory result = productHistoryRepository.save(productHistory);
-        productHistorySearchRepository.save(result);
+        ProductHistoryDTO result = productHistoryService.save(productHistoryDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, productHistory.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, productHistoryDTO.getId().toString()))
             .body(result);
     }
 
     /**
-     * GET  /product-histories : get all the productHistories.
+     * {@code GET  /product-histories} : get all the productHistories.
      *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of productHistories in body
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of productHistories in body.
      */
     @GetMapping("/product-histories")
-    public ResponseEntity<List<ProductHistory>> getAllProductHistories(Pageable pageable) {
+    public ResponseEntity<List<ProductHistoryDTO>> getAllProductHistories(Pageable pageable) {
         log.debug("REST request to get a page of ProductHistories");
-        Page<ProductHistory> page = productHistoryRepository.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/product-histories");
+        Page<ProductHistoryDTO> page = productHistoryService.findAll(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
-     * GET  /product-histories/:id : get the "id" productHistory.
+     * {@code GET  /product-histories/:id} : get the "id" productHistory.
      *
-     * @param id the id of the productHistory to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the productHistory, or with status 404 (Not Found)
+     * @param id the id of the productHistoryDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the productHistoryDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/product-histories/{id}")
-    public ResponseEntity<ProductHistory> getProductHistory(@PathVariable Long id) {
+    public ResponseEntity<ProductHistoryDTO> getProductHistory(@PathVariable Long id) {
         log.debug("REST request to get ProductHistory : {}", id);
-        Optional<ProductHistory> productHistory = productHistoryRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(productHistory);
+        Optional<ProductHistoryDTO> productHistoryDTO = productHistoryService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(productHistoryDTO);
     }
 
     /**
-     * DELETE  /product-histories/:id : delete the "id" productHistory.
+     * {@code DELETE  /product-histories/:id} : delete the "id" productHistory.
      *
-     * @param id the id of the productHistory to delete
-     * @return the ResponseEntity with status 200 (OK)
+     * @param id the id of the productHistoryDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/product-histories/{id}")
     public ResponseEntity<Void> deleteProductHistory(@PathVariable Long id) {
         log.debug("REST request to delete ProductHistory : {}", id);
-        productHistoryRepository.deleteById(id);
-        productHistorySearchRepository.deleteById(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        productHistoryService.delete(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
     /**
-     * SEARCH  /_search/product-histories?query=:query : search for the productHistory corresponding
+     * {@code SEARCH  /_search/product-histories?query=:query} : search for the productHistory corresponding
      * to the query.
      *
-     * @param query the query of the productHistory search
-     * @param pageable the pagination information
-     * @return the result of the search
+     * @param query the query of the productHistory search.
+     * @param pageable the pagination information.
+     * @return the result of the search.
      */
     @GetMapping("/_search/product-histories")
-    public ResponseEntity<List<ProductHistory>> searchProductHistories(@RequestParam String query, Pageable pageable) {
+    public ResponseEntity<List<ProductHistoryDTO>> searchProductHistories(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of ProductHistories for query {}", query);
-        Page<ProductHistory> page = productHistorySearchRepository.search(queryStringQuery(query), pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/product-histories");
+        Page<ProductHistoryDTO> page = productHistoryService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
-
 }

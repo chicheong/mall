@@ -1,113 +1,111 @@
-/* tslint:disable max-line-length */
 import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { of } from 'rxjs';
-import { take, map } from 'rxjs/operators';
 import { ProductItemService } from 'app/entities/product-item/product-item.service';
 import { IProductItem, ProductItem } from 'app/shared/model/product-item.model';
-import { CurrencyType } from 'app/shared/model/price.model';
+import { CurrencyType } from 'app/shared/model/enumerations/currency-type.model';
 
 describe('Service Tests', () => {
-    describe('ProductItem Service', () => {
-        let injector: TestBed;
-        let service: ProductItemService;
-        let httpMock: HttpTestingController;
-        let elemDefault: IProductItem;
-        beforeEach(() => {
-            TestBed.configureTestingModule({
-                imports: [HttpClientTestingModule]
-            });
-            injector = getTestBed();
-            service = injector.get(ProductItemService);
-            httpMock = injector.get(HttpTestingController);
+  describe('ProductItem Service', () => {
+    let injector: TestBed;
+    let service: ProductItemService;
+    let httpMock: HttpTestingController;
+    let elemDefault: IProductItem;
+    let expectedResult: IProductItem | IProductItem[] | boolean | null;
 
-            elemDefault = new ProductItem(0, 0, 'AAAAAAA', false, 0, CurrencyType.HKD, 0);
-        });
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        imports: [HttpClientTestingModule]
+      });
+      expectedResult = null;
+      injector = getTestBed();
+      service = injector.get(ProductItemService);
+      httpMock = injector.get(HttpTestingController);
 
-        describe('Service methods', async () => {
-            it('should find an element', async () => {
-                const returnedFromService = Object.assign({}, elemDefault);
-                service
-                    .find(123)
-                    .pipe(take(1))
-                    .subscribe(resp => expect(resp).toMatchObject({ body: elemDefault }));
-
-                const req = httpMock.expectOne({ method: 'GET' });
-                req.flush(JSON.stringify(returnedFromService));
-            });
-
-            it('should create a ProductItem', async () => {
-                const returnedFromService = Object.assign(
-                    {
-                        id: 0
-                    },
-                    elemDefault
-                );
-                const expected = Object.assign({}, returnedFromService);
-                service
-                    .create(new ProductItem(null))
-                    .pipe(take(1))
-                    .subscribe(resp => expect(resp).toMatchObject({ body: expected }));
-                const req = httpMock.expectOne({ method: 'POST' });
-                req.flush(JSON.stringify(returnedFromService));
-            });
-
-            it('should update a ProductItem', async () => {
-                const returnedFromService = Object.assign(
-                    {
-                        code: 'BBBBBB',
-                        isDefault: true,
-                        quantity: 1,
-                        currency: 'BBBBBB',
-                        price: 1
-                    },
-                    elemDefault
-                );
-
-                const expected = Object.assign({}, returnedFromService);
-                service
-                    .update(expected)
-                    .pipe(take(1))
-                    .subscribe(resp => expect(resp).toMatchObject({ body: expected }));
-                const req = httpMock.expectOne({ method: 'PUT' });
-                req.flush(JSON.stringify(returnedFromService));
-            });
-
-            it('should return a list of ProductItem', async () => {
-                const returnedFromService = Object.assign(
-                    {
-                        code: 'BBBBBB',
-                        isDefault: true,
-                        quantity: 1,
-                        currency: 'BBBBBB',
-                        price: 1
-                    },
-                    elemDefault
-                );
-                const expected = Object.assign({}, returnedFromService);
-                service
-                    .query(expected)
-                    .pipe(
-                        take(1),
-                        map(resp => resp.body)
-                    )
-                    .subscribe(body => expect(body).toContainEqual(expected));
-                const req = httpMock.expectOne({ method: 'GET' });
-                req.flush(JSON.stringify([returnedFromService]));
-                httpMock.verify();
-            });
-
-            it('should delete a ProductItem', async () => {
-                const rxPromise = service.delete(123).subscribe(resp => expect(resp.ok));
-
-                const req = httpMock.expectOne({ method: 'DELETE' });
-                req.flush({ status: 200 });
-            });
-        });
-
-        afterEach(() => {
-            httpMock.verify();
-        });
+      elemDefault = new ProductItem(0, 'AAAAAAA', false, 0, CurrencyType.HKD, 0);
     });
+
+    describe('Service methods', () => {
+      it('should find an element', () => {
+        const returnedFromService = Object.assign({}, elemDefault);
+
+        service.find(123).subscribe(resp => (expectedResult = resp.body));
+
+        const req = httpMock.expectOne({ method: 'GET' });
+        req.flush(returnedFromService);
+        expect(expectedResult).toMatchObject(elemDefault);
+      });
+
+      it('should create a ProductItem', () => {
+        const returnedFromService = Object.assign(
+          {
+            id: 0
+          },
+          elemDefault
+        );
+
+        const expected = Object.assign({}, returnedFromService);
+
+        service.create(new ProductItem()).subscribe(resp => (expectedResult = resp.body));
+
+        const req = httpMock.expectOne({ method: 'POST' });
+        req.flush(returnedFromService);
+        expect(expectedResult).toMatchObject(expected);
+      });
+
+      it('should update a ProductItem', () => {
+        const returnedFromService = Object.assign(
+          {
+            code: 'BBBBBB',
+            isDefault: true,
+            quantity: 1,
+            currency: 'BBBBBB',
+            price: 1
+          },
+          elemDefault
+        );
+
+        const expected = Object.assign({}, returnedFromService);
+
+        service.update(expected).subscribe(resp => (expectedResult = resp.body));
+
+        const req = httpMock.expectOne({ method: 'PUT' });
+        req.flush(returnedFromService);
+        expect(expectedResult).toMatchObject(expected);
+      });
+
+      it('should return a list of ProductItem', () => {
+        const returnedFromService = Object.assign(
+          {
+            code: 'BBBBBB',
+            isDefault: true,
+            quantity: 1,
+            currency: 'BBBBBB',
+            price: 1
+          },
+          elemDefault
+        );
+
+        const expected = Object.assign({}, returnedFromService);
+
+        service.query().subscribe(resp => (expectedResult = resp.body));
+
+        const req = httpMock.expectOne({ method: 'GET' });
+        req.flush([returnedFromService]);
+        httpMock.verify();
+        expect(expectedResult).toContainEqual(expected);
+      });
+
+      it('should delete a ProductItem', () => {
+        service.delete(123).subscribe(resp => (expectedResult = resp.ok));
+
+        const req = httpMock.expectOne({ method: 'DELETE' });
+        req.flush({ status: 200 });
+        expect(expectedResult);
+      });
+    });
+
+    afterEach(() => {
+      httpMock.verify();
+    });
+  });
 });

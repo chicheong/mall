@@ -1,6 +1,7 @@
 package com.wongs.repository;
 
 import com.wongs.domain.Delegation;
+
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.data.repository.query.Param;

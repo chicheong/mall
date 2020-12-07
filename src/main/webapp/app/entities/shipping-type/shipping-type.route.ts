@@ -1,98 +1,88 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
-import { UserRouteAccessService } from 'app/core';
-import { Observable, of } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { ShippingType } from 'app/shared/model/shipping-type.model';
+import { Resolve, ActivatedRouteSnapshot, Routes, Router } from '@angular/router';
+import { JhiResolvePagingParams } from 'ng-jhipster';
+import { Observable, of, EMPTY } from 'rxjs';
+import { flatMap } from 'rxjs/operators';
+
+import { Authority } from 'app/shared/constants/authority.constants';
+import { UserRouteAccessService } from 'app/core/auth/user-route-access-service';
+import { IShippingType, ShippingType } from 'app/shared/model/shipping-type.model';
 import { ShippingTypeService } from './shipping-type.service';
 import { ShippingTypeComponent } from './shipping-type.component';
 import { ShippingTypeDetailComponent } from './shipping-type-detail.component';
 import { ShippingTypeUpdateComponent } from './shipping-type-update.component';
-import { ShippingTypeDeletePopupComponent } from './shipping-type-delete-dialog.component';
-import { IShippingType } from 'app/shared/model/shipping-type.model';
 
 @Injectable({ providedIn: 'root' })
 export class ShippingTypeResolve implements Resolve<IShippingType> {
-    constructor(private service: ShippingTypeService) {}
+  constructor(private service: ShippingTypeService, private router: Router) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<IShippingType> {
-        const id = route.params['id'] ? route.params['id'] : null;
-        if (id) {
-            return this.service.find(id).pipe(
-                filter((response: HttpResponse<ShippingType>) => response.ok),
-                map((shippingType: HttpResponse<ShippingType>) => shippingType.body)
-            );
-        }
-        return of(new ShippingType());
+  resolve(route: ActivatedRouteSnapshot): Observable<IShippingType> | Observable<never> {
+    const id = route.params['id'];
+    if (id) {
+      return this.service.find(id).pipe(
+        flatMap((shippingType: HttpResponse<ShippingType>) => {
+          if (shippingType.body) {
+            return of(shippingType.body);
+          } else {
+            this.router.navigate(['404']);
+            return EMPTY;
+          }
+        })
+      );
     }
+    return of(new ShippingType());
+  }
 }
 
 export const shippingTypeRoute: Routes = [
-    {
-        path: '',
-        component: ShippingTypeComponent,
-        resolve: {
-            pagingParams: JhiResolvePagingParams
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            defaultSort: 'id,asc',
-            pageTitle: 'mallApp.shippingType.home.title'
-        },
-        canActivate: [UserRouteAccessService]
+  {
+    path: '',
+    component: ShippingTypeComponent,
+    resolve: {
+      pagingParams: JhiResolvePagingParams
     },
-    {
-        path: ':id/view',
-        component: ShippingTypeDetailComponent,
-        resolve: {
-            shippingType: ShippingTypeResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.shippingType.home.title'
-        },
-        canActivate: [UserRouteAccessService]
+    data: {
+      authorities: [Authority.USER],
+      defaultSort: 'id,asc',
+      pageTitle: 'mallApp.shippingType.home.title'
     },
-    {
-        path: 'new',
-        component: ShippingTypeUpdateComponent,
-        resolve: {
-            shippingType: ShippingTypeResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.shippingType.home.title'
-        },
-        canActivate: [UserRouteAccessService]
+    canActivate: [UserRouteAccessService]
+  },
+  {
+    path: ':id/view',
+    component: ShippingTypeDetailComponent,
+    resolve: {
+      shippingType: ShippingTypeResolve
     },
-    {
-        path: ':id/edit',
-        component: ShippingTypeUpdateComponent,
-        resolve: {
-            shippingType: ShippingTypeResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.shippingType.home.title'
-        },
-        canActivate: [UserRouteAccessService]
-    }
-];
-
-export const shippingTypePopupRoute: Routes = [
-    {
-        path: ':id/delete',
-        component: ShippingTypeDeletePopupComponent,
-        resolve: {
-            shippingType: ShippingTypeResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.shippingType.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    }
+    data: {
+      authorities: [Authority.USER],
+      pageTitle: 'mallApp.shippingType.home.title'
+    },
+    canActivate: [UserRouteAccessService]
+  },
+  {
+    path: 'new',
+    component: ShippingTypeUpdateComponent,
+    resolve: {
+      shippingType: ShippingTypeResolve
+    },
+    data: {
+      authorities: [Authority.USER],
+      pageTitle: 'mallApp.shippingType.home.title'
+    },
+    canActivate: [UserRouteAccessService]
+  },
+  {
+    path: ':id/edit',
+    component: ShippingTypeUpdateComponent,
+    resolve: {
+      shippingType: ShippingTypeResolve
+    },
+    data: {
+      authorities: [Authority.USER],
+      pageTitle: 'mallApp.shippingType.home.title'
+    },
+    canActivate: [UserRouteAccessService]
+  }
 ];

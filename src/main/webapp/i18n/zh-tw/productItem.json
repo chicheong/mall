@@ -1,32 +1,33 @@
 {
-    "mallApp": {
-        "productItem": {
-            "home": {
-                "title": "Product Items",
-                "createLabel": "建立一筆新的 Product Item",
-                "createOrEditLabel": "建立或編輯 Product Item",
-                "search": "搜尋 Product Item",
-				"updateCodes": "更新 Product Codes",
-                "updatePrices": "更新 Product Prices",
-                "updateQuantities": "更新 Product Quantities"
-            },
-            "created": "新的 Product Item 建立成功，識別碼為 {{ param }}",
-            "updated": "識別碼為 {{ param }} 的 Product Item 更新成功",
-            "deleted": "識別碼為 {{ param }} 的 Product Item 刪除成功",
-            "delete": {
-                "question": "您確定要刪除 Product Item {{ id }} 嗎?"
-            },
-            "detail": {
-                "title": "Product Item"
-            },
-            "code": "Code",
-            "isDefault": "Is Default",
-            "quantity": "Quantity",
-            "currency": "Currency",
-            "price": "Price",
-            "color": "Color",
-            "size": "Size",
-            "product": "Product"
-        }
+  "mallApp": {
+    "productItem": {
+      "home": {
+        "title": "Product Items",
+        "createLabel": "建立一筆新的 Product Item",
+        "createOrEditLabel": "建立或編輯 Product Item",
+        "search": "搜尋 Product Item",
+        "notFound": "No Product Items found",
+		"updateCodes": "更新 Product Codes",
+        "updatePrices": "更新 Product Prices",
+        "updateQuantities": "更新 Product Quantities"
+      },
+      "created": "新的 Product Item 建立成功，識別碼為 {{ param }}",
+      "updated": "識別碼為 {{ param }} 的 Product Item 更新成功",
+      "deleted": "識別碼為 {{ param }} 的 Product Item 刪除成功",
+      "delete": {
+        "question": "您確定要刪除 Product Item {{ id }} 嗎?"
+      },
+      "detail": {
+        "title": "Product Item"
+      },
+      "code": "Code",
+      "isDefault": "Is Default",
+      "quantity": "Quantity",
+      "currency": "Currency",
+      "price": "Price",
+      "color": "Color",
+      "size": "Size",
+      "product": "Product"
     }
+  }
 }

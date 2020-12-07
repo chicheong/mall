@@ -1,25 +1,26 @@
 {
-    "mallApp": {
-        "shippingType": {
-            "home": {
-                "title": "Shipping Types",
-                "createLabel": "建立一筆新的 Shipping Type",
-                "createOrEditLabel": "建立或編輯 Shipping Type",
-                "search": "搜尋 Shipping Type"
-            },
-            "created": "新的 Shipping Type 建立成功，識別碼為 {{ param }}",
-            "updated": "識別碼為 {{ param }} 的 Shipping Type 更新成功",
-            "deleted": "識別碼為 {{ param }} 的 Shipping Type 刪除成功",
-            "delete": {
-                "question": "您確定要刪除 Shipping Type {{ id }} 嗎?"
-            },
-            "detail": {
-                "title": "Shipping Type"
-            },
-            "name": "Name",
-            "description": "Description",
-            "price": "Price",
-            "currency": "Currency"
-        }
+  "mallApp": {
+    "shippingType": {
+      "home": {
+        "title": "Shipping Types",
+        "createLabel": "建立一筆新的 Shipping Type",
+        "createOrEditLabel": "建立或編輯 Shipping Type",
+        "search": "搜尋 Shipping Type",
+        "notFound": "No Shipping Types found"
+      },
+      "created": "新的 Shipping Type 建立成功，識別碼為 {{ param }}",
+      "updated": "識別碼為 {{ param }} 的 Shipping Type 更新成功",
+      "deleted": "識別碼為 {{ param }} 的 Shipping Type 刪除成功",
+      "delete": {
+        "question": "您確定要刪除 Shipping Type {{ id }} 嗎?"
+      },
+      "detail": {
+        "title": "Shipping Type"
+      },
+      "name": "Name",
+      "description": "Description",
+      "price": "Price",
+      "currency": "Currency"
     }
+  }
 }

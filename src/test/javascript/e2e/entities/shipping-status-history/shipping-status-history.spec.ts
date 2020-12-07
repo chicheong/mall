@@ -1,72 +1,84 @@
-/* tslint:disable no-unused-expression */
 import { browser, ExpectedConditions as ec, protractor, promise } from 'protractor';
 import { NavBarPage, SignInPage } from '../../page-objects/jhi-page-objects';
 
 import {
-    ShippingStatusHistoryComponentsPage,
-    ShippingStatusHistoryDeleteDialog,
-    ShippingStatusHistoryUpdatePage
+  ShippingStatusHistoryComponentsPage,
+  ShippingStatusHistoryDeleteDialog,
+  ShippingStatusHistoryUpdatePage
 } from './shipping-status-history.page-object';
 
 const expect = chai.expect;
 
 describe('ShippingStatusHistory e2e test', () => {
-    let navBarPage: NavBarPage;
-    let signInPage: SignInPage;
-    let shippingStatusHistoryUpdatePage: ShippingStatusHistoryUpdatePage;
-    let shippingStatusHistoryComponentsPage: ShippingStatusHistoryComponentsPage;
-    let shippingStatusHistoryDeleteDialog: ShippingStatusHistoryDeleteDialog;
+  let navBarPage: NavBarPage;
+  let signInPage: SignInPage;
+  let shippingStatusHistoryComponentsPage: ShippingStatusHistoryComponentsPage;
+  let shippingStatusHistoryUpdatePage: ShippingStatusHistoryUpdatePage;
+  let shippingStatusHistoryDeleteDialog: ShippingStatusHistoryDeleteDialog;
 
-    before(async () => {
-        await browser.get('/');
-        navBarPage = new NavBarPage();
-        signInPage = await navBarPage.getSignInPage();
-        await signInPage.autoSignInUsing('admin', 'admin');
-        await browser.wait(ec.visibilityOf(navBarPage.entityMenu), 5000);
-    });
+  before(async () => {
+    await browser.get('/');
+    navBarPage = new NavBarPage();
+    signInPage = await navBarPage.getSignInPage();
+    await signInPage.autoSignInUsing('admin', 'admin');
+    await browser.wait(ec.visibilityOf(navBarPage.entityMenu), 5000);
+  });
 
-    it('should load ShippingStatusHistories', async () => {
-        await navBarPage.goToEntity('shipping-status-history');
-        shippingStatusHistoryComponentsPage = new ShippingStatusHistoryComponentsPage();
-        await browser.wait(ec.visibilityOf(shippingStatusHistoryComponentsPage.title), 5000);
-        expect(await shippingStatusHistoryComponentsPage.getTitle()).to.eq('mallApp.shippingStatusHistory.home.title');
-    });
+  it('should load ShippingStatusHistories', async () => {
+    await navBarPage.goToEntity('shipping-status-history');
+    shippingStatusHistoryComponentsPage = new ShippingStatusHistoryComponentsPage();
+    await browser.wait(ec.visibilityOf(shippingStatusHistoryComponentsPage.title), 5000);
+    expect(await shippingStatusHistoryComponentsPage.getTitle()).to.eq('mallApp.shippingStatusHistory.home.title');
+    await browser.wait(
+      ec.or(ec.visibilityOf(shippingStatusHistoryComponentsPage.entities), ec.visibilityOf(shippingStatusHistoryComponentsPage.noResult)),
+      1000
+    );
+  });
 
-    it('should load create ShippingStatusHistory page', async () => {
-        await shippingStatusHistoryComponentsPage.clickOnCreateButton();
-        shippingStatusHistoryUpdatePage = new ShippingStatusHistoryUpdatePage();
-        expect(await shippingStatusHistoryUpdatePage.getPageTitle()).to.eq('mallApp.shippingStatusHistory.home.createOrEditLabel');
-        await shippingStatusHistoryUpdatePage.cancel();
-    });
+  it('should load create ShippingStatusHistory page', async () => {
+    await shippingStatusHistoryComponentsPage.clickOnCreateButton();
+    shippingStatusHistoryUpdatePage = new ShippingStatusHistoryUpdatePage();
+    expect(await shippingStatusHistoryUpdatePage.getPageTitle()).to.eq('mallApp.shippingStatusHistory.home.createOrEditLabel');
+    await shippingStatusHistoryUpdatePage.cancel();
+  });
 
-    it('should create and save ShippingStatusHistories', async () => {
-        const nbButtonsBeforeCreate = await shippingStatusHistoryComponentsPage.countDeleteButtons();
+  it('should create and save ShippingStatusHistories', async () => {
+    const nbButtonsBeforeCreate = await shippingStatusHistoryComponentsPage.countDeleteButtons();
 
-        await shippingStatusHistoryComponentsPage.clickOnCreateButton();
-        await promise.all([
-            shippingStatusHistoryUpdatePage.setEffectiveDateInput('01/01/2001' + protractor.Key.TAB + '02:30AM'),
-            shippingStatusHistoryUpdatePage.statusSelectLastOption(),
-            shippingStatusHistoryUpdatePage.shippingSelectLastOption()
-        ]);
-        expect(await shippingStatusHistoryUpdatePage.getEffectiveDateInput()).to.contain('2001-01-01T02:30');
-        await shippingStatusHistoryUpdatePage.save();
-        expect(await shippingStatusHistoryUpdatePage.getSaveButton().isPresent()).to.be.false;
+    await shippingStatusHistoryComponentsPage.clickOnCreateButton();
 
-        expect(await shippingStatusHistoryComponentsPage.countDeleteButtons()).to.eq(nbButtonsBeforeCreate + 1);
-    });
+    await promise.all([
+      shippingStatusHistoryUpdatePage.setEffectiveDateInput('01/01/2001' + protractor.Key.TAB + '02:30AM'),
+      shippingStatusHistoryUpdatePage.statusSelectLastOption(),
+      shippingStatusHistoryUpdatePage.shippingSelectLastOption()
+    ]);
 
-    it('should delete last ShippingStatusHistory', async () => {
-        const nbButtonsBeforeDelete = await shippingStatusHistoryComponentsPage.countDeleteButtons();
-        await shippingStatusHistoryComponentsPage.clickOnLastDeleteButton();
+    expect(await shippingStatusHistoryUpdatePage.getEffectiveDateInput()).to.contain(
+      '2001-01-01T02:30',
+      'Expected effectiveDate value to be equals to 2000-12-31'
+    );
 
-        shippingStatusHistoryDeleteDialog = new ShippingStatusHistoryDeleteDialog();
-        expect(await shippingStatusHistoryDeleteDialog.getDialogTitle()).to.eq('mallApp.shippingStatusHistory.delete.question');
-        await shippingStatusHistoryDeleteDialog.clickOnConfirmButton();
+    await shippingStatusHistoryUpdatePage.save();
+    expect(await shippingStatusHistoryUpdatePage.getSaveButton().isPresent(), 'Expected save button disappear').to.be.false;
 
-        expect(await shippingStatusHistoryComponentsPage.countDeleteButtons()).to.eq(nbButtonsBeforeDelete - 1);
-    });
+    expect(await shippingStatusHistoryComponentsPage.countDeleteButtons()).to.eq(
+      nbButtonsBeforeCreate + 1,
+      'Expected one more entry in the table'
+    );
+  });
 
-    after(async () => {
-        await navBarPage.autoSignOut();
-    });
+  it('should delete last ShippingStatusHistory', async () => {
+    const nbButtonsBeforeDelete = await shippingStatusHistoryComponentsPage.countDeleteButtons();
+    await shippingStatusHistoryComponentsPage.clickOnLastDeleteButton();
+
+    shippingStatusHistoryDeleteDialog = new ShippingStatusHistoryDeleteDialog();
+    expect(await shippingStatusHistoryDeleteDialog.getDialogTitle()).to.eq('mallApp.shippingStatusHistory.delete.question');
+    await shippingStatusHistoryDeleteDialog.clickOnConfirmButton();
+
+    expect(await shippingStatusHistoryComponentsPage.countDeleteButtons()).to.eq(nbButtonsBeforeDelete - 1);
+  });
+
+  after(async () => {
+    await navBarPage.autoSignOut();
+  });
 });

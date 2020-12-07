@@ -1,124 +1,148 @@
 import { element, by, ElementFinder } from 'protractor';
 
 export class PaymentComponentsPage {
-    createButton = element(by.id('jh-create-entity'));
-    deleteButtons = element.all(by.css('jhi-payment div table .btn-danger'));
-    title = element.all(by.css('jhi-payment div h2#page-heading span')).first();
+  createButton = element(by.id('jh-create-entity'));
+  deleteButtons = element.all(by.css('jhi-payment div table .btn-danger'));
+  title = element.all(by.css('jhi-payment div h2#page-heading span')).first();
+  noResult = element(by.id('no-result'));
+  entities = element(by.id('entities'));
 
-    async clickOnCreateButton() {
-        await this.createButton.click();
-    }
+  async clickOnCreateButton(): Promise<void> {
+    await this.createButton.click();
+  }
 
-    async clickOnLastDeleteButton() {
-        await this.deleteButtons.last().click();
-    }
+  async clickOnLastDeleteButton(): Promise<void> {
+    await this.deleteButtons.last().click();
+  }
 
-    async countDeleteButtons() {
-        return this.deleteButtons.count();
-    }
+  async countDeleteButtons(): Promise<number> {
+    return this.deleteButtons.count();
+  }
 
-    async getTitle() {
-        return this.title.getAttribute('jhiTranslate');
-    }
+  async getTitle(): Promise<string> {
+    return this.title.getAttribute('jhiTranslate');
+  }
 }
 
 export class PaymentUpdatePage {
-    pageTitle = element(by.id('jhi-payment-heading'));
-    saveButton = element(by.id('save-entity'));
-    cancelButton = element(by.id('cancel-save'));
-    amountInput = element(by.id('field_amount'));
-    currencySelect = element(by.id('field_currency'));
-    typeSelect = element(by.id('field_type'));
-    remarkInput = element(by.id('field_remark'));
-    statusSelect = element(by.id('field_status'));
+  pageTitle = element(by.id('jhi-payment-heading'));
+  saveButton = element(by.id('save-entity'));
+  cancelButton = element(by.id('cancel-save'));
 
-    async getPageTitle() {
-        return this.pageTitle.getAttribute('jhiTranslate');
-    }
+  amountInput = element(by.id('field_amount'));
+  currencySelect = element(by.id('field_currency'));
+  typeSelect = element(by.id('field_type'));
+  remarkInput = element(by.id('field_remark'));
+  statusSelect = element(by.id('field_status'));
 
-    async setAmountInput(amount) {
-        await this.amountInput.sendKeys(amount);
-    }
+  orderSelect = element(by.id('field_order'));
 
-    async getAmountInput() {
-        return this.amountInput.getAttribute('value');
-    }
+  async getPageTitle(): Promise<string> {
+    return this.pageTitle.getAttribute('jhiTranslate');
+  }
 
-    async setCurrencySelect(currency) {
-        await this.currencySelect.sendKeys(currency);
-    }
+  async setAmountInput(amount: string): Promise<void> {
+    await this.amountInput.sendKeys(amount);
+  }
 
-    async getCurrencySelect() {
-        return this.currencySelect.element(by.css('option:checked')).getText();
-    }
+  async getAmountInput(): Promise<string> {
+    return await this.amountInput.getAttribute('value');
+  }
 
-    async currencySelectLastOption() {
-        await this.currencySelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async setCurrencySelect(currency: string): Promise<void> {
+    await this.currencySelect.sendKeys(currency);
+  }
 
-    async setTypeSelect(type) {
-        await this.typeSelect.sendKeys(type);
-    }
+  async getCurrencySelect(): Promise<string> {
+    return await this.currencySelect.element(by.css('option:checked')).getText();
+  }
 
-    async getTypeSelect() {
-        return this.typeSelect.element(by.css('option:checked')).getText();
-    }
+  async currencySelectLastOption(): Promise<void> {
+    await this.currencySelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async typeSelectLastOption() {
-        await this.typeSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async setTypeSelect(type: string): Promise<void> {
+    await this.typeSelect.sendKeys(type);
+  }
 
-    async setRemarkInput(remark) {
-        await this.remarkInput.sendKeys(remark);
-    }
+  async getTypeSelect(): Promise<string> {
+    return await this.typeSelect.element(by.css('option:checked')).getText();
+  }
 
-    async getRemarkInput() {
-        return this.remarkInput.getAttribute('value');
-    }
+  async typeSelectLastOption(): Promise<void> {
+    await this.typeSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async setStatusSelect(status) {
-        await this.statusSelect.sendKeys(status);
-    }
+  async setRemarkInput(remark: string): Promise<void> {
+    await this.remarkInput.sendKeys(remark);
+  }
 
-    async getStatusSelect() {
-        return this.statusSelect.element(by.css('option:checked')).getText();
-    }
+  async getRemarkInput(): Promise<string> {
+    return await this.remarkInput.getAttribute('value');
+  }
 
-    async statusSelectLastOption() {
-        await this.statusSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async setStatusSelect(status: string): Promise<void> {
+    await this.statusSelect.sendKeys(status);
+  }
 
-    async save() {
-        await this.saveButton.click();
-    }
+  async getStatusSelect(): Promise<string> {
+    return await this.statusSelect.element(by.css('option:checked')).getText();
+  }
 
-    async cancel() {
-        await this.cancelButton.click();
-    }
+  async statusSelectLastOption(): Promise<void> {
+    await this.statusSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    getSaveButton(): ElementFinder {
-        return this.saveButton;
-    }
+  async orderSelectLastOption(): Promise<void> {
+    await this.orderSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
+
+  async orderSelectOption(option: string): Promise<void> {
+    await this.orderSelect.sendKeys(option);
+  }
+
+  getOrderSelect(): ElementFinder {
+    return this.orderSelect;
+  }
+
+  async getOrderSelectedOption(): Promise<string> {
+    return await this.orderSelect.element(by.css('option:checked')).getText();
+  }
+
+  async save(): Promise<void> {
+    await this.saveButton.click();
+  }
+
+  async cancel(): Promise<void> {
+    await this.cancelButton.click();
+  }
+
+  getSaveButton(): ElementFinder {
+    return this.saveButton;
+  }
 }
 
 export class PaymentDeleteDialog {
-    private dialogTitle = element(by.id('jhi-delete-payment-heading'));
-    private confirmButton = element(by.id('jhi-confirm-delete-payment'));
+  private dialogTitle = element(by.id('jhi-delete-payment-heading'));
+  private confirmButton = element(by.id('jhi-confirm-delete-payment'));
 
-    async getDialogTitle() {
-        return this.dialogTitle.getAttribute('jhiTranslate');
-    }
+  async getDialogTitle(): Promise<string> {
+    return this.dialogTitle.getAttribute('jhiTranslate');
+  }
 
-    async clickOnConfirmButton() {
-        await this.confirmButton.click();
-    }
+  async clickOnConfirmButton(): Promise<void> {
+    await this.confirmButton.click();
+  }
 }

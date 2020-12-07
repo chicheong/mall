@@ -1,6 +1,5 @@
 package com.wongs.domain;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
@@ -9,11 +8,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Objects;
 
 import com.wongs.domain.enumeration.CommonStatus;
 
@@ -23,11 +22,11 @@ import com.wongs.domain.enumeration.CommonStatus;
 @Entity
 @Table(name = "department")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "department")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "department")
 public class Department implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -54,9 +53,6 @@ public class Department implements Serializable {
                inverseJoinColumns = @JoinColumn(name = "office_id", referencedColumnName = "id"))
     private Set<Office> offices = new HashSet<>();
 
-    @OneToMany(mappedBy = "department")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<MyAccount> accounts = new HashSet<>();
     @ManyToMany(mappedBy = "departments")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnore
@@ -148,31 +144,6 @@ public class Department implements Serializable {
         this.offices = offices;
     }
 
-    public Set<MyAccount> getAccounts() {
-        return accounts;
-    }
-
-    public Department accounts(Set<MyAccount> myAccounts) {
-        this.accounts = myAccounts;
-        return this;
-    }
-
-    public Department addAccount(MyAccount myAccount) {
-        this.accounts.add(myAccount);
-        myAccount.setDepartment(this);
-        return this;
-    }
-
-    public Department removeAccount(MyAccount myAccount) {
-        this.accounts.remove(myAccount);
-        myAccount.setDepartment(null);
-        return this;
-    }
-
-    public void setAccounts(Set<MyAccount> myAccounts) {
-        this.accounts = myAccounts;
-    }
-
     public Set<Company> getCompanies() {
         return companies;
     }
@@ -204,19 +175,15 @@ public class Department implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Department)) {
             return false;
         }
-        Department department = (Department) o;
-        if (department.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), department.getId());
+        return id != null && id.equals(((Department) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.wongs.service.dto;
 
-
+import java.time.ZonedDateTime;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
@@ -11,10 +11,10 @@ import com.wongs.domain.ProductItem;
 import com.wongs.domain.enumeration.CurrencyType;
 
 /**
- * A DTO for the Price entity.
+ * A DTO for the {@link com.wongs.domain.Price} entity.
  */
 public class PriceDTO implements Serializable {
-
+    
     private Long id;
     
     private String tempId;
@@ -98,7 +98,7 @@ public class PriceDTO implements Serializable {
 		this.item = item;
 	}
 
-	@Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -108,7 +108,7 @@ public class PriceDTO implements Serializable {
         }
 
         PriceDTO priceDTO = (PriceDTO) o;
-        if(priceDTO.getId() == null || getId() == null) {
+        if (priceDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), priceDTO.getId());
@@ -127,6 +127,7 @@ public class PriceDTO implements Serializable {
             ", to='" + getTo() + "'" +
             ", price=" + getPrice() +
             ", currency='" + getCurrency() + "'" +
+            ", item=" + getItem() +
             "}";
     }
 }

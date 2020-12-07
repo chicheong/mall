@@ -11,7 +11,7 @@ import com.wongs.domain.OrderItem;
 import com.wongs.service.dto.OrderItemDTO;
 
 /**
- * Mapper for the entity OrderItem and its DTO OrderItemDTO.
+ * Mapper for the entity {@link OrderItem} and its DTO {@link OrderItemDTO}.
  */
 @Service
 public class OrderItemMapper {

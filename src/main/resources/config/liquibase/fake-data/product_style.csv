@@ -1,0 +1,52 @@
+id;name;code;is_default;type;product_id
+1;Red;RED;TRUE;COLOR;1
+2;Green;GREEN;FALSE;COLOR;1
+3;Large;L;TRUE;SIZE;1
+4;Small;S;FALSE;SIZE;1
+5;Red;RED;TRUE;COLOR;2
+6;Green;GREEN;FALSE;COLOR;2
+7;Large;L;TRUE;SIZE;2
+8;Small;S;FALSE;SIZE;2
+9;Red;RED;TRUE;COLOR;3
+10;Green;GREEN;FALSE;COLOR;3
+11;Large;L;TRUE;SIZE;3
+12;Small;S;FALSE;SIZE;3
+13;Red;RED;TRUE;COLOR;4
+14;Green;GREEN;FALSE;COLOR;4
+15;Large;L;TRUE;SIZE;4
+16;Small;S;FALSE;SIZE;4
+17;Red;RED;TRUE;COLOR;5
+18;Green;GREEN;FALSE;COLOR;5
+19;Large;L;TRUE;SIZE;5
+20;Small;S;FALSE;SIZE;5
+21;Red;RED;TRUE;COLOR;6
+22;Green;GREEN;FALSE;COLOR;6
+23;Large;L;TRUE;SIZE;6
+24;Small;S;FALSE;SIZE;6
+25;Red;RED;TRUE;COLOR;7
+26;Green;GREEN;FALSE;COLOR;7
+27;Large;L;TRUE;SIZE;7
+28;Small;S;FALSE;SIZE;7
+29;Red;RED;TRUE;COLOR;8
+30;Green;GREEN;FALSE;COLOR;8
+31;Large;L;TRUE;SIZE;8
+32;Small;S;FALSE;SIZE;8
+33;Red;RED;TRUE;COLOR;9
+34;Green;GREEN;FALSE;COLOR;9
+35;Large;L;TRUE;SIZE;9
+36;Small;S;FALSE;SIZE;9
+37;Red;RED;TRUE;COLOR;10
+38;Green;GREEN;FALSE;COLOR;10
+39;Large;L;TRUE;SIZE;10
+40;Small;S;FALSE;SIZE;10
+41;XSS;Ball invoice;true;COLOR;11
+42;Eritrea Cotton;global;true;SIZE;11
+43;program Gorgeous Granite Pants;synergize innovate blue;true;SIZE;11
+44;leverage Supervisor;Music;false;SIZE;11
+45;Nevada;Officer lavender SMTP;false;SIZE;11
+46;navigating Fresh blue;SCSI engineer;true;SIZE;11
+47;Producer invoice e-services;Factors Gorgeous;true;SIZE;11
+48;Pants Assurance Pennsylvania;Tasty Cotton Fish Awesome;false;SIZE;11
+49;Gorgeous;Games Cambridgeshire synthesize;false;SIZE;11
+50;Manager Designer Fully-configurable;pricing structure Nauru monitor;true;SIZE;11
+51;Manager Designer Fully-configurable;pricing structure Nauru monitor;false;SIZE;11

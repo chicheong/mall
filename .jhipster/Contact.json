@@ -6,7 +6,15 @@
             "fieldType": "String"
         },
         {
+            "fieldName": "name2",
+            "fieldType": "String"
+        },
+        {
             "fieldName": "phoneNum",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "phoneNum2",
             "fieldType": "String"
         },
         {
@@ -28,13 +36,15 @@
             "ownerSide": false
         }
     ],
-    "changelogDate": "20190527101514",
+    "changelogDate": "20200503071800",
     "entityTableName": "contact",
     "dto": "mapstruct",
-    "pagination": "pager",
+    "pagination": "pagination",
     "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

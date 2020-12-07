@@ -1,31 +1,20 @@
 package com.wongs.domain;
 
-
-import java.io.Serializable;
-import java.time.ZonedDateTime;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Lob;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.data.elasticsearch.annotations.Document;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import javax.persistence.*;
+import javax.validation.constraints.*;
+
+import org.springframework.data.elasticsearch.annotations.FieldType;
+import java.io.Serializable;
+import java.util.Objects;
+import java.time.ZonedDateTime;
+import java.util.HashSet;
+import java.util.Set;
+
 import com.wongs.domain.enumeration.ProductStatus;
 
 /**
@@ -34,11 +23,11 @@ import com.wongs.domain.enumeration.ProductStatus;
 @Entity
 @Table(name = "product")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "product")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "product")
 public class Product implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -55,8 +44,8 @@ public class Product implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @Lob
-    @Column(name = "content", length = 20971520)
+	@Lob
+    @Column(name = "content")
     private String content;
 
     @Column(name = "remark")
@@ -82,12 +71,12 @@ public class Product implements Serializable {
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnore
     private Set<ProductStyle> styles = new HashSet<>();
-    
+
     @OneToMany(mappedBy = "product")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnore
     private Set<ProductItem> items = new HashSet<>();
-    
+
     @ManyToOne
     @JsonIgnoreProperties("products")
     private Shop shop;
@@ -343,19 +332,15 @@ public class Product implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Product)) {
             return false;
         }
-        Product product = (Product) o;
-        if (product.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), product.getId());
+        return id != null && id.equals(((Product) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

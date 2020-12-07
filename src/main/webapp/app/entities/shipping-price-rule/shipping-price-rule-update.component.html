@@ -1,59 +1,66 @@
 <div class="row justify-content-center">
     <div class="col-8">
-        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
             <h2 id="jhi-shipping-price-rule-heading" jhiTranslate="mallApp.shippingPriceRule.home.createOrEditLabel">Create or edit a Shipping Price Rule</h2>
+
             <div>
                 <jhi-alert-error></jhi-alert-error>
-                <div class="form-group" [hidden]="!shippingPriceRule.id">
+
+                <div class="form-group" [hidden]="!editForm.get('id')!.value">
                     <label for="id" jhiTranslate="global.field.id">ID</label>
-                    <input type="text" class="form-control" id="id" name="id"
-                        [(ngModel)]="shippingPriceRule.id" readonly />
+                    <input type="text" class="form-control" id="id" name="id" formControlName="id" readonly />
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.shippingPriceRule.type" for="field_type">Type</label>
-                    <select class="form-control" name="type" [(ngModel)]="shippingPriceRule.type" id="field_type" >
-                        <option value="FIXED_PER_ORDER">{{'mallApp.ShippingPriceRuleType.FIXED_PER_ORDER' | translate}}</option>
-                        <option value="TOTAL_PERCENTAGE">{{'mallApp.ShippingPriceRuleType.TOTAL_PERCENTAGE' | translate}}</option>
-                        <option value="PRICE_LARGER_THAN">{{'mallApp.ShippingPriceRuleType.PRICE_LARGER_THAN' | translate}}</option>
-                        <option value="PRICE_LARGER_THAN_OR_EQUAL">{{'mallApp.ShippingPriceRuleType.PRICE_LARGER_THAN_OR_EQUAL' | translate}}</option>
-                        <option value="PRICE_SMALLER_THAN">{{'mallApp.ShippingPriceRuleType.PRICE_SMALLER_THAN' | translate}}</option>
-                        <option value="PRICE_SMALLER_THAN_OR_EQUAL">{{'mallApp.ShippingPriceRuleType.PRICE_SMALLER_THAN_OR_EQUAL' | translate}}</option>
-                        <option value="QUANTITY_LARGER_THAN">{{'mallApp.ShippingPriceRuleType.QUANTITY_LARGER_THAN' | translate}}</option>
-                        <option value="QUANTITY_LARGER_THAN_OR_EQUAL">{{'mallApp.ShippingPriceRuleType.QUANTITY_LARGER_THAN_OR_EQUAL' | translate}}</option>
-                        <option value="QUANTITY_SMALLER_THAN">{{'mallApp.ShippingPriceRuleType.QUANTITY_SMALLER_THAN' | translate}}</option>
-                        <option value="QUANTITY_SMALLER_THAN_OR_EQUAL">{{'mallApp.ShippingPriceRuleType.QUANTITY_SMALLER_THAN_OR_EQUAL' | translate}}</option>
+                    <select class="form-control" name="type" formControlName="type" id="field_type">
+                        <option value="FIXED_PER_ORDER">{{ 'mallApp.ShippingPriceRuleType.FIXED_PER_ORDER' | translate }}</option>
+                        <option value="TOTAL_PERCENTAGE">{{ 'mallApp.ShippingPriceRuleType.TOTAL_PERCENTAGE' | translate }}</option>
+                        <option value="PRICE_LARGER_THAN">{{ 'mallApp.ShippingPriceRuleType.PRICE_LARGER_THAN' | translate }}</option>
+                        <option value="PRICE_LARGER_THAN_OR_EQUAL">{{ 'mallApp.ShippingPriceRuleType.PRICE_LARGER_THAN_OR_EQUAL' | translate }}</option>
+                        <option value="PRICE_SMALLER_THAN">{{ 'mallApp.ShippingPriceRuleType.PRICE_SMALLER_THAN' | translate }}</option>
+                        <option value="PRICE_SMALLER_THAN_OR_EQUAL">{{ 'mallApp.ShippingPriceRuleType.PRICE_SMALLER_THAN_OR_EQUAL' | translate }}</option>
+                        <option value="QUANTITY_LARGER_THAN">{{ 'mallApp.ShippingPriceRuleType.QUANTITY_LARGER_THAN' | translate }}</option>
+                        <option value="QUANTITY_LARGER_THAN_OR_EQUAL">{{ 'mallApp.ShippingPriceRuleType.QUANTITY_LARGER_THAN_OR_EQUAL' | translate }}</option>
+                        <option value="QUANTITY_SMALLER_THAN">{{ 'mallApp.ShippingPriceRuleType.QUANTITY_SMALLER_THAN' | translate }}</option>
+                        <option value="QUANTITY_SMALLER_THAN_OR_EQUAL">{{ 'mallApp.ShippingPriceRuleType.QUANTITY_SMALLER_THAN_OR_EQUAL' | translate }}</option>
                     </select>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.shippingPriceRule.value" for="field_value">Value</label>
                     <input type="number" class="form-control" name="value" id="field_value"
-                        [(ngModel)]="shippingPriceRule.value" />
+                           formControlName="value"/>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.shippingPriceRule.price" for="field_price">Price</label>
                     <input type="number" class="form-control" name="price" id="field_price"
-                        [(ngModel)]="shippingPriceRule.price" />
+                           formControlName="price"/>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.shippingPriceRule.sequence" for="field_sequence">Sequence</label>
                     <input type="number" class="form-control" name="sequence" id="field_sequence"
-                        [(ngModel)]="shippingPriceRule.sequence" />
+                           formControlName="sequence"/>
                 </div>
 
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.shippingPriceRule.shop" for="field_shop">Shop</label>
-                    <select class="form-control" id="field_shop" name="shop" [(ngModel)]="shippingPriceRule.shop" >
+                    <select class="form-control" id="field_shop" name="shop" formControlName="shop">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="shopOption.id === shippingPriceRule.shop?.id ? shippingPriceRule.shop : shopOption" *ngFor="let shopOption of shops; trackBy: trackShopById">{{shopOption.id}}</option>
+                        <option [ngValue]="shopOption.id === editForm.get('shop')!.value?.id ? editForm.get('shop')?.value : shopOption" *ngFor="let shopOption of shops; trackBy: trackById">{{ shopOption.id }}</option>
                     </select>
                 </div>
             </div>
+
             <div>
-                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
-                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
+                    <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
                 </button>
-                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
-                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+
+                <button type="submit" id="save-entity" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
                 </button>
             </div>
         </form>

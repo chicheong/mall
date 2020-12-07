@@ -1,54 +1,45 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="myOrder">
-            <h2><span jhiTranslate="mallApp.myOrder.detail.title">My Order</span> {{myOrder.id}}</h2>
+            <h2><span jhiTranslate="mallApp.myOrder.detail.title">My Order</span> {{ myOrder.id }}</h2>
+
             <hr>
+
             <jhi-alert-error></jhi-alert-error>
+
             <dl class="row-md jh-entity-details">
-                <dt><span jhiTranslate="mallApp.myOrder.receiver">Receiver</span></dt>
-                <dd>
-                    <span>{{myOrder.receiver}}</span>
-                </dd>
                 <dt><span jhiTranslate="mallApp.myOrder.total">Total</span></dt>
                 <dd>
-                    <span>{{myOrder.total}}</span>
+                    <span>{{ myOrder.total }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.myOrder.currency">Currency</span></dt>
                 <dd>
-                    <span jhiTranslate="{{'mallApp.CurrencyType.' + myOrder.currency}}">{{myOrder.currency}}</span>
-                </dd>
-                <dt><span jhiTranslate="mallApp.myOrder.contactNum">Contact Num</span></dt>
-                <dd>
-                    <span>{{myOrder.contactNum}}</span>
-                </dd>
-                <dt><span jhiTranslate="mallApp.myOrder.email">Email</span></dt>
-                <dd>
-                    <span>{{myOrder.email}}</span>
+                    <span jhiTranslate="{{ 'mallApp.CurrencyType.' + myOrder.currency }}">{{ myOrder.currency }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.myOrder.remark">Remark</span></dt>
                 <dd>
-                    <span>{{myOrder.remark}}</span>
+                    <span>{{ myOrder.remark }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.myOrder.status">Status</span></dt>
                 <dd>
-                    <span jhiTranslate="{{'mallApp.OrderStatus.' + myOrder.status}}">{{myOrder.status}}</span>
+                    <span jhiTranslate="{{ 'mallApp.OrderStatus.' + myOrder.status }}">{{ myOrder.status }}</span>
                 </dd>
-                <dt><span jhiTranslate="mallApp.myOrder.shippingAddress">Shipping Address</span></dt>
+                <dt><span jhiTranslate="mallApp.myOrder.shipping">Shipping</span></dt>
                 <dd>
-                    <div *ngIf="myOrder.shippingAddress">
-                        <a [routerLink]="['/address', myOrder.shippingAddress?.id, 'view']">{{myOrder.shippingAddress?.id}}</a>
+                    <div *ngIf="myOrder.shipping">
+                        <a [routerLink]="['/contact', myOrder.shipping?.id, 'view']">{{ myOrder.shipping?.id }}</a>
                     </div>
                 </dd>
-                <dt><span jhiTranslate="mallApp.myOrder.billingAddress">Billing Address</span></dt>
+                <dt><span jhiTranslate="mallApp.myOrder.billing">Billing</span></dt>
                 <dd>
-                    <div *ngIf="myOrder.billingAddress">
-                        <a [routerLink]="['/address', myOrder.billingAddress?.id, 'view']">{{myOrder.billingAddress?.id}}</a>
+                    <div *ngIf="myOrder.billing">
+                        <a [routerLink]="['/contact', myOrder.billing?.id, 'view']">{{ myOrder.billing?.id }}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="mallApp.myOrder.account">Account</span></dt>
                 <dd>
                     <div *ngIf="myOrder.accountId">
-                        <a [routerLink]="['/my-account', myOrder.accountId, 'view']">{{myOrder.accountId}}</a>
+                        <a [routerLink]="['/my-account', myOrder.accountId, 'view']">{{ myOrder.accountId }}</a>
                     </div>
                 </dd>
             </dl>
@@ -56,13 +47,13 @@
             <button type="submit"
                     (click)="previousState()"
                     class="btn btn-info">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
             </button>
 
             <button type="button"
                     [routerLink]="['/my-order', myOrder.id, 'edit']"
                     class="btn btn-primary">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
             </button>
         </div>
     </div>

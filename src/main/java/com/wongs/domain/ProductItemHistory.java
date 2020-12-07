@@ -1,16 +1,15 @@
 package com.wongs.domain;
 
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
+import java.util.Objects;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.Objects;
 
 import com.wongs.domain.enumeration.CurrencyType;
 
@@ -20,11 +19,11 @@ import com.wongs.domain.enumeration.CurrencyType;
 @Entity
 @Table(name = "product_item_history")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "productitemhistory")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "productitemhistory")
 public class ProductItemHistory implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -42,7 +41,7 @@ public class ProductItemHistory implements Serializable {
     @Column(name = "currency")
     private CurrencyType currency;
 
-    @Column(name = "price", precision = 10, scale = 2)
+    @Column(name = "price", precision = 21, scale = 2)
     private BigDecimal price;
 
     @Column(name = "created_by")
@@ -157,19 +156,15 @@ public class ProductItemHistory implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof ProductItemHistory)) {
             return false;
         }
-        ProductItemHistory productItemHistory = (ProductItemHistory) o;
-        if (productItemHistory.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), productItemHistory.getId());
+        return id != null && id.equals(((ProductItemHistory) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

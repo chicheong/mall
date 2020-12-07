@@ -41,21 +41,17 @@
             "relationshipName": "office",
             "otherEntityField": "code",
             "ownerSide": true
-        },
-        {
-            "relationshipType": "one-to-many",
-            "otherEntityName": "myAccount",
-            "otherEntityRelationshipName": "company",
-            "relationshipName": "account"
         }
     ],
-    "changelogDate": "20190527101512",
+    "changelogDate": "20200503071500",
     "entityTableName": "company",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pagination",
-    "service": "no",
+    "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

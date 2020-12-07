@@ -2,7 +2,7 @@ import { IShipping } from 'app/shared/model/shipping.model';
 import { IShop } from 'app/shared/model/shop.model';
 import { IOrderItem } from 'app/shared/model/order-item.model';
 import { IMyOrder } from 'app/shared/model/my-order.model';
-import { CurrencyType } from './price.model';
+import { CurrencyType } from 'app/shared/model/enumerations/currency-type.model';
 
 export interface IOrderShop {
     id?: number;

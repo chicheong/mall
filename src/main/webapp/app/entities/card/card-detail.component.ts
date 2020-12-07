@@ -4,21 +4,19 @@ import { ActivatedRoute } from '@angular/router';
 import { ICard } from 'app/shared/model/card.model';
 
 @Component({
-    selector: 'jhi-card-detail',
-    templateUrl: './card-detail.component.html'
+  selector: 'jhi-card-detail',
+  templateUrl: './card-detail.component.html'
 })
 export class CardDetailComponent implements OnInit {
-    card: ICard;
+  card: ICard | null = null;
 
-    constructor(protected activatedRoute: ActivatedRoute) {}
+  constructor(protected activatedRoute: ActivatedRoute) {}
 
-    ngOnInit() {
-        this.activatedRoute.data.subscribe(({ card }) => {
-            this.card = card;
-        });
-    }
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ card }) => (this.card = card));
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  previousState(): void {
+    window.history.back();
+  }
 }

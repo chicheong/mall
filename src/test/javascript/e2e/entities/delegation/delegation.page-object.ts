@@ -1,173 +1,177 @@
 import { element, by, ElementFinder } from 'protractor';
 
 export class DelegationComponentsPage {
-    createButton = element(by.id('jh-create-entity'));
-    deleteButtons = element.all(by.css('jhi-delegation div table .btn-danger'));
-    title = element.all(by.css('jhi-delegation div h2#page-heading span')).first();
+  createButton = element(by.id('jh-create-entity'));
+  deleteButtons = element.all(by.css('jhi-delegation div table .btn-danger'));
+  title = element.all(by.css('jhi-delegation div h2#page-heading span')).first();
+  noResult = element(by.id('no-result'));
+  entities = element(by.id('entities'));
 
-    async clickOnCreateButton() {
-        await this.createButton.click();
-    }
+  async clickOnCreateButton(): Promise<void> {
+    await this.createButton.click();
+  }
 
-    async clickOnLastDeleteButton() {
-        await this.deleteButtons.last().click();
-    }
+  async clickOnLastDeleteButton(): Promise<void> {
+    await this.deleteButtons.last().click();
+  }
 
-    async countDeleteButtons() {
-        return this.deleteButtons.count();
-    }
+  async countDeleteButtons(): Promise<number> {
+    return this.deleteButtons.count();
+  }
 
-    async getTitle() {
-        return this.title.getAttribute('jhiTranslate');
-    }
+  async getTitle(): Promise<string> {
+    return this.title.getAttribute('jhiTranslate');
+  }
 }
 
 export class DelegationUpdatePage {
-    pageTitle = element(by.id('jhi-delegation-heading'));
-    saveButton = element(by.id('save-entity'));
-    cancelButton = element(by.id('cancel-save'));
-    fromInput = element(by.id('field_from'));
-    toInput = element(by.id('field_to'));
-    typeSelect = element(by.id('field_type'));
-    delegateIdInput = element(by.id('field_delegateId'));
-    statusSelect = element(by.id('field_status'));
-    createdByInput = element(by.id('field_createdBy'));
-    createdDateInput = element(by.id('field_createdDate'));
-    lastModifiedByInput = element(by.id('field_lastModifiedBy'));
-    lastModifiedDateInput = element(by.id('field_lastModifiedDate'));
-    accountSelect = element(by.id('field_account'));
+  pageTitle = element(by.id('jhi-delegation-heading'));
+  saveButton = element(by.id('save-entity'));
+  cancelButton = element(by.id('cancel-save'));
 
-    async getPageTitle() {
-        return this.pageTitle.getAttribute('jhiTranslate');
-    }
+  fromInput = element(by.id('field_from'));
+  toInput = element(by.id('field_to'));
+  typeSelect = element(by.id('field_type'));
+  delegateIdInput = element(by.id('field_delegateId'));
+  statusSelect = element(by.id('field_status'));
+  createdByInput = element(by.id('field_createdBy'));
+  createdDateInput = element(by.id('field_createdDate'));
+  lastModifiedByInput = element(by.id('field_lastModifiedBy'));
+  lastModifiedDateInput = element(by.id('field_lastModifiedDate'));
 
-    async setFromInput(from) {
-        await this.fromInput.sendKeys(from);
-    }
+  accountSelect = element(by.id('field_account'));
 
-    async getFromInput() {
-        return this.fromInput.getAttribute('value');
-    }
+  async getPageTitle(): Promise<string> {
+    return this.pageTitle.getAttribute('jhiTranslate');
+  }
 
-    async setToInput(to) {
-        await this.toInput.sendKeys(to);
-    }
+  async setFromInput(from: string): Promise<void> {
+    await this.fromInput.sendKeys(from);
+  }
 
-    async getToInput() {
-        return this.toInput.getAttribute('value');
-    }
+  async getFromInput(): Promise<string> {
+    return await this.fromInput.getAttribute('value');
+  }
 
-    async setTypeSelect(type) {
-        await this.typeSelect.sendKeys(type);
-    }
+  async setToInput(to: string): Promise<void> {
+    await this.toInput.sendKeys(to);
+  }
 
-    async getTypeSelect() {
-        return this.typeSelect.element(by.css('option:checked')).getText();
-    }
+  async getToInput(): Promise<string> {
+    return await this.toInput.getAttribute('value');
+  }
 
-    async typeSelectLastOption() {
-        await this.typeSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async setTypeSelect(type: string): Promise<void> {
+    await this.typeSelect.sendKeys(type);
+  }
 
-    async setDelegateIdInput(delegateId) {
-        await this.delegateIdInput.sendKeys(delegateId);
-    }
+  async getTypeSelect(): Promise<string> {
+    return await this.typeSelect.element(by.css('option:checked')).getText();
+  }
 
-    async getDelegateIdInput() {
-        return this.delegateIdInput.getAttribute('value');
-    }
+  async typeSelectLastOption(): Promise<void> {
+    await this.typeSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async setStatusSelect(status) {
-        await this.statusSelect.sendKeys(status);
-    }
+  async setDelegateIdInput(delegateId: string): Promise<void> {
+    await this.delegateIdInput.sendKeys(delegateId);
+  }
 
-    async getStatusSelect() {
-        return this.statusSelect.element(by.css('option:checked')).getText();
-    }
+  async getDelegateIdInput(): Promise<string> {
+    return await this.delegateIdInput.getAttribute('value');
+  }
 
-    async statusSelectLastOption() {
-        await this.statusSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async setStatusSelect(status: string): Promise<void> {
+    await this.statusSelect.sendKeys(status);
+  }
 
-    async setCreatedByInput(createdBy) {
-        await this.createdByInput.sendKeys(createdBy);
-    }
+  async getStatusSelect(): Promise<string> {
+    return await this.statusSelect.element(by.css('option:checked')).getText();
+  }
 
-    async getCreatedByInput() {
-        return this.createdByInput.getAttribute('value');
-    }
+  async statusSelectLastOption(): Promise<void> {
+    await this.statusSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async setCreatedDateInput(createdDate) {
-        await this.createdDateInput.sendKeys(createdDate);
-    }
+  async setCreatedByInput(createdBy: string): Promise<void> {
+    await this.createdByInput.sendKeys(createdBy);
+  }
 
-    async getCreatedDateInput() {
-        return this.createdDateInput.getAttribute('value');
-    }
+  async getCreatedByInput(): Promise<string> {
+    return await this.createdByInput.getAttribute('value');
+  }
 
-    async setLastModifiedByInput(lastModifiedBy) {
-        await this.lastModifiedByInput.sendKeys(lastModifiedBy);
-    }
+  async setCreatedDateInput(createdDate: string): Promise<void> {
+    await this.createdDateInput.sendKeys(createdDate);
+  }
 
-    async getLastModifiedByInput() {
-        return this.lastModifiedByInput.getAttribute('value');
-    }
+  async getCreatedDateInput(): Promise<string> {
+    return await this.createdDateInput.getAttribute('value');
+  }
 
-    async setLastModifiedDateInput(lastModifiedDate) {
-        await this.lastModifiedDateInput.sendKeys(lastModifiedDate);
-    }
+  async setLastModifiedByInput(lastModifiedBy: string): Promise<void> {
+    await this.lastModifiedByInput.sendKeys(lastModifiedBy);
+  }
 
-    async getLastModifiedDateInput() {
-        return this.lastModifiedDateInput.getAttribute('value');
-    }
+  async getLastModifiedByInput(): Promise<string> {
+    return await this.lastModifiedByInput.getAttribute('value');
+  }
 
-    async accountSelectLastOption() {
-        await this.accountSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async setLastModifiedDateInput(lastModifiedDate: string): Promise<void> {
+    await this.lastModifiedDateInput.sendKeys(lastModifiedDate);
+  }
 
-    async accountSelectOption(option) {
-        await this.accountSelect.sendKeys(option);
-    }
+  async getLastModifiedDateInput(): Promise<string> {
+    return await this.lastModifiedDateInput.getAttribute('value');
+  }
 
-    getAccountSelect(): ElementFinder {
-        return this.accountSelect;
-    }
+  async accountSelectLastOption(): Promise<void> {
+    await this.accountSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async getAccountSelectedOption() {
-        return this.accountSelect.element(by.css('option:checked')).getText();
-    }
+  async accountSelectOption(option: string): Promise<void> {
+    await this.accountSelect.sendKeys(option);
+  }
 
-    async save() {
-        await this.saveButton.click();
-    }
+  getAccountSelect(): ElementFinder {
+    return this.accountSelect;
+  }
 
-    async cancel() {
-        await this.cancelButton.click();
-    }
+  async getAccountSelectedOption(): Promise<string> {
+    return await this.accountSelect.element(by.css('option:checked')).getText();
+  }
 
-    getSaveButton(): ElementFinder {
-        return this.saveButton;
-    }
+  async save(): Promise<void> {
+    await this.saveButton.click();
+  }
+
+  async cancel(): Promise<void> {
+    await this.cancelButton.click();
+  }
+
+  getSaveButton(): ElementFinder {
+    return this.saveButton;
+  }
 }
 
 export class DelegationDeleteDialog {
-    private dialogTitle = element(by.id('jhi-delete-delegation-heading'));
-    private confirmButton = element(by.id('jhi-confirm-delete-delegation'));
+  private dialogTitle = element(by.id('jhi-delete-delegation-heading'));
+  private confirmButton = element(by.id('jhi-confirm-delete-delegation'));
 
-    async getDialogTitle() {
-        return this.dialogTitle.getAttribute('jhiTranslate');
-    }
+  async getDialogTitle(): Promise<string> {
+    return this.dialogTitle.getAttribute('jhiTranslate');
+  }
 
-    async clickOnConfirmButton() {
-        await this.confirmButton.click();
-    }
+  async clickOnConfirmButton(): Promise<void> {
+    await this.confirmButton.click();
+  }
 }

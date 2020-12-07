@@ -1,4 +1,4 @@
-<form name="editForm" role="form" novalidate (ngSubmit)="ok()" #editForm="ngForm">
+<form name="editForm" role="form" novalidate (ngSubmit)="ok()" [formGroup]="editForm">
 
     <div class="modal-header">
         <h4 class="modal-title" id="fileUploadLabel" jhiTranslate="mallApp.fileUpload.title">File Upload</h4>
@@ -8,7 +8,7 @@
         <jhi-alert></jhi-alert>
 		
 		<jhi-file-upload
-			[url]="url"
+			[url]="object"
 			[maxFiles]="maxFiles"
 			[maxSize]="maxSize"
 			[fileExt]="fileExt"
@@ -18,8 +18,8 @@
 		<br /><br />
     </div>
     <div class="modal-footer">
-        <button type="submit" [disabled]="editForm.form.invalid" class="btn btn-primary">
-            <fa-icon [icon]="'check-square'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.ok">OK</span>
+        <button type="submit" [disabled]="editForm.invalid" class="btn btn-primary"><!--   -->
+            <fa-icon icon="check-square"></fa-icon>&nbsp;<span jhiTranslate="entity.action.ok">OK</span>
         </button>
     </div>
 </form>

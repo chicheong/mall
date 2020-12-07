@@ -18,7 +18,7 @@ import java.util.Optional;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * Service Implementation for managing Address.
+ * Service Implementation for managing {@link Address}.
  */
 @Service
 @Transactional
@@ -41,8 +41,8 @@ public class AddressService {
     /**
      * Save a address.
      *
-     * @param addressDTO the entity to save
-     * @return the persisted entity
+     * @param addressDTO the entity to save.
+     * @return the persisted entity.
      */
     public AddressDTO save(AddressDTO addressDTO) {
         log.debug("Request to save Address : {}", addressDTO);
@@ -69,8 +69,8 @@ public class AddressService {
     /**
      * Get all the addresses.
      *
-     * @param pageable the pagination information
-     * @return the list of entities
+     * @param pageable the pagination information.
+     * @return the list of entities.
      */
     @Transactional(readOnly = true)
     public Page<AddressDTO> findAll(Pageable pageable) {
@@ -82,8 +82,8 @@ public class AddressService {
     /**
      * Get one address by id.
      *
-     * @param id the id of the entity
-     * @return the entity
+     * @param id the id of the entity.
+     * @return the entity.
      */
     @Transactional(readOnly = true)
     public Optional<AddressDTO> findOne(Long id) {
@@ -95,7 +95,7 @@ public class AddressService {
     /**
      * Delete the address by id.
      *
-     * @param id the id of the entity
+     * @param id the id of the entity.
      */
     public void delete(Long id) {
         log.debug("Request to delete Address : {}", id);
@@ -106,9 +106,9 @@ public class AddressService {
     /**
      * Search for the address corresponding to the query.
      *
-     * @param query the query of the search
-     * @param pageable the pagination information
-     * @return the list of entities
+     * @param query the query of the search.
+     * @param pageable the pagination information.
+     * @return the list of entities.
      */
     @Transactional(readOnly = true)
     public Page<AddressDTO> search(String query, Pageable pageable) {

@@ -1,65 +1,73 @@
 <div class="row justify-content-center">
     <div class="col-8">
-        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
             <h2 id="jhi-order-shop-heading" jhiTranslate="mallApp.orderShop.home.createOrEditLabel">Create or edit a Order Shop</h2>
+
             <div>
                 <jhi-alert-error></jhi-alert-error>
-                <div class="form-group" [hidden]="!orderShop.id">
+
+                <div class="form-group" [hidden]="!editForm.get('id')!.value">
                     <label for="id" jhiTranslate="global.field.id">ID</label>
-                    <input type="text" class="form-control" id="id" name="id"
-                        [(ngModel)]="orderShop.id" readonly />
+                    <input type="text" class="form-control" id="id" name="id" formControlName="id" readonly />
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.orderShop.total" for="field_total">Total</label>
                     <input type="number" class="form-control" name="total" id="field_total"
-                        [(ngModel)]="orderShop.total" />
+                           formControlName="total"/>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.orderShop.currency" for="field_currency">Currency</label>
-                    <select class="form-control" name="currency" [(ngModel)]="orderShop.currency" id="field_currency" >
-                        <option value="HKD">{{'mallApp.CurrencyType.HKD' | translate}}</option>
-                        <option value="CNY">{{'mallApp.CurrencyType.CNY' | translate}}</option>
-                        <option value="USD">{{'mallApp.CurrencyType.USD' | translate}}</option>
-                        <option value="EUR">{{'mallApp.CurrencyType.EUR' | translate}}</option>
-                        <option value="JPY">{{'mallApp.CurrencyType.JPY' | translate}}</option>
-                        <option value="KRW">{{'mallApp.CurrencyType.KRW' | translate}}</option>
-                        <option value="TWD">{{'mallApp.CurrencyType.TWD' | translate}}</option>
+                    <select class="form-control" name="currency" formControlName="currency" id="field_currency">
+                        <option value="HKD">{{ 'mallApp.CurrencyType.HKD' | translate }}</option>
+                        <option value="CNY">{{ 'mallApp.CurrencyType.CNY' | translate }}</option>
+                        <option value="USD">{{ 'mallApp.CurrencyType.USD' | translate }}</option>
+                        <option value="EUR">{{ 'mallApp.CurrencyType.EUR' | translate }}</option>
+                        <option value="JPY">{{ 'mallApp.CurrencyType.JPY' | translate }}</option>
+                        <option value="KRW">{{ 'mallApp.CurrencyType.KRW' | translate }}</option>
+                        <option value="TWD">{{ 'mallApp.CurrencyType.TWD' | translate }}</option>
                     </select>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.orderShop.remark" for="field_remark">Remark</label>
                     <input type="text" class="form-control" name="remark" id="field_remark"
-                        [(ngModel)]="orderShop.remark" />
+                           formControlName="remark"/>
                 </div>
 
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.orderShop.shipping" for="field_shipping">Shipping</label>
-                    <select class="form-control" id="field_shipping" name="shipping" [(ngModel)]="orderShop.shippingId">
+                    <select class="form-control" id="field_shipping" name="shipping" formControlName="shippingId">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="shippingOption.id" *ngFor="let shippingOption of shippings; trackBy: trackShippingById">{{shippingOption.id}}</option>
+                        <option [ngValue]="shippingOption.id" *ngFor="let shippingOption of shippings; trackBy: trackById">{{ shippingOption.id }}</option>
                     </select>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.orderShop.shop" for="field_shop">Shop</label>
-                    <select class="form-control" id="field_shop" name="shop" [(ngModel)]="orderShop.shopId">
+                    <select class="form-control" id="field_shop" name="shop" formControlName="shopId">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="shopOption.id" *ngFor="let shopOption of shops; trackBy: trackShopById">{{shopOption.id}}</option>
+                        <option [ngValue]="shopOption.id" *ngFor="let shopOption of shops; trackBy: trackById">{{ shopOption.id }}</option>
                     </select>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.orderShop.order" for="field_order">Order</label>
-                    <select class="form-control" id="field_order" name="order" [(ngModel)]="orderShop.orderId" >
+                    <select class="form-control" id="field_order" name="order" formControlName="orderId">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="myOrderOption.id" *ngFor="let myOrderOption of myorders; trackBy: trackMyOrderById">{{myOrderOption.id}}</option>
+                        <option [ngValue]="myOrderOption.id" *ngFor="let myOrderOption of myorders; trackBy: trackById">{{ myOrderOption.id }}</option>
                     </select>
                 </div>
             </div>
+
             <div>
-                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
-                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
+                    <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
                 </button>
-                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
-                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+
+                <button type="submit" id="save-entity" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
                 </button>
             </div>
         </form>

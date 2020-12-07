@@ -11,7 +11,7 @@ import com.wongs.domain.MyAccount;
 import com.wongs.service.dto.MyAccountDTO;
 
 /**
- * Mapper for the entity MyAccount and its DTO MyAccountDTO.
+ * Mapper for the entity {@link MyAccount} and its DTO {@link MyAccountDTO}.
  */
 @Service
 public class MyAccountMapper {

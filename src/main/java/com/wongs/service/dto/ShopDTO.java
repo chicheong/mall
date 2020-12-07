@@ -1,6 +1,5 @@
 package com.wongs.service.dto;
 
-
 import java.time.ZonedDateTime;
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -14,10 +13,10 @@ import com.wongs.domain.Shop;
 import com.wongs.domain.enumeration.CommonStatus;
 
 /**
- * A DTO for the Shop entity.
+ * A DTO for the {@link com.wongs.domain.Shop} entity.
  */
 public class ShopDTO implements Serializable {
-
+    
     private Long id;
 
     @NotNull
@@ -165,7 +164,7 @@ public class ShopDTO implements Serializable {
         }
 
         ShopDTO shopDTO = (ShopDTO) o;
-        if(shopDTO.getId() == null || getId() == null) {
+        if (shopDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), shopDTO.getId());

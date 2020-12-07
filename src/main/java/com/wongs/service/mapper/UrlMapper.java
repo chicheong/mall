@@ -11,7 +11,7 @@ import com.wongs.domain.Url;
 import com.wongs.service.dto.UrlDTO;
 
 /**
- * Mapper for the entity Url and its DTO UrlDTO.
+ * Mapper for the entity {@link Url} and its DTO {@link UrlDTO}.
  */
 @Service
 public class UrlMapper {

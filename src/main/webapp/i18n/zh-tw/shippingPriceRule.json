@@ -1,26 +1,27 @@
 {
-    "mallApp": {
-        "shippingPriceRule": {
-            "home": {
-                "title": "Shipping Price Rules",
-                "createLabel": "建立一筆新的 Shipping Price Rule",
-                "createOrEditLabel": "建立或編輯 Shipping Price Rule",
-                "search": "搜尋 Shipping Price Rule"
-            },
-            "created": "新的 Shipping Price Rule 建立成功，識別碼為 {{ param }}",
-            "updated": "識別碼為 {{ param }} 的 Shipping Price Rule 更新成功",
-            "deleted": "識別碼為 {{ param }} 的 Shipping Price Rule 刪除成功",
-            "delete": {
-                "question": "您確定要刪除 Shipping Price Rule {{ id }} 嗎?"
-            },
-            "detail": {
-                "title": "Shipping Price Rule"
-            },
-            "type": "Type",
-            "value": "Value",
-            "price": "Price",
-            "sequence": "Sequence",
-            "shop": "Shop"
-        }
+  "mallApp": {
+    "shippingPriceRule": {
+      "home": {
+        "title": "Shipping Price Rules",
+        "createLabel": "建立一筆新的 Shipping Price Rule",
+        "createOrEditLabel": "建立或編輯 Shipping Price Rule",
+        "search": "搜尋 Shipping Price Rule",
+        "notFound": "No Shipping Price Rules found"
+      },
+      "created": "新的 Shipping Price Rule 建立成功，識別碼為 {{ param }}",
+      "updated": "識別碼為 {{ param }} 的 Shipping Price Rule 更新成功",
+      "deleted": "識別碼為 {{ param }} 的 Shipping Price Rule 刪除成功",
+      "delete": {
+        "question": "您確定要刪除 Shipping Price Rule {{ id }} 嗎?"
+      },
+      "detail": {
+        "title": "Shipping Price Rule"
+      },
+      "type": "Type",
+      "value": "Value",
+      "price": "Price",
+      "sequence": "Sequence",
+      "shop": "Shop"
     }
+  }
 }

@@ -1,45 +1,21 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
-import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from 'app/shared';
-import {
+import { MallSharedModule } from 'app/shared/shared.module';
+import { ShippingPriceRuleComponent } from './shipping-price-rule.component';
+import { ShippingPriceRuleDetailComponent } from './shipping-price-rule-detail.component';
+import { ShippingPriceRuleUpdateComponent } from './shipping-price-rule-update.component';
+import { ShippingPriceRuleDeleteDialogComponent } from './shipping-price-rule-delete-dialog.component';
+import { shippingPriceRuleRoute } from './shipping-price-rule.route';
+
+@NgModule({
+  imports: [MallSharedModule, RouterModule.forChild(shippingPriceRuleRoute)],
+  declarations: [
     ShippingPriceRuleComponent,
     ShippingPriceRuleDetailComponent,
     ShippingPriceRuleUpdateComponent,
-    ShippingPriceRuleDeletePopupComponent,
-    ShippingPriceRuleDeleteDialogComponent,
-    shippingPriceRuleRoute,
-    shippingPriceRulePopupRoute
-} from './';
-
-const ENTITY_STATES = [...shippingPriceRuleRoute, ...shippingPriceRulePopupRoute];
-
-@NgModule({
-    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
-    declarations: [
-        ShippingPriceRuleComponent,
-        ShippingPriceRuleDetailComponent,
-        ShippingPriceRuleUpdateComponent,
-        ShippingPriceRuleDeleteDialogComponent,
-        ShippingPriceRuleDeletePopupComponent
-    ],
-    entryComponents: [
-        ShippingPriceRuleComponent,
-        ShippingPriceRuleUpdateComponent,
-        ShippingPriceRuleDeleteDialogComponent,
-        ShippingPriceRuleDeletePopupComponent
-    ],
-    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    ShippingPriceRuleDeleteDialogComponent
+  ],
+  entryComponents: [ShippingPriceRuleDeleteDialogComponent]
 })
-export class MallShippingPriceRuleModule {
-    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
-        this.languageHelper.language.subscribe((languageKey: string) => {
-            if (languageKey !== undefined) {
-                this.languageService.changeLanguage(languageKey);
-            }
-        });
-    }
-}
+export class MallShippingPriceRuleModule {}

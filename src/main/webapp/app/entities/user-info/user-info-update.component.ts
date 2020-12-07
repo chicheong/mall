@@ -1,129 +1,144 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { JhiAlertService } from 'ng-jhipster';
-import { IUserInfo } from 'app/shared/model/user-info.model';
+import { map } from 'rxjs/operators';
+
+import { IUserInfo, UserInfo } from 'app/shared/model/user-info.model';
 import { UserInfoService } from './user-info.service';
-import { IUser, UserService } from 'app/core';
+import { IUser } from 'app/core/user/user.model';
+import { UserService } from 'app/core/user/user.service';
 import { IMyAccount } from 'app/shared/model/my-account.model';
-import { MyAccountService } from 'app/entities/my-account';
+import { MyAccountService } from 'app/entities/my-account/my-account.service';
+
+type SelectableEntity = IUser | IMyAccount;
 
 @Component({
-    selector: 'jhi-user-info-update',
-    templateUrl: './user-info-update.component.html'
+  selector: 'jhi-user-info-update',
+  templateUrl: './user-info-update.component.html'
 })
 export class UserInfoUpdateComponent implements OnInit {
-    userInfo: IUserInfo;
-    isSaving: boolean;
+  isSaving = false;
+  users: IUser[] = [];
+  defaultaccounts: IMyAccount[] = [];
+  myaccounts: IMyAccount[] = [];
 
-    users: IUser[];
+  editForm = this.fb.group({
+    id: [],
+    accountId: [],
+    shopId: [],
+    userId: [],
+    defaultAccount: [],
+    accounts: []
+  });
 
-    defaultaccounts: IMyAccount[];
+  constructor(
+    protected userInfoService: UserInfoService,
+    protected userService: UserService,
+    protected myAccountService: MyAccountService,
+    protected activatedRoute: ActivatedRoute,
+    private fb: FormBuilder
+  ) {}
 
-    myaccounts: IMyAccount[];
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ userInfo }) => {
+      this.updateForm(userInfo);
 
-    constructor(
-        protected jhiAlertService: JhiAlertService,
-        protected userInfoService: UserInfoService,
-        protected userService: UserService,
-        protected myAccountService: MyAccountService,
-        protected activatedRoute: ActivatedRoute
-    ) {}
+      this.userService.query().subscribe((res: HttpResponse<IUser[]>) => (this.users = res.body || []));
 
-    ngOnInit() {
-        this.isSaving = false;
-        this.activatedRoute.data.subscribe(({ userInfo }) => {
-            this.userInfo = userInfo;
+      this.myAccountService
+        .query({ filter: 'userinfo-is-null' })
+        .pipe(
+          map((res: HttpResponse<IMyAccount[]>) => {
+            return res.body || [];
+          })
+        )
+        .subscribe((resBody: IMyAccount[]) => {
+          if (!userInfo.defaultAccountId) {
+            this.defaultaccounts = resBody;
+          } else {
+            this.myAccountService
+              .find(userInfo.defaultAccountId)
+              .pipe(
+                map((subRes: HttpResponse<IMyAccount>) => {
+                  return subRes.body ? [subRes.body].concat(resBody) : resBody;
+                })
+              )
+              .subscribe((concatRes: IMyAccount[]) => (this.defaultaccounts = concatRes));
+          }
         });
-        this.userService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<IUser[]>) => mayBeOk.ok),
-                map((response: HttpResponse<IUser[]>) => response.body)
-            )
-            .subscribe((res: IUser[]) => (this.users = res), (res: HttpErrorResponse) => this.onError(res.message));
-        this.myAccountService
-            .query({ filter: 'userinfo-is-null' })
-            .pipe(
-                filter((mayBeOk: HttpResponse<IMyAccount[]>) => mayBeOk.ok),
-                map((response: HttpResponse<IMyAccount[]>) => response.body)
-            )
-            .subscribe(
-                (res: IMyAccount[]) => {
-                    if (!this.userInfo.defaultAccount) {
-                        this.defaultaccounts = res;
-                    } else {
-                        this.myAccountService
-                            .find(this.userInfo.defaultAccount.id)
-                            .pipe(
-                                filter((subResMayBeOk: HttpResponse<IMyAccount>) => subResMayBeOk.ok),
-                                map((subResponse: HttpResponse<IMyAccount>) => subResponse.body)
-                            )
-                            .subscribe(
-                                (subRes: IMyAccount) => (this.defaultaccounts = [subRes].concat(res)),
-                                (subRes: HttpErrorResponse) => this.onError(subRes.message)
-                            );
-                    }
-                },
-                (res: HttpErrorResponse) => this.onError(res.message)
-            );
-        this.myAccountService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<IMyAccount[]>) => mayBeOk.ok),
-                map((response: HttpResponse<IMyAccount[]>) => response.body)
-            )
-            .subscribe((res: IMyAccount[]) => (this.myaccounts = res), (res: HttpErrorResponse) => this.onError(res.message));
-    }
 
-    previousState() {
-        window.history.back();
-    }
+      this.myAccountService.query().subscribe((res: HttpResponse<IMyAccount[]>) => (this.myaccounts = res.body || []));
+    });
+  }
 
-    save() {
-        this.isSaving = true;
-        if (this.userInfo.id !== undefined) {
-            this.subscribeToSaveResponse(this.userInfoService.update(this.userInfo));
-        } else {
-            this.subscribeToSaveResponse(this.userInfoService.create(this.userInfo));
+  updateForm(userInfo: IUserInfo): void {
+    this.editForm.patchValue({
+      id: userInfo.id,
+      accountId: userInfo.accountId,
+      shopId: userInfo.shopId,
+      userId: userInfo.userId,
+      defaultAccount: userInfo.defaultAccount,
+      accounts: userInfo.accounts
+    });
+  }
+
+  previousState(): void {
+    window.history.back();
+  }
+
+  save(): void {
+    this.isSaving = true;
+    const userInfo = this.createFromForm();
+    if (userInfo.id !== undefined) {
+      this.subscribeToSaveResponse(this.userInfoService.update(userInfo));
+    } else {
+      this.subscribeToSaveResponse(this.userInfoService.create(userInfo));
+    }
+  }
+
+  private createFromForm(): IUserInfo {
+    return {
+      ...new UserInfo(),
+      id: this.editForm.get(['id'])!.value,
+      accountId: this.editForm.get(['accountId'])!.value,
+      shopId: this.editForm.get(['shopId'])!.value,
+      userId: this.editForm.get(['userId'])!.value,
+      defaultAccount: this.editForm.get(['defaultAccount'])!.value,
+      accounts: this.editForm.get(['accounts'])!.value
+    };
+  }
+
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<IUserInfo>>): void {
+    result.subscribe(
+      () => this.onSaveSuccess(),
+      () => this.onSaveError()
+    );
+  }
+
+  protected onSaveSuccess(): void {
+    this.isSaving = false;
+    this.previousState();
+  }
+
+  protected onSaveError(): void {
+    this.isSaving = false;
+  }
+
+  trackById(index: number, item: SelectableEntity): any {
+    return item.id;
+  }
+
+  getSelected(selectedVals: IMyAccount[], option: IMyAccount): IMyAccount {
+    if (selectedVals) {
+      for (let i = 0; i < selectedVals.length; i++) {
+        if (option.id === selectedVals[i].id) {
+          return selectedVals[i];
         }
+      }
     }
-
-    protected subscribeToSaveResponse(result: Observable<HttpResponse<IUserInfo>>) {
-        result.subscribe((res: HttpResponse<IUserInfo>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
-    }
-
-    protected onSaveSuccess() {
-        this.isSaving = false;
-        this.previousState();
-    }
-
-    protected onSaveError() {
-        this.isSaving = false;
-    }
-
-    protected onError(errorMessage: string) {
-        this.jhiAlertService.error(errorMessage, null, null);
-    }
-
-    trackUserById(index: number, item: IUser) {
-        return item.id;
-    }
-
-    trackMyAccountById(index: number, item: IMyAccount) {
-        return item.id;
-    }
-
-    getSelected(selectedVals: Array<any>, option: any) {
-        if (selectedVals) {
-            for (let i = 0; i < selectedVals.length; i++) {
-                if (option.id === selectedVals[i].id) {
-                    return selectedVals[i];
-                }
-            }
-        }
-        return option;
-    }
+    return option;
+  }
 }

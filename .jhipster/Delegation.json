@@ -49,13 +49,15 @@
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20190527101520",
+    "changelogDate": "20200503072400",
     "entityTableName": "delegation",
     "dto": "mapstruct",
     "pagination": "infinite-scroll",
     "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

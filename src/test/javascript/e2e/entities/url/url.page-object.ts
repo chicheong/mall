@@ -1,148 +1,151 @@
 import { element, by, ElementFinder } from 'protractor';
 
 export class UrlComponentsPage {
-    createButton = element(by.id('jh-create-entity'));
-    deleteButtons = element.all(by.css('jhi-url div table .btn-danger'));
-    title = element.all(by.css('jhi-url div h2#page-heading span')).first();
+  createButton = element(by.id('jh-create-entity'));
+  deleteButtons = element.all(by.css('jhi-url div table .btn-danger'));
+  title = element.all(by.css('jhi-url div h2#page-heading span')).first();
+  noResult = element(by.id('no-result'));
+  entities = element(by.id('entities'));
 
-    async clickOnCreateButton() {
-        await this.createButton.click();
-    }
+  async clickOnCreateButton(): Promise<void> {
+    await this.createButton.click();
+  }
 
-    async clickOnLastDeleteButton() {
-        await this.deleteButtons.last().click();
-    }
+  async clickOnLastDeleteButton(): Promise<void> {
+    await this.deleteButtons.last().click();
+  }
 
-    async countDeleteButtons() {
-        return this.deleteButtons.count();
-    }
+  async countDeleteButtons(): Promise<number> {
+    return this.deleteButtons.count();
+  }
 
-    async getTitle() {
-        return this.title.getAttribute('jhiTranslate');
-    }
+  async getTitle(): Promise<string> {
+    return this.title.getAttribute('jhiTranslate');
+  }
 }
 
 export class UrlUpdatePage {
-    pageTitle = element(by.id('jhi-url-heading'));
-    saveButton = element(by.id('save-entity'));
-    cancelButton = element(by.id('cancel-save'));
-    entityTypeInput = element(by.id('field_entityType'));
-    entityIdInput = element(by.id('field_entityId'));
-    pathInput = element(by.id('field_path'));
-    fileNameInput = element(by.id('field_fileName'));
-    sequenceInput = element(by.id('field_sequence'));
-    descriptionInput = element(by.id('field_description'));
-    createdByInput = element(by.id('field_createdBy'));
-    createdDateInput = element(by.id('field_createdDate'));
-    lastModifiedByInput = element(by.id('field_lastModifiedBy'));
-    lastModifiedDateInput = element(by.id('field_lastModifiedDate'));
+  pageTitle = element(by.id('jhi-url-heading'));
+  saveButton = element(by.id('save-entity'));
+  cancelButton = element(by.id('cancel-save'));
 
-    async getPageTitle() {
-        return this.pageTitle.getAttribute('jhiTranslate');
-    }
+  entityTypeInput = element(by.id('field_entityType'));
+  entityIdInput = element(by.id('field_entityId'));
+  pathInput = element(by.id('field_path'));
+  fileNameInput = element(by.id('field_fileName'));
+  sequenceInput = element(by.id('field_sequence'));
+  descriptionInput = element(by.id('field_description'));
+  createdByInput = element(by.id('field_createdBy'));
+  createdDateInput = element(by.id('field_createdDate'));
+  lastModifiedByInput = element(by.id('field_lastModifiedBy'));
+  lastModifiedDateInput = element(by.id('field_lastModifiedDate'));
 
-    async setEntityTypeInput(entityType) {
-        await this.entityTypeInput.sendKeys(entityType);
-    }
+  async getPageTitle(): Promise<string> {
+    return this.pageTitle.getAttribute('jhiTranslate');
+  }
 
-    async getEntityTypeInput() {
-        return this.entityTypeInput.getAttribute('value');
-    }
+  async setEntityTypeInput(entityType: string): Promise<void> {
+    await this.entityTypeInput.sendKeys(entityType);
+  }
 
-    async setEntityIdInput(entityId) {
-        await this.entityIdInput.sendKeys(entityId);
-    }
+  async getEntityTypeInput(): Promise<string> {
+    return await this.entityTypeInput.getAttribute('value');
+  }
 
-    async getEntityIdInput() {
-        return this.entityIdInput.getAttribute('value');
-    }
+  async setEntityIdInput(entityId: string): Promise<void> {
+    await this.entityIdInput.sendKeys(entityId);
+  }
 
-    async setPathInput(path) {
-        await this.pathInput.sendKeys(path);
-    }
+  async getEntityIdInput(): Promise<string> {
+    return await this.entityIdInput.getAttribute('value');
+  }
 
-    async getPathInput() {
-        return this.pathInput.getAttribute('value');
-    }
+  async setPathInput(path: string): Promise<void> {
+    await this.pathInput.sendKeys(path);
+  }
 
-    async setFileNameInput(fileName) {
-        await this.fileNameInput.sendKeys(fileName);
-    }
+  async getPathInput(): Promise<string> {
+    return await this.pathInput.getAttribute('value');
+  }
 
-    async getFileNameInput() {
-        return this.fileNameInput.getAttribute('value');
-    }
+  async setFileNameInput(fileName: string): Promise<void> {
+    await this.fileNameInput.sendKeys(fileName);
+  }
 
-    async setSequenceInput(sequence) {
-        await this.sequenceInput.sendKeys(sequence);
-    }
+  async getFileNameInput(): Promise<string> {
+    return await this.fileNameInput.getAttribute('value');
+  }
 
-    async getSequenceInput() {
-        return this.sequenceInput.getAttribute('value');
-    }
+  async setSequenceInput(sequence: string): Promise<void> {
+    await this.sequenceInput.sendKeys(sequence);
+  }
 
-    async setDescriptionInput(description) {
-        await this.descriptionInput.sendKeys(description);
-    }
+  async getSequenceInput(): Promise<string> {
+    return await this.sequenceInput.getAttribute('value');
+  }
 
-    async getDescriptionInput() {
-        return this.descriptionInput.getAttribute('value');
-    }
+  async setDescriptionInput(description: string): Promise<void> {
+    await this.descriptionInput.sendKeys(description);
+  }
 
-    async setCreatedByInput(createdBy) {
-        await this.createdByInput.sendKeys(createdBy);
-    }
+  async getDescriptionInput(): Promise<string> {
+    return await this.descriptionInput.getAttribute('value');
+  }
 
-    async getCreatedByInput() {
-        return this.createdByInput.getAttribute('value');
-    }
+  async setCreatedByInput(createdBy: string): Promise<void> {
+    await this.createdByInput.sendKeys(createdBy);
+  }
 
-    async setCreatedDateInput(createdDate) {
-        await this.createdDateInput.sendKeys(createdDate);
-    }
+  async getCreatedByInput(): Promise<string> {
+    return await this.createdByInput.getAttribute('value');
+  }
 
-    async getCreatedDateInput() {
-        return this.createdDateInput.getAttribute('value');
-    }
+  async setCreatedDateInput(createdDate: string): Promise<void> {
+    await this.createdDateInput.sendKeys(createdDate);
+  }
 
-    async setLastModifiedByInput(lastModifiedBy) {
-        await this.lastModifiedByInput.sendKeys(lastModifiedBy);
-    }
+  async getCreatedDateInput(): Promise<string> {
+    return await this.createdDateInput.getAttribute('value');
+  }
 
-    async getLastModifiedByInput() {
-        return this.lastModifiedByInput.getAttribute('value');
-    }
+  async setLastModifiedByInput(lastModifiedBy: string): Promise<void> {
+    await this.lastModifiedByInput.sendKeys(lastModifiedBy);
+  }
 
-    async setLastModifiedDateInput(lastModifiedDate) {
-        await this.lastModifiedDateInput.sendKeys(lastModifiedDate);
-    }
+  async getLastModifiedByInput(): Promise<string> {
+    return await this.lastModifiedByInput.getAttribute('value');
+  }
 
-    async getLastModifiedDateInput() {
-        return this.lastModifiedDateInput.getAttribute('value');
-    }
+  async setLastModifiedDateInput(lastModifiedDate: string): Promise<void> {
+    await this.lastModifiedDateInput.sendKeys(lastModifiedDate);
+  }
 
-    async save() {
-        await this.saveButton.click();
-    }
+  async getLastModifiedDateInput(): Promise<string> {
+    return await this.lastModifiedDateInput.getAttribute('value');
+  }
 
-    async cancel() {
-        await this.cancelButton.click();
-    }
+  async save(): Promise<void> {
+    await this.saveButton.click();
+  }
 
-    getSaveButton(): ElementFinder {
-        return this.saveButton;
-    }
+  async cancel(): Promise<void> {
+    await this.cancelButton.click();
+  }
+
+  getSaveButton(): ElementFinder {
+    return this.saveButton;
+  }
 }
 
 export class UrlDeleteDialog {
-    private dialogTitle = element(by.id('jhi-delete-url-heading'));
-    private confirmButton = element(by.id('jhi-confirm-delete-url'));
+  private dialogTitle = element(by.id('jhi-delete-url-heading'));
+  private confirmButton = element(by.id('jhi-confirm-delete-url'));
 
-    async getDialogTitle() {
-        return this.dialogTitle.getAttribute('jhiTranslate');
-    }
+  async getDialogTitle(): Promise<string> {
+    return this.dialogTitle.getAttribute('jhiTranslate');
+  }
 
-    async clickOnConfirmButton() {
-        await this.confirmButton.click();
-    }
+  async clickOnConfirmButton(): Promise<void> {
+    await this.confirmButton.click();
+  }
 }

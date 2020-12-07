@@ -25,13 +25,15 @@
         }
     ],
     "relationships": [],
-    "changelogDate": "20190527101530",
+    "changelogDate": "20200503073400",
     "entityTableName": "currency_rate",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "no",
-    "service": "no",
+    "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

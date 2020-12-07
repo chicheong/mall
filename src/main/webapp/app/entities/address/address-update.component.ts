@@ -1,92 +1,118 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { JhiAlertService } from 'ng-jhipster';
-import { IAddress } from 'app/shared/model/address.model';
+
+import { IAddress, Address } from 'app/shared/model/address.model';
 import { AddressService } from './address.service';
 import { ICountry } from 'app/shared/model/country.model';
-import { CountryService } from 'app/entities/country';
+import { CountryService } from 'app/entities/country/country.service';
 import { IMyState } from 'app/shared/model/my-state.model';
-import { MyStateService } from 'app/entities/my-state';
+import { MyStateService } from 'app/entities/my-state/my-state.service';
+
+type SelectableEntity = ICountry | IMyState;
 
 @Component({
-    selector: 'jhi-address-update',
-    templateUrl: './address-update.component.html'
+  selector: 'jhi-address-update',
+  templateUrl: './address-update.component.html'
 })
 export class AddressUpdateComponent implements OnInit {
-    address: IAddress;
-    isSaving: boolean;
+  isSaving = false;
+  countries: ICountry[] = [];
+  mystates: IMyState[] = [];
 
-    countries: ICountry[];
+  editForm = this.fb.group({
+    id: [],
+    line1: [],
+    line2: [],
+    line3: [],
+    line4: [],
+    city: [],
+    postalCode: [],
+    country: [],
+    myState: []
+  });
 
-    myStates: IMyState[];
+  constructor(
+    protected addressService: AddressService,
+    protected countryService: CountryService,
+    protected myStateService: MyStateService,
+    protected activatedRoute: ActivatedRoute,
+    private fb: FormBuilder
+  ) {}
 
-    constructor(
-        protected jhiAlertService: JhiAlertService,
-        protected addressService: AddressService,
-        protected countryService: CountryService,
-        protected myStateService: MyStateService,
-        protected activatedRoute: ActivatedRoute
-    ) {}
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ address }) => {
+      this.updateForm(address);
 
-    ngOnInit() {
-        this.isSaving = false;
-        this.activatedRoute.data.subscribe(({ address }) => {
-            this.address = address;
-        });
-        this.countryService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<ICountry[]>) => mayBeOk.ok),
-                map((response: HttpResponse<ICountry[]>) => response.body)
-            )
-            .subscribe((res: ICountry[]) => (this.countries = res), (res: HttpErrorResponse) => this.onError(res.message));
-        this.myStateService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<IMyState[]>) => mayBeOk.ok),
-                map((response: HttpResponse<IMyState[]>) => response.body)
-            )
-            .subscribe((res: IMyState[]) => (this.myStates = res), (res: HttpErrorResponse) => this.onError(res.message));
+      this.countryService.query().subscribe((res: HttpResponse<ICountry[]>) => (this.countries = res.body || []));
+
+      this.myStateService.query().subscribe((res: HttpResponse<IMyState[]>) => (this.mystates = res.body || []));
+    });
+  }
+
+  updateForm(address: IAddress): void {
+    this.editForm.patchValue({
+      id: address.id,
+      line1: address.line1,
+      line2: address.line2,
+      line3: address.line3,
+      line4: address.line4,
+      city: address.city,
+      postalCode: address.postalCode,
+      country: address.country,
+      myState: address.myState
+    });
+  }
+
+  previousState(): void {
+    window.history.back();
+  }
+
+  save(): void {
+    this.isSaving = true;
+    const address = this.createFromForm();
+    if (address.id !== undefined) {
+      this.subscribeToSaveResponse(this.addressService.update(address));
+    } else {
+      this.subscribeToSaveResponse(this.addressService.create(address));
     }
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  private createFromForm(): IAddress {
+    return {
+      ...new Address(),
+      id: this.editForm.get(['id'])!.value,
+      line1: this.editForm.get(['line1'])!.value,
+      line2: this.editForm.get(['line2'])!.value,
+      line3: this.editForm.get(['line3'])!.value,
+      line4: this.editForm.get(['line4'])!.value,
+      city: this.editForm.get(['city'])!.value,
+      postalCode: this.editForm.get(['postalCode'])!.value,
+      country: this.editForm.get(['country'])!.value,
+      myState: this.editForm.get(['myState'])!.value
+    };
+  }
 
-    save() {
-        this.isSaving = true;
-        if (this.address.id !== undefined) {
-            this.subscribeToSaveResponse(this.addressService.update(this.address));
-        } else {
-            this.subscribeToSaveResponse(this.addressService.create(this.address));
-        }
-    }
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<IAddress>>): void {
+    result.subscribe(
+      () => this.onSaveSuccess(),
+      () => this.onSaveError()
+    );
+  }
 
-    protected subscribeToSaveResponse(result: Observable<HttpResponse<IAddress>>) {
-        result.subscribe((res: HttpResponse<IAddress>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
-    }
+  protected onSaveSuccess(): void {
+    this.isSaving = false;
+    this.previousState();
+  }
 
-    protected onSaveSuccess() {
-        this.isSaving = false;
-        this.previousState();
-    }
+  protected onSaveError(): void {
+    this.isSaving = false;
+  }
 
-    protected onSaveError() {
-        this.isSaving = false;
-    }
-
-    protected onError(errorMessage: string) {
-        this.jhiAlertService.error(errorMessage, null, null);
-    }
-
-    trackCountryById(index: number, item: ICountry) {
-        return item.id;
-    }
-
-    trackStateById(index: number, item: IMyState) {
-        return item.id;
-    }
+  trackByObject(index: number, item: SelectableEntity): any {
+    return item;
+  }
 }

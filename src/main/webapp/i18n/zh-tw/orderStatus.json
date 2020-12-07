@@ -1,11 +1,12 @@
 {
-    "mallApp": {
-        "OrderStatus": {
-            "null": "",
-            "PENDING": "PENDING",
-            "COMFIRMED": "COMFIRMED",
-            "COMPLETED": "COMPLETED",
-            "CANCELLED": "CANCELLED"
-        }
+  "mallApp": {
+    "OrderStatus": {
+      "null": "",
+      "PENDING": "PENDING",
+      "CHECKOUT": "CHECKOUT",
+      "COMFIRMED": "COMFIRMED",
+      "COMPLETED": "COMPLETED",
+      "CANCELLED": "CANCELLED"
     }
+  }
 }

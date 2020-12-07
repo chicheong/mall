@@ -1,40 +1,16 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
-import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from 'app/shared';
-import {
-    PaymentComponent,
-    PaymentDetailComponent,
-    PaymentUpdateComponent,
-    PaymentDeletePopupComponent,
-    PaymentDeleteDialogComponent,
-    paymentRoute,
-    paymentPopupRoute
-} from './';
-
-const ENTITY_STATES = [...paymentRoute, ...paymentPopupRoute];
+import { MallSharedModule } from 'app/shared/shared.module';
+import { PaymentComponent } from './payment.component';
+import { PaymentDetailComponent } from './payment-detail.component';
+import { PaymentUpdateComponent } from './payment-update.component';
+import { PaymentDeleteDialogComponent } from './payment-delete-dialog.component';
+import { paymentRoute } from './payment.route';
 
 @NgModule({
-    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
-    declarations: [
-        PaymentComponent,
-        PaymentDetailComponent,
-        PaymentUpdateComponent,
-        PaymentDeleteDialogComponent,
-        PaymentDeletePopupComponent
-    ],
-    entryComponents: [PaymentComponent, PaymentUpdateComponent, PaymentDeleteDialogComponent, PaymentDeletePopupComponent],
-    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  imports: [MallSharedModule, RouterModule.forChild(paymentRoute)],
+  declarations: [PaymentComponent, PaymentDetailComponent, PaymentUpdateComponent, PaymentDeleteDialogComponent],
+  entryComponents: [PaymentDeleteDialogComponent]
 })
-export class MallPaymentModule {
-    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
-        this.languageHelper.language.subscribe((languageKey: string) => {
-            if (languageKey !== undefined) {
-                this.languageService.changeLanguage(languageKey);
-            }
-        });
-    }
-}
+export class MallPaymentModule {}

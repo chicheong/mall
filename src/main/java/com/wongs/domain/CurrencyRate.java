@@ -1,16 +1,15 @@
 package com.wongs.domain;
 
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
+import java.util.Objects;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
-import java.util.Objects;
 
 import com.wongs.domain.enumeration.CurrencyType;
 
@@ -20,11 +19,11 @@ import com.wongs.domain.enumeration.CurrencyType;
 @Entity
 @Table(name = "currency_rate")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "currencyrate")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "currencyrate")
 public class CurrencyRate implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,7 +34,7 @@ public class CurrencyRate implements Serializable {
     @Column(name = "jhi_to")
     private ZonedDateTime to;
 
-    @Column(name = "rate", precision = 10, scale = 2)
+    @Column(name = "rate", precision = 21, scale = 2)
     private BigDecimal rate;
 
     @Enumerated(EnumType.STRING)
@@ -126,19 +125,15 @@ public class CurrencyRate implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof CurrencyRate)) {
             return false;
         }
-        CurrencyRate currencyRate = (CurrencyRate) o;
-        if (currencyRate.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), currencyRate.getId());
+        return id != null && id.equals(((CurrencyRate) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

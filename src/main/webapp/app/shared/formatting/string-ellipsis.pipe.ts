@@ -3,14 +3,14 @@ import { Pipe, PipeTransform } from '@angular/core';
 
 @Pipe({name: 'ellipsis'})
 export class StringEllipsisPipe implements PipeTransform {
-    private DEFAULT_SUFFIX: string;
+    private DEFAULT_SUFFIX?: string;
     constructor() {
         // TODO comes from configuration settings
         this.DEFAULT_SUFFIX = '...';
     }
-    transform(value: string, size: number, suffix: string): string {
+    transform(value: string, size: number, suffix?: string | undefined): string {
         if (value === undefined || !value || value.length <= 0) {
-            return;
+            return '';
         }
         if (size === undefined) {
             return value;

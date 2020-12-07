@@ -1,22 +1,13 @@
 <div class="row justify-content-center">
-    <div class="col-12" *ngIf="product" [ngSwitch]="isEditing">
-		<form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+    <div class="col-12" *ngIf="product" >
+        <!-- <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm"> -->
             <jhi-alert-error></jhi-alert-error>
-			<div class="row"> <!-- *jhiHasAnyAuthority="'ROLE_USER'" -->
+            <div class="row"> <!-- *jhiHasAnyAuthority="'ROLE_USER'" -->
 				<div class="col-md-1">
 					<!-- <div>photo listing</div> -->
-					<div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)" *ngSwitchCase="true">
-						<div class="example-box" *ngFor="let url of product.urls | orderBy: 'sequence'" cdkDrag>
-							<img [src]="url.path"
-								class="img-thumbnail"
-								(click)="selectUrl(url)"
-								alt=""
-								style="width: 100px">
-						</div>
-					</div>
-					<div *ngSwitchCase="false">
-						<div *ngFor="let url of product.urls | orderBy: 'sequence'" class="img-wrap">
-							<img [src]="url.path"
+					<div>
+						<div *ngFor="let url of product?.urls | orderBy: 'sequence'" class="img-wrap">
+							<img [src]="url?.path"
 								class="img-thumbnail"
 								(click)="selectUrl(url)"
 								alt=""
@@ -25,11 +16,6 @@
 					</div>
 				</div>
 				<div class="col-md-4">
-					<div>
-						<button *ngSwitchCase="true" type="button" [disabled]="isSaving" class="btn btn-primary" (click)="uploadProductUrl()">
-							<fa-icon [icon]="'file-upload'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.upload"> Upload</span>
-						</button>
-					</div>
 					<!-- <div>main photo</div> -->
 					<div>
 						<span class="hipster img-fluid img-rounded" *ngIf="selectedUrl && selectedUrl.path">
@@ -37,31 +23,25 @@
 								class="img-fluid"
 								alt="">
 						</span>
-					</div>    
+					</div>   
 				</div>
 				<div class="col-md-5">
 					<div>
-						<button type="button" [disabled]="isSaving" class="btn btn-info" (click)="previousState()">
-							<fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+						<button type="button" [disabled]="isProcessing" class="btn btn-info" (click)="previousState()">
+							<fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
 						</button>
-						<button *ngSwitchCase="true" type="button" [disabled]="isSaving || !product.id" class="btn btn-secondary" (click)="cancel()">
-							<fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
-						</button>
-						<button *ngSwitchCase="true" type="submit" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
-							<fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
-						</button>	        
-						<button *ngSwitchCase="false" [hidden]="!isEditable" type="button" [disabled]="isSaving" class="btn btn-primary" (click)="edit()">
-							<fa-icon [icon]="'edit'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
-						</button>
+			            <button type="button"
+			            		[hidden]="!isEditable" 
+			            		[disabled]="isProcessing" 
+			                    [routerLink]="['/product', product.id, 'edit']"
+			                    class="btn btn-primary">
+			                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
+			            </button>
 					</div>
 					<div>
 						<div class="row-md jh-entity-details">
-							<div *ngSwitchCase="false">
+							<div>
 								<span >{{product.name}}</span>
-							</div>			  	
-							<div *ngSwitchCase="true">
-								<span >Product Name</span>
-								<span ><textarea class="form-control" name="name" id="field_name" [(ngModel)]="product.name" rows="2" cols="50"></textarea></span>
 							</div>
 							<!-- <div>
 								<span *ngIf="product.brand || isEditing==true">by </span><span *ngSwitchCase="false">{{product.brand}}</span>
@@ -70,84 +50,35 @@
 							<div>
 								<span>123 customer reviews</span>
 							</div> -->
-							<div class="border p-2" *ngSwitchCase="false">
+							<div class="border p-2">
 								<div >
-									Price: <span>{{selectedCurrency}} {{selectedItem? (selectedItem.price? selectedItem.price : priceRange) : ''}}</span>
+									<label class="form-control-label" jhiTranslate="mallApp.product.price">Price</label>: 
+									<span>{{selectedCurrency}} {{selectedItem? (selectedItem.price? selectedItem.price : priceRange) : ''}}</span>
 								</div>
 								<!-- <div *ngIf="selectedItem.id">
 									You Save: $5.90 (28%)
 								</div> -->
 							</div>
-							<div *ngSwitchCase="true">
-								<div *ngIf="product.colors">
-									<div>Color</div>
-									<span *ngFor="let color of product.colors">
-										<button [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="editStyle(color)">
-											<span>{{color.name}}</span>
-										</button>
-									</span>
-									<button [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="addColor()">
-										<span>+</span>
-									</button>
-								</div>
-								<div *ngIf="product.sizes">
-									<div>Size</div>
-									<span *ngFor="let size of product.sizes">
-										<button [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="editStyle(size)">
-											<span>{{size.name}}</span>
-										</button>
-									</span>
-									<button [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="addSize()">
-										<span>+</span>
-									</button>
-								</div>
-							</div>
-							<div *ngSwitchCase="false">
-								<div *ngIf="product.colors" class="m-1">
+							<div>
+								<div *ngIf="product.colors && product.colors.length > 1" class="m-1">
 									<span *ngFor="let color of product.colors">
 										<button type="button" [disabled]="color.disabled" (click)="changeStyle(color)" [ngClass]="(this.selectedColor == color) ? 'btn-success' : 'btn-light'" class="btn btn-sm">{{color.name}}</button>
 									</span>
 								</div>
-								<div *ngIf="product.sizes" class="m-1">
+								<div *ngIf="product.sizes && product.sizes.length > 1" class="m-1">
 									<span *ngFor="let size of product.sizes">
 										<button type="button" [disabled]="size.disabled" (click)="changeStyle(size)" [ngClass]="(this.selectedSize == size) ? 'btn-success' : 'btn-light'" class="btn btn-sm">{{size.name}}</button>
 									</span>
 								</div>
 							</div>
-							<div *ngSwitchCase="true">
-								<div>Item</div>
-								<div *ngIf="product.items" class="m-1">
-									<button [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="editItems('CODE')">
-										<fa-icon [icon]="'barcode'"></fa-icon>&nbsp;<span>CODE</span>
-									</button>
-									<button [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="editItemsUrl()">
-										<fa-icon [icon]="'images'"></fa-icon>&nbsp;<span>PHOTO</span>
-									</button>		        
-								</div>
-								<div *ngIf="product.items" class="m-1">
-									<button [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="editItems('PRICE')">
-										<fa-icon [icon]="'dollar-sign'"></fa-icon>&nbsp;<span>PRICE</span>
-									</button>
-									<button [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="editItems('QUANTITY')">
-										<fa-icon [icon]="'plus'"></fa-icon>&nbsp;<span>QUANTITY</span>
-									</button>			        
-								</div>
-							</div>
-							<div *ngSwitchCase="false">
-								<button type="button" [disabled]="isSaving || !(selectedItem && selectedItem.price)" class="btn btn-secondary" (click)="addToCart()">
+							<div>
+								<button type="button" [disabled]="isProcessing || !(selectedItem && selectedItem.price)" class="btn btn-secondary" (click)="addToCart()">
 									<span>Add to Cart</span>
 								</button>
 							</div>
 							<hr style='border-color: #5E5E5E;border-style: solid none;border-width: 1px 0;' />
-							<div *ngSwitchCase="true">Product Description</div>
 							<div>
-								<span *ngSwitchCase="false">{{product.description}}</span>
-								<span *ngSwitchCase="true"><textarea class="form-control" name="description" id="field_description" [(ngModel)]="product.description" rows="5" cols="50"></textarea></span>
-							</div>
-							<div class="m-1"> 
-								<button *ngSwitchCase="true" [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="editOther()">
-									<fa-icon [icon]="'info'"></fa-icon>&nbsp;<span>Other Information</span>
-								</button>
+								<span>{{product.description}}</span>
 							</div>
 							
 							<div *ngIf="false">
@@ -167,7 +98,7 @@
 							</div>	
 							<div *ngIf="false">
 								Item Description
-							</div>
+							</div>							
 						</div>
 					</div>
 				</div>
@@ -176,24 +107,7 @@
 					<div>Other</div>
 				</div>
 			</div>
-			<div class="row" *ngSwitchCase="true">
-				<div class="col-md-2">
-				</div>
-				<div class="col-md-8">
-					<angular-editor [config]="config" name="content" id="field_content" [(ngModel)]="product.content"></angular-editor>
-				</div>
-				<div class="col-md-2">
-				</div>
-			</div>
-			<div class="row" *ngSwitchCase="false">
-				<div class="col-md-2">
-				</div>
-				<div class="col-md-8">
-					{{product.content}}
-				</div>
-				<div class="col-md-2">
-				</div>
-			</div>			
-		</form>
-	</div>
+
+        <!-- </form> -->
+    </div>
 </div>

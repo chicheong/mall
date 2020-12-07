@@ -1,13 +1,12 @@
 package com.wongs.domain;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -17,11 +16,11 @@ import java.util.Objects;
 @Entity
 @Table(name = "payment_card")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "paymentcard")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "paymentcard")
 public class PaymentCard implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -40,9 +39,9 @@ public class PaymentCard implements Serializable {
 
     @Column(name = "cvc")
     private String cvc;
-
+    
     @OneToOne
-    @JoinColumn(unique = false) //@JsonIgnore
+    @JoinColumn(unique = false) //@JsonIgnore    
     private Payment payment;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
@@ -138,19 +137,15 @@ public class PaymentCard implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof PaymentCard)) {
             return false;
         }
-        PaymentCard paymentCard = (PaymentCard) o;
-        if (paymentCard.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), paymentCard.getId());
+        return id != null && id.equals(((PaymentCard) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

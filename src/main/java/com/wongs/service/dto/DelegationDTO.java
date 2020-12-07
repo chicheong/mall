@@ -1,6 +1,5 @@
 package com.wongs.service.dto;
 
-
 import java.time.ZonedDateTime;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -14,10 +13,10 @@ import com.wongs.domain.MyOrder;
 import com.wongs.domain.enumeration.CommonStatus;
 
 /**
- * A DTO for the Delegation entity.
+ * A DTO for the {@link com.wongs.domain.Delegation} entity.
  */
 public class DelegationDTO implements Serializable {
-
+    
     private Long id;
 
     private ZonedDateTime from;
@@ -55,7 +54,7 @@ public class DelegationDTO implements Serializable {
     	this.createdDate = delegation.getCreatedDate();
     	this.lastModifiedBy = delegation.getLastModifiedBy();
     	this.lastModifiedDate = delegation.getLastModifiedDate();
-    	this.accountId = Optional.of(delegation.getAccount()).get().getId();
+//    	this.accountId = Optional.of(delegation.getAccount()).get().getId();
     }
     
     public Long getId() {
@@ -156,7 +155,7 @@ public class DelegationDTO implements Serializable {
         }
 
         DelegationDTO delegationDTO = (DelegationDTO) o;
-        if(delegationDTO.getId() == null || getId() == null) {
+        if (delegationDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), delegationDTO.getId());

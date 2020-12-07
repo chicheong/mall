@@ -1,40 +1,16 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
-import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from 'app/shared';
-import {
-    OrderShopComponent,
-    OrderShopDetailComponent,
-    OrderShopUpdateComponent,
-    OrderShopDeletePopupComponent,
-    OrderShopDeleteDialogComponent,
-    orderShopRoute,
-    orderShopPopupRoute
-} from './';
-
-const ENTITY_STATES = [...orderShopRoute, ...orderShopPopupRoute];
+import { MallSharedModule } from 'app/shared/shared.module';
+import { OrderShopComponent } from './order-shop.component';
+import { OrderShopDetailComponent } from './order-shop-detail.component';
+import { OrderShopUpdateComponent } from './order-shop-update.component';
+import { OrderShopDeleteDialogComponent } from './order-shop-delete-dialog.component';
+import { orderShopRoute } from './order-shop.route';
 
 @NgModule({
-    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
-    declarations: [
-        OrderShopComponent,
-        OrderShopDetailComponent,
-        OrderShopUpdateComponent,
-        OrderShopDeleteDialogComponent,
-        OrderShopDeletePopupComponent
-    ],
-    entryComponents: [OrderShopComponent, OrderShopUpdateComponent, OrderShopDeleteDialogComponent, OrderShopDeletePopupComponent],
-    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  imports: [MallSharedModule, RouterModule.forChild(orderShopRoute)],
+  declarations: [OrderShopComponent, OrderShopDetailComponent, OrderShopUpdateComponent, OrderShopDeleteDialogComponent],
+  entryComponents: [OrderShopDeleteDialogComponent]
 })
-export class MallOrderShopModule {
-    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
-        this.languageHelper.language.subscribe((languageKey: string) => {
-            if (languageKey !== undefined) {
-                this.languageService.changeLanguage(languageKey);
-            }
-        });
-    }
-}
+export class MallOrderShopModule {}

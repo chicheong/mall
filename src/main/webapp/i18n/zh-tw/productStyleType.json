@@ -1,9 +1,9 @@
 {
-    "mallApp": {
-        "ProductStyleType": {
-            "null": "",
-            "COLOR": "COLOR",
-            "SIZE": "SIZE"
-        }
+  "mallApp": {
+    "ProductStyleType": {
+      "null": "",
+      "COLOR": "COLOR",
+      "SIZE": "SIZE"
     }
+  }
 }

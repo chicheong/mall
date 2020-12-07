@@ -1,26 +1,26 @@
 package com.wongs.service;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
-import java.io.IOException;
-import java.util.Optional;
-import java.util.Set;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.wongs.domain.Url;
 import com.wongs.repository.UrlRepository;
 import com.wongs.repository.search.UrlSearchRepository;
 import com.wongs.service.dto.UrlDTO;
 import com.wongs.service.mapper.UrlMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.IOException;
+import java.util.Optional;
+import java.util.Set;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * Service Implementation for managing Url.
+ * Service Implementation for managing {@link Url}.
  */
 @Service
 @Transactional
@@ -46,8 +46,8 @@ public class UrlService {
     /**
      * Save a url.
      *
-     * @param urlDTO the entity to save
-     * @return the persisted entity
+     * @param urlDTO the entity to save.
+     * @return the persisted entity.
      */
     public UrlDTO save(UrlDTO urlDTO) {
         log.debug("Request to save Url : {}", urlDTO);
@@ -61,8 +61,8 @@ public class UrlService {
     /**
      * Get all the urls.
      *
-     * @param pageable the pagination information
-     * @return the list of entities
+     * @param pageable the pagination information.
+     * @return the list of entities.
      */
     @Transactional(readOnly = true)
     public Page<UrlDTO> findAll(Pageable pageable) {
@@ -101,8 +101,8 @@ public class UrlService {
     /**
      * Get one url by id.
      *
-     * @param id the id of the entity
-     * @return the entity
+     * @param id the id of the entity.
+     * @return the entity.
      */
     @Transactional(readOnly = true)
     public Optional<UrlDTO> findOne(Long id) {
@@ -114,8 +114,7 @@ public class UrlService {
     /**
      * Delete the url by id.
      *
-     * @param id the id of the entity
-     * @throws IOException 
+     * @param id the id of the entity.
      */
     public void delete(Long id) {
         log.debug("Request to delete Url : {}", id);
@@ -134,9 +133,9 @@ public class UrlService {
     /**
      * Search for the url corresponding to the query.
      *
-     * @param query the query of the search
-     * @param pageable the pagination information
-     * @return the list of entities
+     * @param query the query of the search.
+     * @param pageable the pagination information.
+     * @return the list of entities.
      */
     @Transactional(readOnly = true)
     public Page<UrlDTO> search(String query, Pageable pageable) {

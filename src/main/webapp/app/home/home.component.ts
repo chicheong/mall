@@ -1,71 +1,60 @@
-import {HttpClient, HttpResponse, HttpErrorResponse} from '@angular/common/http';
-import { Component, OnInit } from '@angular/core';
-import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-import { JhiEventManager } from 'ng-jhipster';
+import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Subscription } from 'rxjs';
 
-import { LoginModalService, AccountService, Account } from 'app/core';
-
+import { LoginModalService } from 'app/core/login/login-modal.service';
+import { AccountService } from 'app/core/auth/account.service';
+import { Account } from 'app/core/user/account.model';
 import { ProductService } from 'app/entities/product/product.service';
 import { IProduct } from 'app/shared/model/product.model';
 
 @Component({
-    selector: 'jhi-home',
-    templateUrl: './home.component.html',
-    styleUrls: ['home.scss']
+  selector: 'jhi-home',
+  templateUrl: './home.component.html',
+  styleUrls: ['home.scss']
 })
-export class HomeComponent implements OnInit {
-    account: Account;
-    modalRef: NgbModalRef;
+export class HomeComponent implements OnInit, OnDestroy {
+  account: Account | null = null;
+  authSubscription?: Subscription;
+  products: IProduct[] | null = null;
 
-    products: IProduct[];
-    images: Array<string>;
+  constructor(private accountService: AccountService, private loginModalService: LoginModalService, private productService: ProductService) {}
 
-    constructor(
-        private accountService: AccountService,
-        private loginModalService: LoginModalService,
-        private productService: ProductService,
-        private eventManager: JhiEventManager
-    ) {}
+  ngOnInit(): void {
+    this.authSubscription = this.accountService.getAuthenticationState().subscribe(account => (this.account = account));
+    this.productService.query({
+        page: 0,
+        size: 100,
+        sort: this.sort()}).subscribe(
+            (res: HttpResponse<IProduct[]>) => this.products = res.body,
+            (res: HttpErrorResponse) => console.error(res.message)
+    );
+  }
 
-    ngOnInit() {
-        this.productService.query({
-            page: 0,
-            size: 100,
-            sort: this.sort()}).subscribe(
-                (res: HttpResponse<IProduct[]>) => this.products = res.body,
-                (res: HttpErrorResponse) => console.error(res.message)
-        );
-        this.registerAuthenticationSuccess();
+  isAuthenticated(): boolean {
+    return this.accountService.isAuthenticated();
+  }
+
+  login(): void {
+    this.loginModalService.open();
+  }
+
+  ngOnDestroy(): void {
+    if (this.authSubscription) {
+      this.authSubscription.unsubscribe();
     }
+  }
 
-    sort() {
-        const result = ['desc'];
-        result.push('id');
-        return result;
-    }
+  sort(): string[] {
+      const result = ['desc'];
+      result.push('id');
+      return result;
+  }
 
-    private _randomImageUrls(images: Array<{id: number}>): Array<string> {
-        return [1, 2, 3].map(() => {
-          const randomId = images[Math.floor(Math.random() * images.length)].id;
-          return `https://picsum.photos/900/500?image=${randomId}`;
-        });
-    }
-
-    registerAuthenticationSuccess() {
-        this.eventManager.subscribe('authenticationSuccess', message => {
-            // console.error('home subscribe authenticationSuccess');
-            this.accountService.identity().then(account => {
-                // console.error('home this.principal.identity().then');
-                this.account = account;
-            });
-        });
-    }
-
-    isAuthenticated() {
-        return this.accountService.isAuthenticated();
-    }
-
-    login() {
-        this.modalRef = this.loginModalService.open();
-    }
+  private _randomImageUrls(images: Array<{id: number}>): Array<string> {
+      return [1, 2, 3].map(() => {
+        const randomId = images[Math.floor(Math.random() * images.length)].id;
+        return `https://picsum.photos/900/500?image=${randomId}`;
+      });
+  }
 }

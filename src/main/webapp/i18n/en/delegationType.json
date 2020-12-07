@@ -1,11 +1,11 @@
 {
-    "mallApp": {
-        "DelegationType": {
-            "null": "",
-            "ACCOUNT": "ACCOUNT",
-            "COMPANY": "COMPANY",
-            "DEPARTMENT": "DEPARTMENT",
-            "OFFICE": "OFFICE"
-        }
+  "mallApp": {
+    "DelegationType": {
+      "null": "",
+      "ACCOUNT": "ACCOUNT",
+      "COMPANY": "COMPANY",
+      "DEPARTMENT": "DEPARTMENT",
+      "OFFICE": "OFFICE"
     }
+  }
 }

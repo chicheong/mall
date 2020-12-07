@@ -28,13 +28,15 @@
         }
     ],
     "relationships": [],
-    "changelogDate": "20190527101526",
+    "changelogDate": "20200503073000",
     "entityTableName": "product_style_history",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "no",
-    "service": "no",
+    "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

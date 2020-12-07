@@ -1,32 +1,33 @@
 package com.wongs.web.rest;
-import com.wongs.domain.Card;
-import com.wongs.repository.CardRepository;
-import com.wongs.repository.search.CardSearchRepository;
+
+import com.wongs.service.CardService;
 import com.wongs.web.rest.errors.BadRequestAlertException;
-import com.wongs.web.rest.util.HeaderUtil;
-import com.wongs.web.rest.util.PaginationUtil;
+import com.wongs.service.dto.CardDTO;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * REST controller for managing Card.
+ * REST controller for managing {@link com.wongs.domain.Card}.
  */
 @RestController
 @RequestMapping("/api")
@@ -36,112 +37,108 @@ public class CardResource {
 
     private static final String ENTITY_NAME = "card";
 
-    private final CardRepository cardRepository;
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
 
-    private final CardSearchRepository cardSearchRepository;
+    private final CardService cardService;
 
-    public CardResource(CardRepository cardRepository, CardSearchRepository cardSearchRepository) {
-        this.cardRepository = cardRepository;
-        this.cardSearchRepository = cardSearchRepository;
+    public CardResource(CardService cardService) {
+        this.cardService = cardService;
     }
 
     /**
-     * POST  /cards : Create a new card.
+     * {@code POST  /cards} : Create a new card.
      *
-     * @param card the card to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new card, or with status 400 (Bad Request) if the card has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param cardDTO the cardDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new cardDTO, or with status {@code 400 (Bad Request)} if the card has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/cards")
-    public ResponseEntity<Card> createCard(@RequestBody Card card) throws URISyntaxException {
-        log.debug("REST request to save Card : {}", card);
-        if (card.getId() != null) {
+    public ResponseEntity<CardDTO> createCard(@RequestBody CardDTO cardDTO) throws URISyntaxException {
+        log.debug("REST request to save Card : {}", cardDTO);
+        if (cardDTO.getId() != null) {
             throw new BadRequestAlertException("A new card cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Card result = cardRepository.save(card);
-        cardSearchRepository.save(result);
+        CardDTO result = cardService.save(cardDTO);
         return ResponseEntity.created(new URI("/api/cards/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
-     * PUT  /cards : Updates an existing card.
+     * {@code PUT  /cards} : Updates an existing card.
      *
-     * @param card the card to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated card,
-     * or with status 400 (Bad Request) if the card is not valid,
-     * or with status 500 (Internal Server Error) if the card couldn't be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param cardDTO the cardDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated cardDTO,
+     * or with status {@code 400 (Bad Request)} if the cardDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the cardDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/cards")
-    public ResponseEntity<Card> updateCard(@RequestBody Card card) throws URISyntaxException {
-        log.debug("REST request to update Card : {}", card);
-        if (card.getId() == null) {
+    public ResponseEntity<CardDTO> updateCard(@RequestBody CardDTO cardDTO) throws URISyntaxException {
+        log.debug("REST request to update Card : {}", cardDTO);
+        if (cardDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Card result = cardRepository.save(card);
-        cardSearchRepository.save(result);
+        CardDTO result = cardService.save(cardDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, card.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, cardDTO.getId().toString()))
             .body(result);
     }
 
     /**
-     * GET  /cards : get all the cards.
+     * {@code GET  /cards} : get all the cards.
      *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of cards in body
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of cards in body.
      */
     @GetMapping("/cards")
-    public ResponseEntity<List<Card>> getAllCards(Pageable pageable) {
+    public ResponseEntity<List<CardDTO>> getAllCards(Pageable pageable) {
         log.debug("REST request to get a page of Cards");
-        Page<Card> page = cardRepository.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/cards");
+        Page<CardDTO> page = cardService.findAll(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
-     * GET  /cards/:id : get the "id" card.
+     * {@code GET  /cards/:id} : get the "id" card.
      *
-     * @param id the id of the card to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the card, or with status 404 (Not Found)
+     * @param id the id of the cardDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the cardDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/cards/{id}")
-    public ResponseEntity<Card> getCard(@PathVariable Long id) {
+    public ResponseEntity<CardDTO> getCard(@PathVariable Long id) {
         log.debug("REST request to get Card : {}", id);
-        Optional<Card> card = cardRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(card);
+        Optional<CardDTO> cardDTO = cardService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(cardDTO);
     }
 
     /**
-     * DELETE  /cards/:id : delete the "id" card.
+     * {@code DELETE  /cards/:id} : delete the "id" card.
      *
-     * @param id the id of the card to delete
-     * @return the ResponseEntity with status 200 (OK)
+     * @param id the id of the cardDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/cards/{id}")
     public ResponseEntity<Void> deleteCard(@PathVariable Long id) {
         log.debug("REST request to delete Card : {}", id);
-        cardRepository.deleteById(id);
-        cardSearchRepository.deleteById(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        cardService.delete(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
     /**
-     * SEARCH  /_search/cards?query=:query : search for the card corresponding
+     * {@code SEARCH  /_search/cards?query=:query} : search for the card corresponding
      * to the query.
      *
-     * @param query the query of the card search
-     * @param pageable the pagination information
-     * @return the result of the search
+     * @param query the query of the card search.
+     * @param pageable the pagination information.
+     * @return the result of the search.
      */
     @GetMapping("/_search/cards")
-    public ResponseEntity<List<Card>> searchCards(@RequestParam String query, Pageable pageable) {
+    public ResponseEntity<List<CardDTO>> searchCards(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Cards for query {}", query);
-        Page<Card> page = cardSearchRepository.search(queryStringQuery(query), pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/cards");
+        Page<CardDTO> page = cardService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
-
 }

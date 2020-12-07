@@ -1,25 +1,26 @@
 {
-    "mallApp": {
-        "myState": {
-            "home": {
-                "title": "My States",
-                "createLabel": "建立一筆新的 My State",
-                "createOrEditLabel": "建立或編輯 My State",
-                "search": "搜尋 My State"
-            },
-            "created": "新的 My State 建立成功，識別碼為 {{ param }}",
-            "updated": "識別碼為 {{ param }} 的 My State 更新成功",
-            "deleted": "識別碼為 {{ param }} 的 My State 刪除成功",
-            "delete": {
-                "question": "您確定要刪除 My State {{ id }} 嗎?"
-            },
-            "detail": {
-                "title": "My State"
-            },
-            "code": "Code",
-            "label": "Label",
-            "name": "Name",
-            "country": "Country"
-        }
+  "mallApp": {
+    "myState": {
+      "home": {
+        "title": "My States",
+        "createLabel": "建立一筆新的 My State",
+        "createOrEditLabel": "建立或編輯 My State",
+        "search": "搜尋 My State",
+        "notFound": "No My States found"
+      },
+      "created": "新的 My State 建立成功，識別碼為 {{ param }}",
+      "updated": "識別碼為 {{ param }} 的 My State 更新成功",
+      "deleted": "識別碼為 {{ param }} 的 My State 刪除成功",
+      "delete": {
+        "question": "您確定要刪除 My State {{ id }} 嗎?"
+      },
+      "detail": {
+        "title": "My State"
+      },
+      "code": "Code",
+      "label": "Label",
+      "name": "Name",
+      "country": "Country"
     }
+  }
 }

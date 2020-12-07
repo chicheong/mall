@@ -18,6 +18,6 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 
 	Set<Product> findByShopId(Long id);
 	
-    @Query("select product from Product product left join fetch product.items left join fetch product.styles where product.id =:id")
+    @Query("select product from Product product left join fetch product.styles left join fetch product.items items left join fetch items.prices left join fetch items.quantities where product.id =:id")
     Product findOneWithEagerRelationships(@Param("id") Long id);
 }

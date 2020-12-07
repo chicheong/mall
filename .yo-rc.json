@@ -4,7 +4,7 @@
       "packageName": "com.wongs",
       "nativeLanguage": "en"
     },
-    "jhipsterVersion": "5.8.2",
+    "jhipsterVersion": "6.8.0",
     "applicationType": "monolith",
     "baseName": "mall",
     "packageName": "com.wongs",
@@ -22,23 +22,22 @@
     "serviceDiscoveryType": false,
     "buildTool": "maven",
     "enableSwaggerCodegen": false,
-    "jwtSecretKey": "YzM4ZTRlZGVkY2JjMmY3ZDhlMzI4YzAxNTlkZTZlNmY0ZDEyYTlkNWQ0Y2I4ZDc4MTE3ZDEwYzUxZjNlOGUwNjE4NjJjZDJlNTcxYzRjMTA0OTYyZjcwYjU0NTc3MWI4ZjViNmQzMmI3OGNmOGVmZTJlMGI3ODhmMGMzYjIwZTU=",
-    "clientFramework": "angularX",
+    "jwtSecretKey": "NWY3MmY4ZTU1NWZlNDk2MGY4YzUwMjlkZTc5YjZhZTMxODRlYTYxZDAzY2Y2MGEwNjYzYjk4MzQ0ODFkZjlmMzdlN2MxNGNhMWFiZDkwMzhhZGVmMDAyNjFkNWNlZmJmNGViMGYyNWM5Y2UwODE4OWJjNzE3MjUzY2Q4YmEyYTY=",
+    "embeddableLaunchScript": false,
     "useSass": true,
     "clientPackageManager": "npm",
-    "testFrameworks": [
-      "gatling",
-      "protractor"
-    ],
+    "clientFramework": "angularX",
+    "clientTheme": "none",
+    "clientThemeVariant": "",
+    "creationTimestamp": 1588489774139,
+    "testFrameworks": ["gatling", "protractor"],
     "jhiPrefix": "jhi",
     "entitySuffix": "",
     "dtoSuffix": "DTO",
     "otherModules": [],
     "enableTranslation": true,
     "nativeLanguage": "en",
-    "languages": [
-      "en",
-      "zh-tw"
-    ]
+    "languages": ["en", "zh-tw"],
+    "blueprints": []
   }
 }

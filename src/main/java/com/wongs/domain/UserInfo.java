@@ -1,16 +1,15 @@
 package com.wongs.domain;
 
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Objects;
 
 /**
  * A UserInfo.
@@ -18,11 +17,11 @@ import java.util.Objects;
 @Entity
 @Table(name = "user_info")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "userinfo")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "userinfo")
 public class UserInfo implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -140,19 +139,15 @@ public class UserInfo implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof UserInfo)) {
             return false;
         }
-        UserInfo userInfo = (UserInfo) o;
-        if (userInfo.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), userInfo.getId());
+        return id != null && id.equals(((UserInfo) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

@@ -47,13 +47,15 @@
         }
     ],
     "relationships": [],
-    "changelogDate": "20190527101525",
+    "changelogDate": "20200503072900",
     "entityTableName": "product_history",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "infinite-scroll",
-    "service": "no",
+    "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

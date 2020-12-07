@@ -1,20 +1,18 @@
 package com.wongs.domain;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
+import java.util.Objects;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Objects;
 
 import com.wongs.domain.enumeration.CurrencyType;
 
@@ -26,23 +24,23 @@ import com.wongs.domain.enumeration.ShippingStatus;
 @Entity
 @Table(name = "shipping")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "shipping")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "shipping")
 public class Shipping implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "price", precision = 10, scale = 2)
+    @Column(name = "price", precision = 21, scale = 2)
     private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "currency")
     private CurrencyType currency;
 
-    @Column(name = "jhi_date")
+    @Column(name = "date")
     private ZonedDateTime date;
 
     @Enumerated(EnumType.STRING)
@@ -52,6 +50,7 @@ public class Shipping implements Serializable {
     @OneToMany(mappedBy = "shipping")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<ShippingStatusHistory> statusHistories = new HashSet<>();
+
     @ManyToOne
     @JsonIgnoreProperties("shippings")
     private ShippingType type;
@@ -161,19 +160,15 @@ public class Shipping implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Shipping)) {
             return false;
         }
-        Shipping shipping = (Shipping) o;
-        if (shipping.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), shipping.getId());
+        return id != null && id.equals(((Shipping) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

@@ -1,98 +1,88 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
-import { UserRouteAccessService } from 'app/core';
-import { Observable, of } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { OrderShop } from 'app/shared/model/order-shop.model';
+import { Resolve, ActivatedRouteSnapshot, Routes, Router } from '@angular/router';
+import { JhiResolvePagingParams } from 'ng-jhipster';
+import { Observable, of, EMPTY } from 'rxjs';
+import { flatMap } from 'rxjs/operators';
+
+import { Authority } from 'app/shared/constants/authority.constants';
+import { UserRouteAccessService } from 'app/core/auth/user-route-access-service';
+import { IOrderShop, OrderShop } from 'app/shared/model/order-shop.model';
 import { OrderShopService } from './order-shop.service';
 import { OrderShopComponent } from './order-shop.component';
 import { OrderShopDetailComponent } from './order-shop-detail.component';
 import { OrderShopUpdateComponent } from './order-shop-update.component';
-import { OrderShopDeletePopupComponent } from './order-shop-delete-dialog.component';
-import { IOrderShop } from 'app/shared/model/order-shop.model';
 
 @Injectable({ providedIn: 'root' })
 export class OrderShopResolve implements Resolve<IOrderShop> {
-    constructor(private service: OrderShopService) {}
+  constructor(private service: OrderShopService, private router: Router) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<IOrderShop> {
-        const id = route.params['id'] ? route.params['id'] : null;
-        if (id) {
-            return this.service.find(id).pipe(
-                filter((response: HttpResponse<OrderShop>) => response.ok),
-                map((orderShop: HttpResponse<OrderShop>) => orderShop.body)
-            );
-        }
-        return of(new OrderShop());
+  resolve(route: ActivatedRouteSnapshot): Observable<IOrderShop> | Observable<never> {
+    const id = route.params['id'];
+    if (id) {
+      return this.service.find(id).pipe(
+        flatMap((orderShop: HttpResponse<OrderShop>) => {
+          if (orderShop.body) {
+            return of(orderShop.body);
+          } else {
+            this.router.navigate(['404']);
+            return EMPTY;
+          }
+        })
+      );
     }
+    return of(new OrderShop());
+  }
 }
 
 export const orderShopRoute: Routes = [
-    {
-        path: '',
-        component: OrderShopComponent,
-        resolve: {
-            pagingParams: JhiResolvePagingParams
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            defaultSort: 'id,asc',
-            pageTitle: 'mallApp.orderShop.home.title'
-        },
-        canActivate: [UserRouteAccessService]
+  {
+    path: '',
+    component: OrderShopComponent,
+    resolve: {
+      pagingParams: JhiResolvePagingParams
     },
-    {
-        path: ':id/view',
-        component: OrderShopDetailComponent,
-        resolve: {
-            orderShop: OrderShopResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.orderShop.home.title'
-        },
-        canActivate: [UserRouteAccessService]
+    data: {
+      authorities: [Authority.USER],
+      defaultSort: 'id,asc',
+      pageTitle: 'mallApp.orderShop.home.title'
     },
-    {
-        path: 'new',
-        component: OrderShopUpdateComponent,
-        resolve: {
-            orderShop: OrderShopResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.orderShop.home.title'
-        },
-        canActivate: [UserRouteAccessService]
+    canActivate: [UserRouteAccessService]
+  },
+  {
+    path: ':id/view',
+    component: OrderShopDetailComponent,
+    resolve: {
+      orderShop: OrderShopResolve
     },
-    {
-        path: ':id/edit',
-        component: OrderShopUpdateComponent,
-        resolve: {
-            orderShop: OrderShopResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.orderShop.home.title'
-        },
-        canActivate: [UserRouteAccessService]
-    }
-];
-
-export const orderShopPopupRoute: Routes = [
-    {
-        path: ':id/delete',
-        component: OrderShopDeletePopupComponent,
-        resolve: {
-            orderShop: OrderShopResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.orderShop.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    }
+    data: {
+      authorities: [Authority.USER],
+      pageTitle: 'mallApp.orderShop.home.title'
+    },
+    canActivate: [UserRouteAccessService]
+  },
+  {
+    path: 'new',
+    component: OrderShopUpdateComponent,
+    resolve: {
+      orderShop: OrderShopResolve
+    },
+    data: {
+      authorities: [Authority.USER],
+      pageTitle: 'mallApp.orderShop.home.title'
+    },
+    canActivate: [UserRouteAccessService]
+  },
+  {
+    path: ':id/edit',
+    component: OrderShopUpdateComponent,
+    resolve: {
+      orderShop: OrderShopResolve
+    },
+    data: {
+      authorities: [Authority.USER],
+      pageTitle: 'mallApp.orderShop.home.title'
+    },
+    canActivate: [UserRouteAccessService]
+  }
 ];

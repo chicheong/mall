@@ -43,13 +43,15 @@
         }
     ],
     "relationships": [],
-    "changelogDate": "20190527101535",
+    "changelogDate": "20200503073900",
     "entityTableName": "url",
     "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

@@ -1,99 +1,111 @@
 <div>
     <h2 id="page-heading">
         <span jhiTranslate="mallApp.orderShop.home.title">Order Shops</span>
+
         <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-order-shop" [routerLink]="['/order-shop/new']">
-            <fa-icon [icon]="'plus'"></fa-icon>
+            <fa-icon icon="plus"></fa-icon>
             <span class="hidden-sm-down"  jhiTranslate="mallApp.orderShop.home.createLabel">
-            Create new Order Shop
+            Create a new Order Shop
             </span>
         </button>
     </h2>
+
+    <jhi-alert-error></jhi-alert-error>
+
     <jhi-alert></jhi-alert>
+
     <div class="row">
         <div class="col-sm-12">
             <form name="searchForm" class="form-inline">
                 <div class="input-group w-100 mt-3">
                     <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'mallApp.orderShop.home.search' | translate }}">
+
                     <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
-                        <fa-icon [icon]="'search'"></fa-icon>
+                        <fa-icon icon="search"></fa-icon>
                     </button>
-                    <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
-                        <fa-icon [icon]="'trash-alt'"></fa-icon>
+
+                    <button class="input-group-append btn btn-danger" (click)="search('')" *ngIf="currentSearch">
+                        <fa-icon icon="trash-alt"></fa-icon>
                     </button>
                 </div>
             </form>
         </div>
     </div>
-    <br/>
-    <div class="table-responsive" *ngIf="orderShops">
-        <table class="table table-striped">
+
+    <div class="alert alert-warning" id="no-result" *ngIf="orderShops?.length === 0">
+        <span jhiTranslate="mallApp.orderShop.home.notFound">No orderShops found</span>
+    </div>
+
+    <div class="table-responsive" id="entities" *ngIf="orderShops?.length > 0">
+        <table class="table table-striped" aria-describedby="page-heading">
             <thead>
-            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="total"><span jhiTranslate="mallApp.orderShop.total">Total</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="currency"><span jhiTranslate="mallApp.orderShop.currency">Currency</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="remark"><span jhiTranslate="mallApp.orderShop.remark">Remark</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="shipping.id"><span jhiTranslate="mallApp.orderShop.shipping">Shipping</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="shop.id"><span jhiTranslate="mallApp.orderShop.shop">Shop</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="order.id"><span jhiTranslate="mallApp.orderShop.order">Order</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th></th>
-            </tr>
+                <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
+                    <th scope="col"  jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="total"><span jhiTranslate="mallApp.orderShop.total">Total</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="currency"><span jhiTranslate="mallApp.orderShop.currency">Currency</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="remark"><span jhiTranslate="mallApp.orderShop.remark">Remark</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="shippingId"><span jhiTranslate="mallApp.orderShop.shipping">Shipping</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="shopId"><span jhiTranslate="mallApp.orderShop.shop">Shop</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="orderId"><span jhiTranslate="mallApp.orderShop.order">Order</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"></th>
+                </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let orderShop of orderShops ;trackBy: trackId">
-                <td><a [routerLink]="['/order-shop', orderShop.id, 'view' ]">{{orderShop.id}}</a></td>
-                <td>{{orderShop.total}}</td>
-                <td jhiTranslate="{{'mallApp.CurrencyType.' + orderShop.currency}}">{{orderShop.currency}}</td>
-                <td>{{orderShop.remark}}</td>
-                <td>
-                    <div *ngIf="orderShop.shipping">
-                        <a [routerLink]="['../shipping', orderShop.shipping?.id , 'view' ]" >{{orderShop.shipping?.id}}</a>
-                    </div>
-                </td>
-                <td>
-                    <div *ngIf="orderShop.shop">
-                        <a [routerLink]="['../shop', orderShop.shop?.id , 'view' ]" >{{orderShop.shop?.id}}</a>
-                    </div>
-                </td>
-                <td>
-                    <div *ngIf="orderShop.order">
-                        <a [routerLink]="['../my-order', orderShop.order?.id , 'view' ]" >{{orderShop.order?.id}}</a>
-                    </div>
-                </td>
-                <td class="text-right">
-                    <div class="btn-group flex-btn-group-container">
-                        <button type="submit"
-                                [routerLink]="['/order-shop', orderShop.id, 'view' ]"
-                                class="btn btn-info btn-sm">
-                            <fa-icon [icon]="'eye'"></fa-icon>
-                            <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
-                        </button>
-                        <button type="submit"
-                                [routerLink]="['/order-shop', orderShop.id, 'edit']"
-                                class="btn btn-primary btn-sm">
-                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
-                            <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
-                        </button>
-                        <button type="submit"
-                                [routerLink]="['/', 'order-shop', { outlets: { popup: orderShop.id + '/delete'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
-                                class="btn btn-danger btn-sm">
-                            <fa-icon [icon]="'times'"></fa-icon>
-                            <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
-                        </button>
-                    </div>
-                </td>
-            </tr>
+                <tr *ngFor="let orderShop of orderShops ;trackBy: trackId">
+                    <td><a [routerLink]="['/order-shop', orderShop.id, 'view']">{{ orderShop.id }}</a></td>
+                    <td>{{ orderShop.total }}</td>
+                    <td jhiTranslate="{{ 'mallApp.CurrencyType.' + orderShop.currency }}">{{ orderShop.currency }}</td>
+                    <td>{{ orderShop.remark }}</td>
+                    <td>
+                        <div *ngIf="orderShop.shippingId">
+                            <a [routerLink]="['/shipping', orderShop.shippingId , 'view']" >{{ orderShop.shippingId }}</a>
+                        </div>
+                    </td>
+                    <td>
+                        <div *ngIf="orderShop.shopId">
+                            <a [routerLink]="['/shop', orderShop.shopId , 'view']" >{{ orderShop.shopId }}</a>
+                        </div>
+                    </td>
+                    <td>
+                        <div *ngIf="orderShop.orderId">
+                            <a [routerLink]="['/my-order', orderShop.orderId , 'view']" >{{ orderShop.orderId }}</a>
+                        </div>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group">
+                            <button type="submit"
+                                    [routerLink]="['/order-shop', orderShop.id, 'view']"
+                                    class="btn btn-info btn-sm">
+                                <fa-icon icon="eye"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                            </button>
+
+                            <button type="submit"
+                                    [routerLink]="['/order-shop', orderShop.id, 'edit']"
+                                    class="btn btn-primary btn-sm">
+                                <fa-icon icon="pencil-alt"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                            </button>
+
+                            <button type="submit" (click)="delete(orderShop)"
+                                    class="btn btn-danger btn-sm">
+                                <fa-icon icon="times"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
-    <div *ngIf="orderShops && orderShops.length">
+
+    <div *ngIf="orderShops?.length > 0">
         <div class="row justify-content-center">
-            <jhi-item-count [page]="page" [total]="totalItems" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+            <jhi-item-count [page]="page" [total]="totalItems" [itemsPerPage]="itemsPerPage"></jhi-item-count>
         </div>
+
         <div class="row justify-content-center">
-            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="ngbPaginationPage" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage($event)"></ngb-pagination>
         </div>
     </div>
 </div>

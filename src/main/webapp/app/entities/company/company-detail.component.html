@@ -1,38 +1,41 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="company">
-            <h2><span jhiTranslate="mallApp.company.detail.title">Company</span> {{company.id}}</h2>
+            <h2><span jhiTranslate="mallApp.company.detail.title">Company</span> {{ company.id }}</h2>
+
             <hr>
+
             <jhi-alert-error></jhi-alert-error>
+
             <dl class="row-md jh-entity-details">
                 <dt><span jhiTranslate="mallApp.company.code">Code</span></dt>
                 <dd>
-                    <span>{{company.code}}</span>
+                    <span>{{ company.code }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.company.name">Name</span></dt>
                 <dd>
-                    <span>{{company.name}}</span>
+                    <span>{{ company.name }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.company.status">Status</span></dt>
                 <dd>
-                    <span jhiTranslate="{{'mallApp.CommonStatus.' + company.status}}">{{company.status}}</span>
+                    <span jhiTranslate="{{ 'mallApp.CommonStatus.' + company.status }}">{{ company.status }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.company.parent">Parent</span></dt>
                 <dd>
                     <div *ngIf="company.parent">
-                        <a [routerLink]="['/company', company.parent?.id, 'view']">{{company.parent?.id}}</a>
+                        <a [routerLink]="['/company', company.parent?.id, 'view']">{{ company.parent?.id }}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="mallApp.company.department">Department</span></dt>
                 <dd>
                     <span *ngFor="let department of company.departments; let last = last">
-                        <a [routerLink]="['/department', department?.id, 'view' ]">{{department.code}}</a>{{last ? '' : ', '}}
+                        <a [routerLink]="['/department', department?.id, 'view']">{{ department.code }}</a>{{ last ? '' : ', ' }}
                     </span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.company.office">Office</span></dt>
                 <dd>
                     <span *ngFor="let office of company.offices; let last = last">
-                        <a [routerLink]="['/office', office?.id, 'view' ]">{{office.code}}</a>{{last ? '' : ', '}}
+                        <a [routerLink]="['/office', office?.id, 'view']">{{ office.code }}</a>{{ last ? '' : ', ' }}
                     </span>
                 </dd>
             </dl>
@@ -40,13 +43,13 @@
             <button type="submit"
                     (click)="previousState()"
                     class="btn btn-info">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
             </button>
 
             <button type="button"
                     [routerLink]="['/company', company.id, 'edit']"
                     class="btn btn-primary">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
             </button>
         </div>
     </div>

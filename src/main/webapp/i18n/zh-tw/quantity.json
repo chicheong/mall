@@ -1,34 +1,35 @@
 {
-    "mallApp": {
-        "quantity": {
-            "home": {
-                "title": "Quantities",
-                "createLabel": "建立一筆新的 Quantity",
-                "createOrEditLabel": "建立或編輯 Quantity",
-                "search": "搜尋 Quantity",
-				"advanceQuantity": "預定數量"
-            },
-            "created": "新的 Quantity 建立成功，識別碼為 {{ param }}",
-            "updated": "識別碼為 {{ param }} 的 Quantity 更新成功",
-            "deleted": "識別碼為 {{ param }} 的 Quantity 刪除成功",
-            "delete": {
-                "question": "您確定要刪除 Quantity {{ id }} 嗎?"
-            },
-            "detail": {
-                "title": "Quantity"
-            },
-            "from": "From",
-            "to": "To",
-            "quantity": "Quantity",
-			"item": "Item",
-            "tooltip": {
-            	"quantityField": "數量，例如 999"
-            },
-            "button": {
-            	"addOneMoreTimeslot": "加多一個時段",
-            	"remove": "移除",
-            	"addAndCopyToALL": "新增並複製至全部"
-            }
-        }
+  "mallApp": {
+    "quantity": {
+      "home": {
+        "title": "Quantities",
+        "createLabel": "建立一筆新的 Quantity",
+        "createOrEditLabel": "建立或編輯 Quantity",
+        "search": "搜尋 Quantity",
+        "notFound": "No Quantities found",
+		"advanceQuantity": "預定數量"
+      },
+      "created": "新的 Quantity 建立成功，識別碼為 {{ param }}",
+      "updated": "識別碼為 {{ param }} 的 Quantity 更新成功",
+      "deleted": "識別碼為 {{ param }} 的 Quantity 刪除成功",
+      "delete": {
+        "question": "您確定要刪除 Quantity {{ id }} 嗎?"
+      },
+      "detail": {
+        "title": "Quantity"
+      },
+      "from": "From",
+      "to": "To",
+      "quantity": "Quantity",
+      "item": "Item",
+		"tooltip": {
+	    	"quantityField": "數量，例如 9"
+	    },
+	    "button": {
+	    	"addOneMoreTimeslot": "加多一個時段",
+	    	"remove": "移除",
+	    	"addAndCopyToALL": "新增並複製至全部"
+	    }
     }
+  }
 }

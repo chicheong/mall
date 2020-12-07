@@ -1,28 +1,28 @@
 {
-    "mallApp": {
-        "company": {
-            "home": {
-                "title": "Companies",
-                "createLabel": "建立一筆新的 Company",
-                "createOrEditLabel": "建立或編輯 Company",
-                "search": "搜尋 Company"
-            },
-            "created": "新的 Company 建立成功，識別碼為 {{ param }}",
-            "updated": "識別碼為 {{ param }} 的 Company 更新成功",
-            "deleted": "識別碼為 {{ param }} 的 Company 刪除成功",
-            "delete": {
-                "question": "您確定要刪除 Company {{ id }} 嗎?"
-            },
-            "detail": {
-                "title": "Company"
-            },
-            "code": "Code",
-            "name": "Name",
-            "status": "Status",
-            "parent": "Parent",
-            "department": "Department",
-            "office": "Office",
-            "account": "Account"
-        }
+  "mallApp": {
+    "company": {
+      "home": {
+        "title": "Companies",
+        "createLabel": "建立一筆新的 Company",
+        "createOrEditLabel": "建立或編輯 Company",
+        "search": "搜尋 Company",
+        "notFound": "No Companies found"
+      },
+      "created": "新的 Company 建立成功，識別碼為 {{ param }}",
+      "updated": "識別碼為 {{ param }} 的 Company 更新成功",
+      "deleted": "識別碼為 {{ param }} 的 Company 刪除成功",
+      "delete": {
+        "question": "您確定要刪除 Company {{ id }} 嗎?"
+      },
+      "detail": {
+        "title": "Company"
+      },
+      "code": "Code",
+      "name": "Name",
+      "status": "Status",
+      "parent": "Parent",
+      "department": "Department",
+      "office": "Office"
     }
+  }
 }

@@ -1,168 +1,172 @@
 import { element, by, ElementFinder } from 'protractor';
 
 export class CategoryComponentsPage {
-    createButton = element(by.id('jh-create-entity'));
-    deleteButtons = element.all(by.css('jhi-category div table .btn-danger'));
-    title = element.all(by.css('jhi-category div h2#page-heading span')).first();
+  createButton = element(by.id('jh-create-entity'));
+  deleteButtons = element.all(by.css('jhi-category div table .btn-danger'));
+  title = element.all(by.css('jhi-category div h2#page-heading span')).first();
+  noResult = element(by.id('no-result'));
+  entities = element(by.id('entities'));
 
-    async clickOnCreateButton() {
-        await this.createButton.click();
-    }
+  async clickOnCreateButton(): Promise<void> {
+    await this.createButton.click();
+  }
 
-    async clickOnLastDeleteButton() {
-        await this.deleteButtons.last().click();
-    }
+  async clickOnLastDeleteButton(): Promise<void> {
+    await this.deleteButtons.last().click();
+  }
 
-    async countDeleteButtons() {
-        return this.deleteButtons.count();
-    }
+  async countDeleteButtons(): Promise<number> {
+    return this.deleteButtons.count();
+  }
 
-    async getTitle() {
-        return this.title.getAttribute('jhiTranslate');
-    }
+  async getTitle(): Promise<string> {
+    return this.title.getAttribute('jhiTranslate');
+  }
 }
 
 export class CategoryUpdatePage {
-    pageTitle = element(by.id('jhi-category-heading'));
-    saveButton = element(by.id('save-entity'));
-    cancelButton = element(by.id('cancel-save'));
-    nameInput = element(by.id('field_name'));
-    descriptionInput = element(by.id('field_description'));
-    statusSelect = element(by.id('field_status'));
-    createdByInput = element(by.id('field_createdBy'));
-    createdDateInput = element(by.id('field_createdDate'));
-    lastModifiedByInput = element(by.id('field_lastModifiedBy'));
-    lastModifiedDateInput = element(by.id('field_lastModifiedDate'));
-    parentSelect = element(by.id('field_parent'));
-    productSelect = element(by.id('field_product'));
+  pageTitle = element(by.id('jhi-category-heading'));
+  saveButton = element(by.id('save-entity'));
+  cancelButton = element(by.id('cancel-save'));
 
-    async getPageTitle() {
-        return this.pageTitle.getAttribute('jhiTranslate');
-    }
+  nameInput = element(by.id('field_name'));
+  descriptionInput = element(by.id('field_description'));
+  statusSelect = element(by.id('field_status'));
+  createdByInput = element(by.id('field_createdBy'));
+  createdDateInput = element(by.id('field_createdDate'));
+  lastModifiedByInput = element(by.id('field_lastModifiedBy'));
+  lastModifiedDateInput = element(by.id('field_lastModifiedDate'));
 
-    async setNameInput(name) {
-        await this.nameInput.sendKeys(name);
-    }
+  parentSelect = element(by.id('field_parent'));
+  productSelect = element(by.id('field_product'));
 
-    async getNameInput() {
-        return this.nameInput.getAttribute('value');
-    }
+  async getPageTitle(): Promise<string> {
+    return this.pageTitle.getAttribute('jhiTranslate');
+  }
 
-    async setDescriptionInput(description) {
-        await this.descriptionInput.sendKeys(description);
-    }
+  async setNameInput(name: string): Promise<void> {
+    await this.nameInput.sendKeys(name);
+  }
 
-    async getDescriptionInput() {
-        return this.descriptionInput.getAttribute('value');
-    }
+  async getNameInput(): Promise<string> {
+    return await this.nameInput.getAttribute('value');
+  }
 
-    async setStatusSelect(status) {
-        await this.statusSelect.sendKeys(status);
-    }
+  async setDescriptionInput(description: string): Promise<void> {
+    await this.descriptionInput.sendKeys(description);
+  }
 
-    async getStatusSelect() {
-        return this.statusSelect.element(by.css('option:checked')).getText();
-    }
+  async getDescriptionInput(): Promise<string> {
+    return await this.descriptionInput.getAttribute('value');
+  }
 
-    async statusSelectLastOption() {
-        await this.statusSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async setStatusSelect(status: string): Promise<void> {
+    await this.statusSelect.sendKeys(status);
+  }
 
-    async setCreatedByInput(createdBy) {
-        await this.createdByInput.sendKeys(createdBy);
-    }
+  async getStatusSelect(): Promise<string> {
+    return await this.statusSelect.element(by.css('option:checked')).getText();
+  }
 
-    async getCreatedByInput() {
-        return this.createdByInput.getAttribute('value');
-    }
+  async statusSelectLastOption(): Promise<void> {
+    await this.statusSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async setCreatedDateInput(createdDate) {
-        await this.createdDateInput.sendKeys(createdDate);
-    }
+  async setCreatedByInput(createdBy: string): Promise<void> {
+    await this.createdByInput.sendKeys(createdBy);
+  }
 
-    async getCreatedDateInput() {
-        return this.createdDateInput.getAttribute('value');
-    }
+  async getCreatedByInput(): Promise<string> {
+    return await this.createdByInput.getAttribute('value');
+  }
 
-    async setLastModifiedByInput(lastModifiedBy) {
-        await this.lastModifiedByInput.sendKeys(lastModifiedBy);
-    }
+  async setCreatedDateInput(createdDate: string): Promise<void> {
+    await this.createdDateInput.sendKeys(createdDate);
+  }
 
-    async getLastModifiedByInput() {
-        return this.lastModifiedByInput.getAttribute('value');
-    }
+  async getCreatedDateInput(): Promise<string> {
+    return await this.createdDateInput.getAttribute('value');
+  }
 
-    async setLastModifiedDateInput(lastModifiedDate) {
-        await this.lastModifiedDateInput.sendKeys(lastModifiedDate);
-    }
+  async setLastModifiedByInput(lastModifiedBy: string): Promise<void> {
+    await this.lastModifiedByInput.sendKeys(lastModifiedBy);
+  }
 
-    async getLastModifiedDateInput() {
-        return this.lastModifiedDateInput.getAttribute('value');
-    }
+  async getLastModifiedByInput(): Promise<string> {
+    return await this.lastModifiedByInput.getAttribute('value');
+  }
 
-    async parentSelectLastOption() {
-        await this.parentSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async setLastModifiedDateInput(lastModifiedDate: string): Promise<void> {
+    await this.lastModifiedDateInput.sendKeys(lastModifiedDate);
+  }
 
-    async parentSelectOption(option) {
-        await this.parentSelect.sendKeys(option);
-    }
+  async getLastModifiedDateInput(): Promise<string> {
+    return await this.lastModifiedDateInput.getAttribute('value');
+  }
 
-    getParentSelect(): ElementFinder {
-        return this.parentSelect;
-    }
+  async parentSelectLastOption(): Promise<void> {
+    await this.parentSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async getParentSelectedOption() {
-        return this.parentSelect.element(by.css('option:checked')).getText();
-    }
+  async parentSelectOption(option: string): Promise<void> {
+    await this.parentSelect.sendKeys(option);
+  }
 
-    async productSelectLastOption() {
-        await this.productSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  getParentSelect(): ElementFinder {
+    return this.parentSelect;
+  }
 
-    async productSelectOption(option) {
-        await this.productSelect.sendKeys(option);
-    }
+  async getParentSelectedOption(): Promise<string> {
+    return await this.parentSelect.element(by.css('option:checked')).getText();
+  }
 
-    getProductSelect(): ElementFinder {
-        return this.productSelect;
-    }
+  async productSelectLastOption(): Promise<void> {
+    await this.productSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async getProductSelectedOption() {
-        return this.productSelect.element(by.css('option:checked')).getText();
-    }
+  async productSelectOption(option: string): Promise<void> {
+    await this.productSelect.sendKeys(option);
+  }
 
-    async save() {
-        await this.saveButton.click();
-    }
+  getProductSelect(): ElementFinder {
+    return this.productSelect;
+  }
 
-    async cancel() {
-        await this.cancelButton.click();
-    }
+  async getProductSelectedOption(): Promise<string> {
+    return await this.productSelect.element(by.css('option:checked')).getText();
+  }
 
-    getSaveButton(): ElementFinder {
-        return this.saveButton;
-    }
+  async save(): Promise<void> {
+    await this.saveButton.click();
+  }
+
+  async cancel(): Promise<void> {
+    await this.cancelButton.click();
+  }
+
+  getSaveButton(): ElementFinder {
+    return this.saveButton;
+  }
 }
 
 export class CategoryDeleteDialog {
-    private dialogTitle = element(by.id('jhi-delete-category-heading'));
-    private confirmButton = element(by.id('jhi-confirm-delete-category'));
+  private dialogTitle = element(by.id('jhi-delete-category-heading'));
+  private confirmButton = element(by.id('jhi-confirm-delete-category'));
 
-    async getDialogTitle() {
-        return this.dialogTitle.getAttribute('jhiTranslate');
-    }
+  async getDialogTitle(): Promise<string> {
+    return this.dialogTitle.getAttribute('jhiTranslate');
+  }
 
-    async clickOnConfirmButton() {
-        await this.confirmButton.click();
-    }
+  async clickOnConfirmButton(): Promise<void> {
+    await this.confirmButton.click();
+  }
 }

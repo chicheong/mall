@@ -1,25 +1,26 @@
 {
-    "mallApp": {
-        "myState": {
-            "home": {
-                "title": "My States",
-                "createLabel": "Create a new My State",
-                "createOrEditLabel": "Create or edit a My State",
-                "search": "Search for My State"
-            },
-            "created": "A new My State is created with identifier {{ param }}",
-            "updated": "A My State is updated with identifier {{ param }}",
-            "deleted": "A My State is deleted with identifier {{ param }}",
-            "delete": {
-                "question": "Are you sure you want to delete My State {{ id }}?"
-            },
-            "detail": {
-                "title": "My State"
-            },
-            "code": "Code",
-            "label": "Label",
-            "name": "Name",
-            "country": "Country"
-        }
+  "mallApp": {
+    "myState": {
+      "home": {
+        "title": "My States",
+        "createLabel": "Create a new My State",
+        "createOrEditLabel": "Create or edit a My State",
+        "search": "Search for My State",
+        "notFound": "No My States found"
+      },
+      "created": "A new My State is created with identifier {{ param }}",
+      "updated": "A My State is updated with identifier {{ param }}",
+      "deleted": "A My State is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete My State {{ id }}?"
+      },
+      "detail": {
+        "title": "My State"
+      },
+      "code": "Code",
+      "label": "Label",
+      "name": "Name",
+      "country": "Country"
     }
+  }
 }

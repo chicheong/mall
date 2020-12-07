@@ -1,51 +1,84 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { IShippingType } from 'app/shared/model/shipping-type.model';
+
+import { IShippingType, ShippingType } from 'app/shared/model/shipping-type.model';
 import { ShippingTypeService } from './shipping-type.service';
 
 @Component({
-    selector: 'jhi-shipping-type-update',
-    templateUrl: './shipping-type-update.component.html'
+  selector: 'jhi-shipping-type-update',
+  templateUrl: './shipping-type-update.component.html'
 })
 export class ShippingTypeUpdateComponent implements OnInit {
-    shippingType: IShippingType;
-    isSaving: boolean;
+  isSaving = false;
 
-    constructor(protected shippingTypeService: ShippingTypeService, protected activatedRoute: ActivatedRoute) {}
+  editForm = this.fb.group({
+    id: [],
+    name: [],
+    description: [],
+    price: [],
+    currency: []
+  });
 
-    ngOnInit() {
-        this.isSaving = false;
-        this.activatedRoute.data.subscribe(({ shippingType }) => {
-            this.shippingType = shippingType;
-        });
+  constructor(protected shippingTypeService: ShippingTypeService, protected activatedRoute: ActivatedRoute, private fb: FormBuilder) {}
+
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ shippingType }) => {
+      this.updateForm(shippingType);
+    });
+  }
+
+  updateForm(shippingType: IShippingType): void {
+    this.editForm.patchValue({
+      id: shippingType.id,
+      name: shippingType.name,
+      description: shippingType.description,
+      price: shippingType.price,
+      currency: shippingType.currency
+    });
+  }
+
+  previousState(): void {
+    window.history.back();
+  }
+
+  save(): void {
+    this.isSaving = true;
+    const shippingType = this.createFromForm();
+    if (shippingType.id !== undefined) {
+      this.subscribeToSaveResponse(this.shippingTypeService.update(shippingType));
+    } else {
+      this.subscribeToSaveResponse(this.shippingTypeService.create(shippingType));
     }
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  private createFromForm(): IShippingType {
+    return {
+      ...new ShippingType(),
+      id: this.editForm.get(['id'])!.value,
+      name: this.editForm.get(['name'])!.value,
+      description: this.editForm.get(['description'])!.value,
+      price: this.editForm.get(['price'])!.value,
+      currency: this.editForm.get(['currency'])!.value
+    };
+  }
 
-    save() {
-        this.isSaving = true;
-        if (this.shippingType.id !== undefined) {
-            this.subscribeToSaveResponse(this.shippingTypeService.update(this.shippingType));
-        } else {
-            this.subscribeToSaveResponse(this.shippingTypeService.create(this.shippingType));
-        }
-    }
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<IShippingType>>): void {
+    result.subscribe(
+      () => this.onSaveSuccess(),
+      () => this.onSaveError()
+    );
+  }
 
-    protected subscribeToSaveResponse(result: Observable<HttpResponse<IShippingType>>) {
-        result.subscribe((res: HttpResponse<IShippingType>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
-    }
+  protected onSaveSuccess(): void {
+    this.isSaving = false;
+    this.previousState();
+  }
 
-    protected onSaveSuccess() {
-        this.isSaving = false;
-        this.previousState();
-    }
-
-    protected onSaveError() {
-        this.isSaving = false;
-    }
+  protected onSaveError(): void {
+    this.isSaving = false;
+  }
 }

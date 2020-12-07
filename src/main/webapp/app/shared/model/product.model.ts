@@ -2,13 +2,8 @@ import { Moment } from 'moment';
 import { IProductStyle } from 'app/shared/model/product-style.model';
 import { IProductItem } from 'app/shared/model/product-item.model';
 import { ICategory } from 'app/shared/model/category.model';
-import { IUrl } from 'app/shared/model/url.model';
-
-export const enum ProductStatus {
-    ACTIVE = 'ACTIVE',
-    RESTRICTED = 'RESTRICTED',
-    INACTIVE = 'INACTIVE'
-}
+import { IMyUrl } from 'app/shared/model/my-url.model';
+import { ProductStatus } from 'app/shared/model/enumerations/product-status.model';
 
 export interface IProduct {
     id?: number;
@@ -29,7 +24,7 @@ export interface IProduct {
     items?: IProductItem[];
     shopId?: number;
     categories?: ICategory[];
-    urls?: IUrl[];
+    urls?: IMyUrl[];
 }
 
 export class Product implements IProduct {
@@ -52,6 +47,6 @@ export class Product implements IProduct {
         public items?: IProductItem[],
         public shopId?: number,
         public categories?: ICategory[],
-        public urls?: IUrl[]
+        public urls?: IMyUrl[]
     ) {}
 }

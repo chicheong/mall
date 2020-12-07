@@ -1,16 +1,15 @@
 package com.wongs.domain;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Objects;
+import java.math.BigDecimal;
 
 import com.wongs.domain.enumeration.ShippingPriceRuleType;
 
@@ -20,26 +19,26 @@ import com.wongs.domain.enumeration.ShippingPriceRuleType;
 @Entity
 @Table(name = "shipping_price_rule")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "shippingpricerule")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "shippingpricerule")
 public class ShippingPriceRule implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "jhi_type")
+    @Column(name = "type")
     private ShippingPriceRuleType type;
 
-    @Column(name = "jhi_value", precision = 10, scale = 2)
+    @Column(name = "value", precision = 21, scale = 2)
     private BigDecimal value;
 
-    @Column(name = "price", precision = 10, scale = 2)
+    @Column(name = "price", precision = 21, scale = 2)
     private BigDecimal price;
 
-    @Column(name = "jhi_sequence")
+    @Column(name = "sequence")
     private Integer sequence;
 
     @ManyToOne
@@ -126,19 +125,15 @@ public class ShippingPriceRule implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof ShippingPriceRule)) {
             return false;
         }
-        ShippingPriceRule shippingPriceRule = (ShippingPriceRule) o;
-        if (shippingPriceRule.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), shippingPriceRule.getId());
+        return id != null && id.equals(((ShippingPriceRule) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

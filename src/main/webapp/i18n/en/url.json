@@ -1,31 +1,32 @@
 {
-    "mallApp": {
-        "url": {
-            "home": {
-                "title": "Urls",
-                "createLabel": "Create a new Url",
-                "createOrEditLabel": "Create or edit a Url",
-                "search": "Search for Url"
-            },
-            "created": "A new Url is created with identifier {{ param }}",
-            "updated": "A Url is updated with identifier {{ param }}",
-            "deleted": "A Url is deleted with identifier {{ param }}",
-            "delete": {
-               "question": "Are you sure you want to delete this one?"
-            },
-            "detail": {
-                "title": "Url"
-            },
-            "entityType": "Entity Type",
-            "entityId": "Entity Id",
-            "path": "Path",
-            "fileName": "File Name",
-            "sequence": "Sequence",
-            "description": "Description",
-            "createdBy": "Created By",
-            "createdDate": "Created Date",
-            "lastModifiedBy": "Last Modified By",
-            "lastModifiedDate": "Last Modified Date"
-        }
+  "mallApp": {
+    "url": {
+      "home": {
+        "title": "Urls",
+        "createLabel": "Create a new Url",
+        "createOrEditLabel": "Create or edit a Url",
+        "search": "Search for Url",
+        "notFound": "No Urls found"
+      },
+      "created": "A new Url is created with identifier {{ param }}",
+      "updated": "A Url is updated with identifier {{ param }}",
+      "deleted": "A Url is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Url {{ id }}?"
+      },
+      "detail": {
+        "title": "Url"
+      },
+      "entityType": "Entity Type",
+      "entityId": "Entity Id",
+      "path": "Path",
+      "fileName": "File Name",
+      "sequence": "Sequence",
+      "description": "Description",
+      "createdBy": "Created By",
+      "createdDate": "Created Date",
+      "lastModifiedBy": "Last Modified By",
+      "lastModifiedDate": "Last Modified Date"
     }
+  }
 }

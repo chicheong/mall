@@ -1,48 +1,52 @@
 {
-    "mallApp": {
-        "product": {
-            "home": {
-                "title": "產品",
-                "createLabel": "建立一筆新的產品",
-                "createOrEditLabel": "建立或編輯產品",
-                "search": "搜尋產品"
-            },
-            "created": "新的產品建立成功，識別碼為 {{ param }}",
-            "updated": "識別碼為 {{ param }} 的產品更新成功",
-            "deleted": "識別碼為 {{ param }} 的產品刪除成功",
-            "delete": {
-                "question": "您確定要刪除產品 {{ id }} 嗎?"
-            },
-			"detail": {
-                "title": "產品",
-                "other": {
-                	"title": "其他資料"
-                }
-            },
-            "name": "Name",
-            "code": "Code",
-            "brand": "Brand",
-            "description": "Description",
-            "content": "Content",
-            "remark": "Remark",
-            "status": "Status",
-            "createdBy": "Created By",
-            "createdDate": "Created Date",
-            "lastModifiedBy": "Last Modified By",
-            "lastModifiedDate": "Last Modified Date",
-            "style": "Style",
-            "item": "Item",
-            "shop": "Shop",
-            "category": "Category"
-        },
-        "fileUpload" : {
-		    "title" : "File Upload",
-            "error": {
-                "oneFile": "Please upload at least one file",
-                "maxFile": "At a time you can upload only {{ maxFiles }} files",
-                "invalidFile": "Invalid file: {{ name }}",
-                "sizeLimit": "{{ name }} exceed file size limit of {{maxSize}} MB ( {{size}} MB )"
-            }
+  "mallApp": {
+    "product": {
+      "home": {
+        "title": "產品",
+        "createLabel": "建立一筆新的產品",
+        "createOrEditLabel": "建立或編輯產品",
+        "search": "搜尋產品",
+        "notFound": "No Products found"
+      },
+      "created": "新的產品建立成功，識別碼為 {{ param }}",
+      "updated": "識別碼為 {{ param }} 的產品更新成功",
+      "deleted": "識別碼為 {{ param }} 的產品刪除成功",
+      "delete": {
+        "question": "您確定要刪除產品 {{ id }} 嗎?"
+      },
+      "detail": {
+        "title": "產品",
+        "other": {
+        	"title": "其他資料"
+        }
+      },
+      "name": "產品名稱",
+      "code": "Code",
+      "brand": "Brand",
+      "description": "Description",
+      "content": "Content",
+      "remark": "Remark",
+      "status": "Status",
+      "createdBy": "Created By",
+      "createdDate": "Created Date",
+      "lastModifiedBy": "Last Modified By",
+      "lastModifiedDate": "Last Modified Date",
+      "style": "Style",
+      "item": "Item",
+      "shop": "Shop",
+      "category": "Category",
+      "price": "售價",
+      "color": "款式",
+      "size": "尺碼"
+    },
+    "fileUpload" : {
+	    "title" : "File Upload",
+        "error": {
+            "oneFile": "Please upload at least one file",
+            "maxFile": "At a time you can upload only {{ maxFiles }} files",
+            "invalidFile": "Invalid file: {{ name }}",
+            "sizeLimit": "{{ name }} exceed file size limit of {{maxSize}} MB ( {{size}} MB )"
         }
     }
+  }
 }

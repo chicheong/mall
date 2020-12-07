@@ -1,112 +1,116 @@
 import { element, by, ElementFinder } from 'protractor';
 
 export class OfficeComponentsPage {
-    createButton = element(by.id('jh-create-entity'));
-    deleteButtons = element.all(by.css('jhi-office div table .btn-danger'));
-    title = element.all(by.css('jhi-office div h2#page-heading span')).first();
+  createButton = element(by.id('jh-create-entity'));
+  deleteButtons = element.all(by.css('jhi-office div table .btn-danger'));
+  title = element.all(by.css('jhi-office div h2#page-heading span')).first();
+  noResult = element(by.id('no-result'));
+  entities = element(by.id('entities'));
 
-    async clickOnCreateButton() {
-        await this.createButton.click();
-    }
+  async clickOnCreateButton(): Promise<void> {
+    await this.createButton.click();
+  }
 
-    async clickOnLastDeleteButton() {
-        await this.deleteButtons.last().click();
-    }
+  async clickOnLastDeleteButton(): Promise<void> {
+    await this.deleteButtons.last().click();
+  }
 
-    async countDeleteButtons() {
-        return this.deleteButtons.count();
-    }
+  async countDeleteButtons(): Promise<number> {
+    return this.deleteButtons.count();
+  }
 
-    async getTitle() {
-        return this.title.getAttribute('jhiTranslate');
-    }
+  async getTitle(): Promise<string> {
+    return this.title.getAttribute('jhiTranslate');
+  }
 }
 
 export class OfficeUpdatePage {
-    pageTitle = element(by.id('jhi-office-heading'));
-    saveButton = element(by.id('save-entity'));
-    cancelButton = element(by.id('cancel-save'));
-    codeInput = element(by.id('field_code'));
-    nameInput = element(by.id('field_name'));
-    statusSelect = element(by.id('field_status'));
-    addressSelect = element(by.id('field_address'));
+  pageTitle = element(by.id('jhi-office-heading'));
+  saveButton = element(by.id('save-entity'));
+  cancelButton = element(by.id('cancel-save'));
 
-    async getPageTitle() {
-        return this.pageTitle.getAttribute('jhiTranslate');
-    }
+  codeInput = element(by.id('field_code'));
+  nameInput = element(by.id('field_name'));
+  statusSelect = element(by.id('field_status'));
 
-    async setCodeInput(code) {
-        await this.codeInput.sendKeys(code);
-    }
+  addressSelect = element(by.id('field_address'));
 
-    async getCodeInput() {
-        return this.codeInput.getAttribute('value');
-    }
+  async getPageTitle(): Promise<string> {
+    return this.pageTitle.getAttribute('jhiTranslate');
+  }
 
-    async setNameInput(name) {
-        await this.nameInput.sendKeys(name);
-    }
+  async setCodeInput(code: string): Promise<void> {
+    await this.codeInput.sendKeys(code);
+  }
 
-    async getNameInput() {
-        return this.nameInput.getAttribute('value');
-    }
+  async getCodeInput(): Promise<string> {
+    return await this.codeInput.getAttribute('value');
+  }
 
-    async setStatusSelect(status) {
-        await this.statusSelect.sendKeys(status);
-    }
+  async setNameInput(name: string): Promise<void> {
+    await this.nameInput.sendKeys(name);
+  }
 
-    async getStatusSelect() {
-        return this.statusSelect.element(by.css('option:checked')).getText();
-    }
+  async getNameInput(): Promise<string> {
+    return await this.nameInput.getAttribute('value');
+  }
 
-    async statusSelectLastOption() {
-        await this.statusSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async setStatusSelect(status: string): Promise<void> {
+    await this.statusSelect.sendKeys(status);
+  }
 
-    async addressSelectLastOption() {
-        await this.addressSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async getStatusSelect(): Promise<string> {
+    return await this.statusSelect.element(by.css('option:checked')).getText();
+  }
 
-    async addressSelectOption(option) {
-        await this.addressSelect.sendKeys(option);
-    }
+  async statusSelectLastOption(): Promise<void> {
+    await this.statusSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    getAddressSelect(): ElementFinder {
-        return this.addressSelect;
-    }
+  async addressSelectLastOption(): Promise<void> {
+    await this.addressSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async getAddressSelectedOption() {
-        return this.addressSelect.element(by.css('option:checked')).getText();
-    }
+  async addressSelectOption(option: string): Promise<void> {
+    await this.addressSelect.sendKeys(option);
+  }
 
-    async save() {
-        await this.saveButton.click();
-    }
+  getAddressSelect(): ElementFinder {
+    return this.addressSelect;
+  }
 
-    async cancel() {
-        await this.cancelButton.click();
-    }
+  async getAddressSelectedOption(): Promise<string> {
+    return await this.addressSelect.element(by.css('option:checked')).getText();
+  }
 
-    getSaveButton(): ElementFinder {
-        return this.saveButton;
-    }
+  async save(): Promise<void> {
+    await this.saveButton.click();
+  }
+
+  async cancel(): Promise<void> {
+    await this.cancelButton.click();
+  }
+
+  getSaveButton(): ElementFinder {
+    return this.saveButton;
+  }
 }
 
 export class OfficeDeleteDialog {
-    private dialogTitle = element(by.id('jhi-delete-office-heading'));
-    private confirmButton = element(by.id('jhi-confirm-delete-office'));
+  private dialogTitle = element(by.id('jhi-delete-office-heading'));
+  private confirmButton = element(by.id('jhi-confirm-delete-office'));
 
-    async getDialogTitle() {
-        return this.dialogTitle.getAttribute('jhiTranslate');
-    }
+  async getDialogTitle(): Promise<string> {
+    return this.dialogTitle.getAttribute('jhiTranslate');
+  }
 
-    async clickOnConfirmButton() {
-        await this.confirmButton.click();
-    }
+  async clickOnConfirmButton(): Promise<void> {
+    await this.confirmButton.click();
+  }
 }

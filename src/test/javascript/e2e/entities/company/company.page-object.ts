@@ -1,152 +1,156 @@
 import { element, by, ElementFinder } from 'protractor';
 
 export class CompanyComponentsPage {
-    createButton = element(by.id('jh-create-entity'));
-    deleteButtons = element.all(by.css('jhi-company div table .btn-danger'));
-    title = element.all(by.css('jhi-company div h2#page-heading span')).first();
+  createButton = element(by.id('jh-create-entity'));
+  deleteButtons = element.all(by.css('jhi-company div table .btn-danger'));
+  title = element.all(by.css('jhi-company div h2#page-heading span')).first();
+  noResult = element(by.id('no-result'));
+  entities = element(by.id('entities'));
 
-    async clickOnCreateButton() {
-        await this.createButton.click();
-    }
+  async clickOnCreateButton(): Promise<void> {
+    await this.createButton.click();
+  }
 
-    async clickOnLastDeleteButton() {
-        await this.deleteButtons.last().click();
-    }
+  async clickOnLastDeleteButton(): Promise<void> {
+    await this.deleteButtons.last().click();
+  }
 
-    async countDeleteButtons() {
-        return this.deleteButtons.count();
-    }
+  async countDeleteButtons(): Promise<number> {
+    return this.deleteButtons.count();
+  }
 
-    async getTitle() {
-        return this.title.getAttribute('jhiTranslate');
-    }
+  async getTitle(): Promise<string> {
+    return this.title.getAttribute('jhiTranslate');
+  }
 }
 
 export class CompanyUpdatePage {
-    pageTitle = element(by.id('jhi-company-heading'));
-    saveButton = element(by.id('save-entity'));
-    cancelButton = element(by.id('cancel-save'));
-    codeInput = element(by.id('field_code'));
-    nameInput = element(by.id('field_name'));
-    statusSelect = element(by.id('field_status'));
-    parentSelect = element(by.id('field_parent'));
-    departmentSelect = element(by.id('field_department'));
-    officeSelect = element(by.id('field_office'));
+  pageTitle = element(by.id('jhi-company-heading'));
+  saveButton = element(by.id('save-entity'));
+  cancelButton = element(by.id('cancel-save'));
 
-    async getPageTitle() {
-        return this.pageTitle.getAttribute('jhiTranslate');
-    }
+  codeInput = element(by.id('field_code'));
+  nameInput = element(by.id('field_name'));
+  statusSelect = element(by.id('field_status'));
 
-    async setCodeInput(code) {
-        await this.codeInput.sendKeys(code);
-    }
+  parentSelect = element(by.id('field_parent'));
+  departmentSelect = element(by.id('field_department'));
+  officeSelect = element(by.id('field_office'));
 
-    async getCodeInput() {
-        return this.codeInput.getAttribute('value');
-    }
+  async getPageTitle(): Promise<string> {
+    return this.pageTitle.getAttribute('jhiTranslate');
+  }
 
-    async setNameInput(name) {
-        await this.nameInput.sendKeys(name);
-    }
+  async setCodeInput(code: string): Promise<void> {
+    await this.codeInput.sendKeys(code);
+  }
 
-    async getNameInput() {
-        return this.nameInput.getAttribute('value');
-    }
+  async getCodeInput(): Promise<string> {
+    return await this.codeInput.getAttribute('value');
+  }
 
-    async setStatusSelect(status) {
-        await this.statusSelect.sendKeys(status);
-    }
+  async setNameInput(name: string): Promise<void> {
+    await this.nameInput.sendKeys(name);
+  }
 
-    async getStatusSelect() {
-        return this.statusSelect.element(by.css('option:checked')).getText();
-    }
+  async getNameInput(): Promise<string> {
+    return await this.nameInput.getAttribute('value');
+  }
 
-    async statusSelectLastOption() {
-        await this.statusSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async setStatusSelect(status: string): Promise<void> {
+    await this.statusSelect.sendKeys(status);
+  }
 
-    async parentSelectLastOption() {
-        await this.parentSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async getStatusSelect(): Promise<string> {
+    return await this.statusSelect.element(by.css('option:checked')).getText();
+  }
 
-    async parentSelectOption(option) {
-        await this.parentSelect.sendKeys(option);
-    }
+  async statusSelectLastOption(): Promise<void> {
+    await this.statusSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    getParentSelect(): ElementFinder {
-        return this.parentSelect;
-    }
+  async parentSelectLastOption(): Promise<void> {
+    await this.parentSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async getParentSelectedOption() {
-        return this.parentSelect.element(by.css('option:checked')).getText();
-    }
+  async parentSelectOption(option: string): Promise<void> {
+    await this.parentSelect.sendKeys(option);
+  }
 
-    async departmentSelectLastOption() {
-        await this.departmentSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  getParentSelect(): ElementFinder {
+    return this.parentSelect;
+  }
 
-    async departmentSelectOption(option) {
-        await this.departmentSelect.sendKeys(option);
-    }
+  async getParentSelectedOption(): Promise<string> {
+    return await this.parentSelect.element(by.css('option:checked')).getText();
+  }
 
-    getDepartmentSelect(): ElementFinder {
-        return this.departmentSelect;
-    }
+  async departmentSelectLastOption(): Promise<void> {
+    await this.departmentSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async getDepartmentSelectedOption() {
-        return this.departmentSelect.element(by.css('option:checked')).getText();
-    }
+  async departmentSelectOption(option: string): Promise<void> {
+    await this.departmentSelect.sendKeys(option);
+  }
 
-    async officeSelectLastOption() {
-        await this.officeSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  getDepartmentSelect(): ElementFinder {
+    return this.departmentSelect;
+  }
 
-    async officeSelectOption(option) {
-        await this.officeSelect.sendKeys(option);
-    }
+  async getDepartmentSelectedOption(): Promise<string> {
+    return await this.departmentSelect.element(by.css('option:checked')).getText();
+  }
 
-    getOfficeSelect(): ElementFinder {
-        return this.officeSelect;
-    }
+  async officeSelectLastOption(): Promise<void> {
+    await this.officeSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async getOfficeSelectedOption() {
-        return this.officeSelect.element(by.css('option:checked')).getText();
-    }
+  async officeSelectOption(option: string): Promise<void> {
+    await this.officeSelect.sendKeys(option);
+  }
 
-    async save() {
-        await this.saveButton.click();
-    }
+  getOfficeSelect(): ElementFinder {
+    return this.officeSelect;
+  }
 
-    async cancel() {
-        await this.cancelButton.click();
-    }
+  async getOfficeSelectedOption(): Promise<string> {
+    return await this.officeSelect.element(by.css('option:checked')).getText();
+  }
 
-    getSaveButton(): ElementFinder {
-        return this.saveButton;
-    }
+  async save(): Promise<void> {
+    await this.saveButton.click();
+  }
+
+  async cancel(): Promise<void> {
+    await this.cancelButton.click();
+  }
+
+  getSaveButton(): ElementFinder {
+    return this.saveButton;
+  }
 }
 
 export class CompanyDeleteDialog {
-    private dialogTitle = element(by.id('jhi-delete-company-heading'));
-    private confirmButton = element(by.id('jhi-confirm-delete-company'));
+  private dialogTitle = element(by.id('jhi-delete-company-heading'));
+  private confirmButton = element(by.id('jhi-confirm-delete-company'));
 
-    async getDialogTitle() {
-        return this.dialogTitle.getAttribute('jhiTranslate');
-    }
+  async getDialogTitle(): Promise<string> {
+    return this.dialogTitle.getAttribute('jhiTranslate');
+  }
 
-    async clickOnConfirmButton() {
-        await this.confirmButton.click();
-    }
+  async clickOnConfirmButton(): Promise<void> {
+    await this.confirmButton.click();
+  }
 }

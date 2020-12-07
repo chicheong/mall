@@ -4,21 +4,19 @@ import { ActivatedRoute } from '@angular/router';
 import { IProductStyle } from 'app/shared/model/product-style.model';
 
 @Component({
-    selector: 'jhi-product-style-detail',
-    templateUrl: './product-style-detail.component.html'
+  selector: 'jhi-product-style-detail',
+  templateUrl: './product-style-detail.component.html'
 })
 export class ProductStyleDetailComponent implements OnInit {
-    productStyle: IProductStyle;
+  productStyle: IProductStyle | null = null;
 
-    constructor(protected activatedRoute: ActivatedRoute) {}
+  constructor(protected activatedRoute: ActivatedRoute) {}
 
-    ngOnInit() {
-        this.activatedRoute.data.subscribe(({ productStyle }) => {
-            this.productStyle = productStyle;
-        });
-    }
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ productStyle }) => (this.productStyle = productStyle));
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  previousState(): void {
+    window.history.back();
+  }
 }

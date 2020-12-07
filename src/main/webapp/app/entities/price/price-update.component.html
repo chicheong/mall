@@ -1,60 +1,65 @@
 <div class="row justify-content-center">
     <div class="col-8">
-        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
             <h2 id="jhi-price-heading" jhiTranslate="mallApp.price.home.createOrEditLabel">Create or edit a Price</h2>
+
             <div>
                 <jhi-alert-error></jhi-alert-error>
-                <div class="form-group" [hidden]="!price.id">
+
+                <div class="form-group" [hidden]="!editForm.get('id')!.value">
                     <label for="id" jhiTranslate="global.field.id">ID</label>
-                    <input type="text" class="form-control" id="id" name="id"
-                        [(ngModel)]="price.id" readonly />
+                    <input type="text" class="form-control" id="id" name="id" formControlName="id" readonly />
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.price.from" for="field_from">From</label>
                     <div class="d-flex">
-                        <input id="field_from" type="datetime-local" class="form-control" name="from" [(ngModel)]="from" placeholder="YYYY-MM-DD HH:mm"
-                        />
+                        <input id="field_from" type="datetime-local" class="form-control" name="from" formControlName="from" placeholder="YYYY-MM-DD HH:mm"/>
                     </div>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.price.to" for="field_to">To</label>
                     <div class="d-flex">
-                        <input id="field_to" type="datetime-local" class="form-control" name="to" [(ngModel)]="to" placeholder="YYYY-MM-DD HH:mm"
-                        />
+                        <input id="field_to" type="datetime-local" class="form-control" name="to" formControlName="to" placeholder="YYYY-MM-DD HH:mm"/>
                     </div>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.price.price" for="field_price">Price</label>
                     <input type="number" class="form-control" name="price" id="field_price"
-                        [(ngModel)]="price.price" />
+                           formControlName="price"/>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.price.currency" for="field_currency">Currency</label>
-                    <select class="form-control" name="currency" [(ngModel)]="price.currency" id="field_currency" >
-                        <option value="HKD">{{'mallApp.CurrencyType.HKD' | translate}}</option>
-                        <option value="CNY">{{'mallApp.CurrencyType.CNY' | translate}}</option>
-                        <option value="USD">{{'mallApp.CurrencyType.USD' | translate}}</option>
-                        <option value="EUR">{{'mallApp.CurrencyType.EUR' | translate}}</option>
-                        <option value="JPY">{{'mallApp.CurrencyType.JPY' | translate}}</option>
-                        <option value="KRW">{{'mallApp.CurrencyType.KRW' | translate}}</option>
-                        <option value="TWD">{{'mallApp.CurrencyType.TWD' | translate}}</option>
+                    <select class="form-control" name="currency" formControlName="currency" id="field_currency">
+                        <option value="HKD">{{ 'mallApp.CurrencyType.HKD' | translate }}</option>
+                        <option value="CNY">{{ 'mallApp.CurrencyType.CNY' | translate }}</option>
+                        <option value="USD">{{ 'mallApp.CurrencyType.USD' | translate }}</option>
+                        <option value="EUR">{{ 'mallApp.CurrencyType.EUR' | translate }}</option>
+                        <option value="JPY">{{ 'mallApp.CurrencyType.JPY' | translate }}</option>
+                        <option value="KRW">{{ 'mallApp.CurrencyType.KRW' | translate }}</option>
+                        <option value="TWD">{{ 'mallApp.CurrencyType.TWD' | translate }}</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.price.item" for="field_item">Item</label>
-                    <select class="form-control" id="field_item" name="item" [(ngModel)]="price.itemId" >
+                    <select class="form-control" id="field_item" name="item" formControlName="itemId">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="productItemOption.id" *ngFor="let productItemOption of productitems; trackBy: trackProductItemById">{{productItemOption.id}}</option>
+                        <option [ngValue]="productItemOption.id" *ngFor="let productItemOption of productitems; trackBy: trackById">{{ productItemOption.id }}</option>
                     </select>
                 </div>
             </div>
+
             <div>
-                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
-                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
+                    <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
                 </button>
-                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
-                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+
+                <button type="submit" id="save-entity" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
                 </button>
             </div>
         </form>

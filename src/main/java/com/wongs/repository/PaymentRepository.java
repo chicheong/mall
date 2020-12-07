@@ -1,6 +1,7 @@
 package com.wongs.repository;
 
 import com.wongs.domain.Payment;
+
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 

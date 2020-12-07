@@ -1,28 +1,28 @@
 {
-    "mallApp": {
-        "department": {
-            "home": {
-                "title": "Departments",
-                "createLabel": "Create a new Department",
-                "createOrEditLabel": "Create or edit a Department",
-                "search": "Search for Department"
-            },
-            "created": "A new Department is created with identifier {{ param }}",
-            "updated": "A Department is updated with identifier {{ param }}",
-            "deleted": "A Department is deleted with identifier {{ param }}",
-            "delete": {
-                "question": "Are you sure you want to delete Department {{ id }}?"
-            },
-            "detail": {
-                "title": "Department"
-            },
-            "code": "Code",
-            "name": "Name",
-            "status": "Status",
-            "parent": "Parent",
-            "office": "Office",
-            "account": "Account",
-            "company": "Company"
-        }
+  "mallApp": {
+    "department": {
+      "home": {
+        "title": "Departments",
+        "createLabel": "Create a new Department",
+        "createOrEditLabel": "Create or edit a Department",
+        "search": "Search for Department",
+        "notFound": "No Departments found"
+      },
+      "created": "A new Department is created with identifier {{ param }}",
+      "updated": "A Department is updated with identifier {{ param }}",
+      "deleted": "A Department is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Department {{ id }}?"
+      },
+      "detail": {
+        "title": "Department"
+      },
+      "code": "Code",
+      "name": "Name",
+      "status": "Status",
+      "parent": "Parent",
+      "office": "Office",
+      "company": "Company"
     }
+  }
 }

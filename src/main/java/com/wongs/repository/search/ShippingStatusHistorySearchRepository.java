@@ -4,7 +4,7 @@ import com.wongs.domain.ShippingStatusHistory;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 /**
- * Spring Data Elasticsearch repository for the ShippingStatusHistory entity.
+ * Spring Data Elasticsearch repository for the {@link ShippingStatusHistory} entity.
  */
 public interface ShippingStatusHistorySearchRepository extends ElasticsearchRepository<ShippingStatusHistory, Long> {
 }

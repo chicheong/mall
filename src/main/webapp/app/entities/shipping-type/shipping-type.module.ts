@@ -1,45 +1,16 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
-import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from 'app/shared';
-import {
-    ShippingTypeComponent,
-    ShippingTypeDetailComponent,
-    ShippingTypeUpdateComponent,
-    ShippingTypeDeletePopupComponent,
-    ShippingTypeDeleteDialogComponent,
-    shippingTypeRoute,
-    shippingTypePopupRoute
-} from './';
-
-const ENTITY_STATES = [...shippingTypeRoute, ...shippingTypePopupRoute];
+import { MallSharedModule } from 'app/shared/shared.module';
+import { ShippingTypeComponent } from './shipping-type.component';
+import { ShippingTypeDetailComponent } from './shipping-type-detail.component';
+import { ShippingTypeUpdateComponent } from './shipping-type-update.component';
+import { ShippingTypeDeleteDialogComponent } from './shipping-type-delete-dialog.component';
+import { shippingTypeRoute } from './shipping-type.route';
 
 @NgModule({
-    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
-    declarations: [
-        ShippingTypeComponent,
-        ShippingTypeDetailComponent,
-        ShippingTypeUpdateComponent,
-        ShippingTypeDeleteDialogComponent,
-        ShippingTypeDeletePopupComponent
-    ],
-    entryComponents: [
-        ShippingTypeComponent,
-        ShippingTypeUpdateComponent,
-        ShippingTypeDeleteDialogComponent,
-        ShippingTypeDeletePopupComponent
-    ],
-    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  imports: [MallSharedModule, RouterModule.forChild(shippingTypeRoute)],
+  declarations: [ShippingTypeComponent, ShippingTypeDetailComponent, ShippingTypeUpdateComponent, ShippingTypeDeleteDialogComponent],
+  entryComponents: [ShippingTypeDeleteDialogComponent]
 })
-export class MallShippingTypeModule {
-    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
-        this.languageHelper.language.subscribe((languageKey: string) => {
-            if (languageKey !== undefined) {
-                this.languageService.changeLanguage(languageKey);
-            }
-        });
-    }
-}
+export class MallShippingTypeModule {}

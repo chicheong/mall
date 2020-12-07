@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, HostListener } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, HostListener } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 
@@ -6,7 +6,7 @@ import { Observable } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService, JhiAlert } from 'ng-jhipster';
 
-import { IUrl, Url } from 'app/shared/model/url.model';
+import { IMyUrl, MyUrl } from 'app/shared/model/my-url.model';
 import { FileUploadResult } from './file-upload-result.model';
 
 @Component({
@@ -22,42 +22,42 @@ export class FileUploadComponent implements OnInit {
     @Input() fileExt = 'JPG, GIF, PNG';
     @Input() maxFiles = 20;
     @Input() maxSize = 5; // 5MB
-    @Input() url;
+    @Input() url: IMyUrl = new MyUrl();
     @Output() result = new EventEmitter();
     @Input() displayImage = false;
 
     constructor(
     ) { }
 
-    ngOnInit() {
+    ngOnInit(): void {
         // console.error(`fileExt: ${this.fileExt}, maxFiles: ${this.maxFiles}, maxSize: ${this.maxSize}, broadcastName: ${this.broadcastName}`);
         // console.error(`this.url: ${this.url.entityType}, ${this.url.entityId}, ${this.url.sequence}`);
-        if (!this.url) {
-            this.url = new Url();
-        }
+//        if (!this.url) {
+//            this.url = new MyUrl();
+//        }
     }
 
-    @HostListener('dragover', ['$event']) onDragOver(event) {
+    @HostListener('dragover', ['$event']) onDragOver(event: any): void {
         this.dragAreaClass = 'droparea';
         event.preventDefault();
     }
 
-    @HostListener('dragenter', ['$event']) onDragEnter(event) {
+    @HostListener('dragenter', ['$event']) onDragEnter(event: any): void {
         this.dragAreaClass = 'droparea';
         event.preventDefault();
     }
 
-    @HostListener('dragend', ['$event']) onDragEnd(event) {
+    @HostListener('dragend', ['$event']) onDragEnd(event: any): void {
         this.dragAreaClass = 'dragarea';
         event.preventDefault();
     }
 
-    @HostListener('dragleave', ['$event']) onDragLeave(event) {
+    @HostListener('dragleave', ['$event']) onDragLeave(event: any): void {
         this.dragAreaClass = 'dragarea';
         event.preventDefault();
     }
 
-    @HostListener('drop', ['$event']) onDrop(event) {
+    @HostListener('drop', ['$event']) onDrop(event: any): void {
         this.dragAreaClass = 'dragarea';
         event.preventDefault();
         event.stopPropagation();
@@ -67,39 +67,39 @@ export class FileUploadComponent implements OnInit {
         } else {
             const result: FileUploadResult = Object.assign(new FileUploadResult());
             result.errors = this.errors;
-            result.urls = null;
+            result.urls = undefined;
             this.result.emit(result);
         }
     }
 
-    onFileChange(event) {
+    onFileChange(event: any): void {
         const files = event.target.files;
         if (this.isValidFiles(files)) {
             this.processFile(files);
         } else {
             const result: FileUploadResult = Object.assign(new FileUploadResult());
             result.errors = this.errors;
-            result.urls = null;
+            result.urls = undefined;
             this.result.emit(result);
         }
     }
 
-    private processFile(files) {
-        const urls = [];
+    private processFile(files: any): void {
+        const urls: IMyUrl[] = [];
         let counter = 0;
         for (let i = 0; i < files.length; i++) {
             const reader = new FileReader();
             const file = files[i];
             reader.readAsDataURL(file);
             reader.onload = thisEvent => { // called once readAsDataURL is completed
-                const url = new Url();
+                const url = new MyUrl();
                 url.id = this.url.id;
                 url.entityType = this.url.entityType;
                 url.entityId = this.url.entityId;
                 url.fileName = file.name;
                 url.sequence = this.url.sequence ? (this.url.sequence + i) : 1 + i;
-                console.log('url.sequence: ' + url.sequence);
-                url.path = (<FileReader>thisEvent.target).result as string;
+                console.error('url.sequence: ' + url.sequence);
+                url.path = (thisEvent.target as FileReader).result as string;
                 urls.push(url);
                 counter++;
                 if (counter === files.length) {
@@ -112,7 +112,7 @@ export class FileUploadComponent implements OnInit {
         }
     }
 
-    private isValidFiles(files) {
+    private isValidFiles(files: any): boolean {
         this.errors = [];
         // Check Number of files
         if (files.length <= 0) {
@@ -137,10 +137,10 @@ export class FileUploadComponent implements OnInit {
         return this.errors.length === 0;
     }
 
-    private isValidFileExtension(files) {
+    private isValidFileExtension(files: any): void {
         // Make array of file extensions
         const extensions = (this.fileExt.split(','))
-                            .map(function(x) { return x.toLocaleUpperCase().trim(); });
+                            .map(function(x): String { return x.toLocaleUpperCase().trim(); });
 
         for (let i = 0; i < files.length; i++) {
             // Get file extension
@@ -161,7 +161,7 @@ export class FileUploadComponent implements OnInit {
         }
     }
 
-    private isValidFileSize(file) {
+    private isValidFileSize(file: any): void {
         const fileSizeinMB = file.size / (1024 * 1000);
         const size = Math.round(fileSizeinMB * 100) / 100; // convert upto 2 decimal place
         if (size > this.maxSize) {

@@ -11,7 +11,7 @@ import com.wongs.domain.ProductStyle;
 import com.wongs.service.dto.ProductStyleDTO;
 
 /**
- * Mapper for the entity ProductStyle and its DTO ProductStyleDTO.
+ * Mapper for the entity {@link ProductStyle} and its DTO {@link ProductStyleDTO}.
  */
 @Service
 public class ProductStyleMapper {

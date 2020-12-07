@@ -1,69 +1,26 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-
-import { NgbActiveModal, NgbModal, NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
+import { Component } from '@angular/core';
+import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager } from 'ng-jhipster';
 
 import { IOrderItem } from 'app/shared/model/order-item.model';
 import { OrderItemService } from './order-item.service';
 
 @Component({
-    selector: 'jhi-order-item-delete-dialog',
-    templateUrl: './order-item-delete-dialog.component.html'
+  templateUrl: './order-item-delete-dialog.component.html'
 })
 export class OrderItemDeleteDialogComponent {
-    orderItem: IOrderItem;
+  orderItem?: IOrderItem;
 
-    constructor(
-        protected orderItemService: OrderItemService,
-        public activeModal: NgbActiveModal,
-        protected eventManager: JhiEventManager
-    ) {}
+  constructor(protected orderItemService: OrderItemService, public activeModal: NgbActiveModal, protected eventManager: JhiEventManager) {}
 
-    clear() {
-        this.activeModal.dismiss('cancel');
-    }
+  cancel(): void {
+    this.activeModal.dismiss();
+  }
 
-    confirmDelete(id: number) {
-        this.orderItemService.delete(id).subscribe(response => {
-            this.eventManager.broadcast({
-                name: 'orderItemListModification',
-                content: 'Deleted an orderItem'
-            });
-            this.activeModal.dismiss(true);
-        });
-    }
-}
-
-@Component({
-    selector: 'jhi-order-item-delete-popup',
-    template: ''
-})
-export class OrderItemDeletePopupComponent implements OnInit, OnDestroy {
-    protected ngbModalRef: NgbModalRef;
-
-    constructor(protected activatedRoute: ActivatedRoute, protected router: Router, protected modalService: NgbModal) {}
-
-    ngOnInit() {
-        this.activatedRoute.data.subscribe(({ orderItem }) => {
-            setTimeout(() => {
-                this.ngbModalRef = this.modalService.open(OrderItemDeleteDialogComponent as Component, { size: 'lg', backdrop: 'static' });
-                this.ngbModalRef.componentInstance.orderItem = orderItem;
-                this.ngbModalRef.result.then(
-                    result => {
-                        this.router.navigate(['/order-item', { outlets: { popup: null } }]);
-                        this.ngbModalRef = null;
-                    },
-                    reason => {
-                        this.router.navigate(['/order-item', { outlets: { popup: null } }]);
-                        this.ngbModalRef = null;
-                    }
-                );
-            }, 0);
-        });
-    }
-
-    ngOnDestroy() {
-        this.ngbModalRef = null;
-    }
+  confirmDelete(id: number): void {
+    this.orderItemService.delete(id).subscribe(() => {
+      this.eventManager.broadcast('orderItemListModification');
+      this.activeModal.close();
+    });
+  }
 }

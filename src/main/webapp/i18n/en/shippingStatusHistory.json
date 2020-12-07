@@ -1,24 +1,25 @@
 {
-    "mallApp": {
-        "shippingStatusHistory": {
-            "home": {
-                "title": "Shipping Status Histories",
-                "createLabel": "Create a new Shipping Status History",
-                "createOrEditLabel": "Create or edit a Shipping Status History",
-                "search": "Search for Shipping Status History"
-            },
-            "created": "A new Shipping Status History is created with identifier {{ param }}",
-            "updated": "A Shipping Status History is updated with identifier {{ param }}",
-            "deleted": "A Shipping Status History is deleted with identifier {{ param }}",
-            "delete": {
-                "question": "Are you sure you want to delete Shipping Status History {{ id }}?"
-            },
-            "detail": {
-                "title": "Shipping Status History"
-            },
-            "effectiveDate": "Effective Date",
-            "status": "Status",
-            "shipping": "Shipping"
-        }
+  "mallApp": {
+    "shippingStatusHistory": {
+      "home": {
+        "title": "Shipping Status Histories",
+        "createLabel": "Create a new Shipping Status History",
+        "createOrEditLabel": "Create or edit a Shipping Status History",
+        "search": "Search for Shipping Status History",
+        "notFound": "No Shipping Status Histories found"
+      },
+      "created": "A new Shipping Status History is created with identifier {{ param }}",
+      "updated": "A Shipping Status History is updated with identifier {{ param }}",
+      "deleted": "A Shipping Status History is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete Shipping Status History {{ id }}?"
+      },
+      "detail": {
+        "title": "Shipping Status History"
+      },
+      "effectiveDate": "Effective Date",
+      "status": "Status",
+      "shipping": "Shipping"
     }
+  }
 }

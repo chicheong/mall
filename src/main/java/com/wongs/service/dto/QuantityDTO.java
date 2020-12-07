@@ -9,10 +9,10 @@ import com.wongs.domain.ProductItem;
 import com.wongs.domain.Quantity;
 
 /**
- * A DTO for the Quantity entity.
+ * A DTO for the {@link com.wongs.domain.Quantity} entity.
  */
 public class QuantityDTO implements Serializable {
-
+    
     private Long id;
     
     private String tempId;
@@ -53,7 +53,7 @@ public class QuantityDTO implements Serializable {
 		this.tempId = tempId;
 	}
 
-	public ZonedDateTime getFrom() {
+    public ZonedDateTime getFrom() {
         return from;
     }
 
@@ -85,7 +85,7 @@ public class QuantityDTO implements Serializable {
 		this.item = item;
 	}
 
-	@Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -95,7 +95,7 @@ public class QuantityDTO implements Serializable {
         }
 
         QuantityDTO quantityDTO = (QuantityDTO) o;
-        if(quantityDTO.getId() == null || getId() == null) {
+        if (quantityDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), quantityDTO.getId());
@@ -113,6 +113,7 @@ public class QuantityDTO implements Serializable {
             ", from='" + getFrom() + "'" +
             ", to='" + getTo() + "'" +
             ", quantity=" + getQuantity() +
+            ", item=" + getItem() +
             "}";
     }
 }

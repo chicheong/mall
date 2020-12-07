@@ -28,12 +28,6 @@
             "ownerSide": true
         },
         {
-            "relationshipType": "one-to-many",
-            "otherEntityName": "myAccount",
-            "otherEntityRelationshipName": "office",
-            "relationshipName": "account"
-        },
-        {
             "relationshipType": "many-to-many",
             "otherEntityName": "company",
             "otherEntityRelationshipName": "office",
@@ -50,13 +44,15 @@
             "ownerSide": false
         }
     ],
-    "changelogDate": "20190527101514",
+    "changelogDate": "20200503071700",
     "entityTableName": "office",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pagination",
-    "service": "no",
+    "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

@@ -1,45 +1,21 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
-import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from 'app/shared';
-import {
+import { MallSharedModule } from 'app/shared/shared.module';
+import { OrderStatusHistoryComponent } from './order-status-history.component';
+import { OrderStatusHistoryDetailComponent } from './order-status-history-detail.component';
+import { OrderStatusHistoryUpdateComponent } from './order-status-history-update.component';
+import { OrderStatusHistoryDeleteDialogComponent } from './order-status-history-delete-dialog.component';
+import { orderStatusHistoryRoute } from './order-status-history.route';
+
+@NgModule({
+  imports: [MallSharedModule, RouterModule.forChild(orderStatusHistoryRoute)],
+  declarations: [
     OrderStatusHistoryComponent,
     OrderStatusHistoryDetailComponent,
     OrderStatusHistoryUpdateComponent,
-    OrderStatusHistoryDeletePopupComponent,
-    OrderStatusHistoryDeleteDialogComponent,
-    orderStatusHistoryRoute,
-    orderStatusHistoryPopupRoute
-} from './';
-
-const ENTITY_STATES = [...orderStatusHistoryRoute, ...orderStatusHistoryPopupRoute];
-
-@NgModule({
-    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
-    declarations: [
-        OrderStatusHistoryComponent,
-        OrderStatusHistoryDetailComponent,
-        OrderStatusHistoryUpdateComponent,
-        OrderStatusHistoryDeleteDialogComponent,
-        OrderStatusHistoryDeletePopupComponent
-    ],
-    entryComponents: [
-        OrderStatusHistoryComponent,
-        OrderStatusHistoryUpdateComponent,
-        OrderStatusHistoryDeleteDialogComponent,
-        OrderStatusHistoryDeletePopupComponent
-    ],
-    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    OrderStatusHistoryDeleteDialogComponent
+  ],
+  entryComponents: [OrderStatusHistoryDeleteDialogComponent]
 })
-export class MallOrderStatusHistoryModule {
-    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
-        this.languageHelper.language.subscribe((languageKey: string) => {
-            if (languageKey !== undefined) {
-                this.languageService.changeLanguage(languageKey);
-            }
-        });
-    }
-}
+export class MallOrderStatusHistoryModule {}

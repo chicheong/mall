@@ -1,7 +1,7 @@
 version: '2'
 services:
-    mall-sonar:
-        image: sonarqube:7.1
-        ports:
-            - 9001:9000
-            - 9092:9092
+  mall-sonar:
+    image: sonarqube:8.2-community
+    ports:
+      - 9001:9000
+      - 9092:9092

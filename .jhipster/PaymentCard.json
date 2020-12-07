@@ -32,13 +32,15 @@
             "ownerSide": false
         }
     ],
-    "changelogDate": "20190527101541",
+    "changelogDate": "20200503074500",
     "entityTableName": "payment_card",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pagination",
-    "service": "no",
+    "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

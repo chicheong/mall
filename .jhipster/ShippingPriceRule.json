@@ -1,10 +1,10 @@
 {
     "name": "ShippingPriceRule",
     "fields": [
-		{
+        {
             "fieldName": "type",
             "fieldType": "ShippingPriceRuleType",
-            "fieldValues": "FIXED_PER_ORDER, TOTAL_PERCENTAGE, PRICE_LARGER_THAN, PRICE_LARGER_THAN_OR_EQUAL, PRICE_SMALLER_THAN, PRICE_SMALLER_THAN_OR_EQUAL, QUANTITY_LARGER_THAN, QUANTITY_LARGER_THAN_OR_EQUAL, QUANTITY_SMALLER_THAN, QUANTITY_SMALLER_THAN_OR_EQUAL"
+            "fieldValues": "FIXED_PER_ORDER,TOTAL_PERCENTAGE,PRICE_LARGER_THAN,PRICE_LARGER_THAN_OR_EQUAL,PRICE_SMALLER_THAN,PRICE_SMALLER_THAN_OR_EQUAL,QUANTITY_LARGER_THAN,QUANTITY_LARGER_THAN_OR_EQUAL,QUANTITY_SMALLER_THAN,QUANTITY_SMALLER_THAN_OR_EQUAL"
         },
         {
             "fieldName": "value",
@@ -14,26 +14,29 @@
             "fieldName": "price",
             "fieldType": "BigDecimal"
         },
-		{
+        {
             "fieldName": "sequence",
             "fieldType": "Integer"
         }
     ],
     "relationships": [
         {
-            "relationshipName": "shop",
-            "otherEntityName": "shop",
             "relationshipType": "many-to-one",
+            "otherEntityName": "shop",
+            "otherEntityRelationshipName": "shippingPriceRule",
+            "relationshipName": "shop",
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20190527101519",
+    "changelogDate": "20200503072300",
     "entityTableName": "shipping_price_rule",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pagination",
-    "service": "no",
+    "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

@@ -1,116 +1,117 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { JhiAlertService } from 'ng-jhipster';
-import { IDepartment } from 'app/shared/model/department.model';
+
+import { IDepartment, Department } from 'app/shared/model/department.model';
 import { DepartmentService } from './department.service';
 import { IOffice } from 'app/shared/model/office.model';
-import { OfficeService } from 'app/entities/office';
-import { ICompany } from 'app/shared/model/company.model';
-import { CompanyService } from 'app/entities/company';
+import { OfficeService } from 'app/entities/office/office.service';
+
+type SelectableEntity = IDepartment | IOffice;
 
 @Component({
-    selector: 'jhi-department-update',
-    templateUrl: './department-update.component.html'
+  selector: 'jhi-department-update',
+  templateUrl: './department-update.component.html'
 })
 export class DepartmentUpdateComponent implements OnInit {
-    department: IDepartment;
-    isSaving: boolean;
+  isSaving = false;
+  departments: IDepartment[] = [];
+  offices: IOffice[] = [];
 
-    departments: IDepartment[];
+  editForm = this.fb.group({
+    id: [],
+    code: [null, [Validators.required]],
+    name: [],
+    status: [],
+    parent: [],
+    offices: []
+  });
 
-    offices: IOffice[];
+  constructor(
+    protected departmentService: DepartmentService,
+    protected officeService: OfficeService,
+    protected activatedRoute: ActivatedRoute,
+    private fb: FormBuilder
+  ) {}
 
-    companies: ICompany[];
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ department }) => {
+      this.updateForm(department);
 
-    constructor(
-        protected jhiAlertService: JhiAlertService,
-        protected departmentService: DepartmentService,
-        protected officeService: OfficeService,
-        protected companyService: CompanyService,
-        protected activatedRoute: ActivatedRoute
-    ) {}
+      this.departmentService.query().subscribe((res: HttpResponse<IDepartment[]>) => (this.departments = res.body || []));
 
-    ngOnInit() {
-        this.isSaving = false;
-        this.activatedRoute.data.subscribe(({ department }) => {
-            this.department = department;
-        });
-        this.departmentService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<IDepartment[]>) => mayBeOk.ok),
-                map((response: HttpResponse<IDepartment[]>) => response.body)
-            )
-            .subscribe((res: IDepartment[]) => (this.departments = res), (res: HttpErrorResponse) => this.onError(res.message));
-        this.officeService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<IOffice[]>) => mayBeOk.ok),
-                map((response: HttpResponse<IOffice[]>) => response.body)
-            )
-            .subscribe((res: IOffice[]) => (this.offices = res), (res: HttpErrorResponse) => this.onError(res.message));
-        this.companyService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<ICompany[]>) => mayBeOk.ok),
-                map((response: HttpResponse<ICompany[]>) => response.body)
-            )
-            .subscribe((res: ICompany[]) => (this.companies = res), (res: HttpErrorResponse) => this.onError(res.message));
+      this.officeService.query().subscribe((res: HttpResponse<IOffice[]>) => (this.offices = res.body || []));
+    });
+  }
+
+  updateForm(department: IDepartment): void {
+    this.editForm.patchValue({
+      id: department.id,
+      code: department.code,
+      name: department.name,
+      status: department.status,
+      parent: department.parent,
+      offices: department.offices
+    });
+  }
+
+  previousState(): void {
+    window.history.back();
+  }
+
+  save(): void {
+    this.isSaving = true;
+    const department = this.createFromForm();
+    if (department.id !== undefined) {
+      this.subscribeToSaveResponse(this.departmentService.update(department));
+    } else {
+      this.subscribeToSaveResponse(this.departmentService.create(department));
     }
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  private createFromForm(): IDepartment {
+    return {
+      ...new Department(),
+      id: this.editForm.get(['id'])!.value,
+      code: this.editForm.get(['code'])!.value,
+      name: this.editForm.get(['name'])!.value,
+      status: this.editForm.get(['status'])!.value,
+      parent: this.editForm.get(['parent'])!.value,
+      offices: this.editForm.get(['offices'])!.value
+    };
+  }
 
-    save() {
-        this.isSaving = true;
-        if (this.department.id !== undefined) {
-            this.subscribeToSaveResponse(this.departmentService.update(this.department));
-        } else {
-            this.subscribeToSaveResponse(this.departmentService.create(this.department));
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<IDepartment>>): void {
+    result.subscribe(
+      () => this.onSaveSuccess(),
+      () => this.onSaveError()
+    );
+  }
+
+  protected onSaveSuccess(): void {
+    this.isSaving = false;
+    this.previousState();
+  }
+
+  protected onSaveError(): void {
+    this.isSaving = false;
+  }
+
+  trackById(index: number, item: SelectableEntity): any {
+    return item.id;
+  }
+
+  getSelected(selectedVals: IOffice[], option: IOffice): IOffice {
+    if (selectedVals) {
+      for (let i = 0; i < selectedVals.length; i++) {
+        if (option.id === selectedVals[i].id) {
+          return selectedVals[i];
         }
+      }
     }
-
-    protected subscribeToSaveResponse(result: Observable<HttpResponse<IDepartment>>) {
-        result.subscribe((res: HttpResponse<IDepartment>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
-    }
-
-    protected onSaveSuccess() {
-        this.isSaving = false;
-        this.previousState();
-    }
-
-    protected onSaveError() {
-        this.isSaving = false;
-    }
-
-    protected onError(errorMessage: string) {
-        this.jhiAlertService.error(errorMessage, null, null);
-    }
-
-    trackDepartmentById(index: number, item: IDepartment) {
-        return item.id;
-    }
-
-    trackOfficeById(index: number, item: IOffice) {
-        return item.id;
-    }
-
-    trackCompanyById(index: number, item: ICompany) {
-        return item.id;
-    }
-
-    getSelected(selectedVals: Array<any>, option: any) {
-        if (selectedVals) {
-            for (let i = 0; i < selectedVals.length; i++) {
-                if (option.id === selectedVals[i].id) {
-                    return selectedVals[i];
-                }
-            }
-        }
-        return option;
-    }
+    return option;
+  }
 }

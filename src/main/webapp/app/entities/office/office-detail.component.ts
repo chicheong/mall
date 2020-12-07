@@ -4,21 +4,19 @@ import { ActivatedRoute } from '@angular/router';
 import { IOffice } from 'app/shared/model/office.model';
 
 @Component({
-    selector: 'jhi-office-detail',
-    templateUrl: './office-detail.component.html'
+  selector: 'jhi-office-detail',
+  templateUrl: './office-detail.component.html'
 })
 export class OfficeDetailComponent implements OnInit {
-    office: IOffice;
+  office: IOffice | null = null;
 
-    constructor(protected activatedRoute: ActivatedRoute) {}
+  constructor(protected activatedRoute: ActivatedRoute) {}
 
-    ngOnInit() {
-        this.activatedRoute.data.subscribe(({ office }) => {
-            this.office = office;
-        });
-    }
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ office }) => (this.office = office));
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  previousState(): void {
+    window.history.back();
+  }
 }

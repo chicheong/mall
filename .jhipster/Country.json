@@ -8,7 +8,7 @@
                 "required",
                 "maxlength"
             ],
-            "fieldValidateRulesMaxlength": 2
+            "fieldValidateRulesMaxlength": "2"
         },
         {
             "fieldName": "label",
@@ -16,7 +16,7 @@
             "fieldValidateRules": [
                 "maxlength"
             ],
-            "fieldValidateRulesMaxlength": 3
+            "fieldValidateRulesMaxlength": "3"
         },
         {
             "fieldName": "num",
@@ -24,7 +24,7 @@
             "fieldValidateRules": [
                 "maxlength"
             ],
-            "fieldValidateRulesMaxlength": 3
+            "fieldValidateRulesMaxlength": "3"
         },
         {
             "fieldName": "name",
@@ -32,17 +32,19 @@
             "fieldValidateRules": [
                 "maxlength"
             ],
-            "fieldValidateRulesMaxlength": 100
+            "fieldValidateRulesMaxlength": "100"
         }
     ],
     "relationships": [],
-    "changelogDate": "20190527101516",
+    "changelogDate": "20200503072000",
     "entityTableName": "country",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pagination",
-    "service": "no",
+    "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

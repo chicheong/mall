@@ -1,34 +1,33 @@
 package com.wongs.web.rest;
-import com.wongs.domain.Price;
-import com.wongs.repository.PriceRepository;
-import com.wongs.repository.search.PriceSearchRepository;
+
+import com.wongs.service.PriceService;
 import com.wongs.web.rest.errors.BadRequestAlertException;
-import com.wongs.web.rest.util.HeaderUtil;
-import com.wongs.web.rest.util.PaginationUtil;
 import com.wongs.service.dto.PriceDTO;
-import com.wongs.service.mapper.PriceMapper;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * REST controller for managing Price.
+ * REST controller for managing {@link com.wongs.domain.Price}.
  */
 @RestController
 @RequestMapping("/api")
@@ -38,24 +37,21 @@ public class PriceResource {
 
     private static final String ENTITY_NAME = "price";
 
-    private final PriceRepository priceRepository;
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
 
-    private final PriceMapper priceMapper;
+    private final PriceService priceService;
 
-    private final PriceSearchRepository priceSearchRepository;
-
-    public PriceResource(PriceRepository priceRepository, PriceMapper priceMapper, PriceSearchRepository priceSearchRepository) {
-        this.priceRepository = priceRepository;
-        this.priceMapper = priceMapper;
-        this.priceSearchRepository = priceSearchRepository;
+    public PriceResource(PriceService priceService) {
+        this.priceService = priceService;
     }
 
     /**
-     * POST  /prices : Create a new price.
+     * {@code POST  /prices} : Create a new price.
      *
-     * @param priceDTO the priceDTO to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new priceDTO, or with status 400 (Bad Request) if the price has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param priceDTO the priceDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new priceDTO, or with status {@code 400 (Bad Request)} if the price has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/prices")
     public ResponseEntity<PriceDTO> createPrice(@RequestBody PriceDTO priceDTO) throws URISyntaxException {
@@ -63,23 +59,20 @@ public class PriceResource {
         if (priceDTO.getId() != null) {
             throw new BadRequestAlertException("A new price cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        Price price = priceMapper.toEntity(priceDTO);
-        price = priceRepository.save(price);
-        PriceDTO result = priceMapper.toDto(price);
-        priceSearchRepository.save(price);
+        PriceDTO result = priceService.save(priceDTO);
         return ResponseEntity.created(new URI("/api/prices/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
-     * PUT  /prices : Updates an existing price.
+     * {@code PUT  /prices} : Updates an existing price.
      *
-     * @param priceDTO the priceDTO to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated priceDTO,
-     * or with status 400 (Bad Request) if the priceDTO is not valid,
-     * or with status 500 (Internal Server Error) if the priceDTO couldn't be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param priceDTO the priceDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated priceDTO,
+     * or with status {@code 400 (Bad Request)} if the priceDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the priceDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/prices")
     public ResponseEntity<PriceDTO> updatePrice(@RequestBody PriceDTO priceDTO) throws URISyntaxException {
@@ -87,71 +80,65 @@ public class PriceResource {
         if (priceDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        Price price = priceMapper.toEntity(priceDTO);
-        price = priceRepository.save(price);
-        PriceDTO result = priceMapper.toDto(price);
-        priceSearchRepository.save(price);
+        PriceDTO result = priceService.save(priceDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, priceDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, priceDTO.getId().toString()))
             .body(result);
     }
 
     /**
-     * GET  /prices : get all the prices.
+     * {@code GET  /prices} : get all the prices.
      *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of prices in body
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of prices in body.
      */
     @GetMapping("/prices")
     public ResponseEntity<List<PriceDTO>> getAllPrices(Pageable pageable) {
         log.debug("REST request to get a page of Prices");
-        Page<PriceDTO> page = priceRepository.findAll(pageable).map(priceMapper::toDto);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/prices");
+        Page<PriceDTO> page = priceService.findAll(pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
-     * GET  /prices/:id : get the "id" price.
+     * {@code GET  /prices/:id} : get the "id" price.
      *
-     * @param id the id of the priceDTO to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the priceDTO, or with status 404 (Not Found)
+     * @param id the id of the priceDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the priceDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/prices/{id}")
     public ResponseEntity<PriceDTO> getPrice(@PathVariable Long id) {
         log.debug("REST request to get Price : {}", id);
-        Optional<PriceDTO> priceDTO = priceRepository.findById(id)
-            .map(priceMapper::toDto);
+        Optional<PriceDTO> priceDTO = priceService.findOne(id);
         return ResponseUtil.wrapOrNotFound(priceDTO);
     }
 
     /**
-     * DELETE  /prices/:id : delete the "id" price.
+     * {@code DELETE  /prices/:id} : delete the "id" price.
      *
-     * @param id the id of the priceDTO to delete
-     * @return the ResponseEntity with status 200 (OK)
+     * @param id the id of the priceDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/prices/{id}")
     public ResponseEntity<Void> deletePrice(@PathVariable Long id) {
         log.debug("REST request to delete Price : {}", id);
-        priceRepository.deleteById(id);
-        priceSearchRepository.deleteById(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        priceService.delete(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
     /**
-     * SEARCH  /_search/prices?query=:query : search for the price corresponding
+     * {@code SEARCH  /_search/prices?query=:query} : search for the price corresponding
      * to the query.
      *
-     * @param query the query of the price search
-     * @param pageable the pagination information
-     * @return the result of the search
+     * @param query the query of the price search.
+     * @param pageable the pagination information.
+     * @return the result of the search.
      */
     @GetMapping("/_search/prices")
     public ResponseEntity<List<PriceDTO>> searchPrices(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Prices for query {}", query);
-        Page<Price> page = priceSearchRepository.search(queryStringQuery(query), pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/prices");
-        return ResponseEntity.ok().headers(headers).body(priceMapper.toDto(page.getContent()));
+        Page<PriceDTO> page = priceService.search(query, pageable);
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
+        return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
-
 }

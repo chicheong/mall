@@ -1,22 +1,25 @@
 package com.wongs.web.rest;
+
 import com.wongs.service.ShippingService;
 import com.wongs.web.rest.errors.BadRequestAlertException;
-import com.wongs.web.rest.util.HeaderUtil;
-import com.wongs.web.rest.util.PaginationUtil;
 import com.wongs.service.dto.ShippingDTO;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
@@ -24,7 +27,7 @@ import java.util.stream.StreamSupport;
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * REST controller for managing Shipping.
+ * REST controller for managing {@link com.wongs.domain.Shipping}.
  */
 @RestController
 @RequestMapping("/api")
@@ -34,6 +37,9 @@ public class ShippingResource {
 
     private static final String ENTITY_NAME = "shipping";
 
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
+
     private final ShippingService shippingService;
 
     public ShippingResource(ShippingService shippingService) {
@@ -41,11 +47,11 @@ public class ShippingResource {
     }
 
     /**
-     * POST  /shippings : Create a new shipping.
+     * {@code POST  /shippings} : Create a new shipping.
      *
-     * @param shippingDTO the shippingDTO to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new shippingDTO, or with status 400 (Bad Request) if the shipping has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param shippingDTO the shippingDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new shippingDTO, or with status {@code 400 (Bad Request)} if the shipping has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/shippings")
     public ResponseEntity<ShippingDTO> createShipping(@RequestBody ShippingDTO shippingDTO) throws URISyntaxException {
@@ -55,18 +61,18 @@ public class ShippingResource {
         }
         ShippingDTO result = shippingService.save(shippingDTO);
         return ResponseEntity.created(new URI("/api/shippings/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
-     * PUT  /shippings : Updates an existing shipping.
+     * {@code PUT  /shippings} : Updates an existing shipping.
      *
-     * @param shippingDTO the shippingDTO to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated shippingDTO,
-     * or with status 400 (Bad Request) if the shippingDTO is not valid,
-     * or with status 500 (Internal Server Error) if the shippingDTO couldn't be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param shippingDTO the shippingDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated shippingDTO,
+     * or with status {@code 400 (Bad Request)} if the shippingDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the shippingDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/shippings")
     public ResponseEntity<ShippingDTO> updateShipping(@RequestBody ShippingDTO shippingDTO) throws URISyntaxException {
@@ -76,29 +82,29 @@ public class ShippingResource {
         }
         ShippingDTO result = shippingService.save(shippingDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, shippingDTO.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, shippingDTO.getId().toString()))
             .body(result);
     }
 
     /**
-     * GET  /shippings : get all the shippings.
+     * {@code GET  /shippings} : get all the shippings.
      *
-     * @param pageable the pagination information
-     * @return the ResponseEntity with status 200 (OK) and the list of shippings in body
+     * @param pageable the pagination information.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of shippings in body.
      */
     @GetMapping("/shippings")
     public ResponseEntity<List<ShippingDTO>> getAllShippings(Pageable pageable) {
         log.debug("REST request to get a page of Shippings");
         Page<ShippingDTO> page = shippingService.findAll(pageable);
-        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(page, "/api/shippings");
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
     /**
-     * GET  /shippings/:id : get the "id" shipping.
+     * {@code GET  /shippings/:id} : get the "id" shipping.
      *
-     * @param id the id of the shippingDTO to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the shippingDTO, or with status 404 (Not Found)
+     * @param id the id of the shippingDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the shippingDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/shippings/{id}")
     public ResponseEntity<ShippingDTO> getShipping(@PathVariable Long id) {
@@ -108,32 +114,31 @@ public class ShippingResource {
     }
 
     /**
-     * DELETE  /shippings/:id : delete the "id" shipping.
+     * {@code DELETE  /shippings/:id} : delete the "id" shipping.
      *
-     * @param id the id of the shippingDTO to delete
-     * @return the ResponseEntity with status 200 (OK)
+     * @param id the id of the shippingDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/shippings/{id}")
     public ResponseEntity<Void> deleteShipping(@PathVariable Long id) {
         log.debug("REST request to delete Shipping : {}", id);
         shippingService.delete(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
     /**
-     * SEARCH  /_search/shippings?query=:query : search for the shipping corresponding
+     * {@code SEARCH  /_search/shippings?query=:query} : search for the shipping corresponding
      * to the query.
      *
-     * @param query the query of the shipping search
-     * @param pageable the pagination information
-     * @return the result of the search
+     * @param query the query of the shipping search.
+     * @param pageable the pagination information.
+     * @return the result of the search.
      */
     @GetMapping("/_search/shippings")
     public ResponseEntity<List<ShippingDTO>> searchShippings(@RequestParam String query, Pageable pageable) {
         log.debug("REST request to search for a page of Shippings for query {}", query);
         Page<ShippingDTO> page = shippingService.search(query, pageable);
-        HttpHeaders headers = PaginationUtil.generateSearchPaginationHttpHeaders(query, page, "/api/_search/shippings");
+        HttpHeaders headers = PaginationUtil.generatePaginationHttpHeaders(ServletUriComponentsBuilder.fromCurrentRequest(), page);
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
-
 }

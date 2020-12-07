@@ -1,21 +1,26 @@
 package com.wongs.service;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Optional;
-
+import com.wongs.domain.Shop;
+import com.wongs.repository.ShopRepository;
+import com.wongs.repository.search.ShopSearchRepository;
+import com.wongs.service.dto.ShopDTO;
+import com.wongs.service.mapper.ShopMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
+
 import com.wongs.domain.MyAccount;
 import com.wongs.domain.ProductItem;
-import com.wongs.domain.Shop;
 import com.wongs.domain.UserInfo;
 import com.wongs.domain.enumeration.CommonStatus;
 import com.wongs.domain.enumeration.DelegationType;
@@ -31,7 +36,7 @@ import com.wongs.service.mapper.ShopMapper;
 import com.wongs.service.util.DateUtil;
 
 /**
- * Service Implementation for managing Shop.
+ * Service Implementation for managing {@link Shop}.
  */
 @Service
 @Transactional
@@ -63,8 +68,8 @@ public class ShopService {
     /**
      * Save a shop.
      *
-     * @param shopDTO the entity to save
-     * @return the persisted entity
+     * @param shopDTO the entity to save.
+     * @return the persisted entity.
      */
     public ShopDTO save(ShopDTO shopDTO) {
         log.debug("Request to save Shop : {}", shopDTO);
@@ -79,8 +84,8 @@ public class ShopService {
     /**
      * Get all the shops.
      *
-     * @param pageable the pagination information
-     * @return the list of entities
+     * @param pageable the pagination information.
+     * @return the list of entities.
      */
     @Transactional(readOnly = true)
     public Page<ShopDTO> findAll(Pageable pageable) {
@@ -89,12 +94,11 @@ public class ShopService {
             .map(shopMapper::toDto);
     }
 
-
     /**
      * Get one shop by id.
      *
-     * @param id the id of the entity
-     * @return the entity
+     * @param id the id of the entity.
+     * @return the entity.
      */
     @Transactional(readOnly = true)
     public Optional<ShopDTO> findOne(Long id) {
@@ -138,7 +142,7 @@ public class ShopService {
     /**
      * Delete the shop by id.
      *
-     * @param id the id of the entity
+     * @param id the id of the entity.
      */
     public void delete(Long id) {
         log.debug("Request to delete Shop : {}", id);
@@ -149,9 +153,9 @@ public class ShopService {
     /**
      * Search for the shop corresponding to the query.
      *
-     * @param query the query of the search
-     * @param pageable the pagination information
-     * @return the list of entities
+     * @param query the query of the search.
+     * @param pageable the pagination information.
+     * @return the list of entities.
      */
     @Transactional(readOnly = true)
     public Page<ShopDTO> search(String query, Pageable pageable) {

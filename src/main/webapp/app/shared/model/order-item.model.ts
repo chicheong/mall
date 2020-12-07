@@ -1,6 +1,6 @@
 import { IProductItem } from 'app/shared/model/product-item.model';
 import { IOrderShop } from 'app/shared/model/order-shop.model';
-import { CurrencyType } from './price.model';
+import { CurrencyType } from 'app/shared/model/enumerations/currency-type.model';
 
 export interface IOrderItem {
     id?: number;

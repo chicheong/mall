@@ -1,6 +1,5 @@
 package com.wongs.domain;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
@@ -8,12 +7,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
+import java.util.Objects;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Objects;
 
 import com.wongs.domain.enumeration.CurrencyType;
 
@@ -25,30 +24,21 @@ import com.wongs.domain.enumeration.OrderStatus;
 @Entity
 @Table(name = "my_order")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "myorder")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "myorder")
 public class MyOrder implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "receiver")
-    private String receiver;
-
-    @Column(name = "total", precision = 10, scale = 2)
+    @Column(name = "total", precision = 21, scale = 2)
     private BigDecimal total;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "currency")
     private CurrencyType currency;
-
-    @Column(name = "contact_num")
-    private String contactNum;
-
-    @Column(name = "email")
-    private String email;
 
     @Column(name = "remark")
     private String remark;
@@ -59,22 +49,22 @@ public class MyOrder implements Serializable {
 
     @OneToOne
     @JoinColumn(unique = true)
-    private Address shippingAddress;
+    private Contact shipping;
 
     @OneToOne
     @JoinColumn(unique = true)
-    private Address billingAddress;
+    private Contact billing;
 
     @OneToMany(mappedBy = "order")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnore
     private Set<OrderShop> shops = new HashSet<>();
-    
+
     @OneToMany(mappedBy = "order")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnore
     private Set<OrderStatusHistory> statusHistories = new HashSet<>();
-    
+
     @ManyToOne
     @JsonIgnoreProperties("myOrders")
     private MyAccount account;
@@ -86,19 +76,6 @@ public class MyOrder implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getReceiver() {
-        return receiver;
-    }
-
-    public MyOrder receiver(String receiver) {
-        this.receiver = receiver;
-        return this;
-    }
-
-    public void setReceiver(String receiver) {
-        this.receiver = receiver;
     }
 
     public BigDecimal getTotal() {
@@ -127,32 +104,6 @@ public class MyOrder implements Serializable {
         this.currency = currency;
     }
 
-    public String getContactNum() {
-        return contactNum;
-    }
-
-    public MyOrder contactNum(String contactNum) {
-        this.contactNum = contactNum;
-        return this;
-    }
-
-    public void setContactNum(String contactNum) {
-        this.contactNum = contactNum;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public MyOrder email(String email) {
-        this.email = email;
-        return this;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
     public String getRemark() {
         return remark;
     }
@@ -179,30 +130,30 @@ public class MyOrder implements Serializable {
         this.status = status;
     }
 
-    public Address getShippingAddress() {
-        return shippingAddress;
+    public Contact getShipping() {
+        return shipping;
     }
 
-    public MyOrder shippingAddress(Address address) {
-        this.shippingAddress = address;
+    public MyOrder shipping(Contact contact) {
+        this.shipping = contact;
         return this;
     }
 
-    public void setShippingAddress(Address address) {
-        this.shippingAddress = address;
+    public void setShipping(Contact contact) {
+        this.shipping = contact;
     }
 
-    public Address getBillingAddress() {
-        return billingAddress;
+    public Contact getBilling() {
+        return billing;
     }
 
-    public MyOrder billingAddress(Address address) {
-        this.billingAddress = address;
+    public MyOrder billing(Contact contact) {
+        this.billing = contact;
         return this;
     }
 
-    public void setBillingAddress(Address address) {
-        this.billingAddress = address;
+    public void setBilling(Contact contact) {
+        this.billing = contact;
     }
 
     public Set<OrderShop> getShops() {
@@ -274,10 +225,10 @@ public class MyOrder implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof MyOrder)) {
             return false;
         }
-        MyOrder myOrder = (MyOrder) o;
+		MyOrder myOrder = (MyOrder) o;
         if (myOrder.getId() == null || getId() == null) {
             return false;
         }
@@ -304,32 +255,26 @@ public class MyOrder implements Serializable {
 			if (!match)
 				return false;
 		}
-        return Objects.equals(getId(), myOrder.getId()) && 
-        		Objects.equals(getReceiver(),myOrder.getReceiver()) &&
+        return id != null && id.equals(((MyOrder) o).id) && 
         		(getTotal().compareTo(myOrder.getTotal()) == 0) &&
         		Objects.equals(getCurrency(), myOrder.getCurrency()) &&
-        		Objects.equals(getContactNum(), myOrder.getContactNum()) &&
-        		Objects.equals(getEmail(), myOrder.getEmail()) &&
         		// Objects.equals(getRemark(), myOrder.getRemark()) &&
         		Objects.equals(getStatus(), myOrder.getStatus()) &&
-        		(getShippingAddress() == null && myOrder.getShippingAddress() == null?true:Objects.equals(getShippingAddress().getId(), myOrder.getShippingAddress().getId())) &&
-        		(getBillingAddress() == null && myOrder.getBillingAddress() == null?true:Objects.equals(getBillingAddress().getId(), myOrder.getBillingAddress().getId()));
+        		(getShipping() == null && myOrder.getShipping() == null?true:Objects.equals(getShipping().getId(), myOrder.getShipping().getId())) &&
+        		(getBilling() == null && myOrder.getBilling() == null?true:Objects.equals(getBilling().getId(), myOrder.getBilling().getId()));
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override
     public String toString() {
         return "MyOrder{" +
             "id=" + getId() +
-            ", receiver='" + getReceiver() + "'" +
             ", total=" + getTotal() +
             ", currency='" + getCurrency() + "'" +
-            ", contactNum='" + getContactNum() + "'" +
-            ", email='" + getEmail() + "'" +
             ", remark='" + getRemark() + "'" +
             ", status='" + getStatus() + "'" +
             "}";

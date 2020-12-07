@@ -1,108 +1,141 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
 import * as moment from 'moment';
 import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
-import { JhiAlertService } from 'ng-jhipster';
-import { ICategory } from 'app/shared/model/category.model';
+
+import { ICategory, Category } from 'app/shared/model/category.model';
 import { CategoryService } from './category.service';
 import { IProduct } from 'app/shared/model/product.model';
-import { ProductService } from 'app/entities/product';
+import { ProductService } from 'app/entities/product/product.service';
+
+type SelectableEntity = ICategory | IProduct;
 
 @Component({
-    selector: 'jhi-category-update',
-    templateUrl: './category-update.component.html'
+  selector: 'jhi-category-update',
+  templateUrl: './category-update.component.html'
 })
 export class CategoryUpdateComponent implements OnInit {
-    category: ICategory;
-    isSaving: boolean;
+  isSaving = false;
+  categories: ICategory[] = [];
+  products: IProduct[] = [];
 
-    categories: ICategory[];
+  editForm = this.fb.group({
+    id: [],
+    name: [null, [Validators.required]],
+    description: [],
+    status: [],
+    createdBy: [],
+    createdDate: [],
+    lastModifiedBy: [],
+    lastModifiedDate: [],
+    parent: [],
+    products: []
+  });
 
-    products: IProduct[];
-    createdDate: string;
-    lastModifiedDate: string;
+  constructor(
+    protected categoryService: CategoryService,
+    protected productService: ProductService,
+    protected activatedRoute: ActivatedRoute,
+    private fb: FormBuilder
+  ) {}
 
-    constructor(
-        protected jhiAlertService: JhiAlertService,
-        protected categoryService: CategoryService,
-        protected productService: ProductService,
-        protected activatedRoute: ActivatedRoute
-    ) {}
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ category }) => {
+      if (!category.id) {
+        const today = moment().startOf('day');
+        category.createdDate = today;
+        category.lastModifiedDate = today;
+      }
 
-    ngOnInit() {
-        this.isSaving = false;
-        this.activatedRoute.data.subscribe(({ category }) => {
-            this.category = category;
-            this.createdDate = this.category.createdDate != null ? this.category.createdDate.format(DATE_TIME_FORMAT) : null;
-            this.lastModifiedDate = this.category.lastModifiedDate != null ? this.category.lastModifiedDate.format(DATE_TIME_FORMAT) : null;
-        });
-        this.categoryService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<ICategory[]>) => mayBeOk.ok),
-                map((response: HttpResponse<ICategory[]>) => response.body)
-            )
-            .subscribe((res: ICategory[]) => (this.categories = res), (res: HttpErrorResponse) => this.onError(res.message));
-        this.productService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<IProduct[]>) => mayBeOk.ok),
-                map((response: HttpResponse<IProduct[]>) => response.body)
-            )
-            .subscribe((res: IProduct[]) => (this.products = res), (res: HttpErrorResponse) => this.onError(res.message));
+      this.updateForm(category);
+
+      this.categoryService.query().subscribe((res: HttpResponse<ICategory[]>) => (this.categories = res.body || []));
+
+      this.productService.query().subscribe((res: HttpResponse<IProduct[]>) => (this.products = res.body || []));
+    });
+  }
+
+  updateForm(category: ICategory): void {
+    this.editForm.patchValue({
+      id: category.id,
+      name: category.name,
+      description: category.description,
+      status: category.status,
+      createdBy: category.createdBy,
+      createdDate: category.createdDate ? category.createdDate.format(DATE_TIME_FORMAT) : null,
+      lastModifiedBy: category.lastModifiedBy,
+      lastModifiedDate: category.lastModifiedDate ? category.lastModifiedDate.format(DATE_TIME_FORMAT) : null,
+      parent: category.parent,
+      products: category.products
+    });
+  }
+
+  previousState(): void {
+    window.history.back();
+  }
+
+  save(): void {
+    this.isSaving = true;
+    const category = this.createFromForm();
+    if (category.id !== undefined) {
+      this.subscribeToSaveResponse(this.categoryService.update(category));
+    } else {
+      this.subscribeToSaveResponse(this.categoryService.create(category));
     }
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  private createFromForm(): ICategory {
+    return {
+      ...new Category(),
+      id: this.editForm.get(['id'])!.value,
+      name: this.editForm.get(['name'])!.value,
+      description: this.editForm.get(['description'])!.value,
+      status: this.editForm.get(['status'])!.value,
+      createdBy: this.editForm.get(['createdBy'])!.value,
+      createdDate: this.editForm.get(['createdDate'])!.value
+        ? moment(this.editForm.get(['createdDate'])!.value, DATE_TIME_FORMAT)
+        : undefined,
+      lastModifiedBy: this.editForm.get(['lastModifiedBy'])!.value,
+      lastModifiedDate: this.editForm.get(['lastModifiedDate'])!.value
+        ? moment(this.editForm.get(['lastModifiedDate'])!.value, DATE_TIME_FORMAT)
+        : undefined,
+      parent: this.editForm.get(['parent'])!.value,
+      products: this.editForm.get(['products'])!.value
+    };
+  }
 
-    save() {
-        this.isSaving = true;
-        this.category.createdDate = this.createdDate != null ? moment(this.createdDate, DATE_TIME_FORMAT) : null;
-        this.category.lastModifiedDate = this.lastModifiedDate != null ? moment(this.lastModifiedDate, DATE_TIME_FORMAT) : null;
-        if (this.category.id !== undefined) {
-            this.subscribeToSaveResponse(this.categoryService.update(this.category));
-        } else {
-            this.subscribeToSaveResponse(this.categoryService.create(this.category));
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<ICategory>>): void {
+    result.subscribe(
+      () => this.onSaveSuccess(),
+      () => this.onSaveError()
+    );
+  }
+
+  protected onSaveSuccess(): void {
+    this.isSaving = false;
+    this.previousState();
+  }
+
+  protected onSaveError(): void {
+    this.isSaving = false;
+  }
+
+  trackById(index: number, item: SelectableEntity): any {
+    return item.id;
+  }
+
+  getSelected(selectedVals: IProduct[], option: IProduct): IProduct {
+    if (selectedVals) {
+      for (let i = 0; i < selectedVals.length; i++) {
+        if (option.id === selectedVals[i].id) {
+          return selectedVals[i];
         }
+      }
     }
-
-    protected subscribeToSaveResponse(result: Observable<HttpResponse<ICategory>>) {
-        result.subscribe((res: HttpResponse<ICategory>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
-    }
-
-    protected onSaveSuccess() {
-        this.isSaving = false;
-        this.previousState();
-    }
-
-    protected onSaveError() {
-        this.isSaving = false;
-    }
-
-    protected onError(errorMessage: string) {
-        this.jhiAlertService.error(errorMessage, null, null);
-    }
-
-    trackCategoryById(index: number, item: ICategory) {
-        return item.id;
-    }
-
-    trackProductById(index: number, item: IProduct) {
-        return item.id;
-    }
-
-    getSelected(selectedVals: Array<any>, option: any) {
-        if (selectedVals) {
-            for (let i = 0; i < selectedVals.length; i++) {
-                if (option.id === selectedVals[i].id) {
-                    return selectedVals[i];
-                }
-            }
-        }
-        return option;
-    }
+    return option;
+  }
 }

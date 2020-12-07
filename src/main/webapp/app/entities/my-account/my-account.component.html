@@ -1,97 +1,109 @@
 <div>
     <h2 id="page-heading">
         <span jhiTranslate="mallApp.myAccount.home.title">My Accounts</span>
+
         <button id="jh-create-entity" class="btn btn-primary float-right jh-create-entity create-my-account" [routerLink]="['/my-account/new']">
-            <fa-icon [icon]="'plus'"></fa-icon>
+            <fa-icon icon="plus"></fa-icon>
             <span class="hidden-sm-down"  jhiTranslate="mallApp.myAccount.home.createLabel">
-            Create new My Account
+            Create a new My Account
             </span>
         </button>
     </h2>
+
+    <jhi-alert-error></jhi-alert-error>
+
     <jhi-alert></jhi-alert>
+
     <div class="row">
         <div class="col-sm-12">
             <form name="searchForm" class="form-inline">
                 <div class="input-group w-100 mt-3">
                     <input type="text" class="form-control" [(ngModel)]="currentSearch" id="currentSearch" name="currentSearch" placeholder="{{ 'mallApp.myAccount.home.search' | translate }}">
+
                     <button class="input-group-append btn btn-info" (click)="search(currentSearch)">
-                        <fa-icon [icon]="'search'"></fa-icon>
+                        <fa-icon icon="search"></fa-icon>
                     </button>
-                    <button class="input-group-append btn btn-danger" (click)="clear()" *ngIf="currentSearch">
-                        <fa-icon [icon]="'trash-alt'"></fa-icon>
+
+                    <button class="input-group-append btn btn-danger" (click)="search('')" *ngIf="currentSearch">
+                        <fa-icon icon="trash-alt"></fa-icon>
                     </button>
                 </div>
             </form>
         </div>
     </div>
-    <br/>
-    <div class="table-responsive" *ngIf="myAccounts">
-        <table class="table table-striped">
+
+    <div class="alert alert-warning" id="no-result" *ngIf="myAccounts?.length === 0">
+        <span jhiTranslate="mallApp.myAccount.home.notFound">No myAccounts found</span>
+    </div>
+
+    <div class="table-responsive" id="entities" *ngIf="myAccounts?.length > 0">
+        <table class="table table-striped" aria-describedby="page-heading">
             <thead>
-            <tr jhiSort [(predicate)]="predicate" [(ascending)]="reverse" [callback]="transition.bind(this)">
-            <th jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="balance"><span jhiTranslate="mallApp.myAccount.balance">Balance</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="type"><span jhiTranslate="mallApp.myAccount.type">Type</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="company.code"><span jhiTranslate="mallApp.myAccount.company">Company</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="department.code"><span jhiTranslate="mallApp.myAccount.department">Department</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th jhiSortBy="office.code"><span jhiTranslate="mallApp.myAccount.office">Office</span> <fa-icon [icon]="'sort'"></fa-icon></th>
-            <th></th>
-            </tr>
+                <tr jhiSort [(predicate)]="predicate" [(ascending)]="ascending" [callback]="loadPage.bind(this)">
+                    <th scope="col"  jhiSortBy="id"><span jhiTranslate="global.field.id">ID</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="balance"><span jhiTranslate="mallApp.myAccount.balance">Balance</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="type"><span jhiTranslate="mallApp.myAccount.type">Type</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="companyCode"><span jhiTranslate="mallApp.myAccount.company">Company</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="departmentCode"><span jhiTranslate="mallApp.myAccount.department">Department</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"  jhiSortBy="officeCode"><span jhiTranslate="mallApp.myAccount.office">Office</span> <fa-icon icon="sort"></fa-icon></th>
+                    <th scope="col"></th>
+                </tr>
             </thead>
             <tbody>
-            <tr *ngFor="let myAccount of myAccounts ;trackBy: trackId">
-                <td><a [routerLink]="['/my-account', myAccount.id, 'view' ]">{{myAccount.id}}</a></td>
-                <td>{{myAccount.balance}}</td>
-                <td jhiTranslate="{{'mallApp.AccountType.' + myAccount.type}}">{{myAccount.type}}</td>
-                <td>
-                    <div *ngIf="myAccount.company">
-                        <a [routerLink]="['../company', myAccount.company?.id , 'view' ]" >{{myAccount.company?.code}}</a>
-                    </div>
-                </td>
-                <td>
-                    <div *ngIf="myAccount.department">
-                        <a [routerLink]="['../department', myAccount.department?.id , 'view' ]" >{{myAccount.department?.code}}</a>
-                    </div>
-                </td>
-                <td>
-                    <div *ngIf="myAccount.office">
-                        <a [routerLink]="['../office', myAccount.office?.id , 'view' ]" >{{myAccount.office?.code}}</a>
-                    </div>
-                </td>
-                <td class="text-right">
-                    <div class="btn-group flex-btn-group-container">
-                        <button type="submit"
-                                [routerLink]="['/my-account', myAccount.id, 'view' ]"
-                                class="btn btn-info btn-sm">
-                            <fa-icon [icon]="'eye'"></fa-icon>
-                            <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
-                        </button>
-                        <button type="submit"
-                                [routerLink]="['/my-account', myAccount.id, 'edit']"
-                                class="btn btn-primary btn-sm">
-                            <fa-icon [icon]="'pencil-alt'"></fa-icon>
-                            <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
-                        </button>
-                        <button type="submit"
-                                [routerLink]="['/', 'my-account', { outlets: { popup: myAccount.id + '/delete'} }]"
-                                replaceUrl="true"
-                                queryParamsHandling="merge"
-                                class="btn btn-danger btn-sm">
-                            <fa-icon [icon]="'times'"></fa-icon>
-                            <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
-                        </button>
-                    </div>
-                </td>
-            </tr>
+                <tr *ngFor="let myAccount of myAccounts ;trackBy: trackId">
+                    <td><a [routerLink]="['/my-account', myAccount.id, 'view']">{{ myAccount.id }}</a></td>
+                    <td>{{ myAccount.balance }}</td>
+                    <td jhiTranslate="{{ 'mallApp.AccountType.' + myAccount.type }}">{{ myAccount.type }}</td>
+                    <td>
+                        <div *ngIf="myAccount.company">
+                            <a [routerLink]="['/company', myAccount.company?.id , 'view']" >{{ myAccount.companyCode }}</a>
+                        </div>
+                    </td>
+                    <td>
+                        <div *ngIf="myAccount.department">
+                            <a [routerLink]="['/department', myAccount.department?.id , 'view']" >{{ myAccount.departmentCode }}</a>
+                        </div>
+                    </td>
+                    <td>
+                        <div *ngIf="myAccount.office">
+                            <a [routerLink]="['/office', myAccount.office?.id , 'view']" >{{ myAccount.officeCode }}</a>
+                        </div>
+                    </td>
+                    <td class="text-right">
+                        <div class="btn-group">
+                            <button type="submit"
+                                    [routerLink]="['/my-account', myAccount.id, 'view']"
+                                    class="btn btn-info btn-sm">
+                                <fa-icon icon="eye"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.view">View</span>
+                            </button>
+
+                            <button type="submit"
+                                    [routerLink]="['/my-account', myAccount.id, 'edit']"
+                                    class="btn btn-primary btn-sm">
+                                <fa-icon icon="pencil-alt"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.edit">Edit</span>
+                            </button>
+
+                            <button type="submit" (click)="delete(myAccount)"
+                                    class="btn btn-danger btn-sm">
+                                <fa-icon icon="times"></fa-icon>
+                                <span class="d-none d-md-inline" jhiTranslate="entity.action.delete">Delete</span>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
             </tbody>
         </table>
     </div>
-    <div *ngIf="myAccounts && myAccounts.length">
+
+    <div *ngIf="myAccounts?.length > 0">
         <div class="row justify-content-center">
-            <jhi-item-count [page]="page" [total]="totalItems" [maxSize]="5" [itemsPerPage]="itemsPerPage"></jhi-item-count>
+            <jhi-item-count [page]="page" [total]="totalItems" [itemsPerPage]="itemsPerPage"></jhi-item-count>
         </div>
+
         <div class="row justify-content-center">
-            <ngb-pagination [collectionSize]="totalItems" [(page)]="page" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage(page)"></ngb-pagination>
+            <ngb-pagination [collectionSize]="totalItems" [(page)]="ngbPaginationPage" [pageSize]="itemsPerPage" [maxSize]="5" [rotate]="true" [boundaryLinks]="true" (pageChange)="loadPage($event)"></ngb-pagination>
         </div>
     </div>
 </div>

@@ -5,11 +5,7 @@ import { IOffice } from 'app/shared/model/office.model';
 import { IShop } from 'app/shared/model/shop.model';
 import { IUserInfo } from 'app/shared/model/user-info.model';
 import { IMyOrder } from 'app/shared/model/my-order.model';
-
-export const enum AccountType {
-    PERSONAL = 'PERSONAL',
-    COMPANY = 'COMPANY'
-}
+import { AccountType } from 'app/shared/model/enumerations/account-type.model';
 
 export interface IMyAccount {
     id?: number;

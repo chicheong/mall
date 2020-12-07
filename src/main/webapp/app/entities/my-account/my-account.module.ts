@@ -1,40 +1,16 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
-import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from 'app/shared';
-import {
-    MyAccountComponent,
-    MyAccountDetailComponent,
-    MyAccountUpdateComponent,
-    MyAccountDeletePopupComponent,
-    MyAccountDeleteDialogComponent,
-    myAccountRoute,
-    myAccountPopupRoute
-} from './';
-
-const ENTITY_STATES = [...myAccountRoute, ...myAccountPopupRoute];
+import { MallSharedModule } from 'app/shared/shared.module';
+import { MyAccountComponent } from './my-account.component';
+import { MyAccountDetailComponent } from './my-account-detail.component';
+import { MyAccountUpdateComponent } from './my-account-update.component';
+import { MyAccountDeleteDialogComponent } from './my-account-delete-dialog.component';
+import { myAccountRoute } from './my-account.route';
 
 @NgModule({
-    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
-    declarations: [
-        MyAccountComponent,
-        MyAccountDetailComponent,
-        MyAccountUpdateComponent,
-        MyAccountDeleteDialogComponent,
-        MyAccountDeletePopupComponent
-    ],
-    entryComponents: [MyAccountComponent, MyAccountUpdateComponent, MyAccountDeleteDialogComponent, MyAccountDeletePopupComponent],
-    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  imports: [MallSharedModule, RouterModule.forChild(myAccountRoute)],
+  declarations: [MyAccountComponent, MyAccountDetailComponent, MyAccountUpdateComponent, MyAccountDeleteDialogComponent],
+  entryComponents: [MyAccountDeleteDialogComponent]
 })
-export class MallMyAccountModule {
-    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
-        this.languageHelper.language.subscribe((languageKey: string) => {
-            if (languageKey !== undefined) {
-                this.languageService.changeLanguage(languageKey);
-            }
-        });
-    }
-}
+export class MallMyAccountModule {}

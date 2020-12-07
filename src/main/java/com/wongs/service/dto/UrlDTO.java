@@ -1,6 +1,5 @@
 package com.wongs.service.dto;
 
-
 import java.time.ZonedDateTime;
 import java.io.Serializable;
 import java.util.Objects;
@@ -8,10 +7,10 @@ import java.util.Objects;
 import com.wongs.domain.Url;
 
 /**
- * A DTO for the Url entity.
+ * A DTO for the {@link com.wongs.domain.Url} entity.
  */
 public class UrlDTO implements Serializable {
-
+    
     private Long id;
 
     private String entityType;
@@ -150,7 +149,7 @@ public class UrlDTO implements Serializable {
         }
 
         UrlDTO urlDTO = (UrlDTO) o;
-        if(urlDTO.getId() == null || getId() == null) {
+        if (urlDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), urlDTO.getId()) &&

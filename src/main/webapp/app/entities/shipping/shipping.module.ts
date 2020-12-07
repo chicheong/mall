@@ -1,40 +1,16 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
-import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from 'app/shared';
-import {
-    ShippingComponent,
-    ShippingDetailComponent,
-    ShippingUpdateComponent,
-    ShippingDeletePopupComponent,
-    ShippingDeleteDialogComponent,
-    shippingRoute,
-    shippingPopupRoute
-} from './';
-
-const ENTITY_STATES = [...shippingRoute, ...shippingPopupRoute];
+import { MallSharedModule } from 'app/shared/shared.module';
+import { ShippingComponent } from './shipping.component';
+import { ShippingDetailComponent } from './shipping-detail.component';
+import { ShippingUpdateComponent } from './shipping-update.component';
+import { ShippingDeleteDialogComponent } from './shipping-delete-dialog.component';
+import { shippingRoute } from './shipping.route';
 
 @NgModule({
-    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
-    declarations: [
-        ShippingComponent,
-        ShippingDetailComponent,
-        ShippingUpdateComponent,
-        ShippingDeleteDialogComponent,
-        ShippingDeletePopupComponent
-    ],
-    entryComponents: [ShippingComponent, ShippingUpdateComponent, ShippingDeleteDialogComponent, ShippingDeletePopupComponent],
-    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  imports: [MallSharedModule, RouterModule.forChild(shippingRoute)],
+  declarations: [ShippingComponent, ShippingDetailComponent, ShippingUpdateComponent, ShippingDeleteDialogComponent],
+  entryComponents: [ShippingDeleteDialogComponent]
 })
-export class MallShippingModule {
-    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
-        this.languageHelper.language.subscribe((languageKey: string) => {
-            if (languageKey !== undefined) {
-                this.languageService.changeLanguage(languageKey);
-            }
-        });
-    }
-}
+export class MallShippingModule {}

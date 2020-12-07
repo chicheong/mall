@@ -1,4 +1,4 @@
-<form name="editForm" role="form" novalidate (ngSubmit)="confirm()" #editForm="ngForm" *ngIf="object">
+<form name="editForm" role="form" novalidate (ngSubmit)="confirm()" [formGroup]="editForm">
 
     <div class="modal-header">
 		<h4 class="modal-title" jhiTranslate="mallApp.product.detail.other.title">Other Information</h4>
@@ -22,73 +22,105 @@
 				<div *ngIf="object.userInfo">
 					<a [routerLink]="['/user-info', product.userInfo?.id]">{{object.userInfo?.id}}</a>
 				</div> -->
+				
+				<div class="form-group" [hidden]="!editForm.get('id')!.value">
+                    <label for="id" jhiTranslate="global.field.id">ID</label>
+                    <input type="text" class="form-control" id="id" name="id" formControlName="id" readonly />
+                </div>
+				<div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.product.name" for="field_name">Name</label>
+                    <input type="text" class="form-control" name="name" id="field_name"
+                           formControlName="name"/>
+                    <div *ngIf="editForm.get('name')!.invalid && (editForm.get('name')!.dirty || editForm.get('name')!.touched)">
+                        <small class="form-text text-danger"
+                               *ngIf="editForm.get('name')?.errors?.required" jhiTranslate="entity.validation.required">
+                        This field is required.
+                        </small>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.product.code" for="field_code">Code</label>
+                    <input type="text" class="form-control" name="code" id="field_code"
+                           formControlName="code"/>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.product.brand" for="field_brand">Brand</label>
+                    <input type="text" class="form-control" name="brand" id="field_brand"
+                           formControlName="brand"/>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.product.description" for="field_description">Description</label>
+                    <input type="text" class="form-control" name="description" id="field_description"
+                           formControlName="description"/>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.product.content" for="field_content">Content</label>
+                    <input type="text" class="form-control" name="content" id="field_content"
+                           formControlName="content"/>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.product.remark" for="field_remark">Remark</label>
+                    <input type="text" class="form-control" name="remark" id="field_remark"
+                           formControlName="remark"/>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.product.status" for="field_status">Status</label>
+                    <select class="form-control" name="status" formControlName="status" id="field_status">
+                        <option value="ACTIVE">{{ 'mallApp.ProductStatus.ACTIVE' | translate }}</option>
+                        <option value="RESTRICTED">{{ 'mallApp.ProductStatus.RESTRICTED' | translate }}</option>
+                        <option value="INACTIVE">{{ 'mallApp.ProductStatus.INACTIVE' | translate }}</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.product.createdBy" for="field_createdBy">Created By</label>
+                    <input type="text" class="form-control" name="createdBy" id="field_createdBy"
+                           formControlName="createdBy"/>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.product.createdDate" for="field_createdDate">Created Date</label>
+                    <div class="d-flex">
+                        <input id="field_createdDate" type="datetime-local" class="form-control" name="createdDate" formControlName="createdDate" placeholder="YYYY-MM-DD HH:mm"/>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.product.lastModifiedBy" for="field_lastModifiedBy">Last Modified By</label>
+                    <input type="text" class="form-control" name="lastModifiedBy" id="field_lastModifiedBy"
+                           formControlName="lastModifiedBy"/>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.product.lastModifiedDate" for="field_lastModifiedDate">Last Modified Date</label>
+                    <div class="d-flex">
+                        <input id="field_lastModifiedDate" type="datetime-local" class="form-control" name="lastModifiedDate" formControlName="lastModifiedDate" placeholder="YYYY-MM-DD HH:mm"/>
+                    </div>
+                </div>
+
+                <!-- <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.product.shop" for="field_shop">Shop</label>
+                    <select class="form-control" id="field_shop" name="shop" formControlName="shopId">
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="shopOption.id" *ngFor="let shopOption of shops; trackBy: trackById">{{ shopOption.id }}</option>
+                    </select>
+                </div> -->
 	
-	
-				<dl class="row-md jh-entity-details">
-			        <dt><span jhiTranslate="mallApp.product.name">Name</span></dt>
-			        <dd>
-			            <input type="text" class="form-control" name="name" id="field_brand" [(ngModel)]="object.name"  />
-			        </dd>
-			        <dt><span jhiTranslate="mallApp.product.code">Code</span></dt>
-			        <dd>
-			            <input type="text" class="form-control" name="code" id="field_brand" [(ngModel)]="object.code"  />
-			        </dd>
-			        <dt><span jhiTranslate="mallApp.product.brand">Brand</span></dt>
-			        <dd>
-			            <!-- <span>{{object.brand}}</span> -->
-			            <input type="text" class="form-control" name="brand" id="field_brand" [(ngModel)]="object.brand"  />
-			        </dd>
-			        <dt><span jhiTranslate="mallApp.product.remark">Remark</span></dt>
-			        <dd>
-			            <input type="text" class="form-control" name="remark" id="field_brand" [(ngModel)]="object.remark"  />
-			        </dd>
-			        <dt><span jhiTranslate="mallApp.product.status">Status</span></dt>
-			        <dd>
-			            <select class="form-control" name="status" [(ngModel)]="object.status" id="field_status" >
-			                <option value="ACTIVE" jhiTranslate="mallApp.ProductStatus.ACTIVE">ACTIVE</option>
-			                <option value="RESTRICTED" jhiTranslate="mallApp.ProductStatus.RESTRICTED">RESTRICTED</option>
-			                <option value="INACTIVE" jhiTranslate="mallApp.ProductStatus.INACTIVE">INACTIVE</option>
-			            </select>
-			        </dd>
-					<!-- <dt><span jhiTranslate="mallApp.product.createdBy">Created By</span></dt>
-			        <dd>
-			        	<input type="text" class="form-control" name="createdBy" id="field_createdBy" [(ngModel)]="object.createdBy" />
-			        </dd>
-			        <dt><span jhiTranslate="mallApp.product.createdDate">Created Date</span></dt>
-			        <dd>
-	                	<input id="field_createdDate" type="datetime-local" class="form-control" name="createdDate" [(ngModel)]="object.createdDate" />
-			        </dd>
-			        <dt><span jhiTranslate="mallApp.product.lastModifiedBy">Last Modified By</span></dt>
-			        <dd>
-			        	<input type="text" class="form-control" name="lastModifiedBy" id="field_lastModifiedBy" [(ngModel)]="object.lastModifiedBy" />
-			        </dd>
-			        <dt><span jhiTranslate="mallApp.product.lastModifiedDate">Last Modified Date</span></dt>
-			        <dd>
-			            <input id="field_lastModifiedDate" type="datetime-local" class="form-control" name="lastModifiedDate" [(ngModel)]="object.lastModifiedDate" />
-			        </dd>
-			        <dt><span jhiTranslate="mallApp.product.userInfo">User Info</span></dt>
-			        <dd>
-			            <div *ngIf="object.userInfo">
-			                <a [routerLink]="['/user-info', object.userInfo?.id]">{{object.userInfo?.id}}</a>
-			            </div>
-			        </dd>-->
-			        <dt><span jhiTranslate="mallApp.product.shop">Shop</span></dt>
-			        <dd>
-			        </dd>
-			    </dl>
 			    <hr style='border-color: #5E5E5E;border-style: solid none;border-width: 2px 0;' />
 			    <dl class="row-md jh-entity-details">
 			        <dd><span jhiTranslate="mallApp.product.createdBy">Created By</span>:&nbsp;<span>{{object.createdBy}}</span></dd>
-			        <dd><span jhiTranslate="mallApp.product.createdDate">Created Date</span>:&nbsp;<span>{{object.createdDate | date:'medium'}}</span></dd>
+			        <dd><span jhiTranslate="mallApp.product.createdDate">Created Date</span>:&nbsp;<span>{{editForm.get('createdDate')!.value}}</span></dd>
 			        <dd><span jhiTranslate="mallApp.product.lastModifiedBy">Last Modified By</span>:&nbsp;<span>{{object.lastModifiedBy}}</span></dd>
-			        <dd><span jhiTranslate="mallApp.product.lastModifiedDate">Last Modified Date</span>:&nbsp;<span>{{object.lastModifiedDate | date:'medium'}}</span></dd>
+			        <dd><span jhiTranslate="mallApp.product.lastModifiedDate">Last Modified Date</span>:&nbsp;<span>{{editForm.get('lastModifiedDate')!.value}}</span></dd>
 			    </dl>
 			</div>
 		</div>
     </div>
     <div class="modal-footer">
-        <button type="submit" [disabled]="editForm.form.invalid" class="btn btn-primary">
-            <fa-icon [icon]="'check-square'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.confirm">Confirm</span>
+        <button type="button" id="cancel-confirm" class="btn btn-secondary" (click)="clear()">
+            <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
         </button>
+        <button type="button" id="confirm-entity" [disabled]="editForm.invalid" class="btn btn-primary" (click)="confirm()" >
+            <fa-icon icon="check-square"></fa-icon>&nbsp;<span jhiTranslate="entity.action.confirm">Confirm</span>
+        </button>        
     </div>
 </form>

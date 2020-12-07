@@ -17,23 +17,23 @@
         {
             "fieldName": "status",
             "fieldType": "OrderStatus",
-            "fieldValues": "PENDING,COMFIRMED,COMPLETED,CANCELLED"
+            "fieldValues": "PENDING,CHECKOUT,COMFIRMED,COMPLETED,CANCELLED"
         }
     ],
     "relationships": [
         {
             "relationshipType": "one-to-one",
-            "otherEntityName": "address",
+            "otherEntityName": "contact",
             "otherEntityRelationshipName": "myOrder",
-            "relationshipName": "shippingAddress",
+            "relationshipName": "shipping",
             "otherEntityField": "id",
             "ownerSide": true
         },
         {
             "relationshipType": "one-to-one",
-            "otherEntityName": "address",
+            "otherEntityName": "contact",
             "otherEntityRelationshipName": "myOrder",
-            "relationshipName": "billingAddress",
+            "relationshipName": "billing",
             "otherEntityField": "id",
             "ownerSide": true
         },
@@ -57,13 +57,15 @@
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20190527101531",
+    "changelogDate": "20200503073500",
     "entityTableName": "my_order",
     "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

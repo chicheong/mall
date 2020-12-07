@@ -1,44 +1,47 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="address">
-            <h2><span jhiTranslate="mallApp.address.detail.title">Address</span> {{address.id}}</h2>
+            <h2><span jhiTranslate="mallApp.address.detail.title">Address</span> {{ address.id }}</h2>
+
             <hr>
+
             <jhi-alert-error></jhi-alert-error>
+
             <dl class="row-md jh-entity-details">
                 <dt><span jhiTranslate="mallApp.address.line1">Line 1</span></dt>
                 <dd>
-                    <span>{{address.line1}}</span>
+                    <span>{{ address.line1 }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.address.line2">Line 2</span></dt>
                 <dd>
-                    <span>{{address.line2}}</span>
+                    <span>{{ address.line2 }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.address.line3">Line 3</span></dt>
                 <dd>
-                    <span>{{address.line3}}</span>
+                    <span>{{ address.line3 }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.address.line4">Line 4</span></dt>
                 <dd>
-                    <span>{{address.line4}}</span>
+                    <span>{{ address.line4 }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.address.city">City</span></dt>
                 <dd>
-                    <span>{{address.city}}</span>
+                    <span>{{ address.city }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.address.postalCode">Postal Code</span></dt>
                 <dd>
-                    <span>{{address.postalCode}}</span>
+                    <span>{{ address.postalCode }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.address.country">Country</span></dt>
                 <dd>
                     <div *ngIf="address.country">
-                        <a [routerLink]="['/country', address.country?.id, 'view']">{{address.country?.id}}</a>
+                        <a [routerLink]="['/country', address.country?.id, 'view']">{{ address.country?.code }}</a>
                     </div>
                 </dd>
-                <dt><span jhiTranslate="mallApp.address.state">State</span></dt>
+                <dt><span jhiTranslate="mallApp.address.myState">My State</span></dt>
                 <dd>
                     <div *ngIf="address.myState">
-                        <a [routerLink]="['/myState', address.myState?.id, 'view']">{{address.myState?.id}}</a>
+                        <a [routerLink]="['/my-state', address.myState?.id, 'view']">{{ address.myState?.code }}</a>
                     </div>
                 </dd>
             </dl>
@@ -46,13 +49,13 @@
             <button type="submit"
                     (click)="previousState()"
                     class="btn btn-info">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
             </button>
 
             <button type="button"
                     [routerLink]="['/address', address.id, 'edit']"
                     class="btn btn-primary">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
             </button>
         </div>
     </div>

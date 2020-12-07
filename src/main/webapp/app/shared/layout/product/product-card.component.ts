@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { RouterModule, Router } from '@angular/router';
+import { Router } from '@angular/router';
 import { IProduct } from 'app/shared/model/product.model';
 
 @Component({
@@ -7,13 +7,14 @@ import { IProduct } from 'app/shared/model/product.model';
     templateUrl: './product-card.component.html'
 })
 export class ProductCardComponent {
-    @Input() product: IProduct;
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    @Input() product?: IProduct;
 
     constructor(
         private router: Router
     ) {}
 
-    private goto(id) {
+    goto(id: number): void {
         this.router.navigate(['/product', id, 'view']);
     }
 }

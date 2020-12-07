@@ -1,98 +1,88 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
-import { UserRouteAccessService } from 'app/core';
-import { Observable, of } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { Category } from 'app/shared/model/category.model';
+import { Resolve, ActivatedRouteSnapshot, Routes, Router } from '@angular/router';
+import { JhiResolvePagingParams } from 'ng-jhipster';
+import { Observable, of, EMPTY } from 'rxjs';
+import { flatMap } from 'rxjs/operators';
+
+import { Authority } from 'app/shared/constants/authority.constants';
+import { UserRouteAccessService } from 'app/core/auth/user-route-access-service';
+import { ICategory, Category } from 'app/shared/model/category.model';
 import { CategoryService } from './category.service';
 import { CategoryComponent } from './category.component';
 import { CategoryDetailComponent } from './category-detail.component';
 import { CategoryUpdateComponent } from './category-update.component';
-import { CategoryDeletePopupComponent } from './category-delete-dialog.component';
-import { ICategory } from 'app/shared/model/category.model';
 
 @Injectable({ providedIn: 'root' })
 export class CategoryResolve implements Resolve<ICategory> {
-    constructor(private service: CategoryService) {}
+  constructor(private service: CategoryService, private router: Router) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<ICategory> {
-        const id = route.params['id'] ? route.params['id'] : null;
-        if (id) {
-            return this.service.find(id).pipe(
-                filter((response: HttpResponse<Category>) => response.ok),
-                map((category: HttpResponse<Category>) => category.body)
-            );
-        }
-        return of(new Category());
+  resolve(route: ActivatedRouteSnapshot): Observable<ICategory> | Observable<never> {
+    const id = route.params['id'];
+    if (id) {
+      return this.service.find(id).pipe(
+        flatMap((category: HttpResponse<Category>) => {
+          if (category.body) {
+            return of(category.body);
+          } else {
+            this.router.navigate(['404']);
+            return EMPTY;
+          }
+        })
+      );
     }
+    return of(new Category());
+  }
 }
 
 export const categoryRoute: Routes = [
-    {
-        path: '',
-        component: CategoryComponent,
-        resolve: {
-            pagingParams: JhiResolvePagingParams
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            defaultSort: 'id,asc',
-            pageTitle: 'mallApp.category.home.title'
-        },
-        canActivate: [UserRouteAccessService]
+  {
+    path: '',
+    component: CategoryComponent,
+    resolve: {
+      pagingParams: JhiResolvePagingParams
     },
-    {
-        path: ':id/view',
-        component: CategoryDetailComponent,
-        resolve: {
-            category: CategoryResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.category.home.title'
-        },
-        canActivate: [UserRouteAccessService]
+    data: {
+      authorities: [Authority.USER],
+      defaultSort: 'id,asc',
+      pageTitle: 'mallApp.category.home.title'
     },
-    {
-        path: 'new',
-        component: CategoryUpdateComponent,
-        resolve: {
-            category: CategoryResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.category.home.title'
-        },
-        canActivate: [UserRouteAccessService]
+    canActivate: [UserRouteAccessService]
+  },
+  {
+    path: ':id/view',
+    component: CategoryDetailComponent,
+    resolve: {
+      category: CategoryResolve
     },
-    {
-        path: ':id/edit',
-        component: CategoryUpdateComponent,
-        resolve: {
-            category: CategoryResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.category.home.title'
-        },
-        canActivate: [UserRouteAccessService]
-    }
-];
-
-export const categoryPopupRoute: Routes = [
-    {
-        path: ':id/delete',
-        component: CategoryDeletePopupComponent,
-        resolve: {
-            category: CategoryResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.category.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    }
+    data: {
+      authorities: [Authority.USER],
+      pageTitle: 'mallApp.category.home.title'
+    },
+    canActivate: [UserRouteAccessService]
+  },
+  {
+    path: 'new',
+    component: CategoryUpdateComponent,
+    resolve: {
+      category: CategoryResolve
+    },
+    data: {
+      authorities: [Authority.USER],
+      pageTitle: 'mallApp.category.home.title'
+    },
+    canActivate: [UserRouteAccessService]
+  },
+  {
+    path: ':id/edit',
+    component: CategoryUpdateComponent,
+    resolve: {
+      category: CategoryResolve
+    },
+    data: {
+      authorities: [Authority.USER],
+      pageTitle: 'mallApp.category.home.title'
+    },
+    canActivate: [UserRouteAccessService]
+  }
 ];

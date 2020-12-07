@@ -1,103 +1,107 @@
 import { element, by, ElementFinder } from 'protractor';
 
 export class ShippingStatusHistoryComponentsPage {
-    createButton = element(by.id('jh-create-entity'));
-    deleteButtons = element.all(by.css('jhi-shipping-status-history div table .btn-danger'));
-    title = element.all(by.css('jhi-shipping-status-history div h2#page-heading span')).first();
+  createButton = element(by.id('jh-create-entity'));
+  deleteButtons = element.all(by.css('jhi-shipping-status-history div table .btn-danger'));
+  title = element.all(by.css('jhi-shipping-status-history div h2#page-heading span')).first();
+  noResult = element(by.id('no-result'));
+  entities = element(by.id('entities'));
 
-    async clickOnCreateButton() {
-        await this.createButton.click();
-    }
+  async clickOnCreateButton(): Promise<void> {
+    await this.createButton.click();
+  }
 
-    async clickOnLastDeleteButton() {
-        await this.deleteButtons.last().click();
-    }
+  async clickOnLastDeleteButton(): Promise<void> {
+    await this.deleteButtons.last().click();
+  }
 
-    async countDeleteButtons() {
-        return this.deleteButtons.count();
-    }
+  async countDeleteButtons(): Promise<number> {
+    return this.deleteButtons.count();
+  }
 
-    async getTitle() {
-        return this.title.getAttribute('jhiTranslate');
-    }
+  async getTitle(): Promise<string> {
+    return this.title.getAttribute('jhiTranslate');
+  }
 }
 
 export class ShippingStatusHistoryUpdatePage {
-    pageTitle = element(by.id('jhi-shipping-status-history-heading'));
-    saveButton = element(by.id('save-entity'));
-    cancelButton = element(by.id('cancel-save'));
-    effectiveDateInput = element(by.id('field_effectiveDate'));
-    statusSelect = element(by.id('field_status'));
-    shippingSelect = element(by.id('field_shipping'));
+  pageTitle = element(by.id('jhi-shipping-status-history-heading'));
+  saveButton = element(by.id('save-entity'));
+  cancelButton = element(by.id('cancel-save'));
 
-    async getPageTitle() {
-        return this.pageTitle.getAttribute('jhiTranslate');
-    }
+  effectiveDateInput = element(by.id('field_effectiveDate'));
+  statusSelect = element(by.id('field_status'));
 
-    async setEffectiveDateInput(effectiveDate) {
-        await this.effectiveDateInput.sendKeys(effectiveDate);
-    }
+  shippingSelect = element(by.id('field_shipping'));
 
-    async getEffectiveDateInput() {
-        return this.effectiveDateInput.getAttribute('value');
-    }
+  async getPageTitle(): Promise<string> {
+    return this.pageTitle.getAttribute('jhiTranslate');
+  }
 
-    async setStatusSelect(status) {
-        await this.statusSelect.sendKeys(status);
-    }
+  async setEffectiveDateInput(effectiveDate: string): Promise<void> {
+    await this.effectiveDateInput.sendKeys(effectiveDate);
+  }
 
-    async getStatusSelect() {
-        return this.statusSelect.element(by.css('option:checked')).getText();
-    }
+  async getEffectiveDateInput(): Promise<string> {
+    return await this.effectiveDateInput.getAttribute('value');
+  }
 
-    async statusSelectLastOption() {
-        await this.statusSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async setStatusSelect(status: string): Promise<void> {
+    await this.statusSelect.sendKeys(status);
+  }
 
-    async shippingSelectLastOption() {
-        await this.shippingSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async getStatusSelect(): Promise<string> {
+    return await this.statusSelect.element(by.css('option:checked')).getText();
+  }
 
-    async shippingSelectOption(option) {
-        await this.shippingSelect.sendKeys(option);
-    }
+  async statusSelectLastOption(): Promise<void> {
+    await this.statusSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    getShippingSelect(): ElementFinder {
-        return this.shippingSelect;
-    }
+  async shippingSelectLastOption(): Promise<void> {
+    await this.shippingSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async getShippingSelectedOption() {
-        return this.shippingSelect.element(by.css('option:checked')).getText();
-    }
+  async shippingSelectOption(option: string): Promise<void> {
+    await this.shippingSelect.sendKeys(option);
+  }
 
-    async save() {
-        await this.saveButton.click();
-    }
+  getShippingSelect(): ElementFinder {
+    return this.shippingSelect;
+  }
 
-    async cancel() {
-        await this.cancelButton.click();
-    }
+  async getShippingSelectedOption(): Promise<string> {
+    return await this.shippingSelect.element(by.css('option:checked')).getText();
+  }
 
-    getSaveButton(): ElementFinder {
-        return this.saveButton;
-    }
+  async save(): Promise<void> {
+    await this.saveButton.click();
+  }
+
+  async cancel(): Promise<void> {
+    await this.cancelButton.click();
+  }
+
+  getSaveButton(): ElementFinder {
+    return this.saveButton;
+  }
 }
 
 export class ShippingStatusHistoryDeleteDialog {
-    private dialogTitle = element(by.id('jhi-delete-shippingStatusHistory-heading'));
-    private confirmButton = element(by.id('jhi-confirm-delete-shippingStatusHistory'));
+  private dialogTitle = element(by.id('jhi-delete-shippingStatusHistory-heading'));
+  private confirmButton = element(by.id('jhi-confirm-delete-shippingStatusHistory'));
 
-    async getDialogTitle() {
-        return this.dialogTitle.getAttribute('jhiTranslate');
-    }
+  async getDialogTitle(): Promise<string> {
+    return this.dialogTitle.getAttribute('jhiTranslate');
+  }
 
-    async clickOnConfirmButton() {
-        await this.confirmButton.click();
-    }
+  async clickOnConfirmButton(): Promise<void> {
+    await this.confirmButton.click();
+  }
 }

@@ -1,40 +1,16 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
-import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from 'app/shared';
-import {
-    QuantityComponent,
-    QuantityDetailComponent,
-    QuantityUpdateComponent,
-    QuantityDeletePopupComponent,
-    QuantityDeleteDialogComponent,
-    quantityRoute,
-    quantityPopupRoute
-} from './';
-
-const ENTITY_STATES = [...quantityRoute, ...quantityPopupRoute];
+import { MallSharedModule } from 'app/shared/shared.module';
+import { QuantityComponent } from './quantity.component';
+import { QuantityDetailComponent } from './quantity-detail.component';
+import { QuantityUpdateComponent } from './quantity-update.component';
+import { QuantityDeleteDialogComponent } from './quantity-delete-dialog.component';
+import { quantityRoute } from './quantity.route';
 
 @NgModule({
-    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
-    declarations: [
-        QuantityComponent,
-        QuantityDetailComponent,
-        QuantityUpdateComponent,
-        QuantityDeleteDialogComponent,
-        QuantityDeletePopupComponent
-    ],
-    entryComponents: [QuantityComponent, QuantityUpdateComponent, QuantityDeleteDialogComponent, QuantityDeletePopupComponent],
-    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  imports: [MallSharedModule, RouterModule.forChild(quantityRoute)],
+  declarations: [QuantityComponent, QuantityDetailComponent, QuantityUpdateComponent, QuantityDeleteDialogComponent],
+  entryComponents: [QuantityDeleteDialogComponent]
 })
-export class MallQuantityModule {
-    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
-        this.languageHelper.language.subscribe((languageKey: string) => {
-            if (languageKey !== undefined) {
-                this.languageService.changeLanguage(languageKey);
-            }
-        });
-    }
-}
+export class MallQuantityModule {}

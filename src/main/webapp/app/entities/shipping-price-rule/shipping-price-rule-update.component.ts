@@ -1,76 +1,101 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { JhiAlertService } from 'ng-jhipster';
-import { IShippingPriceRule } from 'app/shared/model/shipping-price-rule.model';
+
+import { IShippingPriceRule, ShippingPriceRule } from 'app/shared/model/shipping-price-rule.model';
 import { ShippingPriceRuleService } from './shipping-price-rule.service';
 import { IShop } from 'app/shared/model/shop.model';
-import { ShopService } from 'app/entities/shop';
+import { ShopService } from 'app/entities/shop/shop.service';
 
 @Component({
-    selector: 'jhi-shipping-price-rule-update',
-    templateUrl: './shipping-price-rule-update.component.html'
+  selector: 'jhi-shipping-price-rule-update',
+  templateUrl: './shipping-price-rule-update.component.html'
 })
 export class ShippingPriceRuleUpdateComponent implements OnInit {
-    shippingPriceRule: IShippingPriceRule;
-    isSaving: boolean;
+  isSaving = false;
+  shops: IShop[] = [];
 
-    shops: IShop[];
+  editForm = this.fb.group({
+    id: [],
+    type: [],
+    value: [],
+    price: [],
+    sequence: [],
+    shop: []
+  });
 
-    constructor(
-        protected jhiAlertService: JhiAlertService,
-        protected shippingPriceRuleService: ShippingPriceRuleService,
-        protected shopService: ShopService,
-        protected activatedRoute: ActivatedRoute
-    ) {}
+  constructor(
+    protected shippingPriceRuleService: ShippingPriceRuleService,
+    protected shopService: ShopService,
+    protected activatedRoute: ActivatedRoute,
+    private fb: FormBuilder
+  ) {}
 
-    ngOnInit() {
-        this.isSaving = false;
-        this.activatedRoute.data.subscribe(({ shippingPriceRule }) => {
-            this.shippingPriceRule = shippingPriceRule;
-        });
-        this.shopService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<IShop[]>) => mayBeOk.ok),
-                map((response: HttpResponse<IShop[]>) => response.body)
-            )
-            .subscribe((res: IShop[]) => (this.shops = res), (res: HttpErrorResponse) => this.onError(res.message));
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ shippingPriceRule }) => {
+      this.updateForm(shippingPriceRule);
+
+      this.shopService.query().subscribe((res: HttpResponse<IShop[]>) => (this.shops = res.body || []));
+    });
+  }
+
+  updateForm(shippingPriceRule: IShippingPriceRule): void {
+    this.editForm.patchValue({
+      id: shippingPriceRule.id,
+      type: shippingPriceRule.type,
+      value: shippingPriceRule.value,
+      price: shippingPriceRule.price,
+      sequence: shippingPriceRule.sequence,
+      shop: shippingPriceRule.shop
+    });
+  }
+
+  previousState(): void {
+    window.history.back();
+  }
+
+  save(): void {
+    this.isSaving = true;
+    const shippingPriceRule = this.createFromForm();
+    if (shippingPriceRule.id !== undefined) {
+      this.subscribeToSaveResponse(this.shippingPriceRuleService.update(shippingPriceRule));
+    } else {
+      this.subscribeToSaveResponse(this.shippingPriceRuleService.create(shippingPriceRule));
     }
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  private createFromForm(): IShippingPriceRule {
+    return {
+      ...new ShippingPriceRule(),
+      id: this.editForm.get(['id'])!.value,
+      type: this.editForm.get(['type'])!.value,
+      value: this.editForm.get(['value'])!.value,
+      price: this.editForm.get(['price'])!.value,
+      sequence: this.editForm.get(['sequence'])!.value,
+      shop: this.editForm.get(['shop'])!.value
+    };
+  }
 
-    save() {
-        this.isSaving = true;
-        if (this.shippingPriceRule.id !== undefined) {
-            this.subscribeToSaveResponse(this.shippingPriceRuleService.update(this.shippingPriceRule));
-        } else {
-            this.subscribeToSaveResponse(this.shippingPriceRuleService.create(this.shippingPriceRule));
-        }
-    }
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<IShippingPriceRule>>): void {
+    result.subscribe(
+      () => this.onSaveSuccess(),
+      () => this.onSaveError()
+    );
+  }
 
-    protected subscribeToSaveResponse(result: Observable<HttpResponse<IShippingPriceRule>>) {
-        result.subscribe((res: HttpResponse<IShippingPriceRule>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
-    }
+  protected onSaveSuccess(): void {
+    this.isSaving = false;
+    this.previousState();
+  }
 
-    protected onSaveSuccess() {
-        this.isSaving = false;
-        this.previousState();
-    }
+  protected onSaveError(): void {
+    this.isSaving = false;
+  }
 
-    protected onSaveError() {
-        this.isSaving = false;
-    }
-
-    protected onError(errorMessage: string) {
-        this.jhiAlertService.error(errorMessage, null, null);
-    }
-
-    trackShopById(index: number, item: IShop) {
-        return item.id;
-    }
+  trackById(index: number, item: IShop): any {
+    return item.id;
+  }
 }

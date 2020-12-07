@@ -1,84 +1,106 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
 import * as moment from 'moment';
 import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
-import { JhiAlertService } from 'ng-jhipster';
-import { IQuantity } from 'app/shared/model/quantity.model';
+
+import { IQuantity, Quantity } from 'app/shared/model/quantity.model';
 import { QuantityService } from './quantity.service';
 import { IProductItem } from 'app/shared/model/product-item.model';
-import { ProductItemService } from 'app/entities/product-item';
+import { ProductItemService } from 'app/entities/product-item/product-item.service';
 
 @Component({
-    selector: 'jhi-quantity-update',
-    templateUrl: './quantity-update.component.html'
+  selector: 'jhi-quantity-update',
+  templateUrl: './quantity-update.component.html'
 })
 export class QuantityUpdateComponent implements OnInit {
-    quantity: IQuantity;
-    isSaving: boolean;
+  isSaving = false;
+  productitems: IProductItem[] = [];
 
-    productitems: IProductItem[];
-    from: string;
-    to: string;
+  editForm = this.fb.group({
+    id: [],
+    from: [],
+    to: [],
+    quantity: [],
+    item: []
+  });
 
-    constructor(
-        protected jhiAlertService: JhiAlertService,
-        protected quantityService: QuantityService,
-        protected productItemService: ProductItemService,
-        protected activatedRoute: ActivatedRoute
-    ) {}
+  constructor(
+    protected quantityService: QuantityService,
+    protected productItemService: ProductItemService,
+    protected activatedRoute: ActivatedRoute,
+    private fb: FormBuilder
+  ) {}
 
-    ngOnInit() {
-        this.isSaving = false;
-        this.activatedRoute.data.subscribe(({ quantity }) => {
-            this.quantity = quantity;
-            this.from = this.quantity.from != null ? this.quantity.from.format(DATE_TIME_FORMAT) : null;
-            this.to = this.quantity.to != null ? this.quantity.to.format(DATE_TIME_FORMAT) : null;
-        });
-        this.productItemService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<IProductItem[]>) => mayBeOk.ok),
-                map((response: HttpResponse<IProductItem[]>) => response.body)
-            )
-            .subscribe((res: IProductItem[]) => (this.productitems = res), (res: HttpErrorResponse) => this.onError(res.message));
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ quantity }) => {
+      if (!quantity.id) {
+        const today = moment().startOf('day');
+        quantity.from = today;
+        quantity.to = today;
+      }
+
+      this.updateForm(quantity);
+
+      this.productItemService.query().subscribe((res: HttpResponse<IProductItem[]>) => (this.productitems = res.body || []));
+    });
+  }
+
+  updateForm(quantity: IQuantity): void {
+    this.editForm.patchValue({
+      id: quantity.id,
+      from: quantity.from ? quantity.from.format(DATE_TIME_FORMAT) : null,
+      to: quantity.to ? quantity.to.format(DATE_TIME_FORMAT) : null,
+      quantity: quantity.quantity,
+      item: quantity.item
+    });
+  }
+
+  previousState(): void {
+    window.history.back();
+  }
+
+  save(): void {
+    this.isSaving = true;
+    const quantity = this.createFromForm();
+    if (quantity.id !== undefined) {
+      this.subscribeToSaveResponse(this.quantityService.update(quantity));
+    } else {
+      this.subscribeToSaveResponse(this.quantityService.create(quantity));
     }
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  private createFromForm(): IQuantity {
+    return {
+      ...new Quantity(),
+      id: this.editForm.get(['id'])!.value,
+      from: this.editForm.get(['from'])!.value ? moment(this.editForm.get(['from'])!.value, DATE_TIME_FORMAT) : undefined,
+      to: this.editForm.get(['to'])!.value ? moment(this.editForm.get(['to'])!.value, DATE_TIME_FORMAT) : undefined,
+      quantity: this.editForm.get(['quantity'])!.value,
+      item: this.editForm.get(['item'])!.value
+    };
+  }
 
-    save() {
-        this.isSaving = true;
-        this.quantity.from = this.from != null ? moment(this.from, DATE_TIME_FORMAT) : null;
-        this.quantity.to = this.to != null ? moment(this.to, DATE_TIME_FORMAT) : null;
-        if (this.quantity.id !== undefined) {
-            this.subscribeToSaveResponse(this.quantityService.update(this.quantity));
-        } else {
-            this.subscribeToSaveResponse(this.quantityService.create(this.quantity));
-        }
-    }
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<IQuantity>>): void {
+    result.subscribe(
+      () => this.onSaveSuccess(),
+      () => this.onSaveError()
+    );
+  }
 
-    protected subscribeToSaveResponse(result: Observable<HttpResponse<IQuantity>>) {
-        result.subscribe((res: HttpResponse<IQuantity>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
-    }
+  protected onSaveSuccess(): void {
+    this.isSaving = false;
+    this.previousState();
+  }
 
-    protected onSaveSuccess() {
-        this.isSaving = false;
-        this.previousState();
-    }
+  protected onSaveError(): void {
+    this.isSaving = false;
+  }
 
-    protected onSaveError() {
-        this.isSaving = false;
-    }
-
-    protected onError(errorMessage: string) {
-        this.jhiAlertService.error(errorMessage, null, null);
-    }
-
-    trackProductItemById(index: number, item: IProductItem) {
-        return item.id;
-    }
+  trackById(index: number, item: IProductItem): any {
+    return item.id;
+  }
 }

@@ -28,13 +28,15 @@
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20190527101528",
+    "changelogDate": "20200503073200",
     "entityTableName": "price",
     "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

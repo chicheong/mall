@@ -41,13 +41,15 @@
             "relationshipName": "statusHistory"
         }
     ],
-    "changelogDate": "20190527101540",
+    "changelogDate": "20200503074400",
     "entityTableName": "payment",
     "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

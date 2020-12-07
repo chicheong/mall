@@ -1,14 +1,14 @@
 {
-    "mallApp": {
-        "CurrencyType": {
-            "null": "",
-            "HKD": "HKD",
-            "CNY": "CNY",
-            "USD": "USD",
-            "EUR": "EUR",
-            "JPY": "JPY",
-            "KRW": "KRW",
-            "TWD": "TWD"
-        }
+  "mallApp": {
+    "CurrencyType": {
+      "null": "",
+      "HKD": "HKD",
+      "CNY": "CNY",
+      "USD": "USD",
+      "EUR": "EUR",
+      "JPY": "JPY",
+      "KRW": "KRW",
+      "TWD": "TWD"
     }
+  }
 }

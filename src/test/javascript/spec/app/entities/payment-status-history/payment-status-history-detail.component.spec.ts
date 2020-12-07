@@ -1,4 +1,3 @@
-/* tslint:disable max-line-length */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
@@ -8,33 +7,31 @@ import { PaymentStatusHistoryDetailComponent } from 'app/entities/payment-status
 import { PaymentStatusHistory } from 'app/shared/model/payment-status-history.model';
 
 describe('Component Tests', () => {
-    describe('PaymentStatusHistory Management Detail Component', () => {
-        let comp: PaymentStatusHistoryDetailComponent;
-        let fixture: ComponentFixture<PaymentStatusHistoryDetailComponent>;
-        const route = ({ data: of({ paymentStatusHistory: new PaymentStatusHistory(123) }) } as any) as ActivatedRoute;
+  describe('PaymentStatusHistory Management Detail Component', () => {
+    let comp: PaymentStatusHistoryDetailComponent;
+    let fixture: ComponentFixture<PaymentStatusHistoryDetailComponent>;
+    const route = ({ data: of({ paymentStatusHistory: new PaymentStatusHistory(123) }) } as any) as ActivatedRoute;
 
-        beforeEach(() => {
-            TestBed.configureTestingModule({
-                imports: [MallTestModule],
-                declarations: [PaymentStatusHistoryDetailComponent],
-                providers: [{ provide: ActivatedRoute, useValue: route }]
-            })
-                .overrideTemplate(PaymentStatusHistoryDetailComponent, '')
-                .compileComponents();
-            fixture = TestBed.createComponent(PaymentStatusHistoryDetailComponent);
-            comp = fixture.componentInstance;
-        });
-
-        describe('OnInit', () => {
-            it('Should call load all on init', () => {
-                // GIVEN
-
-                // WHEN
-                comp.ngOnInit();
-
-                // THEN
-                expect(comp.paymentStatusHistory).toEqual(jasmine.objectContaining({ id: 123 }));
-            });
-        });
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        imports: [MallTestModule],
+        declarations: [PaymentStatusHistoryDetailComponent],
+        providers: [{ provide: ActivatedRoute, useValue: route }]
+      })
+        .overrideTemplate(PaymentStatusHistoryDetailComponent, '')
+        .compileComponents();
+      fixture = TestBed.createComponent(PaymentStatusHistoryDetailComponent);
+      comp = fixture.componentInstance;
     });
+
+    describe('OnInit', () => {
+      it('Should load paymentStatusHistory on init', () => {
+        // WHEN
+        comp.ngOnInit();
+
+        // THEN
+        expect(comp.paymentStatusHistory).toEqual(jasmine.objectContaining({ id: 123 }));
+      });
+    });
+  });
 });

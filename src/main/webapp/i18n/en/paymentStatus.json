@@ -1,10 +1,10 @@
 {
-    "mallApp": {
-        "PaymentStatus": {
-            "null": "",
-            "PENDING": "PENDING",
-            "PAID": "PAID",
-            "CANCELLED": "CANCELLED"
-        }
+  "mallApp": {
+    "PaymentStatus": {
+      "null": "",
+      "PENDING": "PENDING",
+      "PAID": "PAID",
+      "CANCELLED": "CANCELLED"
     }
+  }
 }

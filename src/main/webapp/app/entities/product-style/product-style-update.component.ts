@@ -1,76 +1,101 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { JhiAlertService } from 'ng-jhipster';
-import { IProductStyle } from 'app/shared/model/product-style.model';
+
+import { IProductStyle, ProductStyle } from 'app/shared/model/product-style.model';
 import { ProductStyleService } from './product-style.service';
 import { IProduct } from 'app/shared/model/product.model';
-import { ProductService } from 'app/entities/product';
+import { ProductService } from 'app/entities/product/product.service';
 
 @Component({
-    selector: 'jhi-product-style-update',
-    templateUrl: './product-style-update.component.html'
+  selector: 'jhi-product-style-update',
+  templateUrl: './product-style-update.component.html'
 })
 export class ProductStyleUpdateComponent implements OnInit {
-    productStyle: IProductStyle;
-    isSaving: boolean;
+  isSaving = false;
+  products: IProduct[] = [];
 
-    products: IProduct[];
+  editForm = this.fb.group({
+    id: [],
+    name: [],
+    code: [],
+    isDefault: [],
+    type: [],
+    product: []
+  });
 
-    constructor(
-        protected jhiAlertService: JhiAlertService,
-        protected productStyleService: ProductStyleService,
-        protected productService: ProductService,
-        protected activatedRoute: ActivatedRoute
-    ) {}
+  constructor(
+    protected productStyleService: ProductStyleService,
+    protected productService: ProductService,
+    protected activatedRoute: ActivatedRoute,
+    private fb: FormBuilder
+  ) {}
 
-    ngOnInit() {
-        this.isSaving = false;
-        this.activatedRoute.data.subscribe(({ productStyle }) => {
-            this.productStyle = productStyle;
-        });
-        this.productService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<IProduct[]>) => mayBeOk.ok),
-                map((response: HttpResponse<IProduct[]>) => response.body)
-            )
-            .subscribe((res: IProduct[]) => (this.products = res), (res: HttpErrorResponse) => this.onError(res.message));
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ productStyle }) => {
+      this.updateForm(productStyle);
+
+      this.productService.query().subscribe((res: HttpResponse<IProduct[]>) => (this.products = res.body || []));
+    });
+  }
+
+  updateForm(productStyle: IProductStyle): void {
+    this.editForm.patchValue({
+      id: productStyle.id,
+      name: productStyle.name,
+      code: productStyle.code,
+      isDefault: productStyle.isDefault,
+      type: productStyle.type,
+      product: productStyle.product
+    });
+  }
+
+  previousState(): void {
+    window.history.back();
+  }
+
+  save(): void {
+    this.isSaving = true;
+    const productStyle = this.createFromForm();
+    if (productStyle.id !== undefined) {
+      this.subscribeToSaveResponse(this.productStyleService.update(productStyle));
+    } else {
+      this.subscribeToSaveResponse(this.productStyleService.create(productStyle));
     }
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  private createFromForm(): IProductStyle {
+    return {
+      ...new ProductStyle(),
+      id: this.editForm.get(['id'])!.value,
+      name: this.editForm.get(['name'])!.value,
+      code: this.editForm.get(['code'])!.value,
+      isDefault: this.editForm.get(['isDefault'])!.value,
+      type: this.editForm.get(['type'])!.value,
+      product: this.editForm.get(['product'])!.value
+    };
+  }
 
-    save() {
-        this.isSaving = true;
-        if (this.productStyle.id !== undefined) {
-            this.subscribeToSaveResponse(this.productStyleService.update(this.productStyle));
-        } else {
-            this.subscribeToSaveResponse(this.productStyleService.create(this.productStyle));
-        }
-    }
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<IProductStyle>>): void {
+    result.subscribe(
+      () => this.onSaveSuccess(),
+      () => this.onSaveError()
+    );
+  }
 
-    protected subscribeToSaveResponse(result: Observable<HttpResponse<IProductStyle>>) {
-        result.subscribe((res: HttpResponse<IProductStyle>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
-    }
+  protected onSaveSuccess(): void {
+    this.isSaving = false;
+    this.previousState();
+  }
 
-    protected onSaveSuccess() {
-        this.isSaving = false;
-        this.previousState();
-    }
+  protected onSaveError(): void {
+    this.isSaving = false;
+  }
 
-    protected onSaveError() {
-        this.isSaving = false;
-    }
-
-    protected onError(errorMessage: string) {
-        this.jhiAlertService.error(errorMessage, null, null);
-    }
-
-    trackProductById(index: number, item: IProduct) {
-        return item.id;
-    }
+  trackById(index: number, item: IProduct): any {
+    return item.id;
+  }
 }

@@ -1,19 +1,17 @@
 package com.wongs.domain;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
+import java.util.Objects;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Objects;
 
 import com.wongs.domain.enumeration.CurrencyType;
 
@@ -23,11 +21,11 @@ import com.wongs.domain.enumeration.CurrencyType;
 @Entity
 @Table(name = "product_item")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "productitem")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "productitem")
 public class ProductItem implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -45,7 +43,7 @@ public class ProductItem implements Serializable {
     @Column(name = "currency")
     private CurrencyType currency;
 
-    @Column(name = "price", precision = 10, scale = 2)
+    @Column(name = "price", precision = 21, scale = 2)
     private BigDecimal price;
 
     @OneToOne
@@ -59,11 +57,11 @@ public class ProductItem implements Serializable {
     @OneToMany(mappedBy = "item")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Price> prices = new HashSet<>();
-    
+
     @OneToMany(mappedBy = "item")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Quantity> quantities = new HashSet<>();
-    
+
     @ManyToOne
     @JsonIgnoreProperties("items")
     private Product product;
@@ -237,19 +235,15 @@ public class ProductItem implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof ProductItem)) {
             return false;
         }
-        ProductItem productItem = (ProductItem) o;
-        if (productItem.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), productItem.getId());
+        return id != null && id.equals(((ProductItem) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

@@ -1,50 +1,53 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="delegation">
-            <h2><span jhiTranslate="mallApp.delegation.detail.title">Delegation</span> {{delegation.id}}</h2>
+            <h2><span jhiTranslate="mallApp.delegation.detail.title">Delegation</span> {{ delegation.id }}</h2>
+
             <hr>
+
             <jhi-alert-error></jhi-alert-error>
+
             <dl class="row-md jh-entity-details">
                 <dt><span jhiTranslate="mallApp.delegation.from">From</span></dt>
                 <dd>
-                    <span>{{delegation.from}}</span>
+                    <span>{{ delegation.from }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.delegation.to">To</span></dt>
                 <dd>
-                    <span>{{delegation.to}}</span>
+                    <span>{{ delegation.to }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.delegation.type">Type</span></dt>
                 <dd>
-                    <span jhiTranslate="{{'mallApp.DelegationType.' + delegation.type}}">{{delegation.type}}</span>
+                    <span jhiTranslate="{{ 'mallApp.DelegationType.' + delegation.type }}">{{ delegation.type }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.delegation.delegateId">Delegate Id</span></dt>
                 <dd>
-                    <span>{{delegation.delegateId}}</span>
+                    <span>{{ delegation.delegateId }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.delegation.status">Status</span></dt>
                 <dd>
-                    <span jhiTranslate="{{'mallApp.CommonStatus.' + delegation.status}}">{{delegation.status}}</span>
+                    <span jhiTranslate="{{ 'mallApp.CommonStatus.' + delegation.status }}">{{ delegation.status }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.delegation.createdBy">Created By</span></dt>
                 <dd>
-                    <span>{{delegation.createdBy}}</span>
+                    <span>{{ delegation.createdBy }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.delegation.createdDate">Created Date</span></dt>
                 <dd>
-                    <span>{{delegation.createdDate}}</span>
+                    <span>{{ delegation.createdDate }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.delegation.lastModifiedBy">Last Modified By</span></dt>
                 <dd>
-                    <span>{{delegation.lastModifiedBy}}</span>
+                    <span>{{ delegation.lastModifiedBy }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.delegation.lastModifiedDate">Last Modified Date</span></dt>
                 <dd>
-                    <span>{{delegation.lastModifiedDate}}</span>
+                    <span>{{ delegation.lastModifiedDate }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.delegation.account">Account</span></dt>
                 <dd>
                     <div *ngIf="delegation.account">
-                        <a [routerLink]="['/my-account', delegation.account?.id, 'view']">{{delegation.account?.id}}</a>
+                        <a [routerLink]="['/my-account', delegation.account?.id, 'view']">{{ delegation.account?.id }}</a>
                     </div>
                 </dd>
             </dl>
@@ -52,13 +55,13 @@
             <button type="submit"
                     (click)="previousState()"
                     class="btn btn-info">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
             </button>
 
             <button type="button"
                     [routerLink]="['/delegation', delegation.id, 'edit']"
                     class="btn btn-primary">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
             </button>
         </div>
     </div>

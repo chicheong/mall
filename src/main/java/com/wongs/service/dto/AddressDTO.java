@@ -1,6 +1,5 @@
 package com.wongs.service.dto;
 
-
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -10,10 +9,10 @@ import com.wongs.domain.Country;
 import com.wongs.domain.MyState;
 
 /**
- * A DTO for the Address entity.
+ * A DTO for the {@link com.wongs.domain.Address} entity.
  */
 public class AddressDTO implements Serializable {
-
+    
     private Long id;
 
     private String line1;
@@ -130,7 +129,7 @@ public class AddressDTO implements Serializable {
         }
 
         AddressDTO addressDTO = (AddressDTO) o;
-        if(addressDTO.getId() == null || getId() == null) {
+        if (addressDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), addressDTO.getId()) &&
@@ -159,6 +158,8 @@ public class AddressDTO implements Serializable {
             ", line4='" + getLine4() + "'" +
             ", city='" + getCity() + "'" +
             ", postalCode='" + getPostalCode() + "'" +
+            ", country=" + getCountry() +
+            ", myState=" + getMyState() +
             "}";
     }
 }

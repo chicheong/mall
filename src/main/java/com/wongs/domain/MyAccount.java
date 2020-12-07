@@ -1,6 +1,5 @@
 package com.wongs.domain;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
@@ -8,12 +7,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
+import java.util.Objects;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Objects;
 
 import com.wongs.domain.enumeration.AccountType;
 
@@ -23,35 +22,36 @@ import com.wongs.domain.enumeration.AccountType;
 @Entity
 @Table(name = "my_account")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "myaccount")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "myaccount")
 public class MyAccount implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "balance", precision = 10, scale = 2)
+    @Column(name = "balance", precision = 21, scale = 2)
     private BigDecimal balance;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "jhi_type")
+    @Column(name = "type")
     private AccountType type;
 
     @OneToMany(mappedBy = "account")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<Delegation> delegations = new HashSet<>();
+
     @ManyToOne
-    @JsonIgnoreProperties("accounts")
+    @JsonIgnoreProperties("myAccounts")
     private Company company;
 
     @ManyToOne
-    @JsonIgnoreProperties("accounts")
+    @JsonIgnoreProperties("myAccounts")
     private Department department;
 
     @ManyToOne
-    @JsonIgnoreProperties("accounts")
+    @JsonIgnoreProperties("myAccounts")
     private Office office;
 
     @ManyToMany
@@ -221,19 +221,15 @@ public class MyAccount implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof MyAccount)) {
             return false;
         }
-        MyAccount myAccount = (MyAccount) o;
-        if (myAccount.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), myAccount.getId());
+        return id != null && id.equals(((MyAccount) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

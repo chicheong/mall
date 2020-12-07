@@ -1,26 +1,27 @@
 package com.wongs.service;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
-import java.util.Optional;
-
+import com.wongs.domain.Shipping;
+import com.wongs.repository.ShippingRepository;
+import com.wongs.repository.search.ShippingSearchRepository;
+import com.wongs.service.dto.ShippingDTO;
+import com.wongs.service.mapper.ShippingMapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.wongs.domain.Shipping;
-import com.wongs.repository.ShippingRepository;
-import com.wongs.repository.search.ShippingSearchRepository;
-import com.wongs.service.dto.ShippingDTO;
+import java.util.Optional;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 import com.wongs.service.mapper.AddressMapper;
 import com.wongs.service.mapper.MyOrderMapper;
 import com.wongs.service.mapper.ShippingMapper;
 
 /**
- * Service Implementation for managing Shipping.
+ * Service Implementation for managing {@link Shipping}.
  */
 @Service
 @Transactional
@@ -50,8 +51,8 @@ public class ShippingService {
     /**
      * Save a shipping.
      *
-     * @param shippingDTO the entity to save
-     * @return the persisted entity
+     * @param shippingDTO the entity to save.
+     * @return the persisted entity.
      */
     public ShippingDTO save(ShippingDTO shippingDTO) {
         log.debug("Request to save Shipping : {}", shippingDTO);
@@ -84,8 +85,8 @@ public class ShippingService {
     /**
      * Get all the shippings.
      *
-     * @param pageable the pagination information
-     * @return the list of entities
+     * @param pageable the pagination information.
+     * @return the list of entities.
      */
     @Transactional(readOnly = true)
     public Page<ShippingDTO> findAll(Pageable pageable) {
@@ -94,12 +95,11 @@ public class ShippingService {
             .map(shippingMapper::toDto);
     }
 
-
     /**
      * Get one shipping by id.
      *
-     * @param id the id of the entity
-     * @return the entity
+     * @param id the id of the entity.
+     * @return the entity.
      */
     @Transactional(readOnly = true)
     public Optional<ShippingDTO> findOne(Long id) {
@@ -111,7 +111,7 @@ public class ShippingService {
     /**
      * Delete the shipping by id.
      *
-     * @param id the id of the entity
+     * @param id the id of the entity.
      */
     public void delete(Long id) {
         log.debug("Request to delete Shipping : {}", id);
@@ -122,9 +122,9 @@ public class ShippingService {
     /**
      * Search for the shipping corresponding to the query.
      *
-     * @param query the query of the search
-     * @param pageable the pagination information
-     * @return the list of entities
+     * @param query the query of the search.
+     * @param pageable the pagination information.
+     * @return the list of entities.
      */
     @Transactional(readOnly = true)
     public Page<ShippingDTO> search(String query, Pageable pageable) {

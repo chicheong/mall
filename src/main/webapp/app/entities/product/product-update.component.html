@@ -1,93 +1,165 @@
 <div class="row justify-content-center">
-    <div class="col-8">
-        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
-            <h2 id="jhi-product-heading" jhiTranslate="mallApp.product.home.createOrEditLabel">Create or edit a Product</h2>
-            <div>
-                <jhi-alert-error></jhi-alert-error>
-                <div class="form-group" [hidden]="!product.id">
-                    <label for="id" jhiTranslate="global.field.id">ID</label>
-                    <input type="text" class="form-control" id="id" name="id"
-                        [(ngModel)]="product.id" readonly />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="mallApp.product.name" for="field_name">Name</label>
-                    <input type="text" class="form-control" name="name" id="field_name"
-                        [(ngModel)]="product.name" />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="mallApp.product.code" for="field_code">Code</label>
-                    <input type="text" class="form-control" name="code" id="field_code"
-                        [(ngModel)]="product.code" />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="mallApp.product.brand" for="field_brand">Brand</label>
-                    <input type="text" class="form-control" name="brand" id="field_brand"
-                        [(ngModel)]="product.brand" />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="mallApp.product.description" for="field_description">Description</label>
-                    <input type="text" class="form-control" name="description" id="field_description"
-                        [(ngModel)]="product.description" />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="mallApp.product.content" for="field_content">Content</label>
-                    <input type="text" class="form-control" name="content" id="field_content"
-                        [(ngModel)]="product.content" />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="mallApp.product.remark" for="field_remark">Remark</label>
-                    <input type="text" class="form-control" name="remark" id="field_remark"
-                        [(ngModel)]="product.remark" />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="mallApp.product.status" for="field_status">Status</label>
-                    <select class="form-control" name="status" [(ngModel)]="product.status" id="field_status" >
-                        <option value="ACTIVE">{{'mallApp.ProductStatus.ACTIVE' | translate}}</option>
-                        <option value="RESTRICTED">{{'mallApp.ProductStatus.RESTRICTED' | translate}}</option>
-                        <option value="INACTIVE">{{'mallApp.ProductStatus.INACTIVE' | translate}}</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="mallApp.product.createdBy" for="field_createdBy">Created By</label>
-                    <input type="text" class="form-control" name="createdBy" id="field_createdBy"
-                        [(ngModel)]="product.createdBy" />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="mallApp.product.createdDate" for="field_createdDate">Created Date</label>
-                    <div class="d-flex">
-                        <input id="field_createdDate" type="datetime-local" class="form-control" name="createdDate" [(ngModel)]="createdDate" placeholder="YYYY-MM-DD HH:mm"
-                        />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="mallApp.product.lastModifiedBy" for="field_lastModifiedBy">Last Modified By</label>
-                    <input type="text" class="form-control" name="lastModifiedBy" id="field_lastModifiedBy"
-                        [(ngModel)]="product.lastModifiedBy" />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="mallApp.product.lastModifiedDate" for="field_lastModifiedDate">Last Modified Date</label>
-                    <div class="d-flex">
-                        <input id="field_lastModifiedDate" type="datetime-local" class="form-control" name="lastModifiedDate" [(ngModel)]="lastModifiedDate" placeholder="YYYY-MM-DD HH:mm"
-                        />
-                    </div>
-                </div>
-
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="mallApp.product.shop" for="field_shop">Shop</label>
-                    <select class="form-control" id="field_shop" name="shop" [(ngModel)]="product.shopId" >
-                        <option [ngValue]="null"></option>
-                        <option [ngValue]="shopOption.id" *ngFor="let shopOption of shops; trackBy: trackShopById">{{shopOption.id}}</option>
-                    </select>
-                </div>
-            </div>
-            <div>
-                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
-                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
-                </button>
-                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
-                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
-                </button>
-            </div>
+    <div class="col-12">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
+        	<jhi-alert-error></jhi-alert-error>
+			<div class="row"> <!-- *jhiHasAnyAuthority="'ROLE_USER'" -->
+				<div class="col-md-1">
+					<!-- <div>photo listing</div> -->
+					<div cdkDropList class="example-list" (cdkDropListDropped)="drop($event)">
+						<div class="example-box" *ngFor="let url of editForm.get('urls')!['controls']; let i = index; " cdkDrag><!-- | orderBy: 'sequence' -->
+							<img [src]="url.value.path"
+								class="img-thumbnail"
+								(click)="selectUrl(url)"
+								alt=""
+								style="width: 100px">
+						</div>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="my-1">
+						<button type="button" [disabled]="isSaving" class="btn btn-primary" (click)="uploadProductUrl()">
+							<fa-icon [icon]="'file-upload'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.upload"> Upload</span>
+						</button>
+					</div>
+					<!-- <div>main photo</div> -->
+					<div>
+						<span class="hipster img-fluid img-rounded" *ngIf="selectedUrl && selectedUrl.path">
+							<img [src]="selectedUrl.path"
+								class="img-fluid"
+								alt="">
+						</span>
+					</div>
+				</div>
+				<div class="col-md-5">
+					<div>
+						<button type="button" [disabled]="isSaving" class="btn btn-info" (click)="previousState()">
+							<fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
+						</button>
+						<button type="button" [disabled]="isSaving || !editForm.get('id')" class="btn btn-secondary" (click)="cancel()">
+			                <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+			            </button>
+						<button type="submit" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
+							<fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+						</button>
+					</div>
+					<div>
+						<div class="row-md jh-entity-details">
+							<div class="form-group">
+								<label class="form-control-label" jhiTranslate="mallApp.product.name" for="field_name">Name</label>
+								<textarea class="form-control" name="name" id="field_name" formControlName="name" rows="2" cols="50"></textarea>
+								<div *ngIf="editForm.get('name')!.invalid && (editForm.get('name')!.dirty || editForm.get('name')!.touched)">
+			                        <small class="form-text text-danger"
+			                               *ngIf="editForm.get('name')?.errors?.required" jhiTranslate="entity.validation.required">
+			                        This field is required.
+			                        </small>
+			                    </div>
+							</div>
+							<!-- <div>
+								<span *ngIf="product.brand || isEditing==true">by </span><span *ngSwitchCase="false">{{product.brand}}</span>
+								<span *ngSwitchCase="true"><input type="text" class="form-control" name="brand" id="field_brand" [(ngModel)]="product.brand"  /></span>
+							</div>
+							<div>
+								<span>123 customer reviews</span>
+							</div> -->
+							<div>
+								<div class="m-1">
+									<label class="form-control-label" jhiTranslate="mallApp.product.color">Color</label>
+									<span *ngFor="let color of editForm.get('colors')!['controls']; let i = index;">
+										<button [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="editStyleFromControl(color)">
+											<span>{{color.value.name}}</span>
+										</button>
+									</span>
+									<button [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="addColor()">
+										<span>+</span>
+									</button>
+								</div>
+								<div class="m-1">
+									<label class="form-control-label" jhiTranslate="mallApp.product.size">Size</label>
+									<span *ngFor="let size of editForm.get('sizes')!['controls']; let i = index;">
+										<button [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="editStyleFromControl(size)">
+											<span>{{size.value.name}}</span>
+										</button>
+									</span>
+									<button [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="addSize()">
+										<span>+</span>
+									</button>
+								</div>
+								<div>
+									<label class="form-control-label" jhiTranslate="mallApp.product.item">Item</label>
+									<div class="m-1">
+										<button [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="editCode()">
+											<fa-icon icon="barcode"></fa-icon>&nbsp;<span>CODE</span>
+										</button>
+										<button [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="editItemsUrl()">
+											<fa-icon icon="images"></fa-icon>&nbsp;<span>PHOTO</span>
+										</button>		        
+									</div>
+									<div class="m-1">
+										<button [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="editPrice()">
+											<fa-icon icon="dollar-sign"></fa-icon>&nbsp;<span>PRICE</span>
+										</button>
+										<button [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="editQuantity()">
+											<fa-icon icon="plus"></fa-icon>&nbsp;<span>QUANTITY</span>
+										</button>			        
+									</div>
+								</div>
+								<hr style='border-color: #5E5E5E;border-style: solid none;border-width: 1px 0;' />
+				                <div class="form-group">
+				                    <label class="form-control-label" jhiTranslate="mallApp.product.description" for="field_description">Description</label>
+				                    <textarea type="text" class="form-control" name="description" id="field_description" rows="5" cols="50" formControlName="description"></textarea>
+				                </div>								
+								<div class="m-1"> 
+									<button [disabled]="isSaving" type="button" class="btn btn-secondary" (click)="editOther()">
+										<fa-icon [icon]="'info'"></fa-icon>&nbsp;<span>Other Information</span>
+									</button>
+								</div>
+								
+								<div *ngIf="false">
+									In stock/Pre-order/Out-of-order
+								</div>
+								<div *ngIf="false">
+									Estimated Delivery Date: Monday, Feb. 8 when you choose Two-Day Shipping at checkout.
+								</div>
+								<div *ngIf="false">
+									Ships from and sold by Koozam.
+								</div>
+								<div *ngIf="false">
+									Size: With Backpack
+								</div>
+								<div *ngIf="false">
+									Options
+								</div>	
+								<div *ngIf="false">
+									Item Description
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="col-md-2">
+					<!-- <div>other</div>-->
+					<div>Other</div>
+				</div>
+				<!-- <div class="row" *ngSwitchCase="true">
+					<div class="col-md-2">
+					</div>
+					<div class="col-md-8">
+						<angular-editor [config]="config" name="content" id="field_content" [(ngModel)]="product.content"></angular-editor>
+					</div>
+					<div class="col-md-2">
+					</div>
+				</div>
+				<div class="row" *ngSwitchCase="false">
+					<div class="col-md-2">
+					</div>
+					<div class="col-md-8">
+						{{product.content}}
+					</div>
+					<div class="col-md-2">
+					</div>
+				</div> -->
+			</div>
         </form>
     </div>
 </div>

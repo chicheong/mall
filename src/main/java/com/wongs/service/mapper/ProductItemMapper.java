@@ -11,7 +11,7 @@ import com.wongs.domain.ProductItem;
 import com.wongs.service.dto.ProductItemDTO;
 
 /**
- * Mapper for the entity ProductItem and its DTO ProductItemDTO.
+ * Mapper for the entity {@link ProductItem} and its DTO {@link ProductItemDTO}.
  */
 @Service
 public class ProductItemMapper {

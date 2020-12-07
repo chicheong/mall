@@ -1,32 +1,35 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="userInfo">
-            <h2><span jhiTranslate="mallApp.userInfo.detail.title">User Info</span> {{userInfo.id}}</h2>
+            <h2><span jhiTranslate="mallApp.userInfo.detail.title">User Info</span> {{ userInfo.id }}</h2>
+
             <hr>
+
             <jhi-alert-error></jhi-alert-error>
+
             <dl class="row-md jh-entity-details">
                 <dt><span jhiTranslate="mallApp.userInfo.accountId">Account Id</span></dt>
                 <dd>
-                    <span>{{userInfo.accountId}}</span>
+                    <span>{{ userInfo.accountId }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.userInfo.shopId">Shop Id</span></dt>
                 <dd>
-                    <span>{{userInfo.shopId}}</span>
+                    <span>{{ userInfo.shopId }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.userInfo.user">User</span></dt>
                 <dd>
-                    {{userInfo.user?.login}}
+                    {{ userInfo.userLogin }}
                 </dd>
                 <dt><span jhiTranslate="mallApp.userInfo.defaultAccount">Default Account</span></dt>
                 <dd>
                     <div *ngIf="userInfo.defaultAccount">
-                        <a [routerLink]="['/my-account', userInfo.defaultAccount?.id, 'view']">{{userInfo.defaultAccount?.id}}</a>
+                        <a [routerLink]="['/my-account', userInfo.defaultAccount?.id, 'view']">{{ userInfo.defaultAccount?.id }}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="mallApp.userInfo.account">Account</span></dt>
                 <dd>
                     <span *ngFor="let account of userInfo.accounts; let last = last">
-                        <a [routerLink]="['/my-account', account?.id, 'view' ]">{{account.id}}</a>{{last ? '' : ', '}}
+                        <a [routerLink]="['/my-account', account?.id, 'view']">{{ account.id }}</a>{{ last ? '' : ', ' }}
                     </span>
                 </dd>
             </dl>
@@ -34,13 +37,13 @@
             <button type="submit"
                     (click)="previousState()"
                     class="btn btn-info">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
             </button>
 
             <button type="button"
                     [routerLink]="['/user-info', userInfo.id, 'edit']"
                     class="btn btn-primary">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
             </button>
         </div>
     </div>

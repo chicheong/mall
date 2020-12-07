@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-export const enum PermissionsConstants {
+export const enum PermissionConstants {
     CREATE = 'C',
     READ = 'R',
     UPDATE = 'U',
@@ -8,32 +8,32 @@ export const enum PermissionsConstants {
     ALL = 'CRUD',
 }
 @Injectable({ providedIn: 'root' })
-export class PermissionService  {
+export class PermissionService {
     constructor() { }
 
     isCreatable(permissionCode: string): boolean {
-        if (permissionCode && permissionCode.includes(PermissionsConstants.CREATE)) {
+        if (permissionCode && permissionCode.includes(PermissionConstants.CREATE)) {
             return true;
         }
         return false;
     }
 
     isReadable(permissionCode: string): boolean {
-        if (permissionCode && permissionCode.includes(PermissionsConstants.READ)) {
+        if (permissionCode && permissionCode.includes(PermissionConstants.READ)) {
             return true;
         }
         return false;
     }
 
     isUpdatable(permissionCode: string): boolean {
-        if (permissionCode && permissionCode.includes(PermissionsConstants.UPDATE)) {
+        if (permissionCode && permissionCode.includes(PermissionConstants.UPDATE)) {
             return true;
         }
         return false;
     }
 
     isDeletable(permissionCode: string): boolean {
-        if (permissionCode && permissionCode.includes(PermissionsConstants.DELETE)) {
+        if (permissionCode && permissionCode.includes(PermissionConstants.DELETE)) {
             return true;
         }
         return false;

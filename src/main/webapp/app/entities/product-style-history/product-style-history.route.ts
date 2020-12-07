@@ -1,93 +1,83 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { UserRouteAccessService } from 'app/core';
-import { Observable, of } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { ProductStyleHistory } from 'app/shared/model/product-style-history.model';
+import { Resolve, ActivatedRouteSnapshot, Routes, Router } from '@angular/router';
+import { Observable, of, EMPTY } from 'rxjs';
+import { flatMap } from 'rxjs/operators';
+
+import { Authority } from 'app/shared/constants/authority.constants';
+import { UserRouteAccessService } from 'app/core/auth/user-route-access-service';
+import { IProductStyleHistory, ProductStyleHistory } from 'app/shared/model/product-style-history.model';
 import { ProductStyleHistoryService } from './product-style-history.service';
 import { ProductStyleHistoryComponent } from './product-style-history.component';
 import { ProductStyleHistoryDetailComponent } from './product-style-history-detail.component';
 import { ProductStyleHistoryUpdateComponent } from './product-style-history-update.component';
-import { ProductStyleHistoryDeletePopupComponent } from './product-style-history-delete-dialog.component';
-import { IProductStyleHistory } from 'app/shared/model/product-style-history.model';
 
 @Injectable({ providedIn: 'root' })
 export class ProductStyleHistoryResolve implements Resolve<IProductStyleHistory> {
-    constructor(private service: ProductStyleHistoryService) {}
+  constructor(private service: ProductStyleHistoryService, private router: Router) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<IProductStyleHistory> {
-        const id = route.params['id'] ? route.params['id'] : null;
-        if (id) {
-            return this.service.find(id).pipe(
-                filter((response: HttpResponse<ProductStyleHistory>) => response.ok),
-                map((productStyleHistory: HttpResponse<ProductStyleHistory>) => productStyleHistory.body)
-            );
-        }
-        return of(new ProductStyleHistory());
+  resolve(route: ActivatedRouteSnapshot): Observable<IProductStyleHistory> | Observable<never> {
+    const id = route.params['id'];
+    if (id) {
+      return this.service.find(id).pipe(
+        flatMap((productStyleHistory: HttpResponse<ProductStyleHistory>) => {
+          if (productStyleHistory.body) {
+            return of(productStyleHistory.body);
+          } else {
+            this.router.navigate(['404']);
+            return EMPTY;
+          }
+        })
+      );
     }
+    return of(new ProductStyleHistory());
+  }
 }
 
 export const productStyleHistoryRoute: Routes = [
-    {
-        path: '',
-        component: ProductStyleHistoryComponent,
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.productStyleHistory.home.title'
-        },
-        canActivate: [UserRouteAccessService]
+  {
+    path: '',
+    component: ProductStyleHistoryComponent,
+    data: {
+      authorities: [Authority.USER],
+      pageTitle: 'mallApp.productStyleHistory.home.title'
     },
-    {
-        path: ':id/view',
-        component: ProductStyleHistoryDetailComponent,
-        resolve: {
-            productStyleHistory: ProductStyleHistoryResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.productStyleHistory.home.title'
-        },
-        canActivate: [UserRouteAccessService]
+    canActivate: [UserRouteAccessService]
+  },
+  {
+    path: ':id/view',
+    component: ProductStyleHistoryDetailComponent,
+    resolve: {
+      productStyleHistory: ProductStyleHistoryResolve
     },
-    {
-        path: 'new',
-        component: ProductStyleHistoryUpdateComponent,
-        resolve: {
-            productStyleHistory: ProductStyleHistoryResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.productStyleHistory.home.title'
-        },
-        canActivate: [UserRouteAccessService]
+    data: {
+      authorities: [Authority.USER],
+      pageTitle: 'mallApp.productStyleHistory.home.title'
     },
-    {
-        path: ':id/edit',
-        component: ProductStyleHistoryUpdateComponent,
-        resolve: {
-            productStyleHistory: ProductStyleHistoryResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.productStyleHistory.home.title'
-        },
-        canActivate: [UserRouteAccessService]
-    }
-];
-
-export const productStyleHistoryPopupRoute: Routes = [
-    {
-        path: ':id/delete',
-        component: ProductStyleHistoryDeletePopupComponent,
-        resolve: {
-            productStyleHistory: ProductStyleHistoryResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.productStyleHistory.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    }
+    canActivate: [UserRouteAccessService]
+  },
+  {
+    path: 'new',
+    component: ProductStyleHistoryUpdateComponent,
+    resolve: {
+      productStyleHistory: ProductStyleHistoryResolve
+    },
+    data: {
+      authorities: [Authority.USER],
+      pageTitle: 'mallApp.productStyleHistory.home.title'
+    },
+    canActivate: [UserRouteAccessService]
+  },
+  {
+    path: ':id/edit',
+    component: ProductStyleHistoryUpdateComponent,
+    resolve: {
+      productStyleHistory: ProductStyleHistoryResolve
+    },
+    data: {
+      authorities: [Authority.USER],
+      pageTitle: 'mallApp.productStyleHistory.home.title'
+    },
+    canActivate: [UserRouteAccessService]
+  }
 ];

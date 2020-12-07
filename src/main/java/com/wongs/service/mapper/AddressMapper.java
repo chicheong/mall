@@ -11,7 +11,7 @@ import com.wongs.domain.Address;
 import com.wongs.service.dto.AddressDTO;
 
 /**
- * Mapper for the entity Address and its DTO AddressDTO.
+ * Mapper for the entity {@link Address} and its DTO {@link AddressDTO}.
  */
 @Service
 public class AddressMapper {

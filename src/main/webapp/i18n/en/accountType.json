@@ -1,9 +1,9 @@
 {
-    "mallApp": {
-        "AccountType": {
-            "null": "",
-            "PERSONAL": "PERSONAL",
-            "COMPANY": "COMPANY"
-        }
+  "mallApp": {
+    "AccountType": {
+      "null": "",
+      "PERSONAL": "PERSONAL",
+      "COMPANY": "COMPANY"
     }
+  }
 }

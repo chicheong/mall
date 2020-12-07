@@ -1,5 +1,6 @@
 package com.wongs.service.mapper;
 
+
 import com.wongs.domain.*;
 import com.wongs.service.dto.ShippingDTO;
 import com.wongs.service.dto.ShippingDTO;
@@ -13,7 +14,7 @@ import org.mapstruct.*;
 import org.springframework.stereotype.Service;
 
 /**
- * Mapper for the entity Shipping and its DTO ShippingDTO.
+ * Mapper for the entity {@link Shipping} and its DTO {@link ShippingDTO}.
  */
 @Service
 public class ShippingMapper {

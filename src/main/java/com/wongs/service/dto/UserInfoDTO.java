@@ -11,7 +11,7 @@ import com.wongs.domain.User;
 import com.wongs.domain.UserInfo;
 
 /**
- * A DTO for the UserInfo entity.
+ * A DTO for the {@link com.wongs.domain.UserInfo} entity.
  */
 public class UserInfoDTO implements Serializable {
 
@@ -97,7 +97,7 @@ public class UserInfoDTO implements Serializable {
         }
 
         UserInfoDTO userInfoDTO = (UserInfoDTO) o;
-        if(userInfoDTO.getId() == null || getId() == null) {
+        if (userInfoDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), userInfoDTO.getId());
@@ -114,6 +114,9 @@ public class UserInfoDTO implements Serializable {
             "id=" + getId() +
             ", accountId=" + getAccountId() +
             ", shopId=" + getShopId() +
+            ", user=" + getUser() +
+            ", defaultAccount=" + getDefaultAccount() +
+            ", accounts='" + getAccounts() + "'" +
             "}";
     }
 }

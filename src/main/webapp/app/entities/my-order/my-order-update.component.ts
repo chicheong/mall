@@ -1,137 +1,159 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { JhiAlertService } from 'ng-jhipster';
-import { IMyOrder } from 'app/shared/model/my-order.model';
+import { map } from 'rxjs/operators';
+
+import { IMyOrder, MyOrder } from 'app/shared/model/my-order.model';
 import { MyOrderService } from './my-order.service';
-import { IAddress } from 'app/shared/model/address.model';
-import { AddressService } from 'app/entities/address';
+import { IContact } from 'app/shared/model/contact.model';
+import { ContactService } from 'app/entities/contact/contact.service';
 import { IMyAccount } from 'app/shared/model/my-account.model';
-import { MyAccountService } from 'app/entities/my-account';
+import { MyAccountService } from 'app/entities/my-account/my-account.service';
+
+type SelectableEntity = IContact | IMyAccount;
 
 @Component({
-    selector: 'jhi-my-order-update',
-    templateUrl: './my-order-update.component.html'
+  selector: 'jhi-my-order-update',
+  templateUrl: './my-order-update.component.html'
 })
 export class MyOrderUpdateComponent implements OnInit {
-    myOrder: IMyOrder;
-    isSaving: boolean;
+  isSaving = false;
+  shippings: IContact[] = [];
+  billings: IContact[] = [];
+  myaccounts: IMyAccount[] = [];
 
-    shippingaddresses: IAddress[];
+  editForm = this.fb.group({
+    id: [],
+    total: [],
+    currency: [],
+    remark: [],
+    status: [],
+    shipping: [],
+    billing: [],
+    accountId: []
+  });
 
-    billingaddresses: IAddress[];
+  constructor(
+    protected myOrderService: MyOrderService,
+    protected contactService: ContactService,
+    protected myAccountService: MyAccountService,
+    protected activatedRoute: ActivatedRoute,
+    private fb: FormBuilder
+  ) {}
 
-    myaccounts: IMyAccount[];
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ myOrder }) => {
+      this.updateForm(myOrder);
 
-    constructor(
-        protected jhiAlertService: JhiAlertService,
-        protected myOrderService: MyOrderService,
-        protected addressService: AddressService,
-        protected myAccountService: MyAccountService,
-        protected activatedRoute: ActivatedRoute
-    ) {}
-
-    ngOnInit() {
-        this.isSaving = false;
-        this.activatedRoute.data.subscribe(({ myOrder }) => {
-            this.myOrder = myOrder;
+      this.contactService
+        .query({ filter: 'myorder-is-null' })
+        .pipe(
+          map((res: HttpResponse<IContact[]>) => {
+            return res.body || [];
+          })
+        )
+        .subscribe((resBody: IContact[]) => {
+          if (!myOrder.shippingId) {
+            this.shippings = resBody;
+          } else {
+            this.contactService
+              .find(myOrder.shippingId)
+              .pipe(
+                map((subRes: HttpResponse<IContact>) => {
+                  return subRes.body ? [subRes.body].concat(resBody) : resBody;
+                })
+              )
+              .subscribe((concatRes: IContact[]) => (this.shippings = concatRes));
+          }
         });
-        this.addressService
-            .query({ filter: 'myorder-is-null' })
-            .pipe(
-                filter((mayBeOk: HttpResponse<IAddress[]>) => mayBeOk.ok),
-                map((response: HttpResponse<IAddress[]>) => response.body)
-            )
-            .subscribe(
-                (res: IAddress[]) => {
-                    if (!this.myOrder.shippingAddress) {
-                        this.shippingaddresses = res;
-                    } else {
-                        this.addressService
-                            .find(this.myOrder.shippingAddress.id)
-                            .pipe(
-                                filter((subResMayBeOk: HttpResponse<IAddress>) => subResMayBeOk.ok),
-                                map((subResponse: HttpResponse<IAddress>) => subResponse.body)
-                            )
-                            .subscribe(
-                                (subRes: IAddress) => (this.shippingaddresses = [subRes].concat(res)),
-                                (subRes: HttpErrorResponse) => this.onError(subRes.message)
-                            );
-                    }
-                },
-                (res: HttpErrorResponse) => this.onError(res.message)
-            );
-        this.addressService
-            .query({ filter: 'myorder-is-null' })
-            .pipe(
-                filter((mayBeOk: HttpResponse<IAddress[]>) => mayBeOk.ok),
-                map((response: HttpResponse<IAddress[]>) => response.body)
-            )
-            .subscribe(
-                (res: IAddress[]) => {
-                    if (!this.myOrder.billingAddress) {
-                        this.billingaddresses = res;
-                    } else {
-                        this.addressService
-                            .find(this.myOrder.billingAddress.id)
-                            .pipe(
-                                filter((subResMayBeOk: HttpResponse<IAddress>) => subResMayBeOk.ok),
-                                map((subResponse: HttpResponse<IAddress>) => subResponse.body)
-                            )
-                            .subscribe(
-                                (subRes: IAddress) => (this.billingaddresses = [subRes].concat(res)),
-                                (subRes: HttpErrorResponse) => this.onError(subRes.message)
-                            );
-                    }
-                },
-                (res: HttpErrorResponse) => this.onError(res.message)
-            );
-        this.myAccountService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<IMyAccount[]>) => mayBeOk.ok),
-                map((response: HttpResponse<IMyAccount[]>) => response.body)
-            )
-            .subscribe((res: IMyAccount[]) => (this.myaccounts = res), (res: HttpErrorResponse) => this.onError(res.message));
-    }
 
-    previousState() {
-        window.history.back();
-    }
+      this.contactService
+        .query({ filter: 'myorder-is-null' })
+        .pipe(
+          map((res: HttpResponse<IContact[]>) => {
+            return res.body || [];
+          })
+        )
+        .subscribe((resBody: IContact[]) => {
+          if (!myOrder.billingId) {
+            this.billings = resBody;
+          } else {
+            this.contactService
+              .find(myOrder.billingId)
+              .pipe(
+                map((subRes: HttpResponse<IContact>) => {
+                  return subRes.body ? [subRes.body].concat(resBody) : resBody;
+                })
+              )
+              .subscribe((concatRes: IContact[]) => (this.billings = concatRes));
+          }
+        });
 
-    save() {
-        this.isSaving = true;
-        if (this.myOrder.id !== undefined) {
-            this.subscribeToSaveResponse(this.myOrderService.update(this.myOrder));
-        } else {
-            this.subscribeToSaveResponse(this.myOrderService.create(this.myOrder));
-        }
-    }
+      this.myAccountService.query().subscribe((res: HttpResponse<IMyAccount[]>) => (this.myaccounts = res.body || []));
+    });
+  }
 
-    protected subscribeToSaveResponse(result: Observable<HttpResponse<IMyOrder>>) {
-        result.subscribe((res: HttpResponse<IMyOrder>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
-    }
+  updateForm(myOrder: IMyOrder): void {
+    this.editForm.patchValue({
+      id: myOrder.id,
+      total: myOrder.total,
+      currency: myOrder.currency,
+      remark: myOrder.remark,
+      status: myOrder.status,
+      shipping: myOrder.shipping,
+      billing: myOrder.billing,
+      accountId: myOrder.accountId
+    });
+  }
 
-    protected onSaveSuccess() {
-        this.isSaving = false;
-        this.previousState();
-    }
+  previousState(): void {
+    window.history.back();
+  }
 
-    protected onSaveError() {
-        this.isSaving = false;
+  save(): void {
+    this.isSaving = true;
+    const myOrder = this.createFromForm();
+    if (myOrder.id !== undefined) {
+      this.subscribeToSaveResponse(this.myOrderService.update(myOrder));
+    } else {
+      this.subscribeToSaveResponse(this.myOrderService.create(myOrder));
     }
+  }
 
-    protected onError(errorMessage: string) {
-        this.jhiAlertService.error(errorMessage, null, null);
-    }
+  private createFromForm(): IMyOrder {
+    return {
+      ...new MyOrder(),
+      id: this.editForm.get(['id'])!.value,
+      total: this.editForm.get(['total'])!.value,
+      currency: this.editForm.get(['currency'])!.value,
+      remark: this.editForm.get(['remark'])!.value,
+      status: this.editForm.get(['status'])!.value,
+      shipping: this.editForm.get(['shipping'])!.value,
+      billing: this.editForm.get(['billing'])!.value,
+      accountId: this.editForm.get(['accountId'])!.value
+    };
+  }
 
-    trackAddressById(index: number, item: IAddress) {
-        return item.id;
-    }
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<IMyOrder>>): void {
+    result.subscribe(
+      () => this.onSaveSuccess(),
+      () => this.onSaveError()
+    );
+  }
 
-    trackMyAccountById(index: number, item: IMyAccount) {
-        return item.id;
-    }
+  protected onSaveSuccess(): void {
+    this.isSaving = false;
+    this.previousState();
+  }
+
+  protected onSaveError(): void {
+    this.isSaving = false;
+  }
+
+  trackById(index: number, item: SelectableEntity): any {
+    return item.id;
+  }
 }

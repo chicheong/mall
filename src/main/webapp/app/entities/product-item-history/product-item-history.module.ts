@@ -1,45 +1,21 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
-import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from 'app/shared';
-import {
+import { MallSharedModule } from 'app/shared/shared.module';
+import { ProductItemHistoryComponent } from './product-item-history.component';
+import { ProductItemHistoryDetailComponent } from './product-item-history-detail.component';
+import { ProductItemHistoryUpdateComponent } from './product-item-history-update.component';
+import { ProductItemHistoryDeleteDialogComponent } from './product-item-history-delete-dialog.component';
+import { productItemHistoryRoute } from './product-item-history.route';
+
+@NgModule({
+  imports: [MallSharedModule, RouterModule.forChild(productItemHistoryRoute)],
+  declarations: [
     ProductItemHistoryComponent,
     ProductItemHistoryDetailComponent,
     ProductItemHistoryUpdateComponent,
-    ProductItemHistoryDeletePopupComponent,
-    ProductItemHistoryDeleteDialogComponent,
-    productItemHistoryRoute,
-    productItemHistoryPopupRoute
-} from './';
-
-const ENTITY_STATES = [...productItemHistoryRoute, ...productItemHistoryPopupRoute];
-
-@NgModule({
-    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
-    declarations: [
-        ProductItemHistoryComponent,
-        ProductItemHistoryDetailComponent,
-        ProductItemHistoryUpdateComponent,
-        ProductItemHistoryDeleteDialogComponent,
-        ProductItemHistoryDeletePopupComponent
-    ],
-    entryComponents: [
-        ProductItemHistoryComponent,
-        ProductItemHistoryUpdateComponent,
-        ProductItemHistoryDeleteDialogComponent,
-        ProductItemHistoryDeletePopupComponent
-    ],
-    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    ProductItemHistoryDeleteDialogComponent
+  ],
+  entryComponents: [ProductItemHistoryDeleteDialogComponent]
 })
-export class MallProductItemHistoryModule {
-    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
-        this.languageHelper.language.subscribe((languageKey: string) => {
-            if (languageKey !== undefined) {
-                this.languageService.changeLanguage(languageKey);
-            }
-        });
-    }
-}
+export class MallProductItemHistoryModule {}

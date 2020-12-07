@@ -1,110 +1,109 @@
-/* tslint:disable max-line-length */
 import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import { of } from 'rxjs';
-import { take, map } from 'rxjs/operators';
 import { ShippingPriceRuleService } from 'app/entities/shipping-price-rule/shipping-price-rule.service';
-import { IShippingPriceRule, ShippingPriceRule, ShippingPriceRuleType } from 'app/shared/model/shipping-price-rule.model';
+import { IShippingPriceRule, ShippingPriceRule } from 'app/shared/model/shipping-price-rule.model';
+import { ShippingPriceRuleType } from 'app/shared/model/enumerations/shipping-price-rule-type.model';
 
 describe('Service Tests', () => {
-    describe('ShippingPriceRule Service', () => {
-        let injector: TestBed;
-        let service: ShippingPriceRuleService;
-        let httpMock: HttpTestingController;
-        let elemDefault: IShippingPriceRule;
-        beforeEach(() => {
-            TestBed.configureTestingModule({
-                imports: [HttpClientTestingModule]
-            });
-            injector = getTestBed();
-            service = injector.get(ShippingPriceRuleService);
-            httpMock = injector.get(HttpTestingController);
+  describe('ShippingPriceRule Service', () => {
+    let injector: TestBed;
+    let service: ShippingPriceRuleService;
+    let httpMock: HttpTestingController;
+    let elemDefault: IShippingPriceRule;
+    let expectedResult: IShippingPriceRule | IShippingPriceRule[] | boolean | null;
 
-            elemDefault = new ShippingPriceRule(0, ShippingPriceRuleType.FIXED_PER_ORDER, 0, 0, 0);
-        });
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        imports: [HttpClientTestingModule]
+      });
+      expectedResult = null;
+      injector = getTestBed();
+      service = injector.get(ShippingPriceRuleService);
+      httpMock = injector.get(HttpTestingController);
 
-        describe('Service methods', async () => {
-            it('should find an element', async () => {
-                const returnedFromService = Object.assign({}, elemDefault);
-                service
-                    .find(123)
-                    .pipe(take(1))
-                    .subscribe(resp => expect(resp).toMatchObject({ body: elemDefault }));
-
-                const req = httpMock.expectOne({ method: 'GET' });
-                req.flush(JSON.stringify(returnedFromService));
-            });
-
-            it('should create a ShippingPriceRule', async () => {
-                const returnedFromService = Object.assign(
-                    {
-                        id: 0
-                    },
-                    elemDefault
-                );
-                const expected = Object.assign({}, returnedFromService);
-                service
-                    .create(new ShippingPriceRule(null))
-                    .pipe(take(1))
-                    .subscribe(resp => expect(resp).toMatchObject({ body: expected }));
-                const req = httpMock.expectOne({ method: 'POST' });
-                req.flush(JSON.stringify(returnedFromService));
-            });
-
-            it('should update a ShippingPriceRule', async () => {
-                const returnedFromService = Object.assign(
-                    {
-                        type: 'BBBBBB',
-                        value: 1,
-                        price: 1,
-                        sequence: 1
-                    },
-                    elemDefault
-                );
-
-                const expected = Object.assign({}, returnedFromService);
-                service
-                    .update(expected)
-                    .pipe(take(1))
-                    .subscribe(resp => expect(resp).toMatchObject({ body: expected }));
-                const req = httpMock.expectOne({ method: 'PUT' });
-                req.flush(JSON.stringify(returnedFromService));
-            });
-
-            it('should return a list of ShippingPriceRule', async () => {
-                const returnedFromService = Object.assign(
-                    {
-                        type: 'BBBBBB',
-                        value: 1,
-                        price: 1,
-                        sequence: 1
-                    },
-                    elemDefault
-                );
-                const expected = Object.assign({}, returnedFromService);
-                service
-                    .query(expected)
-                    .pipe(
-                        take(1),
-                        map(resp => resp.body)
-                    )
-                    .subscribe(body => expect(body).toContainEqual(expected));
-                const req = httpMock.expectOne({ method: 'GET' });
-                req.flush(JSON.stringify([returnedFromService]));
-                httpMock.verify();
-            });
-
-            it('should delete a ShippingPriceRule', async () => {
-                const rxPromise = service.delete(123).subscribe(resp => expect(resp.ok));
-
-                const req = httpMock.expectOne({ method: 'DELETE' });
-                req.flush({ status: 200 });
-            });
-        });
-
-        afterEach(() => {
-            httpMock.verify();
-        });
+      elemDefault = new ShippingPriceRule(0, ShippingPriceRuleType.FIXED_PER_ORDER, 0, 0, 0);
     });
+
+    describe('Service methods', () => {
+      it('should find an element', () => {
+        const returnedFromService = Object.assign({}, elemDefault);
+
+        service.find(123).subscribe(resp => (expectedResult = resp.body));
+
+        const req = httpMock.expectOne({ method: 'GET' });
+        req.flush(returnedFromService);
+        expect(expectedResult).toMatchObject(elemDefault);
+      });
+
+      it('should create a ShippingPriceRule', () => {
+        const returnedFromService = Object.assign(
+          {
+            id: 0
+          },
+          elemDefault
+        );
+
+        const expected = Object.assign({}, returnedFromService);
+
+        service.create(new ShippingPriceRule()).subscribe(resp => (expectedResult = resp.body));
+
+        const req = httpMock.expectOne({ method: 'POST' });
+        req.flush(returnedFromService);
+        expect(expectedResult).toMatchObject(expected);
+      });
+
+      it('should update a ShippingPriceRule', () => {
+        const returnedFromService = Object.assign(
+          {
+            type: 'BBBBBB',
+            value: 1,
+            price: 1,
+            sequence: 1
+          },
+          elemDefault
+        );
+
+        const expected = Object.assign({}, returnedFromService);
+
+        service.update(expected).subscribe(resp => (expectedResult = resp.body));
+
+        const req = httpMock.expectOne({ method: 'PUT' });
+        req.flush(returnedFromService);
+        expect(expectedResult).toMatchObject(expected);
+      });
+
+      it('should return a list of ShippingPriceRule', () => {
+        const returnedFromService = Object.assign(
+          {
+            type: 'BBBBBB',
+            value: 1,
+            price: 1,
+            sequence: 1
+          },
+          elemDefault
+        );
+
+        const expected = Object.assign({}, returnedFromService);
+
+        service.query().subscribe(resp => (expectedResult = resp.body));
+
+        const req = httpMock.expectOne({ method: 'GET' });
+        req.flush([returnedFromService]);
+        httpMock.verify();
+        expect(expectedResult).toContainEqual(expected);
+      });
+
+      it('should delete a ShippingPriceRule', () => {
+        service.delete(123).subscribe(resp => (expectedResult = resp.ok));
+
+        const req = httpMock.expectOne({ method: 'DELETE' });
+        req.flush({ status: 200 });
+        expect(expectedResult);
+      });
+    });
+
+    afterEach(() => {
+      httpMock.verify();
+    });
+  });
 });

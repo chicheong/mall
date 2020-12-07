@@ -35,13 +35,15 @@
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20190527101537",
+    "changelogDate": "20200503074100",
     "entityTableName": "shipping",
     "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

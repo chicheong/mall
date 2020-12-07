@@ -1,45 +1,21 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
-import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from 'app/shared';
-import {
+import { MallSharedModule } from 'app/shared/shared.module';
+import { ShippingStatusHistoryComponent } from './shipping-status-history.component';
+import { ShippingStatusHistoryDetailComponent } from './shipping-status-history-detail.component';
+import { ShippingStatusHistoryUpdateComponent } from './shipping-status-history-update.component';
+import { ShippingStatusHistoryDeleteDialogComponent } from './shipping-status-history-delete-dialog.component';
+import { shippingStatusHistoryRoute } from './shipping-status-history.route';
+
+@NgModule({
+  imports: [MallSharedModule, RouterModule.forChild(shippingStatusHistoryRoute)],
+  declarations: [
     ShippingStatusHistoryComponent,
     ShippingStatusHistoryDetailComponent,
     ShippingStatusHistoryUpdateComponent,
-    ShippingStatusHistoryDeletePopupComponent,
-    ShippingStatusHistoryDeleteDialogComponent,
-    shippingStatusHistoryRoute,
-    shippingStatusHistoryPopupRoute
-} from './';
-
-const ENTITY_STATES = [...shippingStatusHistoryRoute, ...shippingStatusHistoryPopupRoute];
-
-@NgModule({
-    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
-    declarations: [
-        ShippingStatusHistoryComponent,
-        ShippingStatusHistoryDetailComponent,
-        ShippingStatusHistoryUpdateComponent,
-        ShippingStatusHistoryDeleteDialogComponent,
-        ShippingStatusHistoryDeletePopupComponent
-    ],
-    entryComponents: [
-        ShippingStatusHistoryComponent,
-        ShippingStatusHistoryUpdateComponent,
-        ShippingStatusHistoryDeleteDialogComponent,
-        ShippingStatusHistoryDeletePopupComponent
-    ],
-    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+    ShippingStatusHistoryDeleteDialogComponent
+  ],
+  entryComponents: [ShippingStatusHistoryDeleteDialogComponent]
 })
-export class MallShippingStatusHistoryModule {
-    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
-        this.languageHelper.language.subscribe((languageKey: string) => {
-            if (languageKey !== undefined) {
-                this.languageService.changeLanguage(languageKey);
-            }
-        });
-    }
-}
+export class MallShippingStatusHistoryModule {}

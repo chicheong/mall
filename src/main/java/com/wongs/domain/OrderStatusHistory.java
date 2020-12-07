@@ -1,16 +1,15 @@
 package com.wongs.domain;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.Objects;
+import java.time.ZonedDateTime;
 
 import com.wongs.domain.enumeration.OrderStatus;
 
@@ -20,11 +19,11 @@ import com.wongs.domain.enumeration.OrderStatus;
 @Entity
 @Table(name = "order_status_history")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "orderstatushistory")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "orderstatushistory")
 public class OrderStatusHistory implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -94,19 +93,15 @@ public class OrderStatusHistory implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof OrderStatusHistory)) {
             return false;
         }
-        OrderStatusHistory orderStatusHistory = (OrderStatusHistory) o;
-        if (orderStatusHistory.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), orderStatusHistory.getId());
+        return id != null && id.equals(((OrderStatusHistory) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

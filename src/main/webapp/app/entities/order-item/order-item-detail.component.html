@@ -1,32 +1,35 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="orderItem">
-            <h2><span jhiTranslate="mallApp.orderItem.detail.title">Order Item</span> {{orderItem.id}}</h2>
+            <h2><span jhiTranslate="mallApp.orderItem.detail.title">Order Item</span> {{ orderItem.id }}</h2>
+
             <hr>
+
             <jhi-alert-error></jhi-alert-error>
+
             <dl class="row-md jh-entity-details">
                 <dt><span jhiTranslate="mallApp.orderItem.quantity">Quantity</span></dt>
                 <dd>
-                    <span>{{orderItem.quantity}}</span>
+                    <span>{{ orderItem.quantity }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.orderItem.price">Price</span></dt>
                 <dd>
-                    <span>{{orderItem.price}}</span>
+                    <span>{{ orderItem.price }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.orderItem.currency">Currency</span></dt>
                 <dd>
-                    <span jhiTranslate="{{'mallApp.CurrencyType.' + orderItem.currency}}">{{orderItem.currency}}</span>
+                    <span jhiTranslate="{{ 'mallApp.CurrencyType.' + orderItem.currency }}">{{ orderItem.currency }}</span>
                 </dd>
-        		<dt><span jhiTranslate="mallApp.orderItem.productItem">Product Item</span></dt>
-        		<dd>
-            		<div *ngIf="orderItem.productItem">
-                		<a [routerLink]="['/product-item', orderItem.productItem?.id]">{{orderItem.productItem?.id}}</a>
-            		</div>
-        		</dd>                
+                <dt><span jhiTranslate="mallApp.orderItem.productItem">Product Item</span></dt>
+                <dd>
+                    <div *ngIf="orderItem.productItem">
+                        <a [routerLink]="['/product-item', orderItem.productItem?.id, 'view']">{{ orderItem.productItem?.id }}</a>
+                    </div>
+                </dd>
                 <dt><span jhiTranslate="mallApp.orderItem.shop">Shop</span></dt>
                 <dd>
                     <div *ngIf="orderItem.shop">
-                        <a [routerLink]="['/order-shop', orderItem.shop?.id, 'view']">{{orderItem.shop?.id}}</a>
+                        <a [routerLink]="['/order-shop', orderItem.shop?.id, 'view']">{{ orderItem.shop?.id }}</a>
                     </div>
                 </dd>
             </dl>
@@ -34,13 +37,13 @@
             <button type="submit"
                     (click)="previousState()"
                     class="btn btn-info">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
             </button>
 
             <button type="button"
                     [routerLink]="['/order-item', orderItem.id, 'edit']"
                     class="btn btn-primary">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
             </button>
         </div>
     </div>

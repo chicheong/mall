@@ -1,116 +1,121 @@
 import { element, by, ElementFinder } from 'protractor';
 
 export class ProductStyleComponentsPage {
-    createButton = element(by.id('jh-create-entity'));
-    deleteButtons = element.all(by.css('jhi-product-style div table .btn-danger'));
-    title = element.all(by.css('jhi-product-style div h2#page-heading span')).first();
+  createButton = element(by.id('jh-create-entity'));
+  deleteButtons = element.all(by.css('jhi-product-style div table .btn-danger'));
+  title = element.all(by.css('jhi-product-style div h2#page-heading span')).first();
+  noResult = element(by.id('no-result'));
+  entities = element(by.id('entities'));
 
-    async clickOnCreateButton() {
-        await this.createButton.click();
-    }
+  async clickOnCreateButton(): Promise<void> {
+    await this.createButton.click();
+  }
 
-    async clickOnLastDeleteButton() {
-        await this.deleteButtons.last().click();
-    }
+  async clickOnLastDeleteButton(): Promise<void> {
+    await this.deleteButtons.last().click();
+  }
 
-    async countDeleteButtons() {
-        return this.deleteButtons.count();
-    }
+  async countDeleteButtons(): Promise<number> {
+    return this.deleteButtons.count();
+  }
 
-    async getTitle() {
-        return this.title.getAttribute('jhiTranslate');
-    }
+  async getTitle(): Promise<string> {
+    return this.title.getAttribute('jhiTranslate');
+  }
 }
 
 export class ProductStyleUpdatePage {
-    pageTitle = element(by.id('jhi-product-style-heading'));
-    saveButton = element(by.id('save-entity'));
-    cancelButton = element(by.id('cancel-save'));
-    nameInput = element(by.id('field_name'));
-    codeInput = element(by.id('field_code'));
-    isDefaultInput = element(by.id('field_isDefault'));
-    typeSelect = element(by.id('field_type'));
-    productSelect = element(by.id('field_product'));
+  pageTitle = element(by.id('jhi-product-style-heading'));
+  saveButton = element(by.id('save-entity'));
+  cancelButton = element(by.id('cancel-save'));
 
-    async getPageTitle() {
-        return this.pageTitle.getAttribute('jhiTranslate');
-    }
+  nameInput = element(by.id('field_name'));
+  codeInput = element(by.id('field_code'));
+  isDefaultInput = element(by.id('field_isDefault'));
+  typeSelect = element(by.id('field_type'));
 
-    async setNameInput(name) {
-        await this.nameInput.sendKeys(name);
-    }
+  productSelect = element(by.id('field_product'));
 
-    async getNameInput() {
-        return this.nameInput.getAttribute('value');
-    }
+  async getPageTitle(): Promise<string> {
+    return this.pageTitle.getAttribute('jhiTranslate');
+  }
 
-    async setCodeInput(code) {
-        await this.codeInput.sendKeys(code);
-    }
+  async setNameInput(name: string): Promise<void> {
+    await this.nameInput.sendKeys(name);
+  }
 
-    async getCodeInput() {
-        return this.codeInput.getAttribute('value');
-    }
+  async getNameInput(): Promise<string> {
+    return await this.nameInput.getAttribute('value');
+  }
 
-    getIsDefaultInput() {
-        return this.isDefaultInput;
-    }
-    async setTypeSelect(type) {
-        await this.typeSelect.sendKeys(type);
-    }
+  async setCodeInput(code: string): Promise<void> {
+    await this.codeInput.sendKeys(code);
+  }
 
-    async getTypeSelect() {
-        return this.typeSelect.element(by.css('option:checked')).getText();
-    }
+  async getCodeInput(): Promise<string> {
+    return await this.codeInput.getAttribute('value');
+  }
 
-    async typeSelectLastOption() {
-        await this.typeSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  getIsDefaultInput(): ElementFinder {
+    return this.isDefaultInput;
+  }
 
-    async productSelectLastOption() {
-        await this.productSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async setTypeSelect(type: string): Promise<void> {
+    await this.typeSelect.sendKeys(type);
+  }
 
-    async productSelectOption(option) {
-        await this.productSelect.sendKeys(option);
-    }
+  async getTypeSelect(): Promise<string> {
+    return await this.typeSelect.element(by.css('option:checked')).getText();
+  }
 
-    getProductSelect(): ElementFinder {
-        return this.productSelect;
-    }
+  async typeSelectLastOption(): Promise<void> {
+    await this.typeSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async getProductSelectedOption() {
-        return this.productSelect.element(by.css('option:checked')).getText();
-    }
+  async productSelectLastOption(): Promise<void> {
+    await this.productSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async save() {
-        await this.saveButton.click();
-    }
+  async productSelectOption(option: string): Promise<void> {
+    await this.productSelect.sendKeys(option);
+  }
 
-    async cancel() {
-        await this.cancelButton.click();
-    }
+  getProductSelect(): ElementFinder {
+    return this.productSelect;
+  }
 
-    getSaveButton(): ElementFinder {
-        return this.saveButton;
-    }
+  async getProductSelectedOption(): Promise<string> {
+    return await this.productSelect.element(by.css('option:checked')).getText();
+  }
+
+  async save(): Promise<void> {
+    await this.saveButton.click();
+  }
+
+  async cancel(): Promise<void> {
+    await this.cancelButton.click();
+  }
+
+  getSaveButton(): ElementFinder {
+    return this.saveButton;
+  }
 }
 
 export class ProductStyleDeleteDialog {
-    private dialogTitle = element(by.id('jhi-delete-productStyle-heading'));
-    private confirmButton = element(by.id('jhi-confirm-delete-productStyle'));
+  private dialogTitle = element(by.id('jhi-delete-productStyle-heading'));
+  private confirmButton = element(by.id('jhi-confirm-delete-productStyle'));
 
-    async getDialogTitle() {
-        return this.dialogTitle.getAttribute('jhiTranslate');
-    }
+  async getDialogTitle(): Promise<string> {
+    return this.dialogTitle.getAttribute('jhiTranslate');
+  }
 
-    async clickOnConfirmButton() {
-        await this.confirmButton.click();
-    }
+  async clickOnConfirmButton(): Promise<void> {
+    await this.confirmButton.click();
+  }
 }

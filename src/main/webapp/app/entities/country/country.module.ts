@@ -1,40 +1,16 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
-import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from 'app/shared';
-import {
-    CountryComponent,
-    CountryDetailComponent,
-    CountryUpdateComponent,
-    CountryDeletePopupComponent,
-    CountryDeleteDialogComponent,
-    countryRoute,
-    countryPopupRoute
-} from './';
-
-const ENTITY_STATES = [...countryRoute, ...countryPopupRoute];
+import { MallSharedModule } from 'app/shared/shared.module';
+import { CountryComponent } from './country.component';
+import { CountryDetailComponent } from './country-detail.component';
+import { CountryUpdateComponent } from './country-update.component';
+import { CountryDeleteDialogComponent } from './country-delete-dialog.component';
+import { countryRoute } from './country.route';
 
 @NgModule({
-    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
-    declarations: [
-        CountryComponent,
-        CountryDetailComponent,
-        CountryUpdateComponent,
-        CountryDeleteDialogComponent,
-        CountryDeletePopupComponent
-    ],
-    entryComponents: [CountryComponent, CountryUpdateComponent, CountryDeleteDialogComponent, CountryDeletePopupComponent],
-    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  imports: [MallSharedModule, RouterModule.forChild(countryRoute)],
+  declarations: [CountryComponent, CountryDetailComponent, CountryUpdateComponent, CountryDeleteDialogComponent],
+  entryComponents: [CountryDeleteDialogComponent]
 })
-export class MallCountryModule {
-    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
-        this.languageHelper.language.subscribe((languageKey: string) => {
-            if (languageKey !== undefined) {
-                this.languageService.changeLanguage(languageKey);
-            }
-        });
-    }
-}
+export class MallCountryModule {}

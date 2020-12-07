@@ -1,151 +1,135 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { JhiAlertService } from 'ng-jhipster';
-import { IMyAccount } from 'app/shared/model/my-account.model';
+
+import { IMyAccount, MyAccount } from 'app/shared/model/my-account.model';
 import { MyAccountService } from './my-account.service';
 import { ICompany } from 'app/shared/model/company.model';
-import { CompanyService } from 'app/entities/company';
+import { CompanyService } from 'app/entities/company/company.service';
 import { IDepartment } from 'app/shared/model/department.model';
-import { DepartmentService } from 'app/entities/department';
+import { DepartmentService } from 'app/entities/department/department.service';
 import { IOffice } from 'app/shared/model/office.model';
-import { OfficeService } from 'app/entities/office';
+import { OfficeService } from 'app/entities/office/office.service';
 import { IShop } from 'app/shared/model/shop.model';
-import { ShopService } from 'app/entities/shop';
-import { IUserInfo } from 'app/shared/model/user-info.model';
-import { UserInfoService } from 'app/entities/user-info';
+import { ShopService } from 'app/entities/shop/shop.service';
+
+type SelectableEntity = ICompany | IDepartment | IOffice | IShop;
 
 @Component({
-    selector: 'jhi-my-account-update',
-    templateUrl: './my-account-update.component.html'
+  selector: 'jhi-my-account-update',
+  templateUrl: './my-account-update.component.html'
 })
 export class MyAccountUpdateComponent implements OnInit {
-    myAccount: IMyAccount;
-    isSaving: boolean;
+  isSaving = false;
+  companies: ICompany[] = [];
+  departments: IDepartment[] = [];
+  offices: IOffice[] = [];
+  shops: IShop[] = [];
 
-    companies: ICompany[];
+  editForm = this.fb.group({
+    id: [],
+    balance: [],
+    type: [],
+    companyI: [],
+    department: [],
+    office: [],
+    shops: []
+  });
 
-    departments: IDepartment[];
+  constructor(
+    protected myAccountService: MyAccountService,
+    protected companyService: CompanyService,
+    protected departmentService: DepartmentService,
+    protected officeService: OfficeService,
+    protected shopService: ShopService,
+    protected activatedRoute: ActivatedRoute,
+    private fb: FormBuilder
+  ) {}
 
-    offices: IOffice[];
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ myAccount }) => {
+      this.updateForm(myAccount);
 
-    shops: IShop[];
+      this.companyService.query().subscribe((res: HttpResponse<ICompany[]>) => (this.companies = res.body || []));
 
-    userinfos: IUserInfo[];
+      this.departmentService.query().subscribe((res: HttpResponse<IDepartment[]>) => (this.departments = res.body || []));
 
-    constructor(
-        protected jhiAlertService: JhiAlertService,
-        protected myAccountService: MyAccountService,
-        protected companyService: CompanyService,
-        protected departmentService: DepartmentService,
-        protected officeService: OfficeService,
-        protected shopService: ShopService,
-        protected userInfoService: UserInfoService,
-        protected activatedRoute: ActivatedRoute
-    ) {}
+      this.officeService.query().subscribe((res: HttpResponse<IOffice[]>) => (this.offices = res.body || []));
 
-    ngOnInit() {
-        this.isSaving = false;
-        this.activatedRoute.data.subscribe(({ myAccount }) => {
-            this.myAccount = myAccount;
-        });
-        this.companyService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<ICompany[]>) => mayBeOk.ok),
-                map((response: HttpResponse<ICompany[]>) => response.body)
-            )
-            .subscribe((res: ICompany[]) => (this.companies = res), (res: HttpErrorResponse) => this.onError(res.message));
-        this.departmentService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<IDepartment[]>) => mayBeOk.ok),
-                map((response: HttpResponse<IDepartment[]>) => response.body)
-            )
-            .subscribe((res: IDepartment[]) => (this.departments = res), (res: HttpErrorResponse) => this.onError(res.message));
-        this.officeService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<IOffice[]>) => mayBeOk.ok),
-                map((response: HttpResponse<IOffice[]>) => response.body)
-            )
-            .subscribe((res: IOffice[]) => (this.offices = res), (res: HttpErrorResponse) => this.onError(res.message));
-        this.shopService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<IShop[]>) => mayBeOk.ok),
-                map((response: HttpResponse<IShop[]>) => response.body)
-            )
-            .subscribe((res: IShop[]) => (this.shops = res), (res: HttpErrorResponse) => this.onError(res.message));
-        this.userInfoService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<IUserInfo[]>) => mayBeOk.ok),
-                map((response: HttpResponse<IUserInfo[]>) => response.body)
-            )
-            .subscribe((res: IUserInfo[]) => (this.userinfos = res), (res: HttpErrorResponse) => this.onError(res.message));
+      this.shopService.query().subscribe((res: HttpResponse<IShop[]>) => (this.shops = res.body || []));
+    });
+  }
+
+  updateForm(myAccount: IMyAccount): void {
+    this.editForm.patchValue({
+      id: myAccount.id,
+      balance: myAccount.balance,
+      type: myAccount.type,
+      company: myAccount.company,
+      department: myAccount.department,
+      office: myAccount.office,
+      shops: myAccount.shops
+    });
+  }
+
+  previousState(): void {
+    window.history.back();
+  }
+
+  save(): void {
+    this.isSaving = true;
+    const myAccount = this.createFromForm();
+    if (myAccount.id !== undefined) {
+      this.subscribeToSaveResponse(this.myAccountService.update(myAccount));
+    } else {
+      this.subscribeToSaveResponse(this.myAccountService.create(myAccount));
     }
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  private createFromForm(): IMyAccount {
+    return {
+      ...new MyAccount(),
+      id: this.editForm.get(['id'])!.value,
+      balance: this.editForm.get(['balance'])!.value,
+      type: this.editForm.get(['type'])!.value,
+      company: this.editForm.get(['company'])!.value,
+      department: this.editForm.get(['department'])!.value,
+      office: this.editForm.get(['office'])!.value,
+      shops: this.editForm.get(['shops'])!.value
+    };
+  }
 
-    save() {
-        this.isSaving = true;
-        if (this.myAccount.id !== undefined) {
-            this.subscribeToSaveResponse(this.myAccountService.update(this.myAccount));
-        } else {
-            this.subscribeToSaveResponse(this.myAccountService.create(this.myAccount));
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<IMyAccount>>): void {
+    result.subscribe(
+      () => this.onSaveSuccess(),
+      () => this.onSaveError()
+    );
+  }
+
+  protected onSaveSuccess(): void {
+    this.isSaving = false;
+    this.previousState();
+  }
+
+  protected onSaveError(): void {
+    this.isSaving = false;
+  }
+
+  trackById(index: number, item: SelectableEntity): any {
+    return item.id;
+  }
+
+  getSelected(selectedVals: IShop[], option: IShop): IShop {
+    if (selectedVals) {
+      for (let i = 0; i < selectedVals.length; i++) {
+        if (option.id === selectedVals[i].id) {
+          return selectedVals[i];
         }
+      }
     }
-
-    protected subscribeToSaveResponse(result: Observable<HttpResponse<IMyAccount>>) {
-        result.subscribe((res: HttpResponse<IMyAccount>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
-    }
-
-    protected onSaveSuccess() {
-        this.isSaving = false;
-        this.previousState();
-    }
-
-    protected onSaveError() {
-        this.isSaving = false;
-    }
-
-    protected onError(errorMessage: string) {
-        this.jhiAlertService.error(errorMessage, null, null);
-    }
-
-    trackCompanyById(index: number, item: ICompany) {
-        return item.id;
-    }
-
-    trackDepartmentById(index: number, item: IDepartment) {
-        return item.id;
-    }
-
-    trackOfficeById(index: number, item: IOffice) {
-        return item.id;
-    }
-
-    trackShopById(index: number, item: IShop) {
-        return item.id;
-    }
-
-    trackUserInfoById(index: number, item: IUserInfo) {
-        return item.id;
-    }
-
-    getSelected(selectedVals: Array<any>, option: any) {
-        if (selectedVals) {
-            for (let i = 0; i < selectedVals.length; i++) {
-                if (option.id === selectedVals[i].id) {
-                    return selectedVals[i];
-                }
-            }
-        }
-        return option;
-    }
+    return option;
+  }
 }

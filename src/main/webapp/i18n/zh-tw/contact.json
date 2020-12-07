@@ -1,0 +1,29 @@
+{
+  "mallApp": {
+    "contact": {
+      "home": {
+        "title": "Contacts",
+        "createLabel": "建立一筆新的 Contact",
+        "createOrEditLabel": "建立或編輯 Contact",
+        "search": "搜尋 Contact",
+        "notFound": "No Contacts found"
+      },
+      "created": "新的 Contact 建立成功，識別碼為 {{ param }}",
+      "updated": "識別碼為 {{ param }} 的 Contact 更新成功",
+      "deleted": "識別碼為 {{ param }} 的 Contact 刪除成功",
+      "delete": {
+        "question": "您確定要刪除 Contact {{ id }} 嗎?"
+      },
+      "detail": {
+        "title": "Contact"
+      },
+      "name": "Name",
+      "name2": "Name 2",
+      "phoneNum": "Phone Num",
+      "phoneNum2": "Phone Num 2",
+      "email": "Email",
+      "remark": "Remark",
+      "address": "Address"
+    }
+  }
+}

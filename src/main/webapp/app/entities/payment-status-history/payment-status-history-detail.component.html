@@ -1,22 +1,25 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="paymentStatusHistory">
-            <h2><span jhiTranslate="mallApp.paymentStatusHistory.detail.title">Payment Status History</span> {{paymentStatusHistory.id}}</h2>
+            <h2><span jhiTranslate="mallApp.paymentStatusHistory.detail.title">Payment Status History</span> {{ paymentStatusHistory.id }}</h2>
+
             <hr>
+
             <jhi-alert-error></jhi-alert-error>
+
             <dl class="row-md jh-entity-details">
                 <dt><span jhiTranslate="mallApp.paymentStatusHistory.effectiveDate">Effective Date</span></dt>
                 <dd>
-                    <span>{{paymentStatusHistory.effectiveDate}}</span>
+                    <span>{{ paymentStatusHistory.effectiveDate }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.paymentStatusHistory.status">Status</span></dt>
                 <dd>
-                    <span jhiTranslate="{{'mallApp.PaymentStatus.' + paymentStatusHistory.status}}">{{paymentStatusHistory.status}}</span>
+                    <span jhiTranslate="{{ 'mallApp.PaymentStatus.' + paymentStatusHistory.status }}">{{ paymentStatusHistory.status }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.paymentStatusHistory.payment">Payment</span></dt>
                 <dd>
                     <div *ngIf="paymentStatusHistory.payment">
-                        <a [routerLink]="['/payment', paymentStatusHistory.payment?.id, 'view']">{{paymentStatusHistory.payment?.id}}</a>
+                        <a [routerLink]="['/payment', paymentStatusHistory.payment?.id, 'view']">{{ paymentStatusHistory.payment?.id }}</a>
                     </div>
                 </dd>
             </dl>
@@ -24,13 +27,13 @@
             <button type="submit"
                     (click)="previousState()"
                     class="btn btn-info">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
             </button>
 
             <button type="button"
                     [routerLink]="['/payment-status-history', paymentStatusHistory.id, 'edit']"
                     class="btn btn-primary">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
             </button>
         </div>
     </div>

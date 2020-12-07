@@ -1,45 +1,16 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
-import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from 'app/shared';
-import {
-    CurrencyRateComponent,
-    CurrencyRateDetailComponent,
-    CurrencyRateUpdateComponent,
-    CurrencyRateDeletePopupComponent,
-    CurrencyRateDeleteDialogComponent,
-    currencyRateRoute,
-    currencyRatePopupRoute
-} from './';
-
-const ENTITY_STATES = [...currencyRateRoute, ...currencyRatePopupRoute];
+import { MallSharedModule } from 'app/shared/shared.module';
+import { CurrencyRateComponent } from './currency-rate.component';
+import { CurrencyRateDetailComponent } from './currency-rate-detail.component';
+import { CurrencyRateUpdateComponent } from './currency-rate-update.component';
+import { CurrencyRateDeleteDialogComponent } from './currency-rate-delete-dialog.component';
+import { currencyRateRoute } from './currency-rate.route';
 
 @NgModule({
-    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
-    declarations: [
-        CurrencyRateComponent,
-        CurrencyRateDetailComponent,
-        CurrencyRateUpdateComponent,
-        CurrencyRateDeleteDialogComponent,
-        CurrencyRateDeletePopupComponent
-    ],
-    entryComponents: [
-        CurrencyRateComponent,
-        CurrencyRateUpdateComponent,
-        CurrencyRateDeleteDialogComponent,
-        CurrencyRateDeletePopupComponent
-    ],
-    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  imports: [MallSharedModule, RouterModule.forChild(currencyRateRoute)],
+  declarations: [CurrencyRateComponent, CurrencyRateDetailComponent, CurrencyRateUpdateComponent, CurrencyRateDeleteDialogComponent],
+  entryComponents: [CurrencyRateDeleteDialogComponent]
 })
-export class MallCurrencyRateModule {
-    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
-        this.languageHelper.language.subscribe((languageKey: string) => {
-            if (languageKey !== undefined) {
-                this.languageService.changeLanguage(languageKey);
-            }
-        });
-    }
-}
+export class MallCurrencyRateModule {}

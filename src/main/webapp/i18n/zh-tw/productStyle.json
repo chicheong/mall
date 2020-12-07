@@ -1,26 +1,27 @@
 {
-    "mallApp": {
-        "productStyle": {
-            "home": {
-                "title": "Product Styles",
-                "createLabel": "建立一筆新的 Product Style",
-                "createOrEditLabel": "建立或編輯 Product Style",
-                "search": "搜尋 Product Style"
-            },
-            "created": "新的 Product Style 建立成功，識別碼為 {{ param }}",
-            "updated": "識別碼為 {{ param }} 的 Product Style 更新成功",
-            "deleted": "識別碼為 {{ param }} 的 Product Style 刪除成功",
-            "delete": {
-                "question": "您確定要刪除 Product Style {{ id }} 嗎?"
-            },
-            "detail": {
-                "title": "Product Style"
-            },
-            "name": "Name",
-            "code": "Code",
-            "isDefault": "Is Default",
-            "type": "Type",
-            "product": "Product"
-        }
+  "mallApp": {
+    "productStyle": {
+      "home": {
+        "title": "Product Styles",
+        "createLabel": "建立一筆新的 Product Style",
+        "createOrEditLabel": "建立或編輯 Product Style",
+        "search": "搜尋 Product Style",
+        "notFound": "No Product Styles found"
+      },
+      "created": "新的 Product Style 建立成功，識別碼為 {{ param }}",
+      "updated": "識別碼為 {{ param }} 的 Product Style 更新成功",
+      "deleted": "識別碼為 {{ param }} 的 Product Style 刪除成功",
+      "delete": {
+        "question": "您確定要刪除 Product Style {{ id }} 嗎?"
+      },
+      "detail": {
+        "title": "Product Style"
+      },
+      "name": "Name",
+      "code": "Code",
+      "isDefault": "Is Default",
+      "type": "Type",
+      "product": "Product"
     }
+  }
 }

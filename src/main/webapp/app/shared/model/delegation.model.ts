@@ -1,17 +1,7 @@
 import { Moment } from 'moment';
 import { IMyAccount } from 'app/shared/model/my-account.model';
-
-export const enum DelegationType {
-    ACCOUNT = 'ACCOUNT',
-    COMPANY = 'COMPANY',
-    DEPARTMENT = 'DEPARTMENT',
-    OFFICE = 'OFFICE'
-}
-
-export const enum CommonStatus {
-    ACTIVE = 'ACTIVE',
-    INACTIVE = 'INACTIVE'
-}
+import { DelegationType } from 'app/shared/model/enumerations/delegation-type.model';
+import { CommonStatus } from 'app/shared/model/enumerations/common-status.model';
 
 export interface IDelegation {
     id?: number;

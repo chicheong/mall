@@ -1,25 +1,25 @@
 package com.wongs.service;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
-import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.wongs.domain.UserInfo;
 import com.wongs.repository.UserInfoRepository;
 import com.wongs.repository.search.UserInfoSearchRepository;
 import com.wongs.service.dto.UserInfoDTO;
 import com.wongs.service.mapper.MyAccountMapper;
 import com.wongs.service.mapper.UserInfoMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * Service Implementation for managing UserInfo.
+ * Service Implementation for managing {@link UserInfo}.
  */
 @Service
 @Transactional
@@ -45,8 +45,8 @@ public class UserInfoService {
     /**
      * Save a userInfo.
      *
-     * @param userInfoDTO the entity to save
-     * @return the persisted entity
+     * @param userInfoDTO the entity to save.
+     * @return the persisted entity.
      */
     public UserInfoDTO save(UserInfoDTO userInfoDTO) {
         log.debug("Request to save UserInfo : {}", userInfoDTO);
@@ -61,8 +61,8 @@ public class UserInfoService {
     /**
      * Get all the userInfos.
      *
-     * @param pageable the pagination information
-     * @return the list of entities
+     * @param pageable the pagination information.
+     * @return the list of entities.
      */
     @Transactional(readOnly = true)
     public Page<UserInfoDTO> findAll(Pageable pageable) {
@@ -72,20 +72,19 @@ public class UserInfoService {
     }
 
     /**
-     * Get all the UserInfo with eager load of many-to-many relationships.
+     * Get all the userInfos with eager load of many-to-many relationships.
      *
-     * @return the list of entities
+     * @return the list of entities.
      */
     public Page<UserInfoDTO> findAllWithEagerRelationships(Pageable pageable) {
         return userInfoRepository.findAllWithEagerRelationships(pageable).map(userInfoMapper::toDto);
     }
-    
 
     /**
      * Get one userInfo by id.
      *
-     * @param id the id of the entity
-     * @return the entity
+     * @param id the id of the entity.
+     * @return the entity.
      */
     @Transactional(readOnly = true)
     public Optional<UserInfoDTO> findOne(Long id) {
@@ -107,7 +106,7 @@ public class UserInfoService {
     /**
      * Delete the userInfo by id.
      *
-     * @param id the id of the entity
+     * @param id the id of the entity.
      */
     public void delete(Long id) {
         log.debug("Request to delete UserInfo : {}", id);
@@ -118,9 +117,9 @@ public class UserInfoService {
     /**
      * Search for the userInfo corresponding to the query.
      *
-     * @param query the query of the search
-     * @param pageable the pagination information
-     * @return the list of entities
+     * @param query the query of the search.
+     * @param pageable the pagination information.
+     * @return the list of entities.
      */
     @Transactional(readOnly = true)
     public Page<UserInfoDTO> search(String query, Pageable pageable) {

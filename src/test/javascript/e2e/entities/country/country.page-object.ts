@@ -1,94 +1,97 @@
 import { element, by, ElementFinder } from 'protractor';
 
 export class CountryComponentsPage {
-    createButton = element(by.id('jh-create-entity'));
-    deleteButtons = element.all(by.css('jhi-country div table .btn-danger'));
-    title = element.all(by.css('jhi-country div h2#page-heading span')).first();
+  createButton = element(by.id('jh-create-entity'));
+  deleteButtons = element.all(by.css('jhi-country div table .btn-danger'));
+  title = element.all(by.css('jhi-country div h2#page-heading span')).first();
+  noResult = element(by.id('no-result'));
+  entities = element(by.id('entities'));
 
-    async clickOnCreateButton() {
-        await this.createButton.click();
-    }
+  async clickOnCreateButton(): Promise<void> {
+    await this.createButton.click();
+  }
 
-    async clickOnLastDeleteButton() {
-        await this.deleteButtons.last().click();
-    }
+  async clickOnLastDeleteButton(): Promise<void> {
+    await this.deleteButtons.last().click();
+  }
 
-    async countDeleteButtons() {
-        return this.deleteButtons.count();
-    }
+  async countDeleteButtons(): Promise<number> {
+    return this.deleteButtons.count();
+  }
 
-    async getTitle() {
-        return this.title.getAttribute('jhiTranslate');
-    }
+  async getTitle(): Promise<string> {
+    return this.title.getAttribute('jhiTranslate');
+  }
 }
 
 export class CountryUpdatePage {
-    pageTitle = element(by.id('jhi-country-heading'));
-    saveButton = element(by.id('save-entity'));
-    cancelButton = element(by.id('cancel-save'));
-    codeInput = element(by.id('field_code'));
-    labelInput = element(by.id('field_label'));
-    numInput = element(by.id('field_num'));
-    nameInput = element(by.id('field_name'));
+  pageTitle = element(by.id('jhi-country-heading'));
+  saveButton = element(by.id('save-entity'));
+  cancelButton = element(by.id('cancel-save'));
 
-    async getPageTitle() {
-        return this.pageTitle.getAttribute('jhiTranslate');
-    }
+  codeInput = element(by.id('field_code'));
+  labelInput = element(by.id('field_label'));
+  numInput = element(by.id('field_num'));
+  nameInput = element(by.id('field_name'));
 
-    async setCodeInput(code) {
-        await this.codeInput.sendKeys(code);
-    }
+  async getPageTitle(): Promise<string> {
+    return this.pageTitle.getAttribute('jhiTranslate');
+  }
 
-    async getCodeInput() {
-        return this.codeInput.getAttribute('value');
-    }
+  async setCodeInput(code: string): Promise<void> {
+    await this.codeInput.sendKeys(code);
+  }
 
-    async setLabelInput(label) {
-        await this.labelInput.sendKeys(label);
-    }
+  async getCodeInput(): Promise<string> {
+    return await this.codeInput.getAttribute('value');
+  }
 
-    async getLabelInput() {
-        return this.labelInput.getAttribute('value');
-    }
+  async setLabelInput(label: string): Promise<void> {
+    await this.labelInput.sendKeys(label);
+  }
 
-    async setNumInput(num) {
-        await this.numInput.sendKeys(num);
-    }
+  async getLabelInput(): Promise<string> {
+    return await this.labelInput.getAttribute('value');
+  }
 
-    async getNumInput() {
-        return this.numInput.getAttribute('value');
-    }
+  async setNumInput(num: string): Promise<void> {
+    await this.numInput.sendKeys(num);
+  }
 
-    async setNameInput(name) {
-        await this.nameInput.sendKeys(name);
-    }
+  async getNumInput(): Promise<string> {
+    return await this.numInput.getAttribute('value');
+  }
 
-    async getNameInput() {
-        return this.nameInput.getAttribute('value');
-    }
+  async setNameInput(name: string): Promise<void> {
+    await this.nameInput.sendKeys(name);
+  }
 
-    async save() {
-        await this.saveButton.click();
-    }
+  async getNameInput(): Promise<string> {
+    return await this.nameInput.getAttribute('value');
+  }
 
-    async cancel() {
-        await this.cancelButton.click();
-    }
+  async save(): Promise<void> {
+    await this.saveButton.click();
+  }
 
-    getSaveButton(): ElementFinder {
-        return this.saveButton;
-    }
+  async cancel(): Promise<void> {
+    await this.cancelButton.click();
+  }
+
+  getSaveButton(): ElementFinder {
+    return this.saveButton;
+  }
 }
 
 export class CountryDeleteDialog {
-    private dialogTitle = element(by.id('jhi-delete-country-heading'));
-    private confirmButton = element(by.id('jhi-confirm-delete-country'));
+  private dialogTitle = element(by.id('jhi-delete-country-heading'));
+  private confirmButton = element(by.id('jhi-confirm-delete-country'));
 
-    async getDialogTitle() {
-        return this.dialogTitle.getAttribute('jhiTranslate');
-    }
+  async getDialogTitle(): Promise<string> {
+    return this.dialogTitle.getAttribute('jhiTranslate');
+  }
 
-    async clickOnConfirmButton() {
-        await this.confirmButton.click();
-    }
+  async clickOnConfirmButton(): Promise<void> {
+    await this.confirmButton.click();
+  }
 }

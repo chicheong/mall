@@ -1,16 +1,15 @@
 package com.wongs.domain;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.Objects;
+import java.time.ZonedDateTime;
 
 import com.wongs.domain.enumeration.DelegationType;
 
@@ -22,11 +21,11 @@ import com.wongs.domain.enumeration.CommonStatus;
 @Entity
 @Table(name = "delegation")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "delegation")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "delegation")
 public class Delegation implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,7 +37,7 @@ public class Delegation implements Serializable {
     private ZonedDateTime to;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "jhi_type")
+    @Column(name = "type")
     private DelegationType type;
 
     @Column(name = "delegate_id")
@@ -209,19 +208,15 @@ public class Delegation implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Delegation)) {
             return false;
         }
-        Delegation delegation = (Delegation) o;
-        if (delegation.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), delegation.getId());
+        return id != null && id.equals(((Delegation) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

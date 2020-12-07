@@ -1,15 +1,6 @@
 import { Moment } from 'moment';
 import { IProductItem } from 'app/shared/model/product-item.model';
-
-export const enum CurrencyType {
-    HKD = 'HKD',
-    CNY = 'CNY',
-    USD = 'USD',
-    EUR = 'EUR',
-    JPY = 'JPY',
-    KRW = 'KRW',
-    TWD = 'TWD'
-}
+import { CurrencyType } from 'app/shared/model/enumerations/currency-type.model';
 
 export interface IPrice {
     id?: number;

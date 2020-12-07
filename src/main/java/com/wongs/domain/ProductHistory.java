@@ -1,16 +1,15 @@
 package com.wongs.domain;
 
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.Objects;
+import java.time.ZonedDateTime;
 
 import com.wongs.domain.enumeration.ProductStatus;
 
@@ -20,11 +19,11 @@ import com.wongs.domain.enumeration.ProductStatus;
 @Entity
 @Table(name = "product_history")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "producthistory")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "producthistory")
 public class ProductHistory implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -206,19 +205,15 @@ public class ProductHistory implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof ProductHistory)) {
             return false;
         }
-        ProductHistory productHistory = (ProductHistory) o;
-        if (productHistory.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), productHistory.getId());
+        return id != null && id.equals(((ProductHistory) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

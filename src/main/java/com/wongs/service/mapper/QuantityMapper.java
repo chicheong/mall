@@ -11,7 +11,7 @@ import com.wongs.domain.Quantity;
 import com.wongs.service.dto.QuantityDTO;
 
 /**
- * Mapper for the entity Quantity and its DTO QuantityDTO.
+ * Mapper for the entity {@link Quantity} and its DTO {@link QuantityDTO}.
  */
 @Service
 public class QuantityMapper {

@@ -37,7 +37,7 @@ public class UserDTO {
     private String lastName;
 
     @Email
-    @Size(min = 5, max = 100)
+    @Size(min = 5, max = 254)
     private String email;
 
     @Size(max = 5000000)
@@ -45,7 +45,7 @@ public class UserDTO {
 
     private boolean activated = false;
 
-    @Size(min = 2, max = 6)
+    @Size(min = 2, max = 10)
     private String langKey;
 
     private String createdBy;
@@ -207,7 +207,7 @@ public class UserDTO {
 //		}
 	}
 
-	@Override
+    @Override
     public String toString() {
         return "UserDTO{" +
             "login='" + login + '\'' +

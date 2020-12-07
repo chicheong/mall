@@ -1,6 +1,5 @@
 package com.wongs.service.dto;
 
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -15,10 +14,10 @@ import com.wongs.domain.Quantity;
 import com.wongs.domain.enumeration.CurrencyType;
 
 /**
- * A DTO for the ProductItem entity.
+ * A DTO for the {@link com.wongs.domain.ProductItem} entity.
  */
 public class ProductItemDTO implements Serializable {
-
+    
     private Long id;
     
     private String tempId;
@@ -100,7 +99,7 @@ public class ProductItemDTO implements Serializable {
 		this.isDefault = isDefault;
 	}
 
-	public Integer getQuantity() {
+    public Integer getQuantity() {
         return quantity;
     }
 
@@ -206,7 +205,7 @@ public class ProductItemDTO implements Serializable {
         }
 
         ProductItemDTO productItemDTO = (ProductItemDTO) o;
-        if(productItemDTO.getId() == null || getId() == null) {
+        if (productItemDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), productItemDTO.getId());
@@ -226,6 +225,9 @@ public class ProductItemDTO implements Serializable {
             ", quantity=" + getQuantity() +
             ", currency='" + getCurrency() + "'" +
             ", price=" + getPrice() +
+            ", color=" + getColor() +
+            ", size=" + getSize() +
+            ", product=" + getProduct() +
             "}";
     }
 }

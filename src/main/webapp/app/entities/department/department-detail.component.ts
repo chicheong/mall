@@ -4,21 +4,19 @@ import { ActivatedRoute } from '@angular/router';
 import { IDepartment } from 'app/shared/model/department.model';
 
 @Component({
-    selector: 'jhi-department-detail',
-    templateUrl: './department-detail.component.html'
+  selector: 'jhi-department-detail',
+  templateUrl: './department-detail.component.html'
 })
 export class DepartmentDetailComponent implements OnInit {
-    department: IDepartment;
+  department: IDepartment | null = null;
 
-    constructor(protected activatedRoute: ActivatedRoute) {}
+  constructor(protected activatedRoute: ActivatedRoute) {}
 
-    ngOnInit() {
-        this.activatedRoute.data.subscribe(({ department }) => {
-            this.department = department;
-        });
-    }
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ department }) => (this.department = department));
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  previousState(): void {
+    window.history.back();
+  }
 }

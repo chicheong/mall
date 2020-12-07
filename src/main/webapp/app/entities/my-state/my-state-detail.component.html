@@ -1,26 +1,29 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="myState">
-            <h2><span jhiTranslate="mallApp.myState.detail.title">My State</span> {{myState.id}}</h2>
+            <h2><span jhiTranslate="mallApp.myState.detail.title">My State</span> {{ myState.id }}</h2>
+
             <hr>
+
             <jhi-alert-error></jhi-alert-error>
+
             <dl class="row-md jh-entity-details">
                 <dt><span jhiTranslate="mallApp.myState.code">Code</span></dt>
                 <dd>
-                    <span>{{myState.code}}</span>
+                    <span>{{ myState.code }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.myState.label">Label</span></dt>
                 <dd>
-                    <span>{{myState.label}}</span>
+                    <span>{{ myState.label }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.myState.name">Name</span></dt>
                 <dd>
-                    <span>{{myState.name}}</span>
+                    <span>{{ myState.name }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.myState.country">Country</span></dt>
                 <dd>
                     <div *ngIf="myState.country">
-                        <a [routerLink]="['/country', myState.country?.id, 'view']">{{myState.country?.id}}</a>
+                        <a [routerLink]="['/country', myState.country?.id, 'view']">{{ myState.country?.id }}</a>
                     </div>
                 </dd>
             </dl>
@@ -28,13 +31,13 @@
             <button type="submit"
                     (click)="previousState()"
                     class="btn btn-info">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
             </button>
 
             <button type="button"
                     [routerLink]="['/my-state', myState.id, 'edit']"
                     class="btn btn-primary">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
             </button>
         </div>
     </div>

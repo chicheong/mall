@@ -31,13 +31,15 @@
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20190527101536",
+    "changelogDate": "20200503074000",
     "entityTableName": "card",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pagination",
-    "service": "no",
+    "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

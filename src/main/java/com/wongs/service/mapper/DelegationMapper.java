@@ -12,7 +12,7 @@ import com.wongs.domain.MyAccount;
 import com.wongs.service.dto.DelegationDTO;
 
 /**
- * Mapper for the entity Delegation and its DTO DelegationDTO.
+ * Mapper for the entity {@link Delegation} and its DTO {@link DelegationDTO}.
  */
 @Service
 public class DelegationMapper {

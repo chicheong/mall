@@ -20,13 +20,15 @@
         }
     ],
     "relationships": [],
-    "changelogDate": "20190527101538",
+    "changelogDate": "20200503074200",
     "entityTableName": "shipping_type",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pagination",
-    "service": "no",
+    "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

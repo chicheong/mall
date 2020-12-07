@@ -1,27 +1,27 @@
 package com.wongs.web.rest;
-import com.wongs.domain.ProductStyleHistory;
-import com.wongs.repository.ProductStyleHistoryRepository;
-import com.wongs.repository.search.ProductStyleHistorySearchRepository;
+
+import com.wongs.service.ProductStyleHistoryService;
 import com.wongs.web.rest.errors.BadRequestAlertException;
-import com.wongs.web.rest.util.HeaderUtil;
+import com.wongs.service.dto.ProductStyleHistoryDTO;
+
+import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
 
 /**
- * REST controller for managing ProductStyleHistory.
+ * REST controller for managing {@link com.wongs.domain.ProductStyleHistory}.
  */
 @RestController
 @RequestMapping("/api")
@@ -31,108 +31,102 @@ public class ProductStyleHistoryResource {
 
     private static final String ENTITY_NAME = "productStyleHistory";
 
-    private final ProductStyleHistoryRepository productStyleHistoryRepository;
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
 
-    private final ProductStyleHistorySearchRepository productStyleHistorySearchRepository;
+    private final ProductStyleHistoryService productStyleHistoryService;
 
-    public ProductStyleHistoryResource(ProductStyleHistoryRepository productStyleHistoryRepository, ProductStyleHistorySearchRepository productStyleHistorySearchRepository) {
-        this.productStyleHistoryRepository = productStyleHistoryRepository;
-        this.productStyleHistorySearchRepository = productStyleHistorySearchRepository;
+    public ProductStyleHistoryResource(ProductStyleHistoryService productStyleHistoryService) {
+        this.productStyleHistoryService = productStyleHistoryService;
     }
 
     /**
-     * POST  /product-style-histories : Create a new productStyleHistory.
+     * {@code POST  /product-style-histories} : Create a new productStyleHistory.
      *
-     * @param productStyleHistory the productStyleHistory to create
-     * @return the ResponseEntity with status 201 (Created) and with body the new productStyleHistory, or with status 400 (Bad Request) if the productStyleHistory has already an ID
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param productStyleHistoryDTO the productStyleHistoryDTO to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new productStyleHistoryDTO, or with status {@code 400 (Bad Request)} if the productStyleHistory has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/product-style-histories")
-    public ResponseEntity<ProductStyleHistory> createProductStyleHistory(@RequestBody ProductStyleHistory productStyleHistory) throws URISyntaxException {
-        log.debug("REST request to save ProductStyleHistory : {}", productStyleHistory);
-        if (productStyleHistory.getId() != null) {
+    public ResponseEntity<ProductStyleHistoryDTO> createProductStyleHistory(@RequestBody ProductStyleHistoryDTO productStyleHistoryDTO) throws URISyntaxException {
+        log.debug("REST request to save ProductStyleHistory : {}", productStyleHistoryDTO);
+        if (productStyleHistoryDTO.getId() != null) {
             throw new BadRequestAlertException("A new productStyleHistory cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        ProductStyleHistory result = productStyleHistoryRepository.save(productStyleHistory);
-        productStyleHistorySearchRepository.save(result);
+        ProductStyleHistoryDTO result = productStyleHistoryService.save(productStyleHistoryDTO);
         return ResponseEntity.created(new URI("/api/product-style-histories/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(ENTITY_NAME, result.getId().toString()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, true, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
-     * PUT  /product-style-histories : Updates an existing productStyleHistory.
+     * {@code PUT  /product-style-histories} : Updates an existing productStyleHistory.
      *
-     * @param productStyleHistory the productStyleHistory to update
-     * @return the ResponseEntity with status 200 (OK) and with body the updated productStyleHistory,
-     * or with status 400 (Bad Request) if the productStyleHistory is not valid,
-     * or with status 500 (Internal Server Error) if the productStyleHistory couldn't be updated
-     * @throws URISyntaxException if the Location URI syntax is incorrect
+     * @param productStyleHistoryDTO the productStyleHistoryDTO to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated productStyleHistoryDTO,
+     * or with status {@code 400 (Bad Request)} if the productStyleHistoryDTO is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the productStyleHistoryDTO couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PutMapping("/product-style-histories")
-    public ResponseEntity<ProductStyleHistory> updateProductStyleHistory(@RequestBody ProductStyleHistory productStyleHistory) throws URISyntaxException {
-        log.debug("REST request to update ProductStyleHistory : {}", productStyleHistory);
-        if (productStyleHistory.getId() == null) {
+    public ResponseEntity<ProductStyleHistoryDTO> updateProductStyleHistory(@RequestBody ProductStyleHistoryDTO productStyleHistoryDTO) throws URISyntaxException {
+        log.debug("REST request to update ProductStyleHistory : {}", productStyleHistoryDTO);
+        if (productStyleHistoryDTO.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        ProductStyleHistory result = productStyleHistoryRepository.save(productStyleHistory);
-        productStyleHistorySearchRepository.save(result);
+        ProductStyleHistoryDTO result = productStyleHistoryService.save(productStyleHistoryDTO);
         return ResponseEntity.ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(ENTITY_NAME, productStyleHistory.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, true, ENTITY_NAME, productStyleHistoryDTO.getId().toString()))
             .body(result);
     }
 
     /**
-     * GET  /product-style-histories : get all the productStyleHistories.
+     * {@code GET  /product-style-histories} : get all the productStyleHistories.
      *
-     * @return the ResponseEntity with status 200 (OK) and the list of productStyleHistories in body
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of productStyleHistories in body.
      */
     @GetMapping("/product-style-histories")
-    public List<ProductStyleHistory> getAllProductStyleHistories() {
+    public List<ProductStyleHistoryDTO> getAllProductStyleHistories() {
         log.debug("REST request to get all ProductStyleHistories");
-        return productStyleHistoryRepository.findAll();
+        return productStyleHistoryService.findAll();
     }
 
     /**
-     * GET  /product-style-histories/:id : get the "id" productStyleHistory.
+     * {@code GET  /product-style-histories/:id} : get the "id" productStyleHistory.
      *
-     * @param id the id of the productStyleHistory to retrieve
-     * @return the ResponseEntity with status 200 (OK) and with body the productStyleHistory, or with status 404 (Not Found)
+     * @param id the id of the productStyleHistoryDTO to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the productStyleHistoryDTO, or with status {@code 404 (Not Found)}.
      */
     @GetMapping("/product-style-histories/{id}")
-    public ResponseEntity<ProductStyleHistory> getProductStyleHistory(@PathVariable Long id) {
+    public ResponseEntity<ProductStyleHistoryDTO> getProductStyleHistory(@PathVariable Long id) {
         log.debug("REST request to get ProductStyleHistory : {}", id);
-        Optional<ProductStyleHistory> productStyleHistory = productStyleHistoryRepository.findById(id);
-        return ResponseUtil.wrapOrNotFound(productStyleHistory);
+        Optional<ProductStyleHistoryDTO> productStyleHistoryDTO = productStyleHistoryService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(productStyleHistoryDTO);
     }
 
     /**
-     * DELETE  /product-style-histories/:id : delete the "id" productStyleHistory.
+     * {@code DELETE  /product-style-histories/:id} : delete the "id" productStyleHistory.
      *
-     * @param id the id of the productStyleHistory to delete
-     * @return the ResponseEntity with status 200 (OK)
+     * @param id the id of the productStyleHistoryDTO to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
     @DeleteMapping("/product-style-histories/{id}")
     public ResponseEntity<Void> deleteProductStyleHistory(@PathVariable Long id) {
         log.debug("REST request to delete ProductStyleHistory : {}", id);
-        productStyleHistoryRepository.deleteById(id);
-        productStyleHistorySearchRepository.deleteById(id);
-        return ResponseEntity.ok().headers(HeaderUtil.createEntityDeletionAlert(ENTITY_NAME, id.toString())).build();
+        productStyleHistoryService.delete(id);
+        return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, true, ENTITY_NAME, id.toString())).build();
     }
 
     /**
-     * SEARCH  /_search/product-style-histories?query=:query : search for the productStyleHistory corresponding
+     * {@code SEARCH  /_search/product-style-histories?query=:query} : search for the productStyleHistory corresponding
      * to the query.
      *
-     * @param query the query of the productStyleHistory search
-     * @return the result of the search
+     * @param query the query of the productStyleHistory search.
+     * @return the result of the search.
      */
     @GetMapping("/_search/product-style-histories")
-    public List<ProductStyleHistory> searchProductStyleHistories(@RequestParam String query) {
+    public List<ProductStyleHistoryDTO> searchProductStyleHistories(@RequestParam String query) {
         log.debug("REST request to search ProductStyleHistories for query {}", query);
-        return StreamSupport
-            .stream(productStyleHistorySearchRepository.search(queryStringQuery(query)).spliterator(), false)
-            .collect(Collectors.toList());
+        return productStyleHistoryService.search(query);
     }
-
 }

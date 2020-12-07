@@ -1,5 +1,6 @@
 package com.wongs.service.mapper;
 
+
 import com.wongs.domain.*;
 import com.wongs.service.dto.PaymentDTO;
 import com.wongs.service.dto.PaymentDTO;
@@ -13,7 +14,7 @@ import org.mapstruct.*;
 import org.springframework.stereotype.Service;
 
 /**
- * Mapper for the entity Payment and its DTO PaymentDTO.
+ * Mapper for the entity {@link Payment} and its DTO {@link PaymentDTO}.
  */
 @Service
 public class PaymentMapper {

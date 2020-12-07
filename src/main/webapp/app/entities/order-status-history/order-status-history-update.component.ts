@@ -1,82 +1,104 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
 import * as moment from 'moment';
 import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
-import { JhiAlertService } from 'ng-jhipster';
-import { IOrderStatusHistory } from 'app/shared/model/order-status-history.model';
+
+import { IOrderStatusHistory, OrderStatusHistory } from 'app/shared/model/order-status-history.model';
 import { OrderStatusHistoryService } from './order-status-history.service';
 import { IMyOrder } from 'app/shared/model/my-order.model';
-import { MyOrderService } from 'app/entities/my-order';
+import { MyOrderService } from 'app/entities/my-order/my-order.service';
 
 @Component({
-    selector: 'jhi-order-status-history-update',
-    templateUrl: './order-status-history-update.component.html'
+  selector: 'jhi-order-status-history-update',
+  templateUrl: './order-status-history-update.component.html'
 })
 export class OrderStatusHistoryUpdateComponent implements OnInit {
-    orderStatusHistory: IOrderStatusHistory;
-    isSaving: boolean;
+  isSaving = false;
+  myorders: IMyOrder[] = [];
 
-    myorders: IMyOrder[];
-    effectiveDate: string;
+  editForm = this.fb.group({
+    id: [],
+    effectiveDate: [],
+    status: [],
+    order: []
+  });
 
-    constructor(
-        protected jhiAlertService: JhiAlertService,
-        protected orderStatusHistoryService: OrderStatusHistoryService,
-        protected myOrderService: MyOrderService,
-        protected activatedRoute: ActivatedRoute
-    ) {}
+  constructor(
+    protected orderStatusHistoryService: OrderStatusHistoryService,
+    protected myOrderService: MyOrderService,
+    protected activatedRoute: ActivatedRoute,
+    private fb: FormBuilder
+  ) {}
 
-    ngOnInit() {
-        this.isSaving = false;
-        this.activatedRoute.data.subscribe(({ orderStatusHistory }) => {
-            this.orderStatusHistory = orderStatusHistory;
-            this.effectiveDate =
-                this.orderStatusHistory.effectiveDate != null ? this.orderStatusHistory.effectiveDate.format(DATE_TIME_FORMAT) : null;
-        });
-        this.myOrderService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<IMyOrder[]>) => mayBeOk.ok),
-                map((response: HttpResponse<IMyOrder[]>) => response.body)
-            )
-            .subscribe((res: IMyOrder[]) => (this.myorders = res), (res: HttpErrorResponse) => this.onError(res.message));
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ orderStatusHistory }) => {
+      if (!orderStatusHistory.id) {
+        const today = moment().startOf('day');
+        orderStatusHistory.effectiveDate = today;
+      }
+
+      this.updateForm(orderStatusHistory);
+
+      this.myOrderService.query().subscribe((res: HttpResponse<IMyOrder[]>) => (this.myorders = res.body || []));
+    });
+  }
+
+  updateForm(orderStatusHistory: IOrderStatusHistory): void {
+    this.editForm.patchValue({
+      id: orderStatusHistory.id,
+      effectiveDate: orderStatusHistory.effectiveDate ? orderStatusHistory.effectiveDate.format(DATE_TIME_FORMAT) : null,
+      status: orderStatusHistory.status,
+      order: orderStatusHistory.order
+    });
+  }
+
+  previousState(): void {
+    window.history.back();
+  }
+
+  save(): void {
+    this.isSaving = true;
+    const orderStatusHistory = this.createFromForm();
+    if (orderStatusHistory.id !== undefined) {
+      this.subscribeToSaveResponse(this.orderStatusHistoryService.update(orderStatusHistory));
+    } else {
+      this.subscribeToSaveResponse(this.orderStatusHistoryService.create(orderStatusHistory));
     }
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  private createFromForm(): IOrderStatusHistory {
+    return {
+      ...new OrderStatusHistory(),
+      id: this.editForm.get(['id'])!.value,
+      effectiveDate: this.editForm.get(['effectiveDate'])!.value
+        ? moment(this.editForm.get(['effectiveDate'])!.value, DATE_TIME_FORMAT)
+        : undefined,
+      status: this.editForm.get(['status'])!.value,
+      order: this.editForm.get(['order'])!.value
+    };
+  }
 
-    save() {
-        this.isSaving = true;
-        this.orderStatusHistory.effectiveDate = this.effectiveDate != null ? moment(this.effectiveDate, DATE_TIME_FORMAT) : null;
-        if (this.orderStatusHistory.id !== undefined) {
-            this.subscribeToSaveResponse(this.orderStatusHistoryService.update(this.orderStatusHistory));
-        } else {
-            this.subscribeToSaveResponse(this.orderStatusHistoryService.create(this.orderStatusHistory));
-        }
-    }
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<IOrderStatusHistory>>): void {
+    result.subscribe(
+      () => this.onSaveSuccess(),
+      () => this.onSaveError()
+    );
+  }
 
-    protected subscribeToSaveResponse(result: Observable<HttpResponse<IOrderStatusHistory>>) {
-        result.subscribe((res: HttpResponse<IOrderStatusHistory>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
-    }
+  protected onSaveSuccess(): void {
+    this.isSaving = false;
+    this.previousState();
+  }
 
-    protected onSaveSuccess() {
-        this.isSaving = false;
-        this.previousState();
-    }
+  protected onSaveError(): void {
+    this.isSaving = false;
+  }
 
-    protected onSaveError() {
-        this.isSaving = false;
-    }
-
-    protected onError(errorMessage: string) {
-        this.jhiAlertService.error(errorMessage, null, null);
-    }
-
-    trackMyOrderById(index: number, item: IMyOrder) {
-        return item.id;
-    }
+  trackById(index: number, item: IMyOrder): any {
+    return item.id;
+  }
 }

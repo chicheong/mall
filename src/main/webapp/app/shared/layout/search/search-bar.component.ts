@@ -1,5 +1,5 @@
-import { Component, Input } from '@angular/core';
-import { RouterModule, Router } from '@angular/router';
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'jhi-search-bar',
@@ -13,7 +13,7 @@ export class SearchBarComponent {
         private router: Router
     ) {}
 
-    private goto(id) {
+    private goto(id: number): void {
         this.router.navigate(['/product', id, 'view']);
     }
 }

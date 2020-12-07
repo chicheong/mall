@@ -1,6 +1,5 @@
 package com.wongs.domain;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -8,11 +7,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Objects;
 
 import com.wongs.domain.enumeration.CommonStatus;
 
@@ -22,11 +21,11 @@ import com.wongs.domain.enumeration.CommonStatus;
 @Entity
 @Table(name = "office")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "office")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "office")
 public class Office implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -46,9 +45,6 @@ public class Office implements Serializable {
     @JoinColumn(unique = true)
     private Address address;
 
-    @OneToMany(mappedBy = "office")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<MyAccount> accounts = new HashSet<>();
     @ManyToMany(mappedBy = "offices")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnore
@@ -120,31 +116,6 @@ public class Office implements Serializable {
         this.address = address;
     }
 
-    public Set<MyAccount> getAccounts() {
-        return accounts;
-    }
-
-    public Office accounts(Set<MyAccount> myAccounts) {
-        this.accounts = myAccounts;
-        return this;
-    }
-
-    public Office addAccount(MyAccount myAccount) {
-        this.accounts.add(myAccount);
-        myAccount.setOffice(this);
-        return this;
-    }
-
-    public Office removeAccount(MyAccount myAccount) {
-        this.accounts.remove(myAccount);
-        myAccount.setOffice(null);
-        return this;
-    }
-
-    public void setAccounts(Set<MyAccount> myAccounts) {
-        this.accounts = myAccounts;
-    }
-
     public Set<Company> getCompanies() {
         return companies;
     }
@@ -201,19 +172,15 @@ public class Office implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Office)) {
             return false;
         }
-        Office office = (Office) o;
-        if (office.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), office.getId());
+        return id != null && id.equals(((Office) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

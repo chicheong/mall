@@ -1,54 +1,62 @@
 <div class="row justify-content-center">
     <div class="col-8">
-        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
             <h2 id="jhi-card-heading" jhiTranslate="mallApp.card.home.createOrEditLabel">Create or edit a Card</h2>
+
             <div>
                 <jhi-alert-error></jhi-alert-error>
-                <div class="form-group" [hidden]="!card.id">
+
+                <div class="form-group" [hidden]="!editForm.get('id')!.value">
                     <label for="id" jhiTranslate="global.field.id">ID</label>
-                    <input type="text" class="form-control" id="id" name="id"
-                        [(ngModel)]="card.id" readonly />
+                    <input type="text" class="form-control" id="id" name="id" formControlName="id" readonly />
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.card.holderName" for="field_holderName">Holder Name</label>
                     <input type="text" class="form-control" name="holderName" id="field_holderName"
-                        [(ngModel)]="card.holderName" />
+                           formControlName="holderName"/>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.card.cardNumber" for="field_cardNumber">Card Number</label>
                     <input type="text" class="form-control" name="cardNumber" id="field_cardNumber"
-                        [(ngModel)]="card.cardNumber" />
+                           formControlName="cardNumber"/>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.card.expirationMonth" for="field_expirationMonth">Expiration Month</label>
                     <input type="text" class="form-control" name="expirationMonth" id="field_expirationMonth"
-                        [(ngModel)]="card.expirationMonth" />
+                           formControlName="expirationMonth"/>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.card.expirationYear" for="field_expirationYear">Expiration Year</label>
                     <input type="text" class="form-control" name="expirationYear" id="field_expirationYear"
-                        [(ngModel)]="card.expirationYear" />
+                           formControlName="expirationYear"/>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.card.cvc" for="field_cvc">Cvc</label>
                     <input type="text" class="form-control" name="cvc" id="field_cvc"
-                        [(ngModel)]="card.cvc" />
+                           formControlName="cvc"/>
                 </div>
 
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.card.account" for="field_account">Account</label>
-                    <select class="form-control" id="field_account" name="account" [(ngModel)]="card.account" >
+                    <select class="form-control" id="field_account" name="account" formControlName="account">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="myAccountOption.id === card.account?.id ? card.account : myAccountOption" *ngFor="let myAccountOption of myaccounts; trackBy: trackMyAccountById">{{myAccountOption.id}}</option>
+                        <option [ngValue]="myAccountOption.id === editForm.get('account')!.value?.id ? editForm.get('account')?.value : myAccountOption" *ngFor="let myAccountOption of myaccounts; trackBy: trackByObject">{{ myAccountOption.id }}</option>
                     </select>
                 </div>
             </div>
+
             <div>
-                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
-                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
+                    <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
                 </button>
-                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
-                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+
+                <button type="submit" id="save-entity" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
                 </button>
             </div>
         </form>

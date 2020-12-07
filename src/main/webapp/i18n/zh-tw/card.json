@@ -1,27 +1,28 @@
 {
-    "mallApp": {
-        "card": {
-            "home": {
-                "title": "Cards",
-                "createLabel": "建立一筆新的 Card",
-                "createOrEditLabel": "建立或編輯 Card",
-                "search": "搜尋 Card"
-            },
-            "created": "新的 Card 建立成功，識別碼為 {{ param }}",
-            "updated": "識別碼為 {{ param }} 的 Card 更新成功",
-            "deleted": "識別碼為 {{ param }} 的 Card 刪除成功",
-            "delete": {
-                "question": "您確定要刪除 Card {{ id }} 嗎?"
-            },
-            "detail": {
-                "title": "Card"
-            },
-            "holderName": "Holder Name",
-            "cardNumber": "Card Number",
-            "expirationMonth": "Expiration Month",
-            "expirationYear": "Expiration Year",
-            "cvc": "Cvc",
-            "account": "Account"
-        }
+  "mallApp": {
+    "card": {
+      "home": {
+        "title": "Cards",
+        "createLabel": "建立一筆新的 Card",
+        "createOrEditLabel": "建立或編輯 Card",
+        "search": "搜尋 Card",
+        "notFound": "No Cards found"
+      },
+      "created": "新的 Card 建立成功，識別碼為 {{ param }}",
+      "updated": "識別碼為 {{ param }} 的 Card 更新成功",
+      "deleted": "識別碼為 {{ param }} 的 Card 刪除成功",
+      "delete": {
+        "question": "您確定要刪除 Card {{ id }} 嗎?"
+      },
+      "detail": {
+        "title": "Card"
+      },
+      "holderName": "Holder Name",
+      "cardNumber": "Card Number",
+      "expirationMonth": "Expiration Month",
+      "expirationYear": "Expiration Year",
+      "cvc": "Cvc",
+      "account": "Account"
     }
+  }
 }

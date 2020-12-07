@@ -1,7 +1,17 @@
 package com.wongs.service;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-import static org.junit.Assert.assertThat;
+import com.wongs.domain.MyOrder;
+import com.wongs.repository.MyOrderRepository;
+import com.wongs.repository.search.MyOrderSearchRepository;
+import com.wongs.service.dto.MyOrderDTO;
+import com.wongs.service.mapper.MyOrderMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -9,16 +19,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static org.elasticsearch.index.query.QueryBuilders.*;
 import org.springframework.cache.CacheManager;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.wongs.domain.MyAccount;
-import com.wongs.domain.MyOrder;
 import com.wongs.domain.OrderItem;
 import com.wongs.domain.OrderShop;
 import com.wongs.domain.ProductItem;
@@ -32,13 +35,11 @@ import com.wongs.repository.search.MyOrderSearchRepository;
 import com.wongs.repository.search.OrderItemSearchRepository;
 import com.wongs.repository.search.OrderShopSearchRepository;
 import com.wongs.service.dto.MyAccountDTO;
-import com.wongs.service.dto.MyOrderDTO;
 import com.wongs.service.dto.OrderItemDTO;
 import com.wongs.service.dto.OrderShopDTO;
 import com.wongs.service.dto.ProductItemDTO;
 import com.wongs.service.mapper.AddressMapper;
 import com.wongs.service.mapper.MyAccountMapper;
-import com.wongs.service.mapper.MyOrderMapper;
 import com.wongs.service.mapper.OrderItemMapper;
 import com.wongs.service.mapper.OrderShopMapper;
 import com.wongs.service.mapper.ProductItemMapper;
@@ -47,7 +48,7 @@ import com.wongs.service.mapper.UrlMapper;
 import com.wongs.web.rest.errors.BadRequestAlertException;
 
 /**
- * Service Implementation for managing MyOrder.
+ * Service Implementation for managing {@link MyOrder}.
  */
 @Service
 @Transactional
@@ -115,11 +116,10 @@ public class MyOrderService {
     /**
      * Save a myOrder.
      *
-     * @param myOrderDTO the entity to save
-     * @return the persisted entity
-     * @throws Exception 
+     * @param myOrderDTO the entity to save.
+     * @return the persisted entity.
      */
-    public MyOrderDTO save(MyOrderDTO myOrderDTO) throws BadRequestAlertException {
+    public MyOrderDTO save(MyOrderDTO myOrderDTO) {
         log.debug("Request to save MyOrder : {}", myOrderDTO);
         MyOrder myOrder = myOrderMapper.toEntity(myOrderDTO);
         myOrder.setShops(orderShopMapper.toEntity(myOrderDTO.getShops()));
@@ -320,8 +320,8 @@ public class MyOrderService {
     /**
      * Get all the myOrders.
      *
-     * @param pageable the pagination information
-     * @return the list of entities
+     * @param pageable the pagination information.
+     * @return the list of entities.
      */
     @Transactional(readOnly = true)
     public Page<MyOrderDTO> findAll(Pageable pageable) {
@@ -333,8 +333,8 @@ public class MyOrderService {
     /**
      * Get one myOrder by id.
      *
-     * @param id the id of the entity
-     * @return the entity
+     * @param id the id of the entity.
+     * @return the entity.
      */
     @Transactional(readOnly = true)
     public Optional<MyOrderDTO> findOne(Long id) {
@@ -419,7 +419,7 @@ public class MyOrderService {
     /**
      * Delete the myOrder by id.
      *
-     * @param id the id of the entity
+     * @param id the id of the entity.
      */
     public void delete(Long id) {
         log.debug("Request to delete MyOrder : {}", id);
@@ -486,9 +486,9 @@ public class MyOrderService {
     /**
      * Search for the myOrder corresponding to the query.
      *
-     * @param query the query of the search
-     * @param pageable the pagination information
-     * @return the list of entities
+     * @param query the query of the search.
+     * @param pageable the pagination information.
+     * @return the list of entities.
      */
     @Transactional(readOnly = true)
     public Page<MyOrderDTO> search(String query, Pageable pageable) {

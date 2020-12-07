@@ -1,6 +1,5 @@
 package com.wongs.service.dto;
 
-
 import java.time.ZonedDateTime;
 import javax.validation.constraints.*;
 import java.io.Serializable;
@@ -20,10 +19,10 @@ import com.wongs.domain.enumeration.ProductStatus;
 import com.wongs.domain.enumeration.ProductStyleType;
 
 /**
- * A DTO for the Product entity.
+ * A DTO for the {@link com.wongs.domain.Product} entity.
  */
 public class ProductDTO implements Serializable {
-
+    
     private Long id;
 
     @NotNull
@@ -146,7 +145,7 @@ public class ProductDTO implements Serializable {
 
     public void setStatus(ProductStatus status) {
         this.status = status;
-    }    
+    }
 
     public String getPermission() {
 		return permission;
@@ -246,7 +245,7 @@ public class ProductDTO implements Serializable {
         }
 
         ProductDTO productDTO = (ProductDTO) o;
-        if(productDTO.getId() == null || getId() == null) {
+        if (productDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), productDTO.getId());
@@ -272,6 +271,7 @@ public class ProductDTO implements Serializable {
             ", createdDate='" + getCreatedDate() + "'" +
             ", lastModifiedBy='" + getLastModifiedBy() + "'" +
             ", lastModifiedDate='" + getLastModifiedDate() + "'" +
+            ", shopId=" + getShopId() +
             "}";
     }
 }

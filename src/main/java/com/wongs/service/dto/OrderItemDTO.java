@@ -1,6 +1,5 @@
 package com.wongs.service.dto;
 
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -11,10 +10,10 @@ import com.wongs.domain.ProductItem;
 import com.wongs.domain.enumeration.CurrencyType;
 
 /**
- * A DTO for the OrderItem entity.
+ * A DTO for the {@link com.wongs.domain.OrderItem} entity.
  */
 public class OrderItemDTO implements Serializable {
-
+    
     private Long id;
 
     private Integer quantity;
@@ -100,7 +99,7 @@ public class OrderItemDTO implements Serializable {
         }
 
         OrderItemDTO orderItemDTO = (OrderItemDTO) o;
-        if(orderItemDTO.getId() == null || getId() == null) {
+        if (orderItemDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), orderItemDTO.getId());
@@ -118,6 +117,8 @@ public class OrderItemDTO implements Serializable {
             ", quantity=" + getQuantity() +
             ", price=" + getPrice() +
             ", currency='" + getCurrency() + "'" +
+            ", productItem=" + getProductItem() +
+            ", shop=" + getShop() +
             "}";
     }
 }

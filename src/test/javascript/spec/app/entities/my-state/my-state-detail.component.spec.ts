@@ -1,4 +1,3 @@
-/* tslint:disable max-line-length */
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute } from '@angular/router';
 import { of } from 'rxjs';
@@ -8,33 +7,31 @@ import { MyStateDetailComponent } from 'app/entities/my-state/my-state-detail.co
 import { MyState } from 'app/shared/model/my-state.model';
 
 describe('Component Tests', () => {
-    describe('MyState Management Detail Component', () => {
-        let comp: MyStateDetailComponent;
-        let fixture: ComponentFixture<MyStateDetailComponent>;
-        const route = ({ data: of({ myState: new MyState(123) }) } as any) as ActivatedRoute;
+  describe('MyState Management Detail Component', () => {
+    let comp: MyStateDetailComponent;
+    let fixture: ComponentFixture<MyStateDetailComponent>;
+    const route = ({ data: of({ myState: new MyState(123) }) } as any) as ActivatedRoute;
 
-        beforeEach(() => {
-            TestBed.configureTestingModule({
-                imports: [MallTestModule],
-                declarations: [MyStateDetailComponent],
-                providers: [{ provide: ActivatedRoute, useValue: route }]
-            })
-                .overrideTemplate(MyStateDetailComponent, '')
-                .compileComponents();
-            fixture = TestBed.createComponent(MyStateDetailComponent);
-            comp = fixture.componentInstance;
-        });
-
-        describe('OnInit', () => {
-            it('Should call load all on init', () => {
-                // GIVEN
-
-                // WHEN
-                comp.ngOnInit();
-
-                // THEN
-                expect(comp.myState).toEqual(jasmine.objectContaining({ id: 123 }));
-            });
-        });
+    beforeEach(() => {
+      TestBed.configureTestingModule({
+        imports: [MallTestModule],
+        declarations: [MyStateDetailComponent],
+        providers: [{ provide: ActivatedRoute, useValue: route }]
+      })
+        .overrideTemplate(MyStateDetailComponent, '')
+        .compileComponents();
+      fixture = TestBed.createComponent(MyStateDetailComponent);
+      comp = fixture.componentInstance;
     });
+
+    describe('OnInit', () => {
+      it('Should load myState on init', () => {
+        // WHEN
+        comp.ngOnInit();
+
+        // THEN
+        expect(comp.myState).toEqual(jasmine.objectContaining({ id: 123 }));
+      });
+    });
+  });
 });

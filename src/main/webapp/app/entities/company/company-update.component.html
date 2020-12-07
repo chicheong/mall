@@ -1,64 +1,72 @@
 <div class="row justify-content-center">
     <div class="col-8">
-        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
             <h2 id="jhi-company-heading" jhiTranslate="mallApp.company.home.createOrEditLabel">Create or edit a Company</h2>
+
             <div>
                 <jhi-alert-error></jhi-alert-error>
-                <div class="form-group" [hidden]="!company.id">
+
+                <div class="form-group" [hidden]="!editForm.get('id')!.value">
                     <label for="id" jhiTranslate="global.field.id">ID</label>
-                    <input type="text" class="form-control" id="id" name="id"
-                        [(ngModel)]="company.id" readonly />
+                    <input type="text" class="form-control" id="id" name="id" formControlName="id" readonly />
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.company.code" for="field_code">Code</label>
                     <input type="text" class="form-control" name="code" id="field_code"
-                        [(ngModel)]="company.code" required/>
-                    <div [hidden]="!(editForm.controls.code?.dirty && editForm.controls.code?.invalid)">
+                           formControlName="code"/>
+                    <div *ngIf="editForm.get('code')!.invalid && (editForm.get('code')!.dirty || editForm.get('code')!.touched)">
                         <small class="form-text text-danger"
-                        [hidden]="!editForm.controls.code?.errors?.required" jhiTranslate="entity.validation.required">
+                               *ngIf="editForm.get('code')?.errors?.required" jhiTranslate="entity.validation.required">
                         This field is required.
                         </small>
                     </div>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.company.name" for="field_name">Name</label>
                     <input type="text" class="form-control" name="name" id="field_name"
-                        [(ngModel)]="company.name" />
+                           formControlName="name"/>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.company.status" for="field_status">Status</label>
-                    <select class="form-control" name="status" [(ngModel)]="company.status" id="field_status" >
-                        <option value="ACTIVE">{{'mallApp.CommonStatus.ACTIVE' | translate}}</option>
-                        <option value="INACTIVE">{{'mallApp.CommonStatus.INACTIVE' | translate}}</option>
+                    <select class="form-control" name="status" formControlName="status" id="field_status">
+                        <option value="ACTIVE">{{ 'mallApp.CommonStatus.ACTIVE' | translate }}</option>
+                        <option value="INACTIVE">{{ 'mallApp.CommonStatus.INACTIVE' | translate }}</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.company.parent" for="field_parent">Parent</label>
-                    <select class="form-control" id="field_parent" name="parent" [(ngModel)]="company.parent" >
+                    <select class="form-control" id="field_parent" name="parent" formControlName="parent">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="companyOption.id === company.parent?.id ? company.parent : companyOption" *ngFor="let companyOption of companies; trackBy: trackCompanyById">{{companyOption.id}}</option>
+                        <option [ngValue]="companyOption.id === editForm.get('parent')!.value?.id ? editForm.get('parent')!.value : companyOption" *ngFor="let companyOption of companies; trackBy: trackById">{{ companyOption.id }}</option>
                     </select>
                 </div>
+
                 <div class="form-group">
-                    <label jhiTranslate="mallApp.company.department" for="field_department">Department</label>
-                    <select class="form-control" id="field_department" multiple name="department" [(ngModel)]="company.departments">
-                        <option [ngValue]="getSelected(company.departments, departmentOption)" *ngFor="let departmentOption of departments; trackBy: trackDepartmentById">{{departmentOption.code}}</option>
+                    <label jhiTranslate="mallApp.company.department" for="field_departments">Department</label>
+                    <select class="form-control" id="field_departments" multiple name="departments" formControlName="departments">
+                        <option [ngValue]="getSelected(editForm.get('departments')!.value, departmentOption)" *ngFor="let departmentOption of departments; trackBy: trackById">{{ departmentOption.code }}</option>
                     </select>
                 </div>
+
                 <div class="form-group">
-                    <label jhiTranslate="mallApp.company.office" for="field_office">Office</label>
-                    <select class="form-control" id="field_office" multiple name="office" [(ngModel)]="company.offices">
-                        <option [ngValue]="getSelected(company.offices, officeOption)" *ngFor="let officeOption of offices; trackBy: trackOfficeById">{{officeOption.code}}</option>
+                    <label jhiTranslate="mallApp.company.office" for="field_offices">Office</label>
+                    <select class="form-control" id="field_offices" multiple name="offices" formControlName="offices">
+                        <option [ngValue]="getSelected(editForm.get('offices')!.value, officeOption)" *ngFor="let officeOption of offices; trackBy: trackById">{{ officeOption.code }}</option>
                     </select>
                 </div>
             </div>
+
             <div>
-                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
-                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
+                    <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
                 </button>
-                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
-                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+
+                <button type="submit" id="save-entity" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
                 </button>
             </div>
         </form>

@@ -16,10 +16,10 @@ import com.wongs.domain.enumeration.CurrencyType;
 import com.wongs.domain.enumeration.ShippingStatus;
 
 /**
- * A DTO for the Shipping entity.
+ * A DTO for the {@link com.wongs.domain.Shipping} entity.
  */
 public class ShippingDTO implements Serializable {
-
+    
     private Long id;
 
     private BigDecimal price;
@@ -115,7 +115,7 @@ public class ShippingDTO implements Serializable {
 		this.statusHistories = statusHistories;
 	}
 
-	@Override
+    @Override
     public boolean equals(Object o) {
         if (this == o) {
             return true;
@@ -125,7 +125,7 @@ public class ShippingDTO implements Serializable {
         }
 
         ShippingDTO shippingDTO = (ShippingDTO) o;
-        if(shippingDTO.getId() == null || getId() == null) {
+        if (shippingDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), shippingDTO.getId());
@@ -144,6 +144,7 @@ public class ShippingDTO implements Serializable {
             ", currency='" + getCurrency() + "'" +
             ", date='" + getDate() + "'" +
             ", status='" + getStatus() + "'" +
+            ", type=" + getType() +
             "}";
     }
 }

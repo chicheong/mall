@@ -9,10 +9,10 @@ import com.wongs.domain.ProductStyle;
 import com.wongs.domain.enumeration.ProductStyleType;
 
 /**
- * A DTO for the ProductStyle entity.
+ * A DTO for the {@link com.wongs.domain.ProductStyle} entity.
  */
 public class ProductStyleDTO implements Serializable {
-
+    
     private Long id;
     
     private String tempId;
@@ -79,11 +79,11 @@ public class ProductStyleDTO implements Serializable {
 		return isDefault;
 	}
 
-	public void setIsDefault(Boolean isDefault) {
-		this.isDefault = isDefault;
-	}
+    public void setIsDefault(Boolean isDefault) {
+        this.isDefault = isDefault;
+    }
 
-	public ProductStyleType getType() {
+    public ProductStyleType getType() {
         return type;
     }
 
@@ -125,7 +125,7 @@ public class ProductStyleDTO implements Serializable {
         }
 
         ProductStyleDTO productStyleDTO = (ProductStyleDTO) o;
-        if(productStyleDTO.getId() == null || getId() == null) {
+        if (productStyleDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), productStyleDTO.getId()) &&
@@ -147,6 +147,7 @@ public class ProductStyleDTO implements Serializable {
             ", code='" + getCode() + "'" +
             ", isDefault='" + getIsDefault() + "'" +
             ", type='" + getType() + "'" +
+            ", product=" + getProduct() +
             "}";
     }
 }

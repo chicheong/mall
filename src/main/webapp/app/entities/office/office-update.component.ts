@@ -1,137 +1,119 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { JhiAlertService } from 'ng-jhipster';
-import { IOffice } from 'app/shared/model/office.model';
+import { map } from 'rxjs/operators';
+
+import { IOffice, Office } from 'app/shared/model/office.model';
 import { OfficeService } from './office.service';
 import { IAddress } from 'app/shared/model/address.model';
-import { AddressService } from 'app/entities/address';
-import { ICompany } from 'app/shared/model/company.model';
-import { CompanyService } from 'app/entities/company';
-import { IDepartment } from 'app/shared/model/department.model';
-import { DepartmentService } from 'app/entities/department';
+import { AddressService } from 'app/entities/address/address.service';
 
 @Component({
-    selector: 'jhi-office-update',
-    templateUrl: './office-update.component.html'
+  selector: 'jhi-office-update',
+  templateUrl: './office-update.component.html'
 })
 export class OfficeUpdateComponent implements OnInit {
-    office: IOffice;
-    isSaving: boolean;
+  isSaving = false;
+  addresses: IAddress[] = [];
 
-    addresses: IAddress[];
+  editForm = this.fb.group({
+    id: [],
+    code: [null, [Validators.required]],
+    name: [],
+    status: [],
+    address: []
+  });
 
-    companies: ICompany[];
+  constructor(
+    protected officeService: OfficeService,
+    protected addressService: AddressService,
+    protected activatedRoute: ActivatedRoute,
+    private fb: FormBuilder
+  ) {}
 
-    departments: IDepartment[];
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ office }) => {
+      this.updateForm(office);
 
-    constructor(
-        protected jhiAlertService: JhiAlertService,
-        protected officeService: OfficeService,
-        protected addressService: AddressService,
-        protected companyService: CompanyService,
-        protected departmentService: DepartmentService,
-        protected activatedRoute: ActivatedRoute
-    ) {}
-
-    ngOnInit() {
-        this.isSaving = false;
-        this.activatedRoute.data.subscribe(({ office }) => {
-            this.office = office;
+      this.addressService
+        .query({ filter: 'office-is-null' })
+        .pipe(
+          map((res: HttpResponse<IAddress[]>) => {
+            return res.body || [];
+          })
+        )
+        .subscribe((resBody: IAddress[]) => {
+          if (!office.address || !office.address.id) {
+            this.addresses = resBody;
+          } else {
+            this.addressService
+              .find(office.address.id)
+              .pipe(
+                map((subRes: HttpResponse<IAddress>) => {
+                  return subRes.body ? [subRes.body].concat(resBody) : resBody;
+                })
+              )
+              .subscribe((concatRes: IAddress[]) => (this.addresses = concatRes));
+          }
         });
-        this.addressService
-            .query({ filter: 'office-is-null' })
-            .pipe(
-                filter((mayBeOk: HttpResponse<IAddress[]>) => mayBeOk.ok),
-                map((response: HttpResponse<IAddress[]>) => response.body)
-            )
-            .subscribe(
-                (res: IAddress[]) => {
-                    if (!this.office.address || !this.office.address.id) {
-                        this.addresses = res;
-                    } else {
-                        this.addressService
-                            .find(this.office.address.id)
-                            .pipe(
-                                filter((subResMayBeOk: HttpResponse<IAddress>) => subResMayBeOk.ok),
-                                map((subResponse: HttpResponse<IAddress>) => subResponse.body)
-                            )
-                            .subscribe(
-                                (subRes: IAddress) => (this.addresses = [subRes].concat(res)),
-                                (subRes: HttpErrorResponse) => this.onError(subRes.message)
-                            );
-                    }
-                },
-                (res: HttpErrorResponse) => this.onError(res.message)
-            );
-        this.companyService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<ICompany[]>) => mayBeOk.ok),
-                map((response: HttpResponse<ICompany[]>) => response.body)
-            )
-            .subscribe((res: ICompany[]) => (this.companies = res), (res: HttpErrorResponse) => this.onError(res.message));
-        this.departmentService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<IDepartment[]>) => mayBeOk.ok),
-                map((response: HttpResponse<IDepartment[]>) => response.body)
-            )
-            .subscribe((res: IDepartment[]) => (this.departments = res), (res: HttpErrorResponse) => this.onError(res.message));
-    }
+    });
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  updateForm(office: IOffice): void {
+    this.editForm.patchValue({
+      id: office.id,
+      code: office.code,
+      name: office.name,
+      status: office.status,
+      address: office.address
+    });
+  }
 
-    save() {
-        this.isSaving = true;
-        if (this.office.id !== undefined) {
-            this.subscribeToSaveResponse(this.officeService.update(this.office));
-        } else {
-            this.subscribeToSaveResponse(this.officeService.create(this.office));
-        }
-    }
+  previousState(): void {
+    window.history.back();
+  }
 
-    protected subscribeToSaveResponse(result: Observable<HttpResponse<IOffice>>) {
-        result.subscribe((res: HttpResponse<IOffice>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
+  save(): void {
+    this.isSaving = true;
+    const office = this.createFromForm();
+    if (office.id !== undefined) {
+      this.subscribeToSaveResponse(this.officeService.update(office));
+    } else {
+      this.subscribeToSaveResponse(this.officeService.create(office));
     }
+  }
 
-    protected onSaveSuccess() {
-        this.isSaving = false;
-        this.previousState();
-    }
+  private createFromForm(): IOffice {
+    return {
+      ...new Office(),
+      id: this.editForm.get(['id'])!.value,
+      code: this.editForm.get(['code'])!.value,
+      name: this.editForm.get(['name'])!.value,
+      status: this.editForm.get(['status'])!.value,
+      address: this.editForm.get(['address'])!.value
+    };
+  }
 
-    protected onSaveError() {
-        this.isSaving = false;
-    }
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<IOffice>>): void {
+    result.subscribe(
+      () => this.onSaveSuccess(),
+      () => this.onSaveError()
+    );
+  }
 
-    protected onError(errorMessage: string) {
-        this.jhiAlertService.error(errorMessage, null, null);
-    }
+  protected onSaveSuccess(): void {
+    this.isSaving = false;
+    this.previousState();
+  }
 
-    trackAddressById(index: number, item: IAddress) {
-        return item.id;
-    }
+  protected onSaveError(): void {
+    this.isSaving = false;
+  }
 
-    trackCompanyById(index: number, item: ICompany) {
-        return item.id;
-    }
-
-    trackDepartmentById(index: number, item: IDepartment) {
-        return item.id;
-    }
-
-    getSelected(selectedVals: Array<any>, option: any) {
-        if (selectedVals) {
-            for (let i = 0; i < selectedVals.length; i++) {
-                if (option.id === selectedVals[i].id) {
-                    return selectedVals[i];
-                }
-            }
-        }
-        return option;
-    }
+  trackById(index: number, item: IAddress): any {
+    return item.id;
+  }
 }

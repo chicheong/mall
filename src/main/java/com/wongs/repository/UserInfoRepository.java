@@ -1,6 +1,7 @@
 package com.wongs.repository;
 
 import com.wongs.domain.UserInfo;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.*;
@@ -13,18 +14,17 @@ import java.util.Optional;
 /**
  * Spring Data  repository for the UserInfo entity.
  */
-@SuppressWarnings("unused")
 @Repository
 public interface UserInfoRepository extends JpaRepository<UserInfo, Long> {
 
-    @Query(value = "select distinct user_info from UserInfo user_info left join fetch user_info.accounts",
-        countQuery = "select count(distinct user_info) from UserInfo user_info")
+    @Query(value = "select distinct userInfo from UserInfo userInfo left join fetch userInfo.accounts",
+        countQuery = "select count(distinct userInfo) from UserInfo userInfo")
     Page<UserInfo> findAllWithEagerRelationships(Pageable pageable);
 
-    @Query(value = "select distinct user_info from UserInfo user_info left join fetch user_info.accounts")
+    @Query("select distinct userInfo from UserInfo userInfo left join fetch userInfo.accounts")
     List<UserInfo> findAllWithEagerRelationships();
 
-    @Query("select user_info from UserInfo user_info left join fetch user_info.accounts where user_info.id =:id")
+    @Query("select userInfo from UserInfo userInfo left join fetch userInfo.accounts where userInfo.id =:id")
     Optional<UserInfo> findOneWithEagerRelationships(@Param("id") Long id);
     
     @Query("select user_info from UserInfo user_info left join fetch user_info.accounts where user_info.user.login =:login")

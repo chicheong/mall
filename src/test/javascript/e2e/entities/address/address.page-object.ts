@@ -1,152 +1,156 @@
 import { element, by, ElementFinder } from 'protractor';
 
 export class AddressComponentsPage {
-    createButton = element(by.id('jh-create-entity'));
-    deleteButtons = element.all(by.css('jhi-address div table .btn-danger'));
-    title = element.all(by.css('jhi-address div h2#page-heading span')).first();
+  createButton = element(by.id('jh-create-entity'));
+  deleteButtons = element.all(by.css('jhi-address div table .btn-danger'));
+  title = element.all(by.css('jhi-address div h2#page-heading span')).first();
+  noResult = element(by.id('no-result'));
+  entities = element(by.id('entities'));
 
-    async clickOnCreateButton() {
-        await this.createButton.click();
-    }
+  async clickOnCreateButton(): Promise<void> {
+    await this.createButton.click();
+  }
 
-    async clickOnLastDeleteButton() {
-        await this.deleteButtons.last().click();
-    }
+  async clickOnLastDeleteButton(): Promise<void> {
+    await this.deleteButtons.last().click();
+  }
 
-    async countDeleteButtons() {
-        return this.deleteButtons.count();
-    }
+  async countDeleteButtons(): Promise<number> {
+    return this.deleteButtons.count();
+  }
 
-    async getTitle() {
-        return this.title.getAttribute('jhiTranslate');
-    }
+  async getTitle(): Promise<string> {
+    return this.title.getAttribute('jhiTranslate');
+  }
 }
 
 export class AddressUpdatePage {
-    pageTitle = element(by.id('jhi-address-heading'));
-    saveButton = element(by.id('save-entity'));
-    cancelButton = element(by.id('cancel-save'));
-    line1Input = element(by.id('field_line1'));
-    line2Input = element(by.id('field_line2'));
-    line3Input = element(by.id('field_line3'));
-    line4Input = element(by.id('field_line4'));
-    cityInput = element(by.id('field_city'));
-    postalCodeInput = element(by.id('field_postalCode'));
-    countrySelect = element(by.id('field_country'));
-    stateSelect = element(by.id('field_state'));
+  pageTitle = element(by.id('jhi-address-heading'));
+  saveButton = element(by.id('save-entity'));
+  cancelButton = element(by.id('cancel-save'));
 
-    async getPageTitle() {
-        return this.pageTitle.getAttribute('jhiTranslate');
-    }
+  line1Input = element(by.id('field_line1'));
+  line2Input = element(by.id('field_line2'));
+  line3Input = element(by.id('field_line3'));
+  line4Input = element(by.id('field_line4'));
+  cityInput = element(by.id('field_city'));
+  postalCodeInput = element(by.id('field_postalCode'));
 
-    async setLine1Input(line1) {
-        await this.line1Input.sendKeys(line1);
-    }
+  countrySelect = element(by.id('field_country'));
+  myStateSelect = element(by.id('field_myState'));
 
-    async getLine1Input() {
-        return this.line1Input.getAttribute('value');
-    }
+  async getPageTitle(): Promise<string> {
+    return this.pageTitle.getAttribute('jhiTranslate');
+  }
 
-    async setLine2Input(line2) {
-        await this.line2Input.sendKeys(line2);
-    }
+  async setLine1Input(line1: string): Promise<void> {
+    await this.line1Input.sendKeys(line1);
+  }
 
-    async getLine2Input() {
-        return this.line2Input.getAttribute('value');
-    }
+  async getLine1Input(): Promise<string> {
+    return await this.line1Input.getAttribute('value');
+  }
 
-    async setLine3Input(line3) {
-        await this.line3Input.sendKeys(line3);
-    }
+  async setLine2Input(line2: string): Promise<void> {
+    await this.line2Input.sendKeys(line2);
+  }
 
-    async getLine3Input() {
-        return this.line3Input.getAttribute('value');
-    }
+  async getLine2Input(): Promise<string> {
+    return await this.line2Input.getAttribute('value');
+  }
 
-    async setLine4Input(line4) {
-        await this.line4Input.sendKeys(line4);
-    }
+  async setLine3Input(line3: string): Promise<void> {
+    await this.line3Input.sendKeys(line3);
+  }
 
-    async getLine4Input() {
-        return this.line4Input.getAttribute('value');
-    }
+  async getLine3Input(): Promise<string> {
+    return await this.line3Input.getAttribute('value');
+  }
 
-    async setCityInput(city) {
-        await this.cityInput.sendKeys(city);
-    }
+  async setLine4Input(line4: string): Promise<void> {
+    await this.line4Input.sendKeys(line4);
+  }
 
-    async getCityInput() {
-        return this.cityInput.getAttribute('value');
-    }
+  async getLine4Input(): Promise<string> {
+    return await this.line4Input.getAttribute('value');
+  }
 
-    async setPostalCodeInput(postalCode) {
-        await this.postalCodeInput.sendKeys(postalCode);
-    }
+  async setCityInput(city: string): Promise<void> {
+    await this.cityInput.sendKeys(city);
+  }
 
-    async getPostalCodeInput() {
-        return this.postalCodeInput.getAttribute('value');
-    }
+  async getCityInput(): Promise<string> {
+    return await this.cityInput.getAttribute('value');
+  }
 
-    async countrySelectLastOption() {
-        await this.countrySelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async setPostalCodeInput(postalCode: string): Promise<void> {
+    await this.postalCodeInput.sendKeys(postalCode);
+  }
 
-    async countrySelectOption(option) {
-        await this.countrySelect.sendKeys(option);
-    }
+  async getPostalCodeInput(): Promise<string> {
+    return await this.postalCodeInput.getAttribute('value');
+  }
 
-    getCountrySelect(): ElementFinder {
-        return this.countrySelect;
-    }
+  async countrySelectLastOption(): Promise<void> {
+    await this.countrySelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async getCountrySelectedOption() {
-        return this.countrySelect.element(by.css('option:checked')).getText();
-    }
+  async countrySelectOption(option: string): Promise<void> {
+    await this.countrySelect.sendKeys(option);
+  }
 
-    async stateSelectLastOption() {
-        await this.stateSelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  getCountrySelect(): ElementFinder {
+    return this.countrySelect;
+  }
 
-    async stateSelectOption(option) {
-        await this.stateSelect.sendKeys(option);
-    }
+  async getCountrySelectedOption(): Promise<string> {
+    return await this.countrySelect.element(by.css('option:checked')).getText();
+  }
 
-    getStateSelect(): ElementFinder {
-        return this.stateSelect;
-    }
+  async myStateSelectLastOption(): Promise<void> {
+    await this.myStateSelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async getStateSelectedOption() {
-        return this.stateSelect.element(by.css('option:checked')).getText();
-    }
+  async myStateSelectOption(option: string): Promise<void> {
+    await this.myStateSelect.sendKeys(option);
+  }
 
-    async save() {
-        await this.saveButton.click();
-    }
+  getMyStateSelect(): ElementFinder {
+    return this.myStateSelect;
+  }
 
-    async cancel() {
-        await this.cancelButton.click();
-    }
+  async getMyStateSelectedOption(): Promise<string> {
+    return await this.myStateSelect.element(by.css('option:checked')).getText();
+  }
 
-    getSaveButton(): ElementFinder {
-        return this.saveButton;
-    }
+  async save(): Promise<void> {
+    await this.saveButton.click();
+  }
+
+  async cancel(): Promise<void> {
+    await this.cancelButton.click();
+  }
+
+  getSaveButton(): ElementFinder {
+    return this.saveButton;
+  }
 }
 
 export class AddressDeleteDialog {
-    private dialogTitle = element(by.id('jhi-delete-address-heading'));
-    private confirmButton = element(by.id('jhi-confirm-delete-address'));
+  private dialogTitle = element(by.id('jhi-delete-address-heading'));
+  private confirmButton = element(by.id('jhi-confirm-delete-address'));
 
-    async getDialogTitle() {
-        return this.dialogTitle.getAttribute('jhiTranslate');
-    }
+  async getDialogTitle(): Promise<string> {
+    return this.dialogTitle.getAttribute('jhiTranslate');
+  }
 
-    async clickOnConfirmButton() {
-        await this.confirmButton.click();
-    }
+  async clickOnConfirmButton(): Promise<void> {
+    await this.confirmButton.click();
+  }
 }

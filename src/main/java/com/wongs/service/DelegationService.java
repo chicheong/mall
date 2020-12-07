@@ -25,7 +25,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Service Implementation for managing Delegation.
+ * Service Implementation for managing {@link Delegation}.
  */
 @Service
 @Transactional
@@ -48,8 +48,8 @@ public class DelegationService {
     /**
      * Save a delegation.
      *
-     * @param delegationDTO the entity to save
-     * @return the persisted entity
+     * @param delegationDTO the entity to save.
+     * @return the persisted entity.
      */
     public DelegationDTO save(DelegationDTO delegationDTO) {
         log.debug("Request to save Delegation : {}", delegationDTO);
@@ -63,8 +63,8 @@ public class DelegationService {
     /**
      * Get all the delegations.
      *
-     * @param pageable the pagination information
-     * @return the list of entities
+     * @param pageable the pagination information.
+     * @return the list of entities.
      */
     @Transactional(readOnly = true)
     public Page<DelegationDTO> findAll(Pageable pageable) {
@@ -73,12 +73,11 @@ public class DelegationService {
             .map(delegationMapper::toDto);
     }
 
-
     /**
      * Get one delegation by id.
      *
-     * @param id the id of the entity
-     * @return the entity
+     * @param id the id of the entity.
+     * @return the entity.
      */
     @Transactional(readOnly = true)
     public Optional<DelegationDTO> findOne(Long id) {
@@ -90,7 +89,7 @@ public class DelegationService {
     /**
      * Delete the delegation by id.
      *
-     * @param id the id of the entity
+     * @param id the id of the entity.
      */
     public void delete(Long id) {
         log.debug("Request to delete Delegation : {}", id);
@@ -101,9 +100,9 @@ public class DelegationService {
     /**
      * Search for the delegation corresponding to the query.
      *
-     * @param query the query of the search
-     * @param pageable the pagination information
-     * @return the list of entities
+     * @param query the query of the search.
+     * @param pageable the pagination information.
+     * @return the list of entities.
      */
     @Transactional(readOnly = true)
     public Page<DelegationDTO> search(String query, Pageable pageable) {

@@ -1,40 +1,16 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
-import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from 'app/shared';
-import {
-    UserInfoComponent,
-    UserInfoDetailComponent,
-    UserInfoUpdateComponent,
-    UserInfoDeletePopupComponent,
-    UserInfoDeleteDialogComponent,
-    userInfoRoute,
-    userInfoPopupRoute
-} from './';
-
-const ENTITY_STATES = [...userInfoRoute, ...userInfoPopupRoute];
+import { MallSharedModule } from 'app/shared/shared.module';
+import { UserInfoComponent } from './user-info.component';
+import { UserInfoDetailComponent } from './user-info-detail.component';
+import { UserInfoUpdateComponent } from './user-info-update.component';
+import { UserInfoDeleteDialogComponent } from './user-info-delete-dialog.component';
+import { userInfoRoute } from './user-info.route';
 
 @NgModule({
-    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
-    declarations: [
-        UserInfoComponent,
-        UserInfoDetailComponent,
-        UserInfoUpdateComponent,
-        UserInfoDeleteDialogComponent,
-        UserInfoDeletePopupComponent
-    ],
-    entryComponents: [UserInfoComponent, UserInfoUpdateComponent, UserInfoDeleteDialogComponent, UserInfoDeletePopupComponent],
-    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  imports: [MallSharedModule, RouterModule.forChild(userInfoRoute)],
+  declarations: [UserInfoComponent, UserInfoDetailComponent, UserInfoUpdateComponent, UserInfoDeleteDialogComponent],
+  entryComponents: [UserInfoDeleteDialogComponent]
 })
-export class MallUserInfoModule {
-    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
-        this.languageHelper.language.subscribe((languageKey: string) => {
-            if (languageKey !== undefined) {
-                this.languageService.changeLanguage(languageKey);
-            }
-        });
-    }
-}
+export class MallUserInfoModule {}

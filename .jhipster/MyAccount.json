@@ -21,21 +21,21 @@
         {
             "relationshipType": "many-to-one",
             "otherEntityName": "company",
-            "otherEntityRelationshipName": "account",
+            "otherEntityRelationshipName": "myAccount",
             "relationshipName": "company",
             "otherEntityField": "code"
         },
         {
             "relationshipType": "many-to-one",
             "otherEntityName": "department",
-            "otherEntityRelationshipName": "account",
+            "otherEntityRelationshipName": "myAccount",
             "relationshipName": "department",
             "otherEntityField": "code"
         },
         {
             "relationshipType": "many-to-one",
             "otherEntityName": "office",
-            "otherEntityRelationshipName": "account",
+            "otherEntityRelationshipName": "myAccount",
             "relationshipName": "office",
             "otherEntityField": "code"
         },
@@ -56,13 +56,15 @@
             "ownerSide": false
         }
     ],
-    "changelogDate": "20190527101511",
+    "changelogDate": "20200503071400",
     "entityTableName": "my_account",
     "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

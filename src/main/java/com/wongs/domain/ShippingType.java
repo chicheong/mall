@@ -1,15 +1,14 @@
 package com.wongs.domain;
 
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Objects;
+import java.math.BigDecimal;
 
 import com.wongs.domain.enumeration.CurrencyType;
 
@@ -19,11 +18,11 @@ import com.wongs.domain.enumeration.CurrencyType;
 @Entity
 @Table(name = "shipping_type")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "shippingtype")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "shippingtype")
 public class ShippingType implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,7 +33,7 @@ public class ShippingType implements Serializable {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "price", precision = 10, scale = 2)
+    @Column(name = "price", precision = 21, scale = 2)
     private BigDecimal price;
 
     @Enumerated(EnumType.STRING)
@@ -108,19 +107,15 @@ public class ShippingType implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof ShippingType)) {
             return false;
         }
-        ShippingType shippingType = (ShippingType) o;
-        if (shippingType.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), shippingType.getId());
+        return id != null && id.equals(((ShippingType) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

@@ -1,6 +1,18 @@
 package com.wongs.service;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
+import com.wongs.domain.Product;
+import com.wongs.repository.ProductRepository;
+import com.wongs.repository.search.ProductSearchRepository;
+import com.wongs.service.dto.PriceDTO;
+import com.wongs.service.dto.ProductDTO;
+import com.wongs.service.mapper.ProductMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,15 +20,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
+import static org.elasticsearch.index.query.QueryBuilders.*;
 import com.wongs.domain.Price;
-import com.wongs.domain.Product;
 import com.wongs.domain.ProductItem;
 import com.wongs.domain.ProductStyle;
 import com.wongs.domain.Quantity;
@@ -37,6 +42,7 @@ import com.wongs.service.FileService.TYPE;
 import com.wongs.service.dto.ProductDTO;
 import com.wongs.service.dto.ProductItemDTO;
 import com.wongs.service.dto.ProductStyleDTO;
+import com.wongs.service.dto.QuantityDTO;
 import com.wongs.service.dto.UrlDTO;
 import com.wongs.service.mapper.PriceMapper;
 import com.wongs.service.mapper.ProductItemMapper;
@@ -46,7 +52,7 @@ import com.wongs.service.mapper.QuantityMapper;
 import com.wongs.service.mapper.UrlMapper;
 
 /**
- * Service Implementation for managing Product.
+ * Service Implementation for managing {@link Product}.
  */
 @Service
 @Transactional
@@ -114,8 +120,8 @@ public class ProductService {
     /**
      * Save a product.
      *
-     * @param productDTO the entity to save
-     * @return the persisted entity
+     * @param productDTO the entity to save.
+     * @return the persisted entity.
      */
     public ProductDTO save(ProductDTO productDTO) {
         log.debug("Request to save Product : {}", productDTO);
@@ -185,13 +191,13 @@ public class ProductService {
         	log.error("Sizesssss: " + prices.size() + " " + quantities.size());
         	ProductItem productItem = productItemMapper.toEntity(productItemDTO);
         	productItem.setProduct(product);
-        	productItem.setColor(productStyleRepository.findById(productDTO.getColors().stream().filter(styleDTO -> {
+        	productItem.setColor(productDTO.getColors().size() == 0 ? null : productStyleRepository.findById(productDTO.getColors().stream().filter(styleDTO -> {
         		if (productItemDTO.getColor().getId() != null) {
         			return styleDTO.getId().equals(productItemDTO.getColor().getId());
         		}else 
         			return styleDTO.getTempId().equals(productItemDTO.getColor().getTempId());
         	}).findFirst().get().getId()).orElse(null));
-        	productItem.setSize(productStyleRepository.findById(productDTO.getSizes().stream().filter(styleDTO -> {
+        	productItem.setSize(productDTO.getSizes().size() == 0 ? null : productStyleRepository.findById(productDTO.getSizes().stream().filter(styleDTO -> {
         		if (productItemDTO.getSize().getId() != null) {
         			return styleDTO.getId().equals(productItemDTO.getSize().getId());
         		}else 
@@ -239,35 +245,36 @@ public class ProductService {
 	        	quantities.stream().filter(quantity -> !quantityIds.contains(quantity.getId())).forEach(quantity -> quantityRepository.delete(quantity));
         	}
         }
-        for (UrlDTO urlDTO : productDTO.getUrls()) {
-        	if (urlDTO.getId() == null) {
-            	try {
-    	        	urlDTO.setEntityId(product.getId());
-    	        	urlDTO.setPath(fileService.saveAndGetFilePath(TYPE.IMAGE, CATEGORY.PRODUCT, product.getId(), urlDTO.getFileName(), urlDTO.getPath()));
-    	        	urlDTO.setCreatedBy(product.getCreatedBy());
-    	        	urlDTO.setCreatedDate(product.getCreatedDate());
-    	        	urlDTO.setLastModifiedBy(product.getLastModifiedBy());
-    	        	urlDTO.setLastModifiedDate(product.getLastModifiedDate());
-    	        	urlDTO = urlService.save(urlDTO);
-    	        	urlIds.add(urlDTO.getId());
-    			} catch (IOException e) {
-    				log.error(e.toString());
-    			}
-        	} else {
-        		Url nUrl = urlMapper.toEntity(urlDTO);
-            	//Check object changed
-            	if (oUrls.stream().filter(url -> url.equals(nUrl)).findAny().isPresent()) {
-                	urlIds.add(nUrl.getId());
-            	} else {
-    	        	urlDTO.setCreatedBy(product.getCreatedBy());
-    	        	urlDTO.setCreatedDate(product.getCreatedDate());
-    	        	urlDTO.setLastModifiedBy(product.getLastModifiedBy());
-    	        	urlDTO.setLastModifiedDate(product.getLastModifiedDate());
-    	        	urlDTO = urlService.save(urlDTO);
-                	urlIds.add(urlDTO.getId());
-            	}
-        	}
-        }
+        if (productDTO.getUrls() != null)
+	        for (UrlDTO urlDTO : productDTO.getUrls()) {
+	        	if (urlDTO.getId() == null) {
+	            	try {
+	    	        	urlDTO.setEntityId(product.getId());
+	    	        	urlDTO.setPath(fileService.saveAndGetFilePath(TYPE.IMAGE, CATEGORY.PRODUCT, product.getId(), urlDTO.getFileName(), urlDTO.getPath()));
+	    	        	urlDTO.setCreatedBy(product.getCreatedBy());
+	    	        	urlDTO.setCreatedDate(product.getCreatedDate());
+	    	        	urlDTO.setLastModifiedBy(product.getLastModifiedBy());
+	    	        	urlDTO.setLastModifiedDate(product.getLastModifiedDate());
+	    	        	urlDTO = urlService.save(urlDTO);
+	    	        	urlIds.add(urlDTO.getId());
+	    			} catch (IOException e) {
+	    				log.error(e.toString());
+	    			}
+	        	} else {
+	        		Url nUrl = urlMapper.toEntity(urlDTO);
+	            	//Check object changed
+	            	if (oUrls.stream().filter(url -> url.equals(nUrl)).findAny().isPresent()) {
+	                	urlIds.add(nUrl.getId());
+	            	} else {
+	    	        	urlDTO.setCreatedBy(product.getCreatedBy());
+	    	        	urlDTO.setCreatedDate(product.getCreatedDate());
+	    	        	urlDTO.setLastModifiedBy(product.getLastModifiedBy());
+	    	        	urlDTO.setLastModifiedDate(product.getLastModifiedDate());
+	    	        	urlDTO = urlService.save(urlDTO);
+	                	urlIds.add(urlDTO.getId());
+	            	}
+	        	}
+	        }
         //delete items not in update list
         oProductItems.stream().filter(item -> !productItemIds.contains(item.getId())).forEach(item -> productItemRepository.delete(item)); //Cascade delete prices and quantities?
         oProductStyles.stream().filter(style -> !productStyleIds.contains(style.getId())).forEach(style -> productStyleRepository.delete(style)); //Cascade delete item, prices and quantities?
@@ -280,8 +287,8 @@ public class ProductService {
     /**
      * Get all the products.
      *
-     * @param pageable the pagination information
-     * @return the list of entities
+     * @param pageable the pagination information.
+     * @return the list of entities.
      */
     @Transactional(readOnly = true)
     public Page<ProductDTO> findAll(Pageable pageable) {
@@ -292,12 +299,11 @@ public class ProductService {
             });
     }
 
-
     /**
      * Get one product by id.
      *
-     * @param id the id of the entity
-     * @return the entity
+     * @param id the id of the entity.
+     * @return the entity.
      */
     @Transactional(readOnly = true)
     public Optional<ProductDTO> findOne(Long id) {
@@ -327,6 +333,14 @@ public class ProductService {
 	        	productItemDTO.setColor(productStyleMapper.toDto(item.getColor()));
 	        	productItemDTO.setSize(productStyleMapper.toDto(item.getSize()));
 	        	productItemDTO.setUrl(urlMapper.toDto(urlService.findOneByEntityTypeAndEntityId(ProductItem.class.getSimpleName(), productItemDTO.getId())));
+	        	item.getPrices().forEach(price -> {
+	        		PriceDTO priceDTO = priceMapper.toDto(price);
+	        		productItemDTO.getPrices().add(priceDTO);
+	        	});
+	        	item.getQuantities().forEach(quantity -> {
+	        		QuantityDTO quantityDTO = quantityMapper.toDto(quantity);
+	        		productItemDTO.getQuantities().add(quantityDTO);
+	        	});
 	        	dto.getItems().add(productItemDTO);
 	        });
 	        Set<Url> urls = urlService.findByEntityTypeAndEntityId(Product.class.getSimpleName(), id);
@@ -339,7 +353,7 @@ public class ProductService {
     /**
      * Delete the product by id.
      *
-     * @param id the id of the entity
+     * @param id the id of the entity.
      */
     public void delete(Long id) {
         log.debug("Request to delete Product : {}", id);
@@ -350,9 +364,9 @@ public class ProductService {
     /**
      * Search for the product corresponding to the query.
      *
-     * @param query the query of the search
-     * @param pageable the pagination information
-     * @return the list of entities
+     * @param query the query of the search.
+     * @param pageable the pagination information.
+     * @return the list of entities.
      */
     @Transactional(readOnly = true)
     public Page<ProductDTO> search(String query, Pageable pageable) {

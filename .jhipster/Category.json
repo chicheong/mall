@@ -51,13 +51,15 @@
             "ownerSide": true
         }
     ],
-    "changelogDate": "20190527101521",
+    "changelogDate": "20200503072500",
     "entityTableName": "category",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "pagination",
-    "service": "no",
+    "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

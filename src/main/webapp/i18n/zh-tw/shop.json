@@ -1,31 +1,32 @@
 {
-    "mallApp": {
-        "shop": {
-            "home": {
-                "title": "店鋪",
-                "createLabel": "建立一筆新的店鋪",
-                "createOrEditLabel": "建立或編輯店鋪",
-                "search": "搜尋店鋪"
-            },
-            "created": "新的店鋪建立成功，識別碼為 {{ param }}",
-            "updated": "識別碼為 {{ param }} 的店鋪更新成功",
-            "deleted": "識別碼為 {{ param }} 的店鋪刪除成功",
-            "delete": {
-                "question": "您確定要刪除店鋪 {{ id }} 嗎?"
-            },
-            "detail": {
-                "title": "店鋪"
-            },
-            "code": "Code",
-            "name": "Name",
-            "description": "Description",
-            "status": "Status",
-            "createdBy": "Created By",
-            "createdDate": "Created Date",
-            "lastModifiedBy": "Last Modified By",
-            "lastModifiedDate": "Last Modified Date",
-            "shippingPriceRule": "Shipping Price Rule",
-            "account": "Account"
-        }
+  "mallApp": {
+    "shop": {
+      "home": {
+        "title": "店鋪",
+        "createLabel": "建立一筆新的店鋪",
+        "createOrEditLabel": "建立或編輯店鋪",
+        "search": "搜尋店鋪",
+        "notFound": "No Shops found"
+      },
+      "created": "新的店鋪建立成功，識別碼為 {{ param }}",
+      "updated": "識別碼為 {{ param }} 的店鋪更新成功",
+      "deleted": "識別碼為 {{ param }} 的店鋪刪除成功",
+      "delete": {
+        "question": "您確定要刪除店鋪 {{ id }} 嗎?"
+      },
+      "detail": {
+        "title": "店鋪"
+      },
+      "code": "Code",
+      "name": "Name",
+      "description": "Description",
+      "status": "Status",
+      "createdBy": "Created By",
+      "createdDate": "Created Date",
+      "lastModifiedBy": "Last Modified By",
+      "lastModifiedDate": "Last Modified Date",
+      "shippingPriceRule": "Shipping Price Rule",
+      "account": "Account"
     }
+  }
 }

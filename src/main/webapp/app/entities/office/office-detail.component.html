@@ -1,26 +1,29 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="office">
-            <h2><span jhiTranslate="mallApp.office.detail.title">Office</span> {{office.id}}</h2>
+            <h2><span jhiTranslate="mallApp.office.detail.title">Office</span> {{ office.id }}</h2>
+
             <hr>
+
             <jhi-alert-error></jhi-alert-error>
+
             <dl class="row-md jh-entity-details">
                 <dt><span jhiTranslate="mallApp.office.code">Code</span></dt>
                 <dd>
-                    <span>{{office.code}}</span>
+                    <span>{{ office.code }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.office.name">Name</span></dt>
                 <dd>
-                    <span>{{office.name}}</span>
+                    <span>{{ office.name }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.office.status">Status</span></dt>
                 <dd>
-                    <span jhiTranslate="{{'mallApp.CommonStatus.' + office.status}}">{{office.status}}</span>
+                    <span jhiTranslate="{{ 'mallApp.CommonStatus.' + office.status }}">{{ office.status }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.office.address">Address</span></dt>
                 <dd>
                     <div *ngIf="office.address">
-                        <a [routerLink]="['/address', office.address?.id, 'view']">{{office.address?.id}}</a>
+                        <a [routerLink]="['/address', office.address?.id, 'view']">{{ office.address?.id }}</a>
                     </div>
                 </dd>
             </dl>
@@ -28,13 +31,13 @@
             <button type="submit"
                     (click)="previousState()"
                     class="btn btn-info">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
             </button>
 
             <button type="button"
                     [routerLink]="['/office', office.id, 'edit']"
                     class="btn btn-primary">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
             </button>
         </div>
     </div>

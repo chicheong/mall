@@ -4,21 +4,22 @@ import { ActivatedRoute } from '@angular/router';
 import { IShop } from 'app/shared/model/shop.model';
 
 @Component({
-    selector: 'jhi-shop-detail',
-    templateUrl: './shop-detail.component.html'
+  selector: 'jhi-shop-detail',
+  templateUrl: './shop-detail.component.html'
 })
 export class ShopDetailComponent implements OnInit {
-    shop: IShop;
+  shop: IShop | null = null;
 
-    constructor(protected activatedRoute: ActivatedRoute) {}
+  constructor(protected activatedRoute: ActivatedRoute) {}
 
-    ngOnInit() {
-        this.activatedRoute.data.subscribe(({ shop }) => {
-            this.shop = shop;
-        });
-    }
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ shop }) => (this.shop = shop));
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  previousState(): void {
+    window.history.back();
+  }
+
+  clear(): void {
+  }
 }

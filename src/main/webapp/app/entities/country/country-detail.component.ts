@@ -4,21 +4,19 @@ import { ActivatedRoute } from '@angular/router';
 import { ICountry } from 'app/shared/model/country.model';
 
 @Component({
-    selector: 'jhi-country-detail',
-    templateUrl: './country-detail.component.html'
+  selector: 'jhi-country-detail',
+  templateUrl: './country-detail.component.html'
 })
 export class CountryDetailComponent implements OnInit {
-    country: ICountry;
+  country: ICountry | null = null;
 
-    constructor(protected activatedRoute: ActivatedRoute) {}
+  constructor(protected activatedRoute: ActivatedRoute) {}
 
-    ngOnInit() {
-        this.activatedRoute.data.subscribe(({ country }) => {
-            this.country = country;
-        });
-    }
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ country }) => (this.country = country));
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  previousState(): void {
+    window.history.back();
+  }
 }

@@ -1,34 +1,16 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
-import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from 'app/shared';
-import {
-    ShopComponent,
-    ShopDetailComponent,
-    ShopUpdateComponent,
-    ShopDeletePopupComponent,
-    ShopDeleteDialogComponent,
-    shopRoute,
-    shopPopupRoute
-} from './';
-
-const ENTITY_STATES = [...shopRoute, ...shopPopupRoute];
+import { MallSharedModule } from 'app/shared/shared.module';
+import { ShopComponent } from './shop.component';
+import { ShopDetailComponent } from './shop-detail.component';
+import { ShopUpdateComponent } from './shop-update.component';
+import { ShopDeleteDialogComponent } from './shop-delete-dialog.component';
+import { shopRoute } from './shop.route';
 
 @NgModule({
-    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
-    declarations: [ShopComponent, ShopDetailComponent, ShopUpdateComponent, ShopDeleteDialogComponent, ShopDeletePopupComponent],
-    entryComponents: [ShopComponent, ShopUpdateComponent, ShopDeleteDialogComponent, ShopDeletePopupComponent],
-    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  imports: [MallSharedModule, RouterModule.forChild(shopRoute)],
+  declarations: [ShopComponent, ShopDetailComponent, ShopUpdateComponent, ShopDeleteDialogComponent],
+  entryComponents: [ShopDeleteDialogComponent]
 })
-export class MallShopModule {
-    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
-        this.languageHelper.language.subscribe((languageKey: string) => {
-            if (languageKey !== undefined) {
-                this.languageService.changeLanguage(languageKey);
-            }
-        });
-    }
-}
+export class MallShopModule {}

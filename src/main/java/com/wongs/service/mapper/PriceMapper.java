@@ -11,7 +11,7 @@ import com.wongs.domain.Price;
 import com.wongs.service.dto.PriceDTO;
 
 /**
- * Mapper for the entity Price and its DTO PriceDTO.
+ * Mapper for the entity {@link Price} and its DTO {@link PriceDTO}.
  */
 @Service
 public class PriceMapper {

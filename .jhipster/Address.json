@@ -36,19 +36,21 @@
         },
         {
             "relationshipType": "many-to-one",
-            "otherEntityName": "state",
+            "otherEntityName": "myState",
             "otherEntityRelationshipName": "address",
-            "relationshipName": "state",
+            "relationshipName": "myState",
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20190527084327",
+    "changelogDate": "20200503071900",
     "entityTableName": "address",
     "dto": "mapstruct",
-    "pagination": "pager",
+    "pagination": "pagination",
     "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

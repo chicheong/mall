@@ -1,93 +1,97 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
-
-import { Observable } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder } from '@angular/forms';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
-import { JhiEventManager, JhiAlertService } from 'ng-jhipster';
 
-import { IProductStyle } from 'app/shared/model/product-style.model';
-import { IProduct } from 'app/shared/model/product.model';
-import { ProductStyleService } from 'app/entities/product-style/product-style.service';
-import { ProductService, ProductDetailComponentType } from 'app/entities/product';
+import { IProductStyle, ProductStyle } from 'app/shared/model/product-style.model';
+import { ModalResult, IModalResult } from "app/shared/model/modal-result.model";
+import { ModalResultType } from "app/shared/model/enumerations/modal-result-type.model";
 
 @Component({
     selector: 'jhi-product-style-dialog',
     templateUrl: './product-style-dialog.component.html'
 })
 export class ProductStyleDialogComponent implements OnInit {
-
-    object: IProductStyle;
-    isSaving: boolean;
-    broadcastName: string;
-    type: string; // Not in use
-
-    products: IProduct[];
+    object: IProductStyle = {};
+    isSaving = false;
+    
+    editForm = this.fb.group({
+        id: [],
+        tempId: [],
+        name: [],
+        code: [],
+        isDefault: [],
+        type: [],
+        product: [],
+        url: [],
+        dirtyUrl: [],
+        disabled: []
+    });
 
     constructor(
         public activeModal: NgbActiveModal,
-        private jhiAlertService: JhiAlertService,
-        private productStyleService: ProductStyleService,
-        private productService: ProductService,
-        private eventManager: JhiEventManager
+        private fb: FormBuilder
     ) {
     }
-
-    ngOnInit() {
-        this.isSaving = false;
-        this.productService.query()
-            .subscribe((res: HttpResponse<IProduct[]>) => { this.products = res.body; }, (res: HttpErrorResponse) => this.onError(res.message));
+    
+    ngOnInit(): void {
+        this.updateForm(this.object);
+    }
+    
+    updateForm(productStyle: IProductStyle): void {
+        this.editForm.patchValue({
+          id: productStyle.id,
+          tempId: productStyle.tempId,
+          name: productStyle.name,
+          code: productStyle.code,
+          isDefault: productStyle.isDefault,
+          type: productStyle.type,
+          product: productStyle.product,
+          url: productStyle.url,
+          dirtyUrl: productStyle.dirtyUrl,
+          disabled: productStyle.disabled
+        });
     }
 
-    clear() {
+    cancel(): void {
         this.activeModal.dismiss('cancel');
     }
 
-    confirm() {
+    confirm(): void {
         this.isSaving = true;
-        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.object, type: ProductDetailComponentType.CONFIRM});
+//        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.object, type: ProductDetailComponentType.CONFIRM});
+        const result: IModalResult = Object.assign(new ModalResult());
+        result.type = ModalResultType.UPDATE;
+        result.obj = this.createFromForm();
+        
+        console.error('product-style-dialog->confirm->result.obj.name: ' + result.obj.name);
+        this.activeModal.close(result);
         this.isSaving = false;
-        this.activeModal.dismiss(this.object);
     }
 
-    delete() {
+    delete(): void {
         this.isSaving = true;
-        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.object, type: ProductDetailComponentType.DELETE});
-        this.isSaving = false;
-        this.activeModal.dismiss(this.object);
-    }
-
-    save() {
-        this.isSaving = true;
-        if (this.object.id !== undefined) {
-            this.subscribeToSaveResponse(
-                this.productStyleService.update(this.object));
-        } else {
-            this.subscribeToSaveResponse(
-                this.productStyleService.create(this.object));
-        }
-    }
-
-    private subscribeToSaveResponse(result: Observable<HttpResponse<IProductStyle>>) {
-        result.subscribe((res: HttpResponse<IProductStyle>) =>
-            this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
-    }
-
-    private onSaveSuccess(result: IProductStyle) {
-        this.eventManager.broadcast({ name: 'productStyleListModification', content: 'OK'});
-        this.isSaving = false;
-        this.activeModal.dismiss(result);
-    }
-
-    private onSaveError() {
+//        this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: this.object, type: ProductDetailComponentType.DELETE});
+        const result: IModalResult = Object.assign(new ModalResult());
+        result.type = ModalResultType.DELETE;
+        result.obj = this.createFromForm();
+        this.activeModal.close(result);
+//        this.activeModal.close(null);
         this.isSaving = false;
     }
-
-    private onError(error: any) {
-        this.jhiAlertService.error(error.message, null, null);
-    }
-
-    trackProductById(index: number, item: IProduct) {
-        return item.id;
-    }
+    
+    private createFromForm(): IProductStyle {
+        return {
+          ...new ProductStyle(),
+          id: this.editForm.get(['id'])!.value,
+          tempId: this.editForm.get(['tempId'])!.value,
+          name: this.editForm.get(['name'])!.value,
+          code: this.editForm.get(['code'])!.value,
+          isDefault: this.editForm.get(['isDefault'])!.value,
+          type: this.editForm.get(['type'])!.value,
+          product: this.editForm.get(['product'])!.value,
+          url: this.editForm.get(['url'])!.value,
+          dirtyUrl: this.editForm.get(['dirtyUrl'])!.value,
+          disabled: this.editForm.get(['disabled'])!.value
+        };
+     }
 }

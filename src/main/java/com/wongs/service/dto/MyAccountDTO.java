@@ -1,6 +1,5 @@
 package com.wongs.service.dto;
 
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -18,10 +17,10 @@ import com.wongs.domain.UserInfo;
 import com.wongs.domain.enumeration.AccountType;
 
 /**
- * A DTO for the MyAccount entity.
+ * A DTO for the {@link com.wongs.domain.MyAccount} entity.
  */
 public class MyAccountDTO implements Serializable {
-
+    
     private Long id;
 
     private BigDecimal balance;
@@ -110,7 +109,7 @@ public class MyAccountDTO implements Serializable {
 		this.office = office;
 	}
 
-	public Set<ShopDTO> getShops() {
+    public Set<ShopDTO> getShops() {
         return shops;
     }
 
@@ -144,7 +143,7 @@ public class MyAccountDTO implements Serializable {
         }
 
         MyAccountDTO myAccountDTO = (MyAccountDTO) o;
-        if(myAccountDTO.getId() == null || getId() == null) {
+        if (myAccountDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), myAccountDTO.getId());

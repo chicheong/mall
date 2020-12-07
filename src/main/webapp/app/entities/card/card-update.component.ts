@@ -1,76 +1,104 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { JhiAlertService } from 'ng-jhipster';
-import { ICard } from 'app/shared/model/card.model';
+
+import { ICard, Card } from 'app/shared/model/card.model';
 import { CardService } from './card.service';
 import { IMyAccount } from 'app/shared/model/my-account.model';
-import { MyAccountService } from 'app/entities/my-account';
+import { MyAccountService } from 'app/entities/my-account/my-account.service';
 
 @Component({
-    selector: 'jhi-card-update',
-    templateUrl: './card-update.component.html'
+  selector: 'jhi-card-update',
+  templateUrl: './card-update.component.html'
 })
 export class CardUpdateComponent implements OnInit {
-    card: ICard;
-    isSaving: boolean;
+  isSaving = false;
+  myaccounts: IMyAccount[] = [];
 
-    myaccounts: IMyAccount[];
+  editForm = this.fb.group({
+    id: [],
+    holderName: [],
+    cardNumber: [],
+    expirationMonth: [],
+    expirationYear: [],
+    cvc: [],
+    account: []
+  });
 
-    constructor(
-        protected jhiAlertService: JhiAlertService,
-        protected cardService: CardService,
-        protected myAccountService: MyAccountService,
-        protected activatedRoute: ActivatedRoute
-    ) {}
+  constructor(
+    protected cardService: CardService,
+    protected myAccountService: MyAccountService,
+    protected activatedRoute: ActivatedRoute,
+    private fb: FormBuilder
+  ) {}
 
-    ngOnInit() {
-        this.isSaving = false;
-        this.activatedRoute.data.subscribe(({ card }) => {
-            this.card = card;
-        });
-        this.myAccountService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<IMyAccount[]>) => mayBeOk.ok),
-                map((response: HttpResponse<IMyAccount[]>) => response.body)
-            )
-            .subscribe((res: IMyAccount[]) => (this.myaccounts = res), (res: HttpErrorResponse) => this.onError(res.message));
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ card }) => {
+      this.updateForm(card);
+
+      this.myAccountService.query().subscribe((res: HttpResponse<IMyAccount[]>) => (this.myaccounts = res.body || []));
+    });
+  }
+
+  updateForm(card: ICard): void {
+    this.editForm.patchValue({
+      id: card.id,
+      holderName: card.holderName,
+      cardNumber: card.cardNumber,
+      expirationMonth: card.expirationMonth,
+      expirationYear: card.expirationYear,
+      cvc: card.cvc,
+      account: card.account
+    });
+  }
+
+  previousState(): void {
+    window.history.back();
+  }
+
+  save(): void {
+    this.isSaving = true;
+    const card = this.createFromForm();
+    if (card.id !== undefined) {
+      this.subscribeToSaveResponse(this.cardService.update(card));
+    } else {
+      this.subscribeToSaveResponse(this.cardService.create(card));
     }
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  private createFromForm(): ICard {
+    return {
+      ...new Card(),
+      id: this.editForm.get(['id'])!.value,
+      holderName: this.editForm.get(['holderName'])!.value,
+      cardNumber: this.editForm.get(['cardNumber'])!.value,
+      expirationMonth: this.editForm.get(['expirationMonth'])!.value,
+      expirationYear: this.editForm.get(['expirationYear'])!.value,
+      cvc: this.editForm.get(['cvc'])!.value,
+      account: this.editForm.get(['account'])!.value
+    };
+  }
 
-    save() {
-        this.isSaving = true;
-        if (this.card.id !== undefined) {
-            this.subscribeToSaveResponse(this.cardService.update(this.card));
-        } else {
-            this.subscribeToSaveResponse(this.cardService.create(this.card));
-        }
-    }
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<ICard>>): void {
+    result.subscribe(
+      () => this.onSaveSuccess(),
+      () => this.onSaveError()
+    );
+  }
 
-    protected subscribeToSaveResponse(result: Observable<HttpResponse<ICard>>) {
-        result.subscribe((res: HttpResponse<ICard>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
-    }
+  protected onSaveSuccess(): void {
+    this.isSaving = false;
+    this.previousState();
+  }
 
-    protected onSaveSuccess() {
-        this.isSaving = false;
-        this.previousState();
-    }
+  protected onSaveError(): void {
+    this.isSaving = false;
+  }
 
-    protected onSaveError() {
-        this.isSaving = false;
-    }
-
-    protected onError(errorMessage: string) {
-        this.jhiAlertService.error(errorMessage, null, null);
-    }
-
-    trackMyAccountById(index: number, item: IMyAccount) {
-        return item.id;
-    }
+  trackByObject(index: number, item: IMyAccount): any {
+    return item;
+  }
 }

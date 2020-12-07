@@ -1,26 +1,26 @@
 package com.wongs.service;
 
-import static org.elasticsearch.index.query.QueryBuilders.queryStringQuery;
-
-import java.util.Optional;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
 import com.wongs.domain.MyAccount;
 import com.wongs.domain.enumeration.OrderStatus;
 import com.wongs.repository.MyAccountRepository;
 import com.wongs.repository.search.MyAccountSearchRepository;
 import com.wongs.service.dto.MyAccountDTO;
 import com.wongs.service.mapper.MyAccountMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Optional;
+
+import static org.elasticsearch.index.query.QueryBuilders.*;
 import com.wongs.service.mapper.ShopMapper;
 
 /**
- * Service Implementation for managing MyAccount.
+ * Service Implementation for managing {@link MyAccount}.
  */
 @Service
 @Transactional
@@ -49,8 +49,8 @@ public class MyAccountService {
     /**
      * Save a myAccount.
      *
-     * @param myAccountDTO the entity to save
-     * @return the persisted entity
+     * @param myAccountDTO the entity to save.
+     * @return the persisted entity.
      */
     public MyAccountDTO save(MyAccountDTO myAccountDTO) {
         log.debug("Request to save MyAccount : {}", myAccountDTO);
@@ -67,8 +67,8 @@ public class MyAccountService {
     /**
      * Get all the myAccounts.
      *
-     * @param pageable the pagination information
-     * @return the list of entities
+     * @param pageable the pagination information.
+     * @return the list of entities.
      */
     @Transactional(readOnly = true)
     public Page<MyAccountDTO> findAll(Pageable pageable) {
@@ -78,9 +78,9 @@ public class MyAccountService {
     }
 
     /**
-     * Get all the MyAccount with eager load of many-to-many relationships.
+     * Get all the myAccounts with eager load of many-to-many relationships.
      *
-     * @return the list of entities
+     * @return the list of entities.
      */
     public Page<MyAccountDTO> findAllWithEagerRelationships(Pageable pageable) {
         return myAccountRepository.findAllWithEagerRelationships(pageable).map(myAccountMapper::toDto);
@@ -90,8 +90,8 @@ public class MyAccountService {
     /**
      * Get one myAccount by id.
      *
-     * @param id the id of the entity
-     * @return the entity
+     * @param id the id of the entity.
+     * @return the entity.
      */
     @Transactional(readOnly = true)
     public Optional<MyAccountDTO> findOne(Long id) {
@@ -108,20 +108,20 @@ public class MyAccountService {
     /**
      * Delete the myAccount by id.
      *
-     * @param id the id of the entity
+     * @param id the id of the entity.
      */
     public void delete(Long id) {
         log.debug("Request to delete MyAccount : {}", id);
-        myAccountRepository.deleteById(id);	
+        myAccountRepository.deleteById(id);
         myAccountSearchRepository.deleteById(id);
     }
 
     /**
      * Search for the myAccount corresponding to the query.
      *
-     * @param query the query of the search
-     * @param pageable the pagination information
-     * @return the list of entities
+     * @param query the query of the search.
+     * @param pageable the pagination information.
+     * @return the list of entities.
      */
     @Transactional(readOnly = true)
     public Page<MyAccountDTO> search(String query, Pageable pageable) {

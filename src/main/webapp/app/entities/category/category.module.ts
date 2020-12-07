@@ -1,40 +1,16 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
-import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from 'app/shared';
-import {
-    CategoryComponent,
-    CategoryDetailComponent,
-    CategoryUpdateComponent,
-    CategoryDeletePopupComponent,
-    CategoryDeleteDialogComponent,
-    categoryRoute,
-    categoryPopupRoute
-} from './';
-
-const ENTITY_STATES = [...categoryRoute, ...categoryPopupRoute];
+import { MallSharedModule } from 'app/shared/shared.module';
+import { CategoryComponent } from './category.component';
+import { CategoryDetailComponent } from './category-detail.component';
+import { CategoryUpdateComponent } from './category-update.component';
+import { CategoryDeleteDialogComponent } from './category-delete-dialog.component';
+import { categoryRoute } from './category.route';
 
 @NgModule({
-    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
-    declarations: [
-        CategoryComponent,
-        CategoryDetailComponent,
-        CategoryUpdateComponent,
-        CategoryDeleteDialogComponent,
-        CategoryDeletePopupComponent
-    ],
-    entryComponents: [CategoryComponent, CategoryUpdateComponent, CategoryDeleteDialogComponent, CategoryDeletePopupComponent],
-    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  imports: [MallSharedModule, RouterModule.forChild(categoryRoute)],
+  declarations: [CategoryComponent, CategoryDetailComponent, CategoryUpdateComponent, CategoryDeleteDialogComponent],
+  entryComponents: [CategoryDeleteDialogComponent]
 })
-export class MallCategoryModule {
-    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
-        this.languageHelper.language.subscribe((languageKey: string) => {
-            if (languageKey !== undefined) {
-                this.languageService.changeLanguage(languageKey);
-            }
-        });
-    }
-}
+export class MallCategoryModule {}

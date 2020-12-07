@@ -4,21 +4,19 @@ import { ActivatedRoute } from '@angular/router';
 import { IShippingType } from 'app/shared/model/shipping-type.model';
 
 @Component({
-    selector: 'jhi-shipping-type-detail',
-    templateUrl: './shipping-type-detail.component.html'
+  selector: 'jhi-shipping-type-detail',
+  templateUrl: './shipping-type-detail.component.html'
 })
 export class ShippingTypeDetailComponent implements OnInit {
-    shippingType: IShippingType;
+  shippingType: IShippingType | null = null;
 
-    constructor(protected activatedRoute: ActivatedRoute) {}
+  constructor(protected activatedRoute: ActivatedRoute) {}
 
-    ngOnInit() {
-        this.activatedRoute.data.subscribe(({ shippingType }) => {
-            this.shippingType = shippingType;
-        });
-    }
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ shippingType }) => (this.shippingType = shippingType));
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  previousState(): void {
+    window.history.back();
+  }
 }

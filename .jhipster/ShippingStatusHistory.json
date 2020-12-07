@@ -20,13 +20,15 @@
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20190527101539",
+    "changelogDate": "20200503074300",
     "entityTableName": "shipping_status_history",
-    "dto": "no",
+    "dto": "mapstruct",
     "pagination": "infinite-scroll",
-    "service": "no",
+    "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

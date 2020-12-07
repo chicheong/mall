@@ -1,151 +1,183 @@
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
-import { JhiLanguageService, JhiEventManager } from 'ng-jhipster';
-import { Subscription } from 'rxjs';
+import { FormBuilder, Validators } from '@angular/forms';
+import { JhiLanguageService } from 'ng-jhipster';
 
-import { AccountService, JhiLanguageHelper } from 'app/core';
-import { IShop, Shop } from 'app/shared/model/shop.model';
-import { ShopService } from 'app/entities/shop';
-import { IUrl, Url } from 'app/shared/model/url.model';
-import { UrlService } from 'app/entities/url';
-import { FileUploadModelService } from 'app/shared';
+import { AccountService } from 'app/core/auth/account.service';
+import { Account } from 'app/core/user/account.model';
+import { LANGUAGES } from 'app/core/language/language.constants';
 
-import { NgbModalRef } from '@ng-bootstrap/ng-bootstrap';
-
-export const enum SettingsComponentUploadType {
-    USER_IMAGE = 'userImageModification',
-    USER_FILE = 'userFileModification',
-}
+import { ShopService } from 'app/entities/shop/shop.service';
+import { Shop, IShop } from "app/shared/model/shop.model";
+import { IMyUrl, MyUrl } from "app/shared/model/my-url.model";
+import { Observable } from "rxjs";
+import { HttpResponse } from "@angular/common/http";
+import { NgbModalRef } from "@ng-bootstrap/ng-bootstrap";
+import { NgbModal } from "@ng-bootstrap/ng-bootstrap";
+import { FileUploadDialogComponent } from "app/shared/file-upload/file-upload-dialog.component";
+import { MyUrlService } from "app/entities/my-url/my-url.service";
 
 @Component({
-    selector: 'jhi-settings',
-    templateUrl: './settings.component.html'
+  selector: 'jhi-settings',
+  templateUrl: './settings.component.html'
 })
 export class SettingsComponent implements OnInit {
-    error: string;
-    success: string;
-    settingsAccount: any;
-    isSavingBasic: boolean;
-    isEditingBasic: boolean;
-    languages: any[];
-    private subscription: Subscription;
-    private eventSubscriber: Subscription;
+  account: Account;
+  success = false;
+  languages = LANGUAGES;
+  settingsForm = this.fb.group({
+    firstName: [undefined, [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
+    lastName: [undefined, [Validators.required, Validators.minLength(1), Validators.maxLength(50)]],
+    email: [undefined, [Validators.required, Validators.minLength(5), Validators.maxLength(254), Validators.email]],
+    langKey: [undefined]
+  });
+  
+  isSavingBasic = false;
+  isEditingBasic = false;
 
-    modalRef: NgbModalRef;
+  constructor(
+          private accountService: AccountService, 
+          private fb: FormBuilder, 
+          protected modalService: NgbModal,
+          private languageService: JhiLanguageService,
+          private shopService: ShopService,
+          private urlService: MyUrlService
+  ) {}
 
-    constructor(
-        private accountService: AccountService,
-        private shopService: ShopService,
-        private urlService: UrlService,
-        private languageService: JhiLanguageService,
-        private languageHelper: JhiLanguageHelper,
-        private uploadMediaModelService: FileUploadModelService,
-        private eventManager: JhiEventManager
-    ) {}
-
-    ngOnInit() {
-        this.accountService.identity().then(account => {
-            this.settingsAccount = this.copyAccount(account);
+  ngOnInit(): void {
+    this.accountService.identity().subscribe(account => {
+      if (account) {
+        this.settingsForm.patchValue({
+          firstName: account.firstName,
+          lastName: account.lastName,
+          email: account.email,
+          langKey: account.langKey
         });
-        this.languageHelper.getAll().then(languages => {
-            this.languages = languages;
-        });
-        this.isSavingBasic = false;
-        this.isEditingBasic = false;
-        this.registerChangeInUserImage();
-        this.registerChangeInUserFile();
+
+        this.account = account;
+      }
+    });
+  }
+
+  saveBasic(): void {
+    this.success = false;
+
+    this.account.firstName = this.settingsForm.get('firstName')!.value;
+    this.account.lastName = this.settingsForm.get('lastName')!.value;
+    this.account.email = this.settingsForm.get('email')!.value;
+    this.account.langKey = this.settingsForm.get('langKey')!.value;
+
+    this.accountService.save(this.account).subscribe(() => {
+      this.success = true;
+
+      this.accountService.authenticate(this.account);
+
+      if (this.account.langKey !== this.languageService.getCurrentLanguage()) {
+        this.languageService.changeLanguage(this.account.langKey);
+      }
+      this.isSavingBasic = false;
+      this.isEditingBasic = false;
+    });
+  }
+
+  editBasic(): void {
+      this.isEditingBasic = true;
+  }
+  
+  cancelBasic(): void {
+      this.isEditingBasic = false;
+      this.accountService.identity().subscribe(account => {
+          if (account) {
+            this.settingsForm.patchValue({
+              firstName: account.firstName,
+              lastName: account.lastName,
+              email: account.email,
+              langKey: account.langKey
+            });
+
+            this.account = account;
+          }
+     });
+  }
+
+  createMyShop(): void {
+//      console.log('createMyShop');
+      const shop: IShop = Object.assign(new Shop());
+      shop.code = 'temp';
+      
+      this.subscribeToSaveResponse(this.shopService.create(shop));
+  }
+  
+    protected subscribeToSaveResponse(result: Observable<HttpResponse<IShop>>): void {
+      result.subscribe(
+        () => this.onSaveSuccess(),
+        () => this.onSaveError()
+      );
     }
 
-    saveBasic() {
-        this.isSavingBasic = true;
-        this.accountService.save(this.settingsAccount).subscribe(
-            () => {
-                this.error = null;
-                this.success = 'OK';
-                this.accountService.identity(true).then(account => {
-                    this.settingsAccount = this.copyAccount(account);
-                });
-                this.languageService.getCurrent().then(current => {
-                    if (this.settingsAccount.langKey !== current) {
-                        this.languageService.changeLanguage(this.settingsAccount.langKey);
-                    }
-                });
-                this.isSavingBasic = false;
-                this.isEditingBasic = false;
-            },
-            () => {
-                this.success = null;
-                this.error = 'ERROR';
-            }
-        );
+    protected onSaveSuccess(): void {
+//      this.isSaving = false;
+//      this.previousState();
+    }
+    
+    protected onSaveError(): void {
+//      this.isSaving = false;
     }
 
-    editBasic() {
-        this.isEditingBasic = true;
-    }
+  /**
+  copyAccount(account): Account {
+      return {
+          activated: account.activated,
+          email: account.email,
+          firstName: account.firstName,
+          langKey: account.langKey,
+          lastName: account.lastName,
+          login: account.login,
+          imageUrl: account.imageUrl
+      };
+  }
+  */
 
-    cancelBasic() {
-        this.isEditingBasic = false;
-        this.accountService.identity().then(account => {
-            this.settingsAccount = this.copyAccount(account);
-        });
-    }
+  updateUserImage(urls: IMyUrl[]): void {
+      this.account.imageUrl = urls[0].path;
+  }
 
-    createMyShop() {
-        console.log('createMyShop');
-        const shop: IShop = Object.assign(new Shop());
-        shop.code = 'temp';
-        this.shopService.create(shop)
-            .subscribe((shopResponse: HttpResponse<IShop>) => {
-                console.log(shopResponse.body);
-            }, (res: HttpErrorResponse) => this.error = 'ERROR');
-    }
+  updateUserFile(urls: IMyUrl[]): void {
+      this.subscribeToSaveMultipleResponse(this.urlService.createMultiple(urls));
+  }
+  
+  protected subscribeToSaveMultipleResponse(result: Observable<HttpResponse<IMyUrl[]>>): void {
+      result.subscribe(
+        () => this.onSaveSuccess(),
+        () => this.onSaveError()
+      );
+  }
 
-    copyAccount(account) {
-        return {
-            activated: account.activated,
-            email: account.email,
-            firstName: account.firstName,
-            langKey: account.langKey,
-            lastName: account.lastName,
-            login: account.login,
-            imageUrl: account.imageUrl
-        };
-    }
+  uploadUserImage(): void {
+//      this.modalRef = this.uploadMediaModelService.open(null, null, 1, null, SettingsComponentUploadType.USER_IMAGE);
+      const modalRef: NgbModalRef = this.modalService.open(FileUploadDialogComponent, { size: 'lg', backdrop: 'static' });
+      modalRef.componentInstance.object = null;
+      modalRef.componentInstance.maxFiles = 1;
+      modalRef.result.then((result) => {
+          if (result) {
+              console.error('settings->uploadUserImage->result: ' + result);
+              this.updateUserImage(result);
+          }
+      }).catch(() => {});
+  }
 
-    registerChangeInUserImage() {
-        this.eventSubscriber = this.eventManager.subscribe(
-            SettingsComponentUploadType.USER_IMAGE,
-            response => this.updateUserImage(response.obj)
-        );
-    }
-
-    registerChangeInUserFile() {
-        this.eventSubscriber = this.eventManager.subscribe(
-            SettingsComponentUploadType.USER_FILE,
-            response => this.updateUserFile(response.obj)
-        );
-    }
-
-    updateUserImage(urls: IUrl[]) {
-        this.settingsAccount.imageUrl = urls[0].path;
-    }
-
-    updateUserFile(urls: IUrl[]) {
-        this.urlService.createMultiple(urls).subscribe((urlsResponse: HttpResponse<IUrl[]>) => {
-            console.log(urlsResponse.body);
-        }, (res: HttpErrorResponse) => this.error = 'ERROR');
-    }
-
-    uploadUserImage() {
-        this.modalRef = this.uploadMediaModelService.open(null, null, 1, null, SettingsComponentUploadType.USER_IMAGE);
-    }
-
-    uploadFile() {
-        const url = new Url();
-        url.entityType = 'User';
-        url.entityId = 1;
-        url.sequence = 1;
-        this.modalRef = this.uploadMediaModelService.open(url, null, null, null, SettingsComponentUploadType.USER_FILE);
-    }
+  uploadFile(): void {
+      const url = new MyUrl();
+      url.entityType = 'User';
+      url.entityId = 1;
+      url.sequence = 1;
+      
+      const modalRef: NgbModalRef = this.modalService.open(FileUploadDialogComponent, { size: 'lg', backdrop: 'static' });
+      modalRef.componentInstance.object = url;
+      modalRef.result.then((result) => {
+          if (result) {
+              console.error('settings->uploadFile->result: ' + result);
+              this.updateUserFile(result);
+          }
+      }).catch(() => {});
+  }
 }

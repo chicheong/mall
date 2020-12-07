@@ -1,29 +1,30 @@
 {
-    "mallApp": {
-        "myAccount": {
-            "home": {
-                "title": "我的帳戶",
-                "createLabel": "建立一筆新的我的帳戶",
-                "createOrEditLabel": "建立或編輯我的帳戶",
-                "search": "搜尋 My Account"
-            },
-            "created": "新的我的帳戶建立成功，識別碼為 {{ param }}",
-            "updated": "識別碼為 {{ param }} 的我的帳戶更新成功",
-            "deleted": "識別碼為 {{ param }} 的我的帳戶刪除成功",
-            "delete": {
-                "question": "您確定要刪除我的帳戶 {{ id }} 嗎?"
-            },
-            "detail": {
-                "title": "我的帳戶"
-            },
-            "balance": "Balance",
-            "type": "Type",
-            "delegation": "Delegation",
-            "company": "Company",
-            "department": "Department",
-            "office": "Office",
-            "shop": "Shop",
-            "userInfo": "User Info"
-        }
+  "mallApp": {
+    "myAccount": {
+      "home": {
+        "title": "我的帳戶",
+        "createLabel": "建立一筆新的我的帳戶",
+        "createOrEditLabel": "建立或編輯我的帳戶",
+        "search": "搜尋我的帳戶",
+        "notFound": "No My Accounts found"
+      },
+      "created": "新的我的帳戶建立成功，識別碼為 {{ param }}",
+      "updated": "識別碼為 {{ param }} 的我的帳戶更新成功",
+      "deleted": "識別碼為 {{ param }} 的我的帳戶刪除成功",
+      "delete": {
+        "question": "您確定要刪除 My Account {{ id }} 嗎?"
+      },
+      "detail": {
+        "title": "我的帳戶"
+      },
+      "balance": "Balance",
+      "type": "Type",
+      "delegation": "Delegation",
+      "company": "Company",
+      "department": "Department",
+      "office": "Office",
+      "shop": "Shop",
+      "userInfo": "User Info"
     }
+  }
 }

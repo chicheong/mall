@@ -1,13 +1,12 @@
 package com.wongs.domain;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -17,11 +16,11 @@ import java.util.Objects;
 @Entity
 @Table(name = "address")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "address")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "address")
 public class Address implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -45,11 +44,11 @@ public class Address implements Serializable {
     private String postalCode;
 
     @ManyToOne
-    @JsonIgnoreProperties("addresses")
+    // @JsonIgnoreProperties("addresses")
     private Country country;
 
     @ManyToOne
-    @JsonIgnoreProperties("addresses")
+    // @JsonIgnoreProperties("addresses")
     private MyState myState;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
@@ -156,7 +155,7 @@ public class Address implements Serializable {
         return myState;
     }
 
-    public Address state(MyState myState) {
+    public Address myState(MyState myState) {
         this.myState = myState;
         return this;
     }
@@ -171,19 +170,15 @@ public class Address implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Address)) {
             return false;
         }
-        Address address = (Address) o;
-        if (address.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), address.getId());
+        return id != null && id.equals(((Address) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

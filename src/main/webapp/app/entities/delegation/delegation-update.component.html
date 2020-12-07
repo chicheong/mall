@@ -1,88 +1,96 @@
 <div class="row justify-content-center">
     <div class="col-8">
-        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
             <h2 id="jhi-delegation-heading" jhiTranslate="mallApp.delegation.home.createOrEditLabel">Create or edit a Delegation</h2>
+
             <div>
                 <jhi-alert-error></jhi-alert-error>
-                <div class="form-group" [hidden]="!delegation.id">
+
+                <div class="form-group" [hidden]="!editForm.get('id')!.value">
                     <label for="id" jhiTranslate="global.field.id">ID</label>
-                    <input type="text" class="form-control" id="id" name="id"
-                        [(ngModel)]="delegation.id" readonly />
+                    <input type="text" class="form-control" id="id" name="id" formControlName="id" readonly />
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.delegation.from" for="field_from">From</label>
                     <div class="d-flex">
-                        <input id="field_from" type="datetime-local" class="form-control" name="from" [(ngModel)]="from" placeholder="YYYY-MM-DD HH:mm"
-                        />
+                        <input id="field_from" type="datetime-local" class="form-control" name="from" formControlName="from" placeholder="YYYY-MM-DD HH:mm"/>
                     </div>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.delegation.to" for="field_to">To</label>
                     <div class="d-flex">
-                        <input id="field_to" type="datetime-local" class="form-control" name="to" [(ngModel)]="to" placeholder="YYYY-MM-DD HH:mm"
-                        />
+                        <input id="field_to" type="datetime-local" class="form-control" name="to" formControlName="to" placeholder="YYYY-MM-DD HH:mm"/>
                     </div>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.delegation.type" for="field_type">Type</label>
-                    <select class="form-control" name="type" [(ngModel)]="delegation.type" id="field_type" >
-                        <option value="ACCOUNT">{{'mallApp.DelegationType.ACCOUNT' | translate}}</option>
-                        <option value="COMPANY">{{'mallApp.DelegationType.COMPANY' | translate}}</option>
-                        <option value="DEPARTMENT">{{'mallApp.DelegationType.DEPARTMENT' | translate}}</option>
-                        <option value="OFFICE">{{'mallApp.DelegationType.OFFICE' | translate}}</option>
+                    <select class="form-control" name="type" formControlName="type" id="field_type">
+                        <option value="ACCOUNT">{{ 'mallApp.DelegationType.ACCOUNT' | translate }}</option>
+                        <option value="COMPANY">{{ 'mallApp.DelegationType.COMPANY' | translate }}</option>
+                        <option value="DEPARTMENT">{{ 'mallApp.DelegationType.DEPARTMENT' | translate }}</option>
+                        <option value="OFFICE">{{ 'mallApp.DelegationType.OFFICE' | translate }}</option>
                     </select>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.delegation.delegateId" for="field_delegateId">Delegate Id</label>
                     <input type="text" class="form-control" name="delegateId" id="field_delegateId"
-                        [(ngModel)]="delegation.delegateId" />
+                           formControlName="delegateId"/>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.delegation.status" for="field_status">Status</label>
-                    <select class="form-control" name="status" [(ngModel)]="delegation.status" id="field_status" >
-                        <option value="ACTIVE">{{'mallApp.CommonStatus.ACTIVE' | translate}}</option>
-                        <option value="INACTIVE">{{'mallApp.CommonStatus.INACTIVE' | translate}}</option>
+                    <select class="form-control" name="status" formControlName="status" id="field_status">
+                        <option value="ACTIVE">{{ 'mallApp.CommonStatus.ACTIVE' | translate }}</option>
+                        <option value="INACTIVE">{{ 'mallApp.CommonStatus.INACTIVE' | translate }}</option>
                     </select>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.delegation.createdBy" for="field_createdBy">Created By</label>
                     <input type="text" class="form-control" name="createdBy" id="field_createdBy"
-                        [(ngModel)]="delegation.createdBy" />
+                           formControlName="createdBy"/>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.delegation.createdDate" for="field_createdDate">Created Date</label>
                     <div class="d-flex">
-                        <input id="field_createdDate" type="datetime-local" class="form-control" name="createdDate" [(ngModel)]="createdDate" placeholder="YYYY-MM-DD HH:mm"
-                        />
+                        <input id="field_createdDate" type="datetime-local" class="form-control" name="createdDate" formControlName="createdDate" placeholder="YYYY-MM-DD HH:mm"/>
                     </div>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.delegation.lastModifiedBy" for="field_lastModifiedBy">Last Modified By</label>
                     <input type="text" class="form-control" name="lastModifiedBy" id="field_lastModifiedBy"
-                        [(ngModel)]="delegation.lastModifiedBy" />
+                           formControlName="lastModifiedBy"/>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.delegation.lastModifiedDate" for="field_lastModifiedDate">Last Modified Date</label>
                     <div class="d-flex">
-                        <input id="field_lastModifiedDate" type="datetime-local" class="form-control" name="lastModifiedDate" [(ngModel)]="lastModifiedDate" placeholder="YYYY-MM-DD HH:mm"
-                        />
+                        <input id="field_lastModifiedDate" type="datetime-local" class="form-control" name="lastModifiedDate" formControlName="lastModifiedDate" placeholder="YYYY-MM-DD HH:mm"/>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.delegation.account" for="field_account">Account</label>
-                    <select class="form-control" id="field_account" name="account" [(ngModel)]="delegation.accountId" >
+                    <select class="form-control" id="field_account" name="account" formControlName="accountId">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="myAccountOption.id" *ngFor="let myAccountOption of myaccounts; trackBy: trackMyAccountById">{{myAccountOption.id}}</option>
+                        <option [ngValue]="myAccountOption.id" *ngFor="let myAccountOption of myaccounts; trackBy: trackById">{{ myAccountOption.id }}</option>
                     </select>
                 </div>
             </div>
+
             <div>
-                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
-                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
+                    <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
                 </button>
-                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
-                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+
+                <button type="submit" id="save-entity" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
                 </button>
             </div>
         </form>

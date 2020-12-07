@@ -1,58 +1,66 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { NgbDateAdapter } from '@ng-bootstrap/ng-bootstrap';
-
-import { NgbDateMomentAdapter } from './util/datepicker-adapter';
-import { MallSharedLibsModule, MallSharedCommonModule, JhiLoginModalComponent, HasAnyAuthorityDirective } from './';
-import { JhMaterialModule } from 'app/shared/jh-material.module';
-import { FileUploadDialogComponent } from './file-upload/file-upload-dialog.component';
-import { FileUploadComponent } from './file-upload/file-upload.component';
-import { ProductDetailOtherDialogComponent } from './popup/product/product-detail-other-dialog.component';
-import { ProductItemsDialogComponent } from './popup/product/product-items-dialog.component';
-import { ProductItemsUrlDialogComponent } from './popup/product/product-items-url-dialog.component';
+import { NgModule } from '@angular/core';
+import { MallSharedLibsModule } from './shared-libs.module';
+import { MaterialModule } from 'app/shared/material.module';
+import { FindLanguageFromKeyPipe } from './language/find-language-from-key.pipe';
+import { StringEllipsisPipe } from './formatting/string-ellipsis.pipe';
+import { AlertComponent } from './alert/alert.component';
+import { AlertErrorComponent } from './alert/alert-error.component';
+import { LoginModalComponent } from './login/login.component';
+import { HasAnyAuthorityDirective } from './auth/has-any-authority.directive';
 import { ProductStyleDialogComponent } from './popup/product/product-style-dialog.component';
-import { PricesDialogComponent } from './popup/product/prices-dialog.component';
-import { QuantitiesDialogComponent } from './popup/product/quantities-dialog.component';
-import { GetItemFromColorSizePipe } from './popup/product/get-item-from-color-size.pipe';
+import { ProductItemsDialogComponent } from 'app/shared/popup/product/product-items-dialog.component';
+import { ProductItemsUrlDialogComponent } from 'app/shared/popup/product/product-items-url-dialog.component';
+import { ProductDetailOtherDialogComponent } from 'app/shared/popup/product/product-detail-other-dialog.component';
+import { PricesDialogComponent } from 'app/shared/popup/product/prices-dialog.component';
+import { QuantitiesDialogComponent } from 'app/shared/popup/product/quantities-dialog.component';
+import { GetItemFromColorSizePipe } from 'app/shared/popup/product/get-item-from-color-size.pipe';
+import { FileUploadDialogComponent } from 'app/shared/file-upload/file-upload-dialog.component';
+import { FileUploadComponent } from 'app/shared/file-upload/file-upload.component';
 import { ProductCardComponent } from './layout/product/product-card.component';
 import { SearchBarComponent } from './layout/search/search-bar.component';
 
 @NgModule({
-    imports: [MallSharedLibsModule, MallSharedCommonModule, JhMaterialModule],
-    declarations: [
-        JhiLoginModalComponent, HasAnyAuthorityDirective,
-        FileUploadDialogComponent,
-        FileUploadComponent,
-        ProductDetailOtherDialogComponent,
-        ProductItemsDialogComponent,
-        ProductItemsUrlDialogComponent,
-        ProductStyleDialogComponent,
-        PricesDialogComponent,
-        QuantitiesDialogComponent,
-        GetItemFromColorSizePipe,
-        ProductCardComponent,
-        SearchBarComponent
-    ],
-    providers: [{ provide: NgbDateAdapter, useClass: NgbDateMomentAdapter }],
-    entryComponents: [
-        JhiLoginModalComponent,
-        FileUploadDialogComponent,
-        FileUploadComponent,
-        ProductDetailOtherDialogComponent,
-        ProductItemsDialogComponent,
-        ProductItemsUrlDialogComponent,
-        ProductStyleDialogComponent,
-        PricesDialogComponent,
-        QuantitiesDialogComponent,
-        ProductCardComponent,
-        SearchBarComponent
-    ],
-    exports: [MallSharedCommonModule, JhiLoginModalComponent, HasAnyAuthorityDirective, JhMaterialModule, ProductCardComponent, SearchBarComponent],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  imports: [MallSharedLibsModule, MaterialModule],
+  declarations: [
+    FindLanguageFromKeyPipe,
+    StringEllipsisPipe,
+    AlertComponent, 
+    AlertErrorComponent, 
+    LoginModalComponent, 
+    HasAnyAuthorityDirective,
+    ProductStyleDialogComponent,
+    ProductItemsDialogComponent,
+    ProductItemsUrlDialogComponent,
+    ProductDetailOtherDialogComponent,
+    PricesDialogComponent,
+    QuantitiesDialogComponent,
+    GetItemFromColorSizePipe,
+    ProductCardComponent,
+    SearchBarComponent,
+    FileUploadDialogComponent,
+    FileUploadComponent
+  ],
+  entryComponents: [LoginModalComponent],
+  exports: [
+    MallSharedLibsModule,
+    MaterialModule,
+    FindLanguageFromKeyPipe,
+    StringEllipsisPipe,
+    AlertComponent,
+    AlertErrorComponent,
+    LoginModalComponent,
+    HasAnyAuthorityDirective,
+    ProductStyleDialogComponent,
+    ProductItemsDialogComponent,
+    ProductItemsUrlDialogComponent,
+    ProductDetailOtherDialogComponent,
+    PricesDialogComponent,
+    QuantitiesDialogComponent,
+    GetItemFromColorSizePipe,
+    ProductCardComponent,
+    SearchBarComponent,
+    FileUploadDialogComponent,
+    FileUploadComponent
+  ]
 })
-export class MallSharedModule {
-    static forRoot() {
-        return {
-            ngModule: MallSharedModule
-        };
-    }
-}
+export class MallSharedModule {}

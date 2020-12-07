@@ -1,44 +1,48 @@
 <div class="row justify-content-center">
     <div class="col-8">
-        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
             <h2 id="jhi-payment-status-history-heading" jhiTranslate="mallApp.paymentStatusHistory.home.createOrEditLabel">Create or edit a Payment Status History</h2>
+
             <div>
                 <jhi-alert-error></jhi-alert-error>
-                <div class="form-group" [hidden]="!paymentStatusHistory.id">
+
+                <div class="form-group" [hidden]="!editForm.get('id')!.value">
                     <label for="id" jhiTranslate="global.field.id">ID</label>
-                    <input type="text" class="form-control" id="id" name="id"
-                        [(ngModel)]="paymentStatusHistory.id" readonly />
+                    <input type="text" class="form-control" id="id" name="id" formControlName="id" readonly />
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.paymentStatusHistory.effectiveDate" for="field_effectiveDate">Effective Date</label>
                     <div class="d-flex">
-                        <input id="field_effectiveDate" type="datetime-local" class="form-control" name="effectiveDate" [(ngModel)]="effectiveDate" placeholder="YYYY-MM-DD HH:mm"
-                        />
+                        <input id="field_effectiveDate" type="datetime-local" class="form-control" name="effectiveDate" formControlName="effectiveDate" placeholder="YYYY-MM-DD HH:mm"/>
                     </div>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.paymentStatusHistory.status" for="field_status">Status</label>
-                    <select class="form-control" name="status" [(ngModel)]="paymentStatusHistory.status" id="field_status" >
-                        <option value="PENDING">{{'mallApp.PaymentStatus.PENDING' | translate}}</option>
-                        <option value="PAID">{{'mallApp.PaymentStatus.PAID' | translate}}</option>
-                        <option value="CANCELLED">{{'mallApp.PaymentStatus.CANCELLED' | translate}}</option>
+                    <select class="form-control" name="status" formControlName="status" id="field_status">
+                        <option value="PENDING">{{ 'mallApp.PaymentStatus.PENDING' | translate }}</option>
+                        <option value="PAID">{{ 'mallApp.PaymentStatus.PAID' | translate }}</option>
+                        <option value="CANCELLED">{{ 'mallApp.PaymentStatus.CANCELLED' | translate }}</option>
                     </select>
                 </div>
 
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.paymentStatusHistory.payment" for="field_payment">Payment</label>
-                    <select class="form-control" id="field_payment" name="payment" [(ngModel)]="paymentStatusHistory.payment" >
+                    <select class="form-control" id="field_payment" name="payment" formControlName="payment">
                         <option [ngValue]="null"></option>
-                        <option [ngValue]="paymentOption.id === paymentStatusHistory.payment?.id ? paymentStatusHistory.payment : paymentOption" *ngFor="let paymentOption of payments; trackBy: trackPaymentById">{{paymentOption.id}}</option>
+                        <option [ngValue]="paymentOption.id === editForm.get('payment')!.value?.id ? editForm.get('payment')!.value : paymentOption" *ngFor="let paymentOption of payments; trackBy: trackById">{{ paymentOption.id }}</option>
                     </select>
                 </div>
             </div>
+
             <div>
-                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
-                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
+                    <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
                 </button>
-                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
-                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+
+                <button type="submit" id="save-entity" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
                 </button>
             </div>
         </form>

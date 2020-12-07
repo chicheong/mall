@@ -1,76 +1,98 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { JhiAlertService } from 'ng-jhipster';
-import { IMyState } from 'app/shared/model/my-state.model';
+
+import { IMyState, MyState } from 'app/shared/model/my-state.model';
 import { MyStateService } from './my-state.service';
 import { ICountry } from 'app/shared/model/country.model';
-import { CountryService } from 'app/entities/country';
+import { CountryService } from 'app/entities/country/country.service';
 
 @Component({
-    selector: 'jhi-my-state-update',
-    templateUrl: './my-state-update.component.html'
+  selector: 'jhi-my-state-update',
+  templateUrl: './my-state-update.component.html'
 })
 export class MyStateUpdateComponent implements OnInit {
-    myState: IMyState;
-    isSaving: boolean;
+  isSaving = false;
+  countries: ICountry[] = [];
 
-    countries: ICountry[];
+  editForm = this.fb.group({
+    id: [],
+    code: [null, [Validators.required, Validators.maxLength(2)]],
+    label: [null, [Validators.maxLength(3)]],
+    name: [null, [Validators.maxLength(100)]],
+    country: []
+  });
 
-    constructor(
-        protected jhiAlertService: JhiAlertService,
-        protected myStateService: MyStateService,
-        protected countryService: CountryService,
-        protected activatedRoute: ActivatedRoute
-    ) {}
+  constructor(
+    protected myStateService: MyStateService,
+    protected countryService: CountryService,
+    protected activatedRoute: ActivatedRoute,
+    private fb: FormBuilder
+  ) {}
 
-    ngOnInit() {
-        this.isSaving = false;
-        this.activatedRoute.data.subscribe(({ myState }) => {
-            this.myState = myState;
-        });
-        this.countryService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<ICountry[]>) => mayBeOk.ok),
-                map((response: HttpResponse<ICountry[]>) => response.body)
-            )
-            .subscribe((res: ICountry[]) => (this.countries = res), (res: HttpErrorResponse) => this.onError(res.message));
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ myState }) => {
+      this.updateForm(myState);
+
+      this.countryService.query().subscribe((res: HttpResponse<ICountry[]>) => (this.countries = res.body || []));
+    });
+  }
+
+  updateForm(myState: IMyState): void {
+    this.editForm.patchValue({
+      id: myState.id,
+      code: myState.code,
+      label: myState.label,
+      name: myState.name,
+      country: myState.country
+    });
+  }
+
+  previousState(): void {
+    window.history.back();
+  }
+
+  save(): void {
+    this.isSaving = true;
+    const myState = this.createFromForm();
+    if (myState.id !== undefined) {
+      this.subscribeToSaveResponse(this.myStateService.update(myState));
+    } else {
+      this.subscribeToSaveResponse(this.myStateService.create(myState));
     }
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  private createFromForm(): IMyState {
+    return {
+      ...new MyState(),
+      id: this.editForm.get(['id'])!.value,
+      code: this.editForm.get(['code'])!.value,
+      label: this.editForm.get(['label'])!.value,
+      name: this.editForm.get(['name'])!.value,
+      country: this.editForm.get(['country'])!.value
+    };
+  }
 
-    save() {
-        this.isSaving = true;
-        if (this.myState.id !== undefined) {
-            this.subscribeToSaveResponse(this.myStateService.update(this.myState));
-        } else {
-            this.subscribeToSaveResponse(this.myStateService.create(this.myState));
-        }
-    }
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<IMyState>>): void {
+    result.subscribe(
+      () => this.onSaveSuccess(),
+      () => this.onSaveError()
+    );
+  }
 
-    protected subscribeToSaveResponse(result: Observable<HttpResponse<IMyState>>) {
-        result.subscribe((res: HttpResponse<IMyState>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
-    }
+  protected onSaveSuccess(): void {
+    this.isSaving = false;
+    this.previousState();
+  }
 
-    protected onSaveSuccess() {
-        this.isSaving = false;
-        this.previousState();
-    }
+  protected onSaveError(): void {
+    this.isSaving = false;
+  }
 
-    protected onSaveError() {
-        this.isSaving = false;
-    }
-
-    protected onError(errorMessage: string) {
-        this.jhiAlertService.error(errorMessage, null, null);
-    }
-
-    trackCountryById(index: number, item: ICountry) {
-        return item.id;
-    }
+  trackById(index: number, item: ICountry): any {
+    return item.id;
+  }
 }

@@ -6,8 +6,11 @@ import { Observable } from 'rxjs';
 import { NgbActiveModal } from '@ng-bootstrap/ng-bootstrap';
 import { JhiEventManager, JhiAlertService, JhiAlert } from 'ng-jhipster';
 
-import { IUrl, Url } from 'app/shared/model/url.model';
+import { IMyUrl, MyUrl } from 'app/shared/model/my-url.model';
 import { FileUploadResult } from './file-upload-result.model';
+import { FormBuilder } from "@angular/forms";
+import { IModalResult, ModalResult } from "app/shared/model/modal-result.model";
+import { ModalResultType } from "app/shared/model/enumerations/modal-result-type.model";
 
 @Component({
     selector: 'jhi-file-upload-dialog',
@@ -20,41 +23,45 @@ export class FileUploadDialogComponent implements OnInit {
     fileExt = 'JPG, GIF, PNG';
     maxFiles = 20;
     maxSize = 5; // 5MB
-    broadcastName: string;
+//    broadcastName: string;
     // @Output() uploadStatus = new EventEmitter();
 
-    url: IUrl;
+    object: IMyUrl = new MyUrl();
+    
+    editForm = this.fb.group({});
 
     constructor(
         public activeModal: NgbActiveModal,
         private jhiAlertService: JhiAlertService,
-        private eventManager: JhiEventManager
+        private eventManager: JhiEventManager,
+        private fb: FormBuilder
     ) {
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         // console.error(`fileExt: ${this.fileExt}, maxFiles: ${this.maxFiles}, maxSize: ${this.maxSize}, broadcastName: ${this.broadcastName}`);
         // console.error(`Dialog this.url: ${this.url.entityType}, ${this.url.entityId}, ${this.url.sequence}`);
-        if (!this.url) {
-            this.url = new Url();
+        if (!this.object) {
+            this.object = new MyUrl();
         }
     }
 
-    clear() {
+    clear(): void {
         this.activeModal.dismiss('cancel');
     }
 
-    ok() {
+    ok(): void {
         this.activeModal.dismiss('OK');
     }
 
-    getResult(result: FileUploadResult) {
+    getResult(result: FileUploadResult): void {
         if (result.errors === undefined || result.errors.length === 0) {
-          this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: result.urls});
-          this.activeModal.dismiss('OK');
+//          this.eventManager.broadcast({ name: this.broadcastName, content: 'OK', obj: result.urls});
+//          this.activeModal.dismiss('OK');
+            this.activeModal.close(result.urls);
         } else {
           result.errors.forEach(error => {
-              this.jhiAlertService.error(error.msg, error.params, null);
+              this.jhiAlertService.error(error.msg, error.params, undefined);
           });
         }
     }

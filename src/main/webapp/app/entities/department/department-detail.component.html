@@ -1,32 +1,35 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="department">
-            <h2><span jhiTranslate="mallApp.department.detail.title">Department</span> {{department.id}}</h2>
+            <h2><span jhiTranslate="mallApp.department.detail.title">Department</span> {{ department.id }}</h2>
+
             <hr>
+
             <jhi-alert-error></jhi-alert-error>
+
             <dl class="row-md jh-entity-details">
                 <dt><span jhiTranslate="mallApp.department.code">Code</span></dt>
                 <dd>
-                    <span>{{department.code}}</span>
+                    <span>{{ department.code }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.department.name">Name</span></dt>
                 <dd>
-                    <span>{{department.name}}</span>
+                    <span>{{ department.name }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.department.status">Status</span></dt>
                 <dd>
-                    <span jhiTranslate="{{'mallApp.CommonStatus.' + department.status}}">{{department.status}}</span>
+                    <span jhiTranslate="{{ 'mallApp.CommonStatus.' + department.status }}">{{ department.status }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.department.parent">Parent</span></dt>
                 <dd>
                     <div *ngIf="department.parent">
-                        <a [routerLink]="['/department', department.parent?.id, 'view']">{{department.parent?.id}}</a>
+                        <a [routerLink]="['/department', department.parent?.id, 'view']">{{ department.parent?.id }}</a>
                     </div>
                 </dd>
                 <dt><span jhiTranslate="mallApp.department.office">Office</span></dt>
                 <dd>
                     <span *ngFor="let office of department.offices; let last = last">
-                        <a [routerLink]="['/office', office?.id, 'view' ]">{{office.code}}</a>{{last ? '' : ', '}}
+                        <a [routerLink]="['/office', office?.id, 'view']">{{ office.code }}</a>{{ last ? '' : ', ' }}
                     </span>
                 </dd>
             </dl>
@@ -34,13 +37,13 @@
             <button type="submit"
                     (click)="previousState()"
                     class="btn btn-info">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
             </button>
 
             <button type="button"
                     [routerLink]="['/department', department.id, 'edit']"
                     class="btn btn-primary">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
             </button>
         </div>
     </div>

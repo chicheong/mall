@@ -1,40 +1,16 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
-import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from 'app/shared';
-import {
-    DelegationComponent,
-    DelegationDetailComponent,
-    DelegationUpdateComponent,
-    DelegationDeletePopupComponent,
-    DelegationDeleteDialogComponent,
-    delegationRoute,
-    delegationPopupRoute
-} from './';
-
-const ENTITY_STATES = [...delegationRoute, ...delegationPopupRoute];
+import { MallSharedModule } from 'app/shared/shared.module';
+import { DelegationComponent } from './delegation.component';
+import { DelegationDetailComponent } from './delegation-detail.component';
+import { DelegationUpdateComponent } from './delegation-update.component';
+import { DelegationDeleteDialogComponent } from './delegation-delete-dialog.component';
+import { delegationRoute } from './delegation.route';
 
 @NgModule({
-    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
-    declarations: [
-        DelegationComponent,
-        DelegationDetailComponent,
-        DelegationUpdateComponent,
-        DelegationDeleteDialogComponent,
-        DelegationDeletePopupComponent
-    ],
-    entryComponents: [DelegationComponent, DelegationUpdateComponent, DelegationDeleteDialogComponent, DelegationDeletePopupComponent],
-    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  imports: [MallSharedModule, RouterModule.forChild(delegationRoute)],
+  declarations: [DelegationComponent, DelegationDetailComponent, DelegationUpdateComponent, DelegationDeleteDialogComponent],
+  entryComponents: [DelegationDeleteDialogComponent]
 })
-export class MallDelegationModule {
-    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
-        this.languageHelper.language.subscribe((languageKey: string) => {
-            if (languageKey !== undefined) {
-                this.languageService.changeLanguage(languageKey);
-            }
-        });
-    }
-}
+export class MallDelegationModule {}

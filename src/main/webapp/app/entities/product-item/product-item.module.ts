@@ -1,40 +1,16 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { JhiLanguageService } from 'ng-jhipster';
-import { JhiLanguageHelper } from 'app/core';
 
-import { MallSharedModule } from 'app/shared';
-import {
-    ProductItemComponent,
-    ProductItemDetailComponent,
-    ProductItemUpdateComponent,
-    ProductItemDeletePopupComponent,
-    ProductItemDeleteDialogComponent,
-    productItemRoute,
-    productItemPopupRoute
-} from './';
-
-const ENTITY_STATES = [...productItemRoute, ...productItemPopupRoute];
+import { MallSharedModule } from 'app/shared/shared.module';
+import { ProductItemComponent } from './product-item.component';
+import { ProductItemDetailComponent } from './product-item-detail.component';
+import { ProductItemUpdateComponent } from './product-item-update.component';
+import { ProductItemDeleteDialogComponent } from './product-item-delete-dialog.component';
+import { productItemRoute } from './product-item.route';
 
 @NgModule({
-    imports: [MallSharedModule, RouterModule.forChild(ENTITY_STATES)],
-    declarations: [
-        ProductItemComponent,
-        ProductItemDetailComponent,
-        ProductItemUpdateComponent,
-        ProductItemDeleteDialogComponent,
-        ProductItemDeletePopupComponent
-    ],
-    entryComponents: [ProductItemComponent, ProductItemUpdateComponent, ProductItemDeleteDialogComponent, ProductItemDeletePopupComponent],
-    providers: [{ provide: JhiLanguageService, useClass: JhiLanguageService }],
-    schemas: [CUSTOM_ELEMENTS_SCHEMA]
+  imports: [MallSharedModule, RouterModule.forChild(productItemRoute)],
+  declarations: [ProductItemComponent, ProductItemDetailComponent, ProductItemUpdateComponent, ProductItemDeleteDialogComponent],
+  entryComponents: [ProductItemDeleteDialogComponent]
 })
-export class MallProductItemModule {
-    constructor(private languageService: JhiLanguageService, private languageHelper: JhiLanguageHelper) {
-        this.languageHelper.language.subscribe((languageKey: string) => {
-            if (languageKey !== undefined) {
-                this.languageService.changeLanguage(languageKey);
-            }
-        });
-    }
-}
+export class MallProductItemModule {}

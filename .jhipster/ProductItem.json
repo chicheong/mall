@@ -60,13 +60,15 @@
             "otherEntityField": "id"
         }
     ],
-    "changelogDate": "20190527101524",
+    "changelogDate": "20200503072800",
     "entityTableName": "product_item",
     "dto": "mapstruct",
     "pagination": "pagination",
     "service": "serviceClass",
     "jpaMetamodelFiltering": false,
     "fluentMethods": true,
+    "readOnly": false,
+    "embedded": false,
     "clientRootFolder": "",
     "applications": "*"
 }

@@ -1,105 +1,109 @@
 import { element, by, ElementFinder } from 'protractor';
 
 export class MyStateComponentsPage {
-    createButton = element(by.id('jh-create-entity'));
-    deleteButtons = element.all(by.css('jhi-my-state div table .btn-danger'));
-    title = element.all(by.css('jhi-my-state div h2#page-heading span')).first();
+  createButton = element(by.id('jh-create-entity'));
+  deleteButtons = element.all(by.css('jhi-my-state div table .btn-danger'));
+  title = element.all(by.css('jhi-my-state div h2#page-heading span')).first();
+  noResult = element(by.id('no-result'));
+  entities = element(by.id('entities'));
 
-    async clickOnCreateButton() {
-        await this.createButton.click();
-    }
+  async clickOnCreateButton(): Promise<void> {
+    await this.createButton.click();
+  }
 
-    async clickOnLastDeleteButton() {
-        await this.deleteButtons.last().click();
-    }
+  async clickOnLastDeleteButton(): Promise<void> {
+    await this.deleteButtons.last().click();
+  }
 
-    async countDeleteButtons() {
-        return this.deleteButtons.count();
-    }
+  async countDeleteButtons(): Promise<number> {
+    return this.deleteButtons.count();
+  }
 
-    async getTitle() {
-        return this.title.getAttribute('jhiTranslate');
-    }
+  async getTitle(): Promise<string> {
+    return this.title.getAttribute('jhiTranslate');
+  }
 }
 
 export class MyStateUpdatePage {
-    pageTitle = element(by.id('jhi-my-state-heading'));
-    saveButton = element(by.id('save-entity'));
-    cancelButton = element(by.id('cancel-save'));
-    codeInput = element(by.id('field_code'));
-    labelInput = element(by.id('field_label'));
-    nameInput = element(by.id('field_name'));
-    countrySelect = element(by.id('field_country'));
+  pageTitle = element(by.id('jhi-my-state-heading'));
+  saveButton = element(by.id('save-entity'));
+  cancelButton = element(by.id('cancel-save'));
 
-    async getPageTitle() {
-        return this.pageTitle.getAttribute('jhiTranslate');
-    }
+  codeInput = element(by.id('field_code'));
+  labelInput = element(by.id('field_label'));
+  nameInput = element(by.id('field_name'));
 
-    async setCodeInput(code) {
-        await this.codeInput.sendKeys(code);
-    }
+  countrySelect = element(by.id('field_country'));
 
-    async getCodeInput() {
-        return this.codeInput.getAttribute('value');
-    }
+  async getPageTitle(): Promise<string> {
+    return this.pageTitle.getAttribute('jhiTranslate');
+  }
 
-    async setLabelInput(label) {
-        await this.labelInput.sendKeys(label);
-    }
+  async setCodeInput(code: string): Promise<void> {
+    await this.codeInput.sendKeys(code);
+  }
 
-    async getLabelInput() {
-        return this.labelInput.getAttribute('value');
-    }
+  async getCodeInput(): Promise<string> {
+    return await this.codeInput.getAttribute('value');
+  }
 
-    async setNameInput(name) {
-        await this.nameInput.sendKeys(name);
-    }
+  async setLabelInput(label: string): Promise<void> {
+    await this.labelInput.sendKeys(label);
+  }
 
-    async getNameInput() {
-        return this.nameInput.getAttribute('value');
-    }
+  async getLabelInput(): Promise<string> {
+    return await this.labelInput.getAttribute('value');
+  }
 
-    async countrySelectLastOption() {
-        await this.countrySelect
-            .all(by.tagName('option'))
-            .last()
-            .click();
-    }
+  async setNameInput(name: string): Promise<void> {
+    await this.nameInput.sendKeys(name);
+  }
 
-    async countrySelectOption(option) {
-        await this.countrySelect.sendKeys(option);
-    }
+  async getNameInput(): Promise<string> {
+    return await this.nameInput.getAttribute('value');
+  }
 
-    getCountrySelect(): ElementFinder {
-        return this.countrySelect;
-    }
+  async countrySelectLastOption(): Promise<void> {
+    await this.countrySelect
+      .all(by.tagName('option'))
+      .last()
+      .click();
+  }
 
-    async getCountrySelectedOption() {
-        return this.countrySelect.element(by.css('option:checked')).getText();
-    }
+  async countrySelectOption(option: string): Promise<void> {
+    await this.countrySelect.sendKeys(option);
+  }
 
-    async save() {
-        await this.saveButton.click();
-    }
+  getCountrySelect(): ElementFinder {
+    return this.countrySelect;
+  }
 
-    async cancel() {
-        await this.cancelButton.click();
-    }
+  async getCountrySelectedOption(): Promise<string> {
+    return await this.countrySelect.element(by.css('option:checked')).getText();
+  }
 
-    getSaveButton(): ElementFinder {
-        return this.saveButton;
-    }
+  async save(): Promise<void> {
+    await this.saveButton.click();
+  }
+
+  async cancel(): Promise<void> {
+    await this.cancelButton.click();
+  }
+
+  getSaveButton(): ElementFinder {
+    return this.saveButton;
+  }
 }
 
 export class MyStateDeleteDialog {
-    private dialogTitle = element(by.id('jhi-delete-myState-heading'));
-    private confirmButton = element(by.id('jhi-confirm-delete-myState'));
+  private dialogTitle = element(by.id('jhi-delete-myState-heading'));
+  private confirmButton = element(by.id('jhi-confirm-delete-myState'));
 
-    async getDialogTitle() {
-        return this.dialogTitle.getAttribute('jhiTranslate');
-    }
+  async getDialogTitle(): Promise<string> {
+    return this.dialogTitle.getAttribute('jhiTranslate');
+  }
 
-    async clickOnConfirmButton() {
-        await this.confirmButton.click();
-    }
+  async clickOnConfirmButton(): Promise<void> {
+    await this.confirmButton.click();
+  }
 }

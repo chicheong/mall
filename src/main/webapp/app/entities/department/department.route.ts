@@ -1,98 +1,88 @@
 import { Injectable } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { Resolve, ActivatedRouteSnapshot, RouterStateSnapshot, Routes } from '@angular/router';
-import { JhiPaginationUtil, JhiResolvePagingParams } from 'ng-jhipster';
-import { UserRouteAccessService } from 'app/core';
-import { Observable, of } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { Department } from 'app/shared/model/department.model';
+import { Resolve, ActivatedRouteSnapshot, Routes, Router } from '@angular/router';
+import { JhiResolvePagingParams } from 'ng-jhipster';
+import { Observable, of, EMPTY } from 'rxjs';
+import { flatMap } from 'rxjs/operators';
+
+import { Authority } from 'app/shared/constants/authority.constants';
+import { UserRouteAccessService } from 'app/core/auth/user-route-access-service';
+import { IDepartment, Department } from 'app/shared/model/department.model';
 import { DepartmentService } from './department.service';
 import { DepartmentComponent } from './department.component';
 import { DepartmentDetailComponent } from './department-detail.component';
 import { DepartmentUpdateComponent } from './department-update.component';
-import { DepartmentDeletePopupComponent } from './department-delete-dialog.component';
-import { IDepartment } from 'app/shared/model/department.model';
 
 @Injectable({ providedIn: 'root' })
 export class DepartmentResolve implements Resolve<IDepartment> {
-    constructor(private service: DepartmentService) {}
+  constructor(private service: DepartmentService, private router: Router) {}
 
-    resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<IDepartment> {
-        const id = route.params['id'] ? route.params['id'] : null;
-        if (id) {
-            return this.service.find(id).pipe(
-                filter((response: HttpResponse<Department>) => response.ok),
-                map((department: HttpResponse<Department>) => department.body)
-            );
-        }
-        return of(new Department());
+  resolve(route: ActivatedRouteSnapshot): Observable<IDepartment> | Observable<never> {
+    const id = route.params['id'];
+    if (id) {
+      return this.service.find(id).pipe(
+        flatMap((department: HttpResponse<Department>) => {
+          if (department.body) {
+            return of(department.body);
+          } else {
+            this.router.navigate(['404']);
+            return EMPTY;
+          }
+        })
+      );
     }
+    return of(new Department());
+  }
 }
 
 export const departmentRoute: Routes = [
-    {
-        path: '',
-        component: DepartmentComponent,
-        resolve: {
-            pagingParams: JhiResolvePagingParams
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            defaultSort: 'id,asc',
-            pageTitle: 'mallApp.department.home.title'
-        },
-        canActivate: [UserRouteAccessService]
+  {
+    path: '',
+    component: DepartmentComponent,
+    resolve: {
+      pagingParams: JhiResolvePagingParams
     },
-    {
-        path: ':id/view',
-        component: DepartmentDetailComponent,
-        resolve: {
-            department: DepartmentResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.department.home.title'
-        },
-        canActivate: [UserRouteAccessService]
+    data: {
+      authorities: [Authority.USER],
+      defaultSort: 'id,asc',
+      pageTitle: 'mallApp.department.home.title'
     },
-    {
-        path: 'new',
-        component: DepartmentUpdateComponent,
-        resolve: {
-            department: DepartmentResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.department.home.title'
-        },
-        canActivate: [UserRouteAccessService]
+    canActivate: [UserRouteAccessService]
+  },
+  {
+    path: ':id/view',
+    component: DepartmentDetailComponent,
+    resolve: {
+      department: DepartmentResolve
     },
-    {
-        path: ':id/edit',
-        component: DepartmentUpdateComponent,
-        resolve: {
-            department: DepartmentResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.department.home.title'
-        },
-        canActivate: [UserRouteAccessService]
-    }
-];
-
-export const departmentPopupRoute: Routes = [
-    {
-        path: ':id/delete',
-        component: DepartmentDeletePopupComponent,
-        resolve: {
-            department: DepartmentResolve
-        },
-        data: {
-            authorities: ['ROLE_USER'],
-            pageTitle: 'mallApp.department.home.title'
-        },
-        canActivate: [UserRouteAccessService],
-        outlet: 'popup'
-    }
+    data: {
+      authorities: [Authority.USER],
+      pageTitle: 'mallApp.department.home.title'
+    },
+    canActivate: [UserRouteAccessService]
+  },
+  {
+    path: 'new',
+    component: DepartmentUpdateComponent,
+    resolve: {
+      department: DepartmentResolve
+    },
+    data: {
+      authorities: [Authority.USER],
+      pageTitle: 'mallApp.department.home.title'
+    },
+    canActivate: [UserRouteAccessService]
+  },
+  {
+    path: ':id/edit',
+    component: DepartmentUpdateComponent,
+    resolve: {
+      department: DepartmentResolve
+    },
+    data: {
+      authorities: [Authority.USER],
+      pageTitle: 'mallApp.department.home.title'
+    },
+    canActivate: [UserRouteAccessService]
+  }
 ];

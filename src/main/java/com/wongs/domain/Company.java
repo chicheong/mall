@@ -1,7 +1,5 @@
 package com.wongs.domain;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -9,11 +7,11 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Objects;
 
 import com.wongs.domain.enumeration.CommonStatus;
 
@@ -23,11 +21,11 @@ import com.wongs.domain.enumeration.CommonStatus;
 @Entity
 @Table(name = "company")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "company")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "company")
 public class Company implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -61,9 +59,6 @@ public class Company implements Serializable {
                inverseJoinColumns = @JoinColumn(name = "office_id", referencedColumnName = "id"))
     private Set<Office> offices = new HashSet<>();
 
-    @OneToMany(mappedBy = "company")
-    @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-    private Set<MyAccount> accounts = new HashSet<>();
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -174,31 +169,6 @@ public class Company implements Serializable {
     public void setOffices(Set<Office> offices) {
         this.offices = offices;
     }
-
-    public Set<MyAccount> getAccounts() {
-        return accounts;
-    }
-
-    public Company accounts(Set<MyAccount> myAccounts) {
-        this.accounts = myAccounts;
-        return this;
-    }
-
-    public Company addAccount(MyAccount myAccount) {
-        this.accounts.add(myAccount);
-        myAccount.setCompany(this);
-        return this;
-    }
-
-    public Company removeAccount(MyAccount myAccount) {
-        this.accounts.remove(myAccount);
-        myAccount.setCompany(null);
-        return this;
-    }
-
-    public void setAccounts(Set<MyAccount> myAccounts) {
-        this.accounts = myAccounts;
-    }
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override
@@ -206,19 +176,15 @@ public class Company implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Company)) {
             return false;
         }
-        Company company = (Company) o;
-        if (company.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), company.getId());
+        return id != null && id.equals(((Company) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

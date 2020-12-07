@@ -1,156 +1,141 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpErrorResponse, HttpHeaders, HttpResponse } from '@angular/common/http';
+import { HttpHeaders, HttpResponse } from '@angular/common/http';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
-import { JhiEventManager, JhiParseLinks, JhiAlertService } from 'ng-jhipster';
+import { JhiEventManager, JhiParseLinks } from 'ng-jhipster';
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 import { IShippingStatusHistory } from 'app/shared/model/shipping-status-history.model';
-import { AccountService } from 'app/core';
 
-import { ITEMS_PER_PAGE } from 'app/shared';
+import { ITEMS_PER_PAGE } from 'app/shared/constants/pagination.constants';
 import { ShippingStatusHistoryService } from './shipping-status-history.service';
+import { ShippingStatusHistoryDeleteDialogComponent } from './shipping-status-history-delete-dialog.component';
 
 @Component({
-    selector: 'jhi-shipping-status-history',
-    templateUrl: './shipping-status-history.component.html'
+  selector: 'jhi-shipping-status-history',
+  templateUrl: './shipping-status-history.component.html'
 })
 export class ShippingStatusHistoryComponent implements OnInit, OnDestroy {
-    shippingStatusHistories: IShippingStatusHistory[];
-    currentAccount: any;
-    eventSubscriber: Subscription;
-    itemsPerPage: number;
-    links: any;
-    page: any;
-    predicate: any;
-    reverse: any;
-    totalItems: number;
-    currentSearch: string;
+  shippingStatusHistories: IShippingStatusHistory[];
+  eventSubscriber?: Subscription;
+  itemsPerPage: number;
+  links: any;
+  page: number;
+  predicate: string;
+  ascending: boolean;
+  currentSearch: string;
 
-    constructor(
-        protected shippingStatusHistoryService: ShippingStatusHistoryService,
-        protected jhiAlertService: JhiAlertService,
-        protected eventManager: JhiEventManager,
-        protected parseLinks: JhiParseLinks,
-        protected activatedRoute: ActivatedRoute,
-        protected accountService: AccountService
-    ) {
-        this.shippingStatusHistories = [];
-        this.itemsPerPage = ITEMS_PER_PAGE;
-        this.page = 0;
-        this.links = {
-            last: 0
-        };
-        this.predicate = 'id';
-        this.reverse = true;
-        this.currentSearch =
-            this.activatedRoute.snapshot && this.activatedRoute.snapshot.params['search']
-                ? this.activatedRoute.snapshot.params['search']
-                : '';
+  constructor(
+    protected shippingStatusHistoryService: ShippingStatusHistoryService,
+    protected eventManager: JhiEventManager,
+    protected modalService: NgbModal,
+    protected parseLinks: JhiParseLinks,
+    protected activatedRoute: ActivatedRoute
+  ) {
+    this.shippingStatusHistories = [];
+    this.itemsPerPage = ITEMS_PER_PAGE;
+    this.page = 0;
+    this.links = {
+      last: 0
+    };
+    this.predicate = 'id';
+    this.ascending = true;
+    this.currentSearch =
+      this.activatedRoute.snapshot && this.activatedRoute.snapshot.queryParams['search']
+        ? this.activatedRoute.snapshot.queryParams['search']
+        : '';
+  }
+
+  loadAll(): void {
+    if (this.currentSearch) {
+      this.shippingStatusHistoryService
+        .search({
+          query: this.currentSearch,
+          page: this.page,
+          size: this.itemsPerPage,
+          sort: this.sort()
+        })
+        .subscribe((res: HttpResponse<IShippingStatusHistory[]>) => this.paginateShippingStatusHistories(res.body, res.headers));
+      return;
     }
 
-    loadAll() {
-        if (this.currentSearch) {
-            this.shippingStatusHistoryService
-                .search({
-                    query: this.currentSearch,
-                    page: this.page,
-                    size: this.itemsPerPage,
-                    sort: this.sort()
-                })
-                .subscribe(
-                    (res: HttpResponse<IShippingStatusHistory[]>) => this.paginateShippingStatusHistories(res.body, res.headers),
-                    (res: HttpErrorResponse) => this.onError(res.message)
-                );
-            return;
-        }
-        this.shippingStatusHistoryService
-            .query({
-                page: this.page,
-                size: this.itemsPerPage,
-                sort: this.sort()
-            })
-            .subscribe(
-                (res: HttpResponse<IShippingStatusHistory[]>) => this.paginateShippingStatusHistories(res.body, res.headers),
-                (res: HttpErrorResponse) => this.onError(res.message)
-            );
-    }
+    this.shippingStatusHistoryService
+      .query({
+        page: this.page,
+        size: this.itemsPerPage,
+        sort: this.sort()
+      })
+      .subscribe((res: HttpResponse<IShippingStatusHistory[]>) => this.paginateShippingStatusHistories(res.body, res.headers));
+  }
 
-    reset() {
-        this.page = 0;
-        this.shippingStatusHistories = [];
-        this.loadAll();
-    }
+  reset(): void {
+    this.page = 0;
+    this.shippingStatusHistories = [];
+    this.loadAll();
+  }
 
-    loadPage(page) {
-        this.page = page;
-        this.loadAll();
-    }
+  loadPage(page: number): void {
+    this.page = page;
+    this.loadAll();
+  }
 
-    clear() {
-        this.shippingStatusHistories = [];
-        this.links = {
-            last: 0
-        };
-        this.page = 0;
-        this.predicate = 'id';
-        this.reverse = true;
-        this.currentSearch = '';
-        this.loadAll();
+  search(query: string): void {
+    this.shippingStatusHistories = [];
+    this.links = {
+      last: 0
+    };
+    this.page = 0;
+    if (query) {
+      this.predicate = '_score';
+      this.ascending = false;
+    } else {
+      this.predicate = 'id';
+      this.ascending = true;
     }
+    this.currentSearch = query;
+    this.loadAll();
+  }
 
-    search(query) {
-        if (!query) {
-            return this.clear();
-        }
-        this.shippingStatusHistories = [];
-        this.links = {
-            last: 0
-        };
-        this.page = 0;
-        this.predicate = '_score';
-        this.reverse = false;
-        this.currentSearch = query;
-        this.loadAll();
-    }
+  ngOnInit(): void {
+    this.loadAll();
+    this.registerChangeInShippingStatusHistories();
+  }
 
-    ngOnInit() {
-        this.loadAll();
-        this.accountService.identity().then(account => {
-            this.currentAccount = account;
-        });
-        this.registerChangeInShippingStatusHistories();
+  ngOnDestroy(): void {
+    if (this.eventSubscriber) {
+      this.eventManager.destroy(this.eventSubscriber);
     }
+  }
 
-    ngOnDestroy() {
-        this.eventManager.destroy(this.eventSubscriber);
-    }
+  trackId(index: number, item: IShippingStatusHistory): number {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+    return item.id!;
+  }
 
-    trackId(index: number, item: IShippingStatusHistory) {
-        return item.id;
-    }
+  registerChangeInShippingStatusHistories(): void {
+    this.eventSubscriber = this.eventManager.subscribe('shippingStatusHistoryListModification', () => this.reset());
+  }
 
-    registerChangeInShippingStatusHistories() {
-        this.eventSubscriber = this.eventManager.subscribe('shippingStatusHistoryListModification', response => this.reset());
-    }
+  delete(shippingStatusHistory: IShippingStatusHistory): void {
+    const modalRef = this.modalService.open(ShippingStatusHistoryDeleteDialogComponent, { size: 'lg', backdrop: 'static' });
+    modalRef.componentInstance.shippingStatusHistory = shippingStatusHistory;
+  }
 
-    sort() {
-        const result = [this.predicate + ',' + (this.reverse ? 'asc' : 'desc')];
-        if (this.predicate !== 'id') {
-            result.push('id');
-        }
-        return result;
+  sort(): string[] {
+    const result = [this.predicate + ',' + (this.ascending ? 'asc' : 'desc')];
+    if (this.predicate !== 'id') {
+      result.push('id');
     }
+    return result;
+  }
 
-    protected paginateShippingStatusHistories(data: IShippingStatusHistory[], headers: HttpHeaders) {
-        this.links = this.parseLinks.parse(headers.get('link'));
-        this.totalItems = parseInt(headers.get('X-Total-Count'), 10);
-        for (let i = 0; i < data.length; i++) {
-            this.shippingStatusHistories.push(data[i]);
-        }
+  protected paginateShippingStatusHistories(data: IShippingStatusHistory[] | null, headers: HttpHeaders): void {
+    const headersLink = headers.get('link');
+    this.links = this.parseLinks.parse(headersLink ? headersLink : '');
+    if (data) {
+      for (let i = 0; i < data.length; i++) {
+        this.shippingStatusHistories.push(data[i]);
+      }
     }
-
-    protected onError(errorMessage: string) {
-        this.jhiAlertService.error(errorMessage, null, null);
-    }
+  }
 }

@@ -1,34 +1,37 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="card">
-            <h2><span jhiTranslate="mallApp.card.detail.title">Card</span> {{card.id}}</h2>
+            <h2><span jhiTranslate="mallApp.card.detail.title">Card</span> {{ card.id }}</h2>
+
             <hr>
+
             <jhi-alert-error></jhi-alert-error>
+
             <dl class="row-md jh-entity-details">
                 <dt><span jhiTranslate="mallApp.card.holderName">Holder Name</span></dt>
                 <dd>
-                    <span>{{card.holderName}}</span>
+                    <span>{{ card.holderName }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.card.cardNumber">Card Number</span></dt>
                 <dd>
-                    <span>{{card.cardNumber}}</span>
+                    <span>{{ card.cardNumber }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.card.expirationMonth">Expiration Month</span></dt>
                 <dd>
-                    <span>{{card.expirationMonth}}</span>
+                    <span>{{ card.expirationMonth }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.card.expirationYear">Expiration Year</span></dt>
                 <dd>
-                    <span>{{card.expirationYear}}</span>
+                    <span>{{ card.expirationYear }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.card.cvc">Cvc</span></dt>
                 <dd>
-                    <span>{{card.cvc}}</span>
+                    <span>{{ card.cvc }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.card.account">Account</span></dt>
                 <dd>
                     <div *ngIf="card.account">
-                        <a [routerLink]="['/my-account', card.account?.id, 'view']">{{card.account?.id}}</a>
+                        <a [routerLink]="['/my-account', card.account?.id, 'view']">{{ card.account?.id }}</a>
                     </div>
                 </dd>
             </dl>
@@ -36,13 +39,13 @@
             <button type="submit"
                     (click)="previousState()"
                     class="btn btn-info">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
             </button>
 
             <button type="button"
                     [routerLink]="['/card', card.id, 'edit']"
                     class="btn btn-primary">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
             </button>
         </div>
     </div>

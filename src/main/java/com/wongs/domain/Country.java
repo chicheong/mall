@@ -1,13 +1,12 @@
 package com.wongs.domain;
 
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -17,11 +16,11 @@ import java.util.Objects;
 @Entity
 @Table(name = "country")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "country")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "country")
 public class Country implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -32,7 +31,7 @@ public class Country implements Serializable {
     private String code;
 
     @Size(max = 3)
-    @Column(name = "jhi_label", length = 3)
+    @Column(name = "label", length = 3)
     private String label;
 
     @Size(max = 3)
@@ -110,19 +109,15 @@ public class Country implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Country)) {
             return false;
         }
-        Country country = (Country) o;
-        if (country.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), country.getId());
+        return id != null && id.equals(((Country) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

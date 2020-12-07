@@ -1,15 +1,14 @@
 package com.wongs.domain;
 
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
-import java.time.ZonedDateTime;
 import java.util.Objects;
+import java.time.ZonedDateTime;
 
 /**
  * A Url.
@@ -17,11 +16,11 @@ import java.util.Objects;
 @Entity
 @Table(name = "url")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "url")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "url")
 public class Url implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -38,7 +37,7 @@ public class Url implements Serializable {
     @Column(name = "file_name")
     private String fileName;
 
-    @Column(name = "jhi_sequence")
+    @Column(name = "sequence")
     private Integer sequence;
 
     @Column(name = "description")
@@ -201,14 +200,11 @@ public class Url implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Url)) {
             return false;
         }
-        Url url = (Url) o;
-        if (url.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), url.getId()) &&
+ 		Url url = (Url) o;
+        return id != null && id.equals(((Url) o).id) &&
         		Objects.equals(getEntityType(), url.getEntityType()) &&
         		Objects.equals(getEntityId(), url.getEntityId()) &&
         		Objects.equals(getPath(), url.getPath()) &&
@@ -219,7 +215,7 @@ public class Url implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

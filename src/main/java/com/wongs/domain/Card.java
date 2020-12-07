@@ -1,13 +1,12 @@
 package com.wongs.domain;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -17,11 +16,11 @@ import java.util.Objects;
 @Entity
 @Table(name = "card")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "card")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "card")
 public class Card implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -138,19 +137,15 @@ public class Card implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Card)) {
             return false;
         }
-        Card card = (Card) o;
-        if (card.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), card.getId());
+        return id != null && id.equals(((Card) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

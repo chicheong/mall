@@ -1,30 +1,33 @@
 <div class="row justify-content-center">
     <div class="col-8">
         <div *ngIf="shippingPriceRule">
-            <h2><span jhiTranslate="mallApp.shippingPriceRule.detail.title">Shipping Price Rule</span> {{shippingPriceRule.id}}</h2>
+            <h2><span jhiTranslate="mallApp.shippingPriceRule.detail.title">Shipping Price Rule</span> {{ shippingPriceRule.id }}</h2>
+
             <hr>
+
             <jhi-alert-error></jhi-alert-error>
+
             <dl class="row-md jh-entity-details">
                 <dt><span jhiTranslate="mallApp.shippingPriceRule.type">Type</span></dt>
                 <dd>
-                    <span jhiTranslate="{{'mallApp.ShippingPriceRuleType.' + shippingPriceRule.type}}">{{shippingPriceRule.type}}</span>
+                    <span jhiTranslate="{{ 'mallApp.ShippingPriceRuleType.' + shippingPriceRule.type }}">{{ shippingPriceRule.type }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.shippingPriceRule.value">Value</span></dt>
                 <dd>
-                    <span>{{shippingPriceRule.value}}</span>
+                    <span>{{ shippingPriceRule.value }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.shippingPriceRule.price">Price</span></dt>
                 <dd>
-                    <span>{{shippingPriceRule.price}}</span>
+                    <span>{{ shippingPriceRule.price }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.shippingPriceRule.sequence">Sequence</span></dt>
                 <dd>
-                    <span>{{shippingPriceRule.sequence}}</span>
+                    <span>{{ shippingPriceRule.sequence }}</span>
                 </dd>
                 <dt><span jhiTranslate="mallApp.shippingPriceRule.shop">Shop</span></dt>
                 <dd>
                     <div *ngIf="shippingPriceRule.shop">
-                        <a [routerLink]="['/shop', shippingPriceRule.shop?.id, 'view']">{{shippingPriceRule.shop?.id}}</a>
+                        <a [routerLink]="['/shop', shippingPriceRule.shop?.id, 'view']">{{ shippingPriceRule.shop?.id }}</a>
                     </div>
                 </dd>
             </dl>
@@ -32,13 +35,13 @@
             <button type="submit"
                     (click)="previousState()"
                     class="btn btn-info">
-                <fa-icon [icon]="'arrow-left'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back"> Back</span>
+                <fa-icon icon="arrow-left"></fa-icon>&nbsp;<span jhiTranslate="entity.action.back">Back</span>
             </button>
 
             <button type="button"
                     [routerLink]="['/shipping-price-rule', shippingPriceRule.id, 'edit']"
                     class="btn btn-primary">
-                <fa-icon [icon]="'pencil-alt'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit"> Edit</span>
+                <fa-icon icon="pencil-alt"></fa-icon>&nbsp;<span jhiTranslate="entity.action.edit">Edit</span>
             </button>
         </div>
     </div>

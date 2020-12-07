@@ -1,18 +1,16 @@
 package com.wongs.domain;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
+import java.util.Objects;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Objects;
 
 import com.wongs.domain.enumeration.CurrencyType;
 
@@ -26,16 +24,16 @@ import com.wongs.domain.enumeration.PaymentStatus;
 @Entity
 @Table(name = "payment")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "payment")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "payment")
 public class Payment implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "amount", precision = 10, scale = 2)
+    @Column(name = "amount", precision = 21, scale = 2)
     private BigDecimal amount;
 
     @Enumerated(EnumType.STRING)
@@ -43,7 +41,7 @@ public class Payment implements Serializable {
     private CurrencyType currency;
 
     @Enumerated(EnumType.STRING)
-    @Column(name = "jhi_type")
+    @Column(name = "type")
     private PaymentType type;
 
     @Column(name = "remark")
@@ -60,6 +58,7 @@ public class Payment implements Serializable {
     @OneToMany(mappedBy = "payment")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<PaymentStatusHistory> statusHistories = new HashSet<>();
+
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public Long getId() {
         return id;
@@ -178,19 +177,15 @@ public class Payment implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Payment)) {
             return false;
         }
-        Payment payment = (Payment) o;
-        if (payment.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), payment.getId());
+        return id != null && id.equals(((Payment) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

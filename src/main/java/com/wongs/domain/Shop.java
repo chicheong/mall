@@ -1,6 +1,5 @@
 package com.wongs.domain;
 
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -8,12 +7,12 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import javax.persistence.*;
 import javax.validation.constraints.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
+import java.util.Objects;
 import java.time.ZonedDateTime;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Objects;
 
 import com.wongs.domain.enumeration.CommonStatus;
 
@@ -23,11 +22,11 @@ import com.wongs.domain.enumeration.CommonStatus;
 @Entity
 @Table(name = "shop")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "shop")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "shop")
 public class Shop implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -61,6 +60,7 @@ public class Shop implements Serializable {
     @OneToMany(mappedBy = "shop")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<ShippingPriceRule> shippingPriceRules = new HashSet<>();
+
     @ManyToMany(mappedBy = "shops")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     @JsonIgnore
@@ -235,19 +235,15 @@ public class Shop implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof Shop)) {
             return false;
         }
-        Shop shop = (Shop) o;
-        if (shop.getId() == null || getId() == null) {
-            return false;
-        }
-        return Objects.equals(getId(), shop.getId());
+        return id != null && id.equals(((Shop) o).id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.wongs.service.dto;
 
-
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.HashSet;
@@ -16,10 +15,10 @@ import com.wongs.domain.enumeration.PaymentStatus;
 import com.wongs.domain.enumeration.PaymentType;
 
 /**
- * A DTO for the Payment entity.
+ * A DTO for the {@link com.wongs.domain.Payment} entity.
  */
 public class PaymentDTO implements Serializable {
-
+    
     private Long id;
 
     private BigDecimal amount;
@@ -145,7 +144,7 @@ public class PaymentDTO implements Serializable {
         }
 
         PaymentDTO paymentDTO = (PaymentDTO) o;
-        if(paymentDTO.getId() == null || getId() == null) {
+        if (paymentDTO.getId() == null || getId() == null) {
             return false;
         }
         return Objects.equals(getId(), paymentDTO.getId());
@@ -165,6 +164,7 @@ public class PaymentDTO implements Serializable {
             ", type='" + getType() + "'" +
             ", remark='" + getRemark() + "'" +
             ", status='" + getStatus() + "'" +
+            ", order=" + getOrder() +
             "}";
     }
 }

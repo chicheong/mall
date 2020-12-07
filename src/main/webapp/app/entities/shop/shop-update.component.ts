@@ -1,95 +1,108 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpResponse } from '@angular/common/http';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { FormBuilder, Validators } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
-import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { filter, map } from 'rxjs/operators';
 import * as moment from 'moment';
 import { DATE_TIME_FORMAT } from 'app/shared/constants/input.constants';
-import { JhiAlertService } from 'ng-jhipster';
-import { IShop } from 'app/shared/model/shop.model';
+
+import { IShop, Shop } from 'app/shared/model/shop.model';
 import { ShopService } from './shop.service';
-import { IMyAccount } from 'app/shared/model/my-account.model';
-import { MyAccountService } from 'app/entities/my-account';
 
 @Component({
-    selector: 'jhi-shop-update',
-    templateUrl: './shop-update.component.html'
+  selector: 'jhi-shop-update',
+  templateUrl: './shop-update.component.html'
 })
 export class ShopUpdateComponent implements OnInit {
-    shop: IShop;
-    isSaving: boolean;
+  isSaving = false;
 
-    myaccounts: IMyAccount[];
-    createdDate: string;
-    lastModifiedDate: string;
+  editForm = this.fb.group({
+    id: [],
+    code: [null, [Validators.required]],
+    name: [],
+    description: [],
+    status: [],
+    createdBy: [],
+    createdDate: [],
+    lastModifiedBy: [],
+    lastModifiedDate: []
+  });
 
-    constructor(
-        protected jhiAlertService: JhiAlertService,
-        protected shopService: ShopService,
-        protected myAccountService: MyAccountService,
-        protected activatedRoute: ActivatedRoute
-    ) {}
+  constructor(protected shopService: ShopService, protected activatedRoute: ActivatedRoute, private fb: FormBuilder) {}
 
-    ngOnInit() {
-        this.isSaving = false;
-        this.activatedRoute.data.subscribe(({ shop }) => {
-            this.shop = shop;
-            this.createdDate = this.shop.createdDate != null ? this.shop.createdDate.format(DATE_TIME_FORMAT) : null;
-            this.lastModifiedDate = this.shop.lastModifiedDate != null ? this.shop.lastModifiedDate.format(DATE_TIME_FORMAT) : null;
-        });
-        this.myAccountService
-            .query()
-            .pipe(
-                filter((mayBeOk: HttpResponse<IMyAccount[]>) => mayBeOk.ok),
-                map((response: HttpResponse<IMyAccount[]>) => response.body)
-            )
-            .subscribe((res: IMyAccount[]) => (this.myaccounts = res), (res: HttpErrorResponse) => this.onError(res.message));
+  ngOnInit(): void {
+    this.activatedRoute.data.subscribe(({ shop }) => {
+      if (!shop.id) {
+        const today = moment().startOf('day');
+        shop.createdDate = today;
+        shop.lastModifiedDate = today;
+      }
+
+      this.updateForm(shop);
+    });
+  }
+
+  updateForm(shop: IShop): void {
+    this.editForm.patchValue({
+      id: shop.id,
+      code: shop.code,
+      name: shop.name,
+      description: shop.description,
+      status: shop.status,
+      createdBy: shop.createdBy,
+      createdDate: shop.createdDate ? shop.createdDate.format(DATE_TIME_FORMAT) : null,
+      lastModifiedBy: shop.lastModifiedBy,
+      lastModifiedDate: shop.lastModifiedDate ? shop.lastModifiedDate.format(DATE_TIME_FORMAT) : null
+    });
+  }
+
+  previousState(): void {
+    window.history.back();
+  }
+
+  save(): void {
+    this.isSaving = true;
+    const shop = this.createFromForm();
+    if (shop.id !== undefined) {
+      this.subscribeToSaveResponse(this.shopService.update(shop));
+    } else {
+      this.subscribeToSaveResponse(this.shopService.create(shop));
     }
+  }
 
-    previousState() {
-        window.history.back();
-    }
+  private createFromForm(): IShop {
+    return {
+      ...new Shop(),
+      id: this.editForm.get(['id'])!.value,
+      code: this.editForm.get(['code'])!.value,
+      name: this.editForm.get(['name'])!.value,
+      description: this.editForm.get(['description'])!.value,
+      status: this.editForm.get(['status'])!.value,
+      createdBy: this.editForm.get(['createdBy'])!.value,
+      createdDate: this.editForm.get(['createdDate'])!.value
+        ? moment(this.editForm.get(['createdDate'])!.value, DATE_TIME_FORMAT)
+        : undefined,
+      lastModifiedBy: this.editForm.get(['lastModifiedBy'])!.value,
+      lastModifiedDate: this.editForm.get(['lastModifiedDate'])!.value
+        ? moment(this.editForm.get(['lastModifiedDate'])!.value, DATE_TIME_FORMAT)
+        : undefined
+    };
+  }
 
-    save() {
-        this.isSaving = true;
-        this.shop.createdDate = this.createdDate != null ? moment(this.createdDate, DATE_TIME_FORMAT) : null;
-        this.shop.lastModifiedDate = this.lastModifiedDate != null ? moment(this.lastModifiedDate, DATE_TIME_FORMAT) : null;
-        if (this.shop.id !== undefined) {
-            this.subscribeToSaveResponse(this.shopService.update(this.shop));
-        } else {
-            this.subscribeToSaveResponse(this.shopService.create(this.shop));
-        }
-    }
+  protected subscribeToSaveResponse(result: Observable<HttpResponse<IShop>>): void {
+    result.subscribe(
+      () => this.onSaveSuccess(),
+      () => this.onSaveError()
+    );
+  }
 
-    protected subscribeToSaveResponse(result: Observable<HttpResponse<IShop>>) {
-        result.subscribe((res: HttpResponse<IShop>) => this.onSaveSuccess(), (res: HttpErrorResponse) => this.onSaveError());
-    }
+  protected onSaveSuccess(): void {
+    this.isSaving = false;
+    this.previousState();
+  }
 
-    protected onSaveSuccess() {
-        this.isSaving = false;
-        this.previousState();
-    }
-
-    protected onSaveError() {
-        this.isSaving = false;
-    }
-
-    protected onError(errorMessage: string) {
-        this.jhiAlertService.error(errorMessage, null, null);
-    }
-
-    trackMyAccountById(index: number, item: IMyAccount) {
-        return item.id;
-    }
-
-    getSelected(selectedVals: Array<any>, option: any) {
-        if (selectedVals) {
-            for (let i = 0; i < selectedVals.length; i++) {
-                if (option.id === selectedVals[i].id) {
-                    return selectedVals[i];
-                }
-            }
-        }
-        return option;
-    }
+  protected onSaveError(): void {
+    this.isSaving = false;
+  }
 }

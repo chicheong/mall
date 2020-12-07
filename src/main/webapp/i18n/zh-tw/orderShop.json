@@ -1,28 +1,29 @@
 {
-    "mallApp": {
-        "orderShop": {
-            "home": {
-                "title": "Order Shops",
-                "createLabel": "建立一筆新的 Order Shop",
-                "createOrEditLabel": "建立或編輯 Order Shop",
-                "search": "搜尋 Order Shop"
-            },
-            "created": "新的 Order Shop 建立成功，識別碼為 {{ param }}",
-            "updated": "識別碼為 {{ param }} 的 Order Shop 更新成功",
-            "deleted": "識別碼為 {{ param }} 的 Order Shop 刪除成功",
-            "delete": {
-                "question": "您確定要刪除 Order Shop {{ id }} 嗎?"
-            },
-            "detail": {
-                "title": "Order Shop"
-            },
-            "total": "Total",
-            "currency": "Currency",
-            "remark": "Remark",
-            "shipping": "Shipping",
-            "shop": "Shop",
-            "item": "Item",
-            "order": "Order"
-        }
+  "mallApp": {
+    "orderShop": {
+      "home": {
+        "title": "Order Shops",
+        "createLabel": "建立一筆新的 Order Shop",
+        "createOrEditLabel": "建立或編輯 Order Shop",
+        "search": "搜尋 Order Shop",
+        "notFound": "No Order Shops found"
+      },
+      "created": "新的 Order Shop 建立成功，識別碼為 {{ param }}",
+      "updated": "識別碼為 {{ param }} 的 Order Shop 更新成功",
+      "deleted": "識別碼為 {{ param }} 的 Order Shop 刪除成功",
+      "delete": {
+        "question": "您確定要刪除 Order Shop {{ id }} 嗎?"
+      },
+      "detail": {
+        "title": "Order Shop"
+      },
+      "total": "Total",
+      "currency": "Currency",
+      "remark": "Remark",
+      "shipping": "Shipping",
+      "shop": "Shop",
+      "item": "Item",
+      "order": "Order"
     }
+  }
 }

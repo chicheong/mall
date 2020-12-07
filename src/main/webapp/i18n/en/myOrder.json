@@ -1,152 +1,152 @@
 {
-    "mallApp": {
-        "myOrder": {
-            "home": {
-                "title": "My Orders",
-                "createLabel": "Create a new My Order",
-                "createOrEditLabel": "Create or edit a My Order",
-                "search": "Search for My Order"
-            },
-            "checkout": {
-                "title": "Checkout"
-            },
-            "cart": {
-            	"control": {
-            	    "button": {
-	            		"review": "Shopping Cart",
-	            		"shipping": "Shipping Info",
-	            		"method": "Shipping Method",
-	            		"billing": "Billing Info",
-	            		"payment": "Payment"
-	            	}
-            	},
-            	"summary": {
-            		"actualPayment": "Actual Payment"
-            	},
-            	"billing": {
-            		"title": "Billing Info"
-            	},
-            	"payment": {
-            		"title": "Payment",
-            		"button": {
-						"checkout": "Continue to checkout"
-	            	},
-					"stripe": {
-						"incorrect_number": "The card number is incorrect.",
-						"invalid_number": "The card number is not a valid credit card number.",
-						"invalid_expiry_month": "The card's expiration month is invalid.",
-						"invalid_expiry_year": "The card's expiration year is invalid.",
-						"invalid_cvc": "The card's security code is invalid.",
-						"expired_card": "The card has expired.",
-						"incorrect_cvc": "The card's security code is incorrect.",
-						"incorrect_zip": "The card's zip code failed validation.",
-						"card_declined": "The card was declined.",
-						"missing": "There is no card on a customer that is being charged.",
-						"processing_error": "An error occurred while processing the card.",
-						"rate_limit":  "An error occurred due to requests hitting the API too quickly. Please let us know if you're consistently running into this error."
-	            	}            	
-            	},
-            	"pending": {
-            		"title": "Shopping Cart",
-            		"grid": {
-            			"title": {
-            				"item": {
-            					"full": "Item",
-            					"abbr": "Item"
-            				},
-            				"unitPrice": {
-            				    "full": "Unit Price",
-            					"abbr": "Unit P."
-            				},
-            				"quantity": {
-            				    "full": "Quantity",
-            					"abbr": "Qty"            				
-            				},
-            				"subtotal": {
-            				    "full": "Subtotal",
-            					"abbr": "S. Total"            				
-            				},
-            				"action": {
-            				    "full": "Action",
-            					"abbr": "Action"
-            				}
-            			}
-            		},
-            		"currentTotal": "Current Total",
-            		"totalNoShipping": "Total (Not include SHIPPING)",
-            		"itemChosen": "{{ num }} Item Chosen",
-            		"button": {
-						"checkout": "Checkout",
-						"delete": "Delete"
-	            	}
-            	},            	
-            	"review": {
-            		"title": "Order Confirmation",
-            		"grid": {
-            			"title": {
-            				"item": {
-            					"full": "Item",
-            					"abbr": "Item"
-            				},
-            				"unitPrice": {
-            				    "full": "Unit Price",
-            					"abbr": "Unit P."
-            				},
-            				"quantity": {
-            				    "full": "Quantity",
-            					"abbr": "Qty"            				
-            				},
-            				"promotion": {
-            				    "full": "Promotion",
-            					"abbr": "Promo."
-            				},
-            				"subtotal": {
-            				    "full": "Subtotal",
-            					"abbr": "S. Total"
-            				}
-            			},
-            			"detail": {
-            				"remarks": "Remarks to Seller",
-            				"shippingMethod": "Shipping Method",
-            				"shopTotalIncludeShipping": "Shop Total (Include SHIPPING)"
-            			}
-            		},
-            		"currentTotal": "Current Total"
-            	},
-            	"method": {
-            		"title": "Shipping Method"
-            	},
-            	"shipping": {
-            		"title": "Shipping Info"
-            	},
-            	"confirmation": {
-            		"title": "Payment Confirmation",
-					"button": {
-						"continueShopping": "Continue Shopping"
-	            	}
-            	}
-            },
-            "created": "A new My Order is created with identifier {{ param }}",
-            "updated": "A My Order is updated with identifier {{ param }}",
-            "deleted": "A My Order is deleted with identifier {{ param }}",
-            "delete": {
-                "question": "Are you sure you want to delete My Order {{ id }}?"
-            },
-            "detail": {
-                "title": "My Order"
-            },
-            "receiver": "Receiver",
-            "total": "Total",
-            "currency": "Currency",
-            "contactNum": "Contact Num",
-            "email": "Email",
-            "remark": "Remark",
-            "status": "Status",
-            "shippingAddress": "Shipping Address",
-            "billingAddress": "Billing Address",
-            "shop": "Shop",
-            "statusHistory": "Status History",
-            "account": "Account"
-        }
+  "mallApp": {
+    "myOrder": {
+      "home": {
+        "title": "My Orders",
+        "createLabel": "Create a new My Order",
+        "createOrEditLabel": "Create or edit a My Order",
+        "search": "Search for My Order",
+        "notFound": "No My Orders found"
+      },
+	    "checkout": {
+	        "title": "Checkout"
+	    },
+	    "cart": {
+	    	"control": {
+	    	    "button": {
+	        		"review": "Shopping Cart",
+	        		"shipping": "Shipping Info",
+	        		"method": "Shipping Method",
+	        		"billing": "Billing Info",
+	        		"payment": "Payment"
+	        	}
+	    	},
+	    	"summary": {
+	    		"actualPayment": "Actual Payment"
+	    	},
+	    	"billing": {
+	    		"title": "Billing Info"
+	    	},
+	    	"payment": {
+	    		"title": "Payment",
+	    		"button": {
+					"checkout": "Continue to checkout"
+	        	},
+				"stripe": {
+					"incorrect_number": "The card number is incorrect.",
+					"invalid_number": "The card number is not a valid credit card number.",
+					"invalid_expiry_month": "The card's expiration month is invalid.",
+					"invalid_expiry_year": "The card's expiration year is invalid.",
+					"invalid_cvc": "The card's security code is invalid.",
+					"expired_card": "The card has expired.",
+					"incorrect_cvc": "The card's security code is incorrect.",
+					"incorrect_zip": "The card's zip code failed validation.",
+					"card_declined": "The card was declined.",
+					"missing": "There is no card on a customer that is being charged.",
+					"processing_error": "An error occurred while processing the card.",
+					"rate_limit":  "An error occurred due to requests hitting the API too quickly. Please let us know if you're consistently running into this error."
+	        	}            	
+	    	},
+	    	"pending": {
+	    		"title": "Shopping Cart",
+	    		"grid": {
+	    			"title": {
+	    				"item": {
+	    					"full": "Item",
+	    					"abbr": "Item"
+	    				},
+	    				"unitPrice": {
+	    				    "full": "Unit Price",
+	    					"abbr": "Unit P."
+	    				},
+	    				"quantity": {
+	    				    "full": "Quantity",
+	    					"abbr": "Qty"            				
+	    				},
+	    				"subtotal": {
+	    				    "full": "Subtotal",
+	    					"abbr": "S. Total"            				
+	    				},
+	    				"action": {
+	    				    "full": "Action",
+	    					"abbr": "Action"
+	    				}
+	    			}
+	    		},
+	    		"currentTotal": "Current Total",
+	    		"totalNoShipping": "Total (Not include SHIPPING)",
+	    		"itemChosen": "{{ num }} Item Chosen",
+	    		"button": {
+					"checkout": "Checkout",
+					"delete": "Delete"
+	        	}
+	    	},            	
+	    	"review": {
+	    		"title": "Order Confirmation",
+	    		"grid": {
+	    			"title": {
+	    				"item": {
+	    					"full": "Item",
+	    					"abbr": "Item"
+	    				},
+	    				"unitPrice": {
+	    				    "full": "Unit Price",
+	    					"abbr": "Unit P."
+	    				},
+	    				"quantity": {
+	    				    "full": "Quantity",
+	    					"abbr": "Qty"            				
+	    				},
+	    				"promotion": {
+	    				    "full": "Promotion",
+	    					"abbr": "Promo."
+	    				},
+	    				"subtotal": {
+	    				    "full": "Subtotal",
+	    					"abbr": "S. Total"
+	    				}
+	    			},
+	    			"detail": {
+	    				"remarks": "Remarks to Seller",
+	    				"shippingMethod": "Shipping Method",
+	    				"shopTotalIncludeShipping": "Shop Total (Include SHIPPING)"
+	    			}
+	    		},
+	    		"currentTotal": "Current Total"
+	    	},
+	    	"method": {
+	    		"title": "Shipping Method"
+	    	},
+	    	"shipping": {
+	    		"title": "Shipping Info"
+	    	},
+	    	"confirmation": {
+	    		"title": "Payment Confirmation",
+				"button": {
+					"continueShopping": "Continue Shopping"
+	        	}
+	    	}
+	    },
+      "created": "A new My Order is created with identifier {{ param }}",
+      "updated": "A My Order is updated with identifier {{ param }}",
+      "deleted": "A My Order is deleted with identifier {{ param }}",
+      "delete": {
+        "question": "Are you sure you want to delete My Order {{ id }}?"
+      },
+      "detail": {
+        "title": "My Order"
+      },
+      "total": "Total",
+      "currency": "Currency",
+	  "contactNum": "Contact Num",
+	  "email": "Email",
+      "remark": "Remark",
+      "status": "Status",
+      "shipping": "Shipping Address",
+      "billing": "Billing Address",
+      "shop": "Shop",
+      "statusHistory": "Status History",
+      "account": "Account"
     }
+  }
 }

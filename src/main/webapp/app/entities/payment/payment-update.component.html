@@ -1,63 +1,78 @@
 <div class="row justify-content-center">
     <div class="col-8">
-        <form name="editForm" role="form" novalidate (ngSubmit)="save()" #editForm="ngForm">
+        <form name="editForm" role="form" novalidate (ngSubmit)="save()" [formGroup]="editForm">
             <h2 id="jhi-payment-heading" jhiTranslate="mallApp.payment.home.createOrEditLabel">Create or edit a Payment</h2>
+
             <div>
                 <jhi-alert-error></jhi-alert-error>
-                <div class="form-group" [hidden]="!payment.id">
+
+                <div class="form-group" [hidden]="!editForm.get('id')!.value">
                     <label for="id" jhiTranslate="global.field.id">ID</label>
-                    <input type="text" class="form-control" id="id" name="id"
-                        [(ngModel)]="payment.id" readonly />
+                    <input type="text" class="form-control" id="id" name="id" formControlName="id" readonly />
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.payment.amount" for="field_amount">Amount</label>
                     <input type="number" class="form-control" name="amount" id="field_amount"
-                        [(ngModel)]="payment.amount" />
+                           formControlName="amount"/>
                 </div>
+
                 <div class="form-group">
                     <label class="form-control-label" jhiTranslate="mallApp.payment.currency" for="field_currency">Currency</label>
-                    <select class="form-control" name="currency" [(ngModel)]="payment.currency" id="field_currency" >
-                        <option value="HKD">{{'mallApp.CurrencyType.HKD' | translate}}</option>
-                        <option value="CNY">{{'mallApp.CurrencyType.CNY' | translate}}</option>
-                        <option value="USD">{{'mallApp.CurrencyType.USD' | translate}}</option>
-                        <option value="EUR">{{'mallApp.CurrencyType.EUR' | translate}}</option>
-                        <option value="JPY">{{'mallApp.CurrencyType.JPY' | translate}}</option>
-                        <option value="KRW">{{'mallApp.CurrencyType.KRW' | translate}}</option>
-                        <option value="TWD">{{'mallApp.CurrencyType.TWD' | translate}}</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="mallApp.payment.type" for="field_type">Type</label>
-                    <select class="form-control" name="type" [(ngModel)]="payment.type" id="field_type" >
-                        <option value="CREDIT_CARD">{{'mallApp.PaymentType.CREDIT_CARD' | translate}}</option>
-                        <option value="DEBIT_CARD">{{'mallApp.PaymentType.DEBIT_CARD' | translate}}</option>
-                        <option value="PAYPAL">{{'mallApp.PaymentType.PAYPAL' | translate}}</option>
-                        <option value="PAYME">{{'mallApp.PaymentType.PAYME' | translate}}</option>
-                        <option value="BANK_TRANSFER">{{'mallApp.PaymentType.BANK_TRANSFER' | translate}}</option>
-                        <option value="ACCOUNT">{{'mallApp.PaymentType.ACCOUNT' | translate}}</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="mallApp.payment.remark" for="field_remark">Remark</label>
-                    <input type="text" class="form-control" name="remark" id="field_remark"
-                        [(ngModel)]="payment.remark" />
-                </div>
-                <div class="form-group">
-                    <label class="form-control-label" jhiTranslate="mallApp.payment.status" for="field_status">Status</label>
-                    <select class="form-control" name="status" [(ngModel)]="payment.status" id="field_status" >
-                        <option value="PENDING">{{'mallApp.PaymentStatus.PENDING' | translate}}</option>
-                        <option value="PAID">{{'mallApp.PaymentStatus.PAID' | translate}}</option>
-                        <option value="CANCELLED">{{'mallApp.PaymentStatus.CANCELLED' | translate}}</option>
+                    <select class="form-control" name="currency" formControlName="currency" id="field_currency">
+                        <option value="HKD">{{ 'mallApp.CurrencyType.HKD' | translate }}</option>
+                        <option value="CNY">{{ 'mallApp.CurrencyType.CNY' | translate }}</option>
+                        <option value="USD">{{ 'mallApp.CurrencyType.USD' | translate }}</option>
+                        <option value="EUR">{{ 'mallApp.CurrencyType.EUR' | translate }}</option>
+                        <option value="JPY">{{ 'mallApp.CurrencyType.JPY' | translate }}</option>
+                        <option value="KRW">{{ 'mallApp.CurrencyType.KRW' | translate }}</option>
+                        <option value="TWD">{{ 'mallApp.CurrencyType.TWD' | translate }}</option>
                     </select>
                 </div>
 
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.payment.type" for="field_type">Type</label>
+                    <select class="form-control" name="type" formControlName="type" id="field_type">
+                        <option value="CREDIT_CARD">{{ 'mallApp.PaymentType.CREDIT_CARD' | translate }}</option>
+                        <option value="DEBIT_CARD">{{ 'mallApp.PaymentType.DEBIT_CARD' | translate }}</option>
+                        <option value="PAYPAL">{{ 'mallApp.PaymentType.PAYPAL' | translate }}</option>
+                        <option value="PAYME">{{ 'mallApp.PaymentType.PAYME' | translate }}</option>
+                        <option value="BANK_TRANSFER">{{ 'mallApp.PaymentType.BANK_TRANSFER' | translate }}</option>
+                        <option value="ACCOUNT">{{ 'mallApp.PaymentType.ACCOUNT' | translate }}</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.payment.remark" for="field_remark">Remark</label>
+                    <input type="text" class="form-control" name="remark" id="field_remark"
+                           formControlName="remark"/>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.payment.status" for="field_status">Status</label>
+                    <select class="form-control" name="status" formControlName="status" id="field_status">
+                        <option value="PENDING">{{ 'mallApp.PaymentStatus.PENDING' | translate }}</option>
+                        <option value="PAID">{{ 'mallApp.PaymentStatus.PAID' | translate }}</option>
+                        <option value="CANCELLED">{{ 'mallApp.PaymentStatus.CANCELLED' | translate }}</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-control-label" jhiTranslate="mallApp.payment.order" for="field_order">Order</label>
+                    <select class="form-control" id="field_order" name="order" formControlName="order">
+                        <option [ngValue]="null"></option>
+                        <option [ngValue]="myOrderOption.id" *ngFor="let myOrderOption of orders; trackBy: trackById">{{ myOrderOption.id }}</option>
+                    </select>
+                </div>
             </div>
+
             <div>
-                <button type="button" id="cancel-save" class="btn btn-secondary"  (click)="previousState()">
-                    <fa-icon [icon]="'ban'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
+                <button type="button" id="cancel-save" class="btn btn-secondary" (click)="previousState()">
+                    <fa-icon icon="ban"></fa-icon>&nbsp;<span jhiTranslate="entity.action.cancel">Cancel</span>
                 </button>
-                <button type="submit" id="save-entity" [disabled]="editForm.form.invalid || isSaving" class="btn btn-primary">
-                    <fa-icon [icon]="'save'"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
+
+                <button type="submit" id="save-entity" [disabled]="editForm.invalid || isSaving" class="btn btn-primary">
+                    <fa-icon icon="save"></fa-icon>&nbsp;<span jhiTranslate="entity.action.save">Save</span>
                 </button>
             </div>
         </form>

@@ -1,19 +1,17 @@
 package com.wongs.domain;
 
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import javax.persistence.*;
 
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
+import java.util.Objects;
 import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Objects;
 
 import com.wongs.domain.enumeration.CurrencyType;
 
@@ -23,16 +21,16 @@ import com.wongs.domain.enumeration.CurrencyType;
 @Entity
 @Table(name = "order_shop")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
-@Document(indexName = "ordershop")
+@org.springframework.data.elasticsearch.annotations.Document(indexName = "ordershop")
 public class OrderShop implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "total", precision = 10, scale = 2)
+    @Column(name = "total", precision = 21, scale = 2)
     private BigDecimal total;
 
     @Enumerated(EnumType.STRING)
@@ -53,6 +51,7 @@ public class OrderShop implements Serializable {
     @OneToMany(mappedBy = "shop")
     @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
     private Set<OrderItem> items = new HashSet<>();
+
     @ManyToOne
     @JsonIgnoreProperties("shops")
     private MyOrder order;
@@ -175,10 +174,10 @@ public class OrderShop implements Serializable {
         if (this == o) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+        if (!(o instanceof OrderShop)) {
             return false;
         }
-        OrderShop orderShop = (OrderShop) o;
+		OrderShop orderShop = (OrderShop) o;
         if (orderShop.getId() == null || getId() == null) {
             return false;
         }
@@ -205,7 +204,7 @@ public class OrderShop implements Serializable {
         	if (!match)
         		return false;
         }
-        return Objects.equals(getId(), orderShop.getId()) &&
+        return id != null && id.equals(((OrderShop) o).id) &&
         		(getTotal().compareTo(orderShop.getTotal()) == 0) &&
         		Objects.equals(getCurrency(), orderShop.getCurrency()) &&
         		Objects.equals(getRemark(), orderShop.getRemark()) &&
@@ -214,7 +213,7 @@ public class OrderShop implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hashCode(getId());
+        return 31;
     }
 
     @Override

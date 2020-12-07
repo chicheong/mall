@@ -1,152 +1,152 @@
 {
-    "mallApp": {
-        "myOrder": {
-            "home": {
-                "title": "訂單",
-                "createLabel": "建立一筆新的訂單",
-                "createOrEditLabel": "建立或編輯訂單",
-                "search": "搜尋訂單"
-            },		
-            "checkout": {
-                "title": "結賬"
-            },
-            "cart": {
-            	"control": {
-            	    "button": {
-	            		"review": "購物車",
-	            		"shipping": "運送資料",
-	            		"method": "運送方法",
-	            		"billing": "計費資料",
-	            		"payment": "付款"
-	            	}
-            	},
-            	"summary": {
-					"actualPayment": "實際付款"
-            	},
-            	"billing": {
-					"title": "計費資料"
-            	},
-            	"payment": {
-					"title": "付款",
-            		"button": {
-						"checkout": "結帳"
-	            	},					
-					"stripe": {
-						"incorrect_number": "卡號碼不正確",
-						"invalid_number": "信用卡號碼無效",
-						"invalid_expiry_month": "卡到期月份不正確",
-						"invalid_expiry_year": "卡到期年份不正確",
-						"invalid_cvc": "卡安全碼無效",
-						"expired_card": "卡已過期",
-						"incorrect_cvc": "卡安全碼不正確",
-						"incorrect_zip": "卡zip碼驗證錯誤",
-						"card_declined": "使用此卡被拒絕",
-						"missing": "此客戶沒有可扣數的卡可使用",
-						"processing_error": "處理此卡時出現錯誤",
-						"rate_limit":  "同一時段太多查詢。如果情況不斷出現，請與我們聯絡。"
-					}
-            	},
-				"pending": {
-					"title": "購物車",
-					"grid": {
-            			"title": {
-            				"item": {
-            					"full": "項目",
-            					"abbr": "項目"
-            				},
-            				"unitPrice": {
-            				    "full": "單價",
-            					"abbr": "單價"
-            				},
-            				"quantity": {
-            				    "full": "數量",
-            					"abbr": "數量"            				
-            				},
-            				"subtotal": {
-            				    "full": "金額",
-            					"abbr": "金額"            				
-            				},
-            				"action": {
-            				    "full": "操作",
-            					"abbr": "操作"
-            				}
-            			}
-					},
-					"currentTotal": "現時總數",
-					"totalNoShipping": "合計 (不含運費)",
-					"itemChosen": "巳選商品{{ num }}款",
-					"button": {
-						"checkout": "結算",
-						"delete": "删除"
-	            	}
-            	},
-            	"review": {
-					"title": "確認訂單",
-					"grid": {
-            			"title": {
-							"item": {
-            					"full": "項目",
-            					"abbr": "項目"
-            				},
-            				"unitPrice": {
-            				    "full": "單價",
-            					"abbr": "單價"
-            				},
-            				"quantity": {
-            				    "full": "數量",
-            					"abbr": "數量"            				
-            				},
-							"promotion": {
-            				    "full": "推廣優惠",
-            					"abbr": "推廣優惠"
-            				},
-            				"subtotal": {
-            				    "full": "金額",
-            					"abbr": "金額"
-            				}
-            			},
-            			"detail": {
-            				"remarks": "給賣家留言",
-            				"shippingMethod": "運送方式",
-							"shopTotalIncludeShipping": "店鋪合計(含運費)"
-            			}
-            		},
-					"currentTotal": "現時總數"
-            	},
-            	"method": {
-					"title": "運送方法"
-            	},
-            	"shipping": {
-					"title": "運送資料"
-            	},
-            	"confirmation": {
-            		"title": "付款確定",
-					"button": {
-						"continueShopping": "繼續購物"
-	            	}
-            	}
-            },
-            "created": "新的訂單建立成功，識別碼為 {{ param }}",
-            "updated": "識別碼為 {{ param }} 的訂單更新成功",
-            "deleted": "識別碼為 {{ param }} 的訂單刪除成功",
-            "delete": {
-                "question": "您確定要刪除訂單 {{ id }} 嗎?"
-            },
-            "detail": {
-                "title": "訂單"
-            },
-            "receiver": "Receiver",
-            "total": "Total",
-            "currency": "Currency",
-            "contactNum": "Contact Num",
-            "email": "Email",
-            "remark": "Remark",
-            "status": "Status",
-            "shippingAddress": "Shipping Address",
-            "billingAddress": "Billing Address",
-            "shop": "Shop",
-            "statusHistory": "Status History",
-            "account": "Account"
-        }
+  "mallApp": {
+    "myOrder": {
+      "home": {
+        "title": "訂單",
+        "createLabel": "建立一筆新的訂單",
+        "createOrEditLabel": "建立或編輯訂單",
+        "search": "搜尋訂單",
+        "notFound": "No My Orders found"
+      },
+		"checkout": {
+            "title": "結賬"
+        },
+	    "cart": {
+	    	"control": {
+	    	    "button": {
+	        		"review": "購物車",
+	        		"shipping": "運送資料",
+	        		"method": "運送方法",
+	        		"billing": "計費資料",
+	        		"payment": "付款"
+	        	}
+	    	},
+	    	"summary": {
+				"actualPayment": "實際付款"
+	    	},
+	    	"billing": {
+				"title": "計費資料"
+	    	},
+	    	"payment": {
+				"title": "付款",
+	    		"button": {
+					"checkout": "結帳"
+	        	},					
+				"stripe": {
+					"incorrect_number": "卡號碼不正確",
+					"invalid_number": "信用卡號碼無效",
+					"invalid_expiry_month": "卡到期月份不正確",
+					"invalid_expiry_year": "卡到期年份不正確",
+					"invalid_cvc": "卡安全碼無效",
+					"expired_card": "卡已過期",
+					"incorrect_cvc": "卡安全碼不正確",
+					"incorrect_zip": "卡zip碼驗證錯誤",
+					"card_declined": "使用此卡被拒絕",
+					"missing": "此客戶沒有可扣數的卡可使用",
+					"processing_error": "處理此卡時出現錯誤",
+					"rate_limit":  "同一時段太多查詢。如果情況不斷出現，請與我們聯絡。"
+				}
+	    	},
+			"pending": {
+				"title": "購物車",
+				"grid": {
+	    			"title": {
+	    				"item": {
+	    					"full": "項目",
+	    					"abbr": "項目"
+	    				},
+	    				"unitPrice": {
+	    				    "full": "單價",
+	    					"abbr": "單價"
+	    				},
+	    				"quantity": {
+	    				    "full": "數量",
+	    					"abbr": "數量"            				
+	    				},
+	    				"subtotal": {
+	    				    "full": "金額",
+	    					"abbr": "金額"            				
+	    				},
+	    				"action": {
+	    				    "full": "操作",
+	    					"abbr": "操作"
+	    				}
+	    			}
+				},
+				"currentTotal": "現時總數",
+				"totalNoShipping": "合計 (不含運費)",
+				"itemChosen": "巳選商品{{ num }}款",
+				"button": {
+					"checkout": "結算",
+					"delete": "删除"
+	        	}
+	    	},
+	    	"review": {
+				"title": "確認訂單",
+				"grid": {
+	    			"title": {
+						"item": {
+	    					"full": "項目",
+	    					"abbr": "項目"
+	    				},
+	    				"unitPrice": {
+	    				    "full": "單價",
+	    					"abbr": "單價"
+	    				},
+	    				"quantity": {
+	    				    "full": "數量",
+	    					"abbr": "數量"            				
+	    				},
+						"promotion": {
+	    				    "full": "推廣優惠",
+	    					"abbr": "推廣優惠"
+	    				},
+	    				"subtotal": {
+	    				    "full": "金額",
+	    					"abbr": "金額"
+	    				}
+	    			},
+	    			"detail": {
+	    				"remarks": "給賣家留言",
+	    				"shippingMethod": "運送方式",
+						"shopTotalIncludeShipping": "店鋪合計(含運費)"
+	    			}
+	    		},
+				"currentTotal": "現時總數"
+	    	},
+	    	"method": {
+				"title": "運送方法"
+	    	},
+	    	"shipping": {
+				"title": "運送資料"
+	    	},
+	    	"confirmation": {
+	    		"title": "付款確定",
+				"button": {
+					"continueShopping": "繼續購物"
+	        	}
+	    	}
+	    },
+      "created": "新的訂單建立成功，識別碼為 {{ param }}",
+	    "updated": "識別碼為 {{ param }} 的訂單更新成功",
+	    "deleted": "識別碼為 {{ param }} 的訂單刪除成功",
+      "delete": {
+        "question": "您確定要刪除訂單 {{ id }} 嗎?"
+      },
+      "detail": {
+        "title": "訂單"
+      },
+      "total": "Total",
+      "currency": "Currency",
+      "contactNum": "Contact Num",
+      "email": "Email",
+      "remark": "Remark",
+      "status": "Status",
+      "shipping": "Shipping Address",
+      "billing": "Billing Address",
+      "shop": "Shop",
+      "statusHistory": "Status History",
+      "account": "Account"
     }
+  }
 }

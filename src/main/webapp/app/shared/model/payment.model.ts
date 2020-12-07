@@ -1,22 +1,9 @@
 import { IMyOrder } from 'app/shared/model/my-order.model';
 import { IPaymentCard } from 'app/shared/model/payment-card.model';
 import { IPaymentStatusHistory } from 'app/shared/model/payment-status-history.model';
-import { CurrencyType } from './price.model';
-
-export const enum PaymentType {
-    CREDIT_CARD = 'CREDIT_CARD',
-    DEBIT_CARD = 'DEBIT_CARD',
-    PAYPAL = 'PAYPAL',
-    PAYME = 'PAYME',
-    BANK_TRANSFER = 'BANK_TRANSFER',
-    ACCOUNT = 'ACCOUNT'
-}
-
-export const enum PaymentStatus {
-    PENDING = 'PENDING',
-    PAID = 'PAID',
-    CANCELLED = 'CANCELLED'
-}
+import { CurrencyType } from 'app/shared/model/enumerations/currency-type.model';
+import { PaymentType } from 'app/shared/model/enumerations/payment-type.model';
+import { PaymentStatus } from 'app/shared/model/enumerations/payment-status.model';
 
 export interface IPayment {
     id?: number;

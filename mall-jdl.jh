@@ -242,7 +242,7 @@ entity OrderStatusHistory {
 	status OrderStatus
 }
 
-entity Url {
+entity MyUrl {
 	entityType String,
 	entityId Long,
 	path String,
@@ -370,7 +370,7 @@ relationship ManyToMany {
 	Category{product} to Product{category}
 }
 
-paginate UserInfo, MyAccount, Company, Department, Office, Address, Contact, Country, MyState, Shop, ShippingPriceRule, Category, Product, ProductItem, MyOrder, OrderShop, OrderItem, Price, Quantity, Url, Card, Shipping, ShippingType, Payment, PaymentCard with pagination
+paginate UserInfo, MyAccount, Company, Department, Office, Address, Contact, Country, MyState, Shop, ShippingPriceRule, Category, Product, ProductItem, MyOrder, OrderShop, OrderItem, Price, Quantity, MyUrl, Card, Shipping, ShippingType, Payment, PaymentCard with pagination
 paginate Delegation, OrderStatusHistory, ProductHistory, ProductItemHistory, ShippingStatusHistory, PaymentStatusHistory with infinite-scroll
-service UserInfo, MyAccount, Product, MyOrder, Shop, ProductItem, ProductStyle, Price, Quantity, Url, Shipping, Payment, Address, Contact, Delegation with serviceClass
-dto UserInfo, MyAccount, Product, MyOrder, Shop, ProductItem, ProductStyle, Price, Quantity, Url, Shipping, Payment, Address, Contact, Delegation with mapstruct
+service * with serviceClass
+dto * with mapstruct
