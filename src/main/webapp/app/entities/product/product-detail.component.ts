@@ -96,7 +96,7 @@ export class ProductDetailComponent implements OnInit {
           }
       });
       if (min === max) {
-          this.priceRange = min;
+          this.priceRange = '' + min ;
       } else {
           this.priceRange = min + ' - ' + max;   
       }

@@ -138,7 +138,10 @@ export class SettingsComponent implements OnInit {
   */
 
   updateUserImage(urls: IMyUrl[]): void {
-      this.account.imageUrl = urls[0].path;
+      if (urls[0] && urls[0].path) {
+          this.account.imageUrl = urls[0].path;
+      }
+          
   }
 
   updateUserFile(urls: IMyUrl[]): void {

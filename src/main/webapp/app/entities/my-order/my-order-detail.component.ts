@@ -25,16 +25,16 @@ export class MyOrderDetailComponent implements OnInit {
     }
 
     checkout(): void {
-        console.log('calling checkout');
+//        console.log('calling checkout');
 //        this.save();
 //        this.router.navigate(['/checkout', this.myOrder.id]);
     }
 
     canCheckout(): void {
         if (this.myOrder && this.myOrder.shops && this.myOrder.shops.length > 0) {
-            return true;
+            return; // true
         } else {
-            return false;
+            return; // false
         }
     }
 }
