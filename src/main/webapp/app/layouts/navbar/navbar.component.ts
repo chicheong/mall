@@ -60,7 +60,7 @@ export class NavbarComponent implements OnInit {
   }
 
   calculateMyOrderTotalItems(): number {
-    return this.accountService.calculateMyOrderTotalItems();
+    return this.accountService.sumOrderQuantity();
   }
 
   getMyOrderId(): number | undefined {

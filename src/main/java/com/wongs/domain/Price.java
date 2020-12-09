@@ -1,17 +1,24 @@
 package com.wongs.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import javax.persistence.*;
-
-import org.springframework.data.elasticsearch.annotations.FieldType;
 import java.io.Serializable;
-import java.util.Objects;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.wongs.domain.enumeration.CurrencyType;
 
 /**
@@ -44,6 +51,7 @@ public class Price implements Serializable {
 
     @ManyToOne
     @JsonIgnoreProperties("prices")
+    @JsonIgnore
     private ProductItem item;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

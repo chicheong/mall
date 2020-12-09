@@ -12,6 +12,8 @@ import { MyOrderService } from './my-order.service';
 import { MyOrderComponent } from './my-order.component';
 import { MyOrderDetailComponent } from './my-order-detail.component';
 import { MyOrderUpdateComponent } from './my-order-update.component';
+import { CartPendingComponent } from './cart/cart-pending.component';
+import { CheckoutComponent } from './checkout.component';
 
 @Injectable({ providedIn: 'root' })
 export class MyOrderResolve implements Resolve<IMyOrder> {
@@ -84,5 +86,101 @@ export const myOrderRoute: Routes = [
       pageTitle: 'mallApp.myOrder.home.title'
     },
     canActivate: [UserRouteAccessService]
+  },
+  {
+      path: ':id/pending',
+      component: CartPendingComponent,
+      resolve: {
+          myOrder: MyOrderResolve
+      },
+      data: {
+          authorities: [Authority.USER],
+          pageTitle: 'mallApp.myOrder.cart.pending.title'
+      },
+      canActivate: [UserRouteAccessService]
+  },
+  {
+      path: ':id/checkout',
+      component: CheckoutComponent,
+      resolve: {
+          myOrder: MyOrderResolve
+      },
+      data: {
+          authorities: [Authority.USER],
+          pageTitle: 'mallApp.myOrder.cart.review.title'
+      },
+      canActivate: [UserRouteAccessService]
+  },
+  {
+      path: ':id/review',
+      component: MyOrderDetailComponent,
+      resolve: {
+          myOrder: MyOrderResolve
+      },
+      data: {
+          authorities: [Authority.USER],
+          pageTitle: 'mallApp.myOrder.cart.review.title'
+      },
+      canActivate: [UserRouteAccessService]
+  },
+  {
+      path: ':id/shipping',
+      component: MyOrderDetailComponent,
+      resolve: {
+          myOrder: MyOrderResolve
+      },
+      data: {
+          authorities: [Authority.USER],
+          pageTitle: 'mallApp.myOrder.cart.shipping.title'
+      },
+      canActivate: [UserRouteAccessService]
+  },
+  {
+      path: ':id/method',
+      component: MyOrderDetailComponent,
+      resolve: {
+          myOrder: MyOrderResolve
+      },
+      data: {
+          authorities: [Authority.USER],
+          pageTitle: 'mallApp.myOrder.cart.method.title'
+      },
+      canActivate: [UserRouteAccessService]
+  },
+  {
+      path: ':id/billing',
+      component: MyOrderDetailComponent,
+      resolve: {
+          myOrder: MyOrderResolve
+      },
+      data: {
+          authorities: [Authority.USER],
+          pageTitle: 'mallApp.myOrder.cart.billing.title'
+      },
+      canActivate: [UserRouteAccessService]
+  },
+  {
+      path: ':id/payment',
+      component: MyOrderDetailComponent,
+      resolve: {
+          myOrder: MyOrderResolve
+      },
+      data: {
+          authorities: [Authority.USER],
+          pageTitle: 'mallApp.myOrder.cart.payment.title'
+      },
+      canActivate: [UserRouteAccessService]
+  },
+  {
+      path: ':id/confirmation',
+      component: MyOrderDetailComponent,
+      resolve: {
+          myOrder: MyOrderResolve
+      },
+      data: {
+          authorities: [Authority.USER],
+          pageTitle: 'mallApp.myOrder.cart.confirmation.title'
+      },
+      canActivate: [UserRouteAccessService]
   }
 ];

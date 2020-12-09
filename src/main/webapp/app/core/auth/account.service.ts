@@ -91,11 +91,11 @@ export class AccountService {
       return this.userIdentity.myAccount.shops;
   }
 
-  calculateMyOrderTotalItems(): number {
+  sumOrderQuantity(): number {
       if (!this.userIdentity || !this.userIdentity.myAccount || !this.userIdentity.myAccount.myOrder || !this.userIdentity.myAccount.myOrder.shops) {
           return 0;
       }
-      return this.myOrderService.calculateTotalQuantity(this.userIdentity.myAccount.myOrder, false);
+      return this.myOrderService.sumQuantity(this.userIdentity.myAccount.myOrder, false);
   }
 
   getMyOrderId(): number | undefined {

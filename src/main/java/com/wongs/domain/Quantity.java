@@ -1,5 +1,6 @@
 package com.wongs.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -37,6 +38,7 @@ public class Quantity implements Serializable {
 
     @ManyToOne
     @JsonIgnoreProperties("quantities")
+    @JsonIgnore
     private ProductItem item;
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove

@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpResponse, HttpErrorResponse } from '@angular/common/http';
 import { Observable, Subscription } from 'rxjs';
-import { JhiEventManager } from 'ng-jhipster';
 
 import { IMyOrder } from 'app/shared/model/my-order.model';
 import { MyOrderService } from './my-order.service';
@@ -11,91 +11,35 @@ import { MyOrderService } from './my-order.service';
     selector: 'jhi-checkout',
     templateUrl: './checkout.component.html'
 })
-export class CheckoutComponent implements OnInit, OnDestroy {
+export class CheckoutComponent implements OnInit {
 
-    myOrder: IMyOrder;
-    isSaving: boolean;
-    private subscription: Subscription;
-    private eventSubscriber: Subscription;
+    myOrder: IMyOrder | null = null;
+    isSaving = false;
+    
+    isLinear = false;
+    firstFormGroup: FormGroup;
+    secondFormGroup: FormGroup;
 
     constructor(
-        private eventManager: JhiEventManager,
         private myOrderService: MyOrderService,
-        private route: ActivatedRoute,
-        private router: Router
+        private activatedRoute: ActivatedRoute,
+        private router: Router,
+        private _formBuilder: FormBuilder
     ) {
     }
 
-    ngOnInit() {
-        this.isSaving = false;
-        this.subscription = this.route.params.subscribe(params => {
-            this.load(params['id']);
+    ngOnInit(): void {
+        this.activatedRoute.data.subscribe(({ myOrder }) => (this.myOrder = myOrder));
+        this.firstFormGroup = this._formBuilder.group({
+            firstCtrl: ['', Validators.required]
         });
-        this.registerChangeInMyOrders();
-    }
-
-    load(id) {
-        this.myOrderService.find(id)
-        .subscribe((myOrderResponse: HttpResponse<IMyOrder>) => {
-            this.myOrder = myOrderResponse.body;
-            this.myOrder.shops.forEach((shop) => {
-//              console.error('item.price: ' + item.price + ', item.quantity: ' + item.quantity);
-            });
+        this.secondFormGroup = this._formBuilder.group({
+            secondCtrl: ['', Validators.required]
         });
     }
 
-    updateMyOrder() {
-    }
-
-    save() {
-        this.isSaving = true;
-        this.subscribeToSaveResponse(
-                this.myOrderService.update(this.myOrder));
-    }
-
-    private subscribeToSaveResponse(result: Observable<HttpResponse<IMyOrder>>) {
-        result.subscribe((res: HttpResponse<IMyOrder>) =>
-            this.onSaveSuccess(res.body), (res: HttpErrorResponse) => this.onSaveError());
-    }
-
-    private onSaveSuccess(result: IMyOrder) {
-        this.myOrder = result;
-        this.eventManager.broadcast({ name: 'myOrderModification', content: 'OK', obj: result});
-        this.isSaving = false;
-    }
-
-    private onSaveError() {
-        this.isSaving = false;
-    }
-
-    checkout() {
-        console.log('calling checkout');
-        this.save();
-        this.router.navigate(['']);
-    }
-
-    previousState() {
-        this.save();
+    previousState(): void {
+//        this.save();
         window.history.back();
-    }
-
-    ngOnDestroy() {
-        this.subscription.unsubscribe();
-        this.eventManager.destroy(this.eventSubscriber);
-    }
-
-    registerChangeInMyOrders() {
-        this.eventSubscriber = this.eventManager.subscribe(
-            'myOrderListModification',
-            (response) => this.load(this.myOrder.id)
-        );
-    }
-
-    canCheckout() {
-        if (this.myOrder && this.myOrder.shops && this.myOrder.shops.length > 0) {
-            return true;
-        } else {
-            return false;
-        }
     }
 }

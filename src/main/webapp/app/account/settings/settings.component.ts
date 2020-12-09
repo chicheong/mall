@@ -21,7 +21,7 @@ import { MyUrlService } from "app/entities/my-url/my-url.service";
   templateUrl: './settings.component.html'
 })
 export class SettingsComponent implements OnInit {
-  account: Account;
+  account: Account = {};
   success = false;
   languages = LANGUAGES;
   settingsForm = this.fb.group({
